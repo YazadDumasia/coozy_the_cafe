@@ -48,6 +48,31 @@
             "args": [
                 "--wasm"
             ]
-        }
+        },
+        {
+            "name": "coozy_the_cafe (Flutter Chrome Wasm Release)",
+            "program": "lib/main.dart",
+            "deviceId": "chrome",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "args": [
+                "--wasm"
+            ]
+        },
+        // {
+        //     "name": "coozy_the_cafe (Flutter Windows)",
+        //     "program": "lib/main.dart",
+        //     "deviceId": "windows",
+        //     "request": "launch",
+        //     "type": "dart"
+        // },
+        // {
+        //     "name": "coozy_the_cafe (Flutter Linux)",
+        //     "program": "lib/main.dart",
+        //     "deviceId": "linux",
+        //     "request": "launch",
+        //     "type": "dart"
+        // }
     ]
 }

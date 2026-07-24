@@ -426,56 +426,66 @@ class DialogUtils {
     );
   }
 
-  static Future<void> showLoadingDialog(BuildContext context) async {
+  static Future<void> showLoadingDialog(
+    BuildContext context, {
+    double? progress,
+    String? message,
+  }) async {
     await showDialog(
       context: context,
       barrierDismissible: false, // Prevents dismissing dialog on outside tap
       builder: (BuildContext context) {
         return AlertDialog(
-          contentPadding: EdgeInsets.all(10),
+          contentPadding: const EdgeInsets.all(10),
           content: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 500),
             child: Padding(
-              padding: EdgeInsets.all(10.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  CupertinoActivityIndicator(
-                    animating: true,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? Colors.white
-                        : Theme.of(context).primaryColor,
-                    radius: 15,
-                  ),
-                  SizedBox(width: 16),
-                  Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            context.tr(
-                                  LocaleKeys.commonPleaseWait,
-                                  track: TrackConstants.utilsTrack,
-                                ) ??
-                                "Please wait...",
-                            style: Theme.of(context).textTheme.bodyMedium!
-                                .copyWith(
-                                  color:
-                                      Theme.of(context).brightness ==
-                                          Brightness.light
-                                      ? Colors.white
-                                      : null,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                          ),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      CupertinoActivityIndicator(
+                        animating: true,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Theme.of(context).primaryColor,
+                        radius: 15,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          message ??
+                              (context.tr(
+                                    LocaleKeys.commonPleaseWait,
+                                    track: TrackConstants.utilsTrack,
+                                  ) ??
+                                  "Please wait..."),
+                          style: Theme.of(context).textTheme.bodyMedium!
+                              .copyWith(fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                      if (progress != null) ...[
+                        const SizedBox(width: 8),
+                        Text(
+                          '${(progress * 100).toInt()}%',
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ],
-                    ),
+                    ],
                   ),
+                  if (progress != null) ...[
+                    const SizedBox(height: 12),
+                    LinearProgressIndicator(
+                      value: progress,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ],
                 ],
               ),
             ),

@@ -61,31 +61,45 @@ class Pager extends StatefulWidget {
 }
 
 class _PagerState extends State<Pager> {
-  late int _currentPage;
-  late int _pagesView;
-
-  @override
-  void initState() {
-    super.initState();
-    _currentPage = widget.currentPage;
-    _pagesView = widget.pagesView;
-    if (widget.totalPages < _pagesView) {
-      _pagesView = widget.totalPages;
+  int get _currentPage {
+    if (widget.currentPage > widget.totalPages) {
+      return widget.totalPages;
     }
+    if (widget.currentPage < 1) {
+      return 1;
+    }
+    return widget.currentPage;
   }
 
-  @override
-  void didUpdateWidget(Pager oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.currentPage != widget.currentPage) {
-      _currentPage = widget.currentPage;
+  int get _effectivePagesView {
+    if (widget.totalPages < widget.pagesView) {
+      return widget.totalPages;
     }
-    if (oldWidget.pagesView != widget.pagesView) {
-      _pagesView = widget.pagesView;
-      if (widget.totalPages < _pagesView) {
-        _pagesView = widget.totalPages;
-      }
+    return widget.pagesView;
+  }
+
+  int get _startPage {
+    int pagesView = _effectivePagesView;
+    if (pagesView <= 0) return 1;
+    int half = pagesView ~/ 2;
+    int start = _currentPage - half;
+    if (start + pagesView - 1 > widget.totalPages) {
+      start = widget.totalPages - pagesView + 1;
     }
+    if (start < 1) {
+      start = 1;
+    }
+    return start;
+  }
+
+  int get _endPage {
+    int pagesView = _effectivePagesView;
+    if (pagesView <= 0) return 1;
+    int end = _startPage + pagesView - 1;
+    if (end > widget.totalPages) {
+      end = widget.totalPages;
+    }
+    return end;
   }
 
   @override
@@ -113,10 +127,7 @@ class _PagerState extends State<Pager> {
                       'First Page',
                   onPressed: _currentPage > 1
                       ? () {
-                          setState(() {
-                            _currentPage = 1;
-                            widget.onPageChanged(_currentPage);
-                          });
+                          widget.onPageChanged(1);
                         }
                       : null,
                   splashRadius: 25,
@@ -134,12 +145,10 @@ class _PagerState extends State<Pager> {
                       'Previous',
                   onPressed: _currentPage > 1
                       ? () {
-                          setState(() {
-                            _currentPage = _currentPage > 1
-                                ? _currentPage - 1
-                                : 1;
-                            widget.onPageChanged(_currentPage);
-                          });
+                          final int prev = _currentPage > 1
+                              ? _currentPage - 1
+                              : 1;
+                          widget.onPageChanged(prev);
                         }
                       : null,
                   splashRadius: 25,
@@ -154,17 +163,12 @@ class _PagerState extends State<Pager> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      for (
-                        int i = getPageStart(getPageEnd());
-                        i < getPageEnd();
-                        i++
-                      )
+                      for (int i = _startPage; i <= _endPage; i++)
                         TextButton(
                           onPressed: () {
-                            setState(() {
-                              _currentPage = i;
-                              widget.onPageChanged(_currentPage);
-                            });
+                            if (_currentPage != i) {
+                              widget.onPageChanged(i);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             shape: const CircleBorder(),
@@ -193,12 +197,10 @@ class _PagerState extends State<Pager> {
                       'Next Page',
                   onPressed: _currentPage < widget.totalPages
                       ? () {
-                          setState(() {
-                            _currentPage = _currentPage < widget.totalPages
-                                ? _currentPage + 1
-                                : widget.totalPages;
-                            widget.onPageChanged(_currentPage);
-                          });
+                          final int next = _currentPage < widget.totalPages
+                              ? _currentPage + 1
+                              : widget.totalPages;
+                          widget.onPageChanged(next);
                         }
                       : null,
                   splashRadius: 25,
@@ -216,10 +218,7 @@ class _PagerState extends State<Pager> {
                       'Last Page',
                   onPressed: _currentPage < widget.totalPages
                       ? () {
-                          setState(() {
-                            _currentPage = widget.totalPages;
-                            widget.onPageChanged(_currentPage);
-                          });
+                          widget.onPageChanged(widget.totalPages);
                         }
                       : null,
                   splashRadius: 25,
@@ -249,18 +248,6 @@ class _PagerState extends State<Pager> {
         ],
       ),
     );
-  }
-
-  int getPageEnd() {
-    return _currentPage + _pagesView > widget.totalPages
-        ? widget.totalPages + 1
-        : _currentPage + _pagesView;
-  }
-
-  int getPageStart(int pageEnd) {
-    return pageEnd == widget.totalPages + 1
-        ? pageEnd - _pagesView
-        : _currentPage;
   }
 }
 

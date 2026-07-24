@@ -130,7 +130,6 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
             child: Scaffold(
               resizeToAvoidBottomInset: true,
               appBar: AppBar(
-                leadingWidth: 24,
                 title: Text(
                   context.tr(
                         shared.LocaleKeys.recipesTitle,

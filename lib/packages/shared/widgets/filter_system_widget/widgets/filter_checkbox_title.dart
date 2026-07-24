@@ -31,6 +31,7 @@ class FilterCheckboxTitle extends StatelessWidget with FilterStyleMixin {
         onUpdate(value);
       },
       tileColor: checkBoxTileThemeProps?.tileColor,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
       title: FilterText(
         title: title,
         style:

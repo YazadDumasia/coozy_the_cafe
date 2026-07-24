@@ -48,11 +48,13 @@ class FilterRadioBoxTitle extends StatelessWidget with FilterStyleMixin {
           value: option,
           // ignore: deprecated_member_use
           groupValue: selectedOption,
+          toggleable: true,
           // ignore: deprecated_member_use
           onChanged: onChanged,
           tileColor: radioTileThemeProps?.tileColor,
           activeColor: radioTileThemeProps?.activeRadioColor,
           materialTapTargetSize: MaterialTapTargetSize.padded,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10.0),
         );
       }).toList(),
     );

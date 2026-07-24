@@ -41,7 +41,6 @@ class _RecipesBookmarkListScreenState extends State<RecipesBookmarkListScreen> {
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            leadingWidth: 24,
             title: Text(
               context.tr(
                     shared.LocaleKeys.recipesBookmarksTitle,

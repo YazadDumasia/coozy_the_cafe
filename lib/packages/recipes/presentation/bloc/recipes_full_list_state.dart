@@ -12,10 +12,18 @@ class RecipesInitialState extends RecipesFullListState {}
 class RecipesLoadingState extends RecipesFullListState {
   final double? progress;
   final String? message;
-  const RecipesLoadingState({this.progress, this.message});
+  final int? currentProgress;
+  final int? totalProgress;
+
+  const RecipesLoadingState({
+    this.progress,
+    this.message,
+    this.currentProgress,
+    this.totalProgress,
+  });
 
   @override
-  List<Object?> get props => [progress, message];
+  List<Object?> get props => [progress, message, currentProgress, totalProgress];
 }
 
 class RecipesLoadedState extends RecipesFullListState {

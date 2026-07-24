@@ -553,6 +553,7 @@ abstract class LocaleKeys {
       'recipes_filter_total_cooking_time';
   static String recipesDetailOrginalBtn = 'recipes_detail_orginal_btn';
   static String recipesFilterCookingTime = 'recipes_filter_cooking_time';
+  static String recipesLoadingProgressMsg = 'recipes_loading_progress_msg';
   static String recipesEditTooltip = 'recipes_edit_tooltip';
 
   // inventory_page

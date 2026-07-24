@@ -292,6 +292,7 @@
         "recipes_filter_diet": "Diet",
         "recipes_filter_total_cooking_time": "Total cooking time",
         "recipes_filter_cooking_time": "Cooking Time",
+        "recipes_loading_progress_msg": "Loading recipes ${progress}...",
         "recipes_edit_tooltip": "Edit recipe",
         "recipes_detail_orginal_btn": "Original"
     },

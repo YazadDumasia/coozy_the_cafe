@@ -44,7 +44,6 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
         child: Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            leadingWidth: 24,
             title: Text(
               context.tr(
                     shared.LocaleKeys.recipesTitle,
@@ -53,6 +52,17 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                   'Recipes',
             ),
             actions: <Widget>[
+              IconButton(
+                tooltip:
+                    context.tr(
+                      shared.LocaleKeys.recipesAddCustomTooltip,
+                      track: shared.TrackConstants.recipesTrack,
+                    ) ??
+                    'Add Custom Recipe',
+                onPressed: () =>
+                    RecipesListScreenActions.onAddRecipePressed(context),
+                icon: const Icon(Icons.add),
+              ),
               IconButton(
                 tooltip:
                     context.tr(
@@ -66,17 +76,6 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
               ),
             ],
           ),
-          floatingActionButton: FloatingActionButton(
-            tooltip:
-                context.tr(
-                  shared.LocaleKeys.recipesAddCustomTooltip,
-                  track: shared.TrackConstants.recipesTrack,
-                ) ??
-                'Add Custom Recipe',
-            onPressed: () =>
-                RecipesListScreenActions.onAddRecipePressed(context),
-            child: const Icon(Icons.add),
-          ),
           body: BlocConsumer<RecipesFullListCubit, RecipesFullListState>(
             listener: (context, state) {},
             builder: (context, state) {
@@ -85,9 +84,26 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                 double? progress = (state is RecipesLoadingState)
                     ? state.progress
                     : null;
+                int? currentProgress = (state is RecipesLoadingState)
+                    ? state.currentProgress
+                    : null;
+                int? totalProgress = (state is RecipesLoadingState)
+                    ? state.totalProgress
+                    : null;
                 String? message = (state is RecipesLoadingState)
                     ? state.message
                     : null;
+
+                String? displayMessage;
+                if (currentProgress != null && totalProgress != null) {
+                  displayMessage = context.tr(
+                    shared.LocaleKeys.recipesLoadingProgressMsg,
+                    params: {'progress': '$currentProgress/$totalProgress'},
+                    track: shared.TrackConstants.recipesTrack,
+                  );
+                } else {
+                  displayMessage = message;
+                }
 
                 if (progress != null) {
                   return Column(
@@ -102,9 +118,31 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                CircularProgressIndicator(value: progress),
+                                SizedBox(
+                                  width: 280,
+                                  child: LinearProgressIndicator(
+                                    value: progress,
+                                    minHeight: 6,
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
                                 const SizedBox(height: 16),
-                                if (message != null) Text(message),
+                                Text(
+                                  '${(progress * 100).toInt()}%',
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleMedium,
+                                ),
+                                if (displayMessage != null &&
+                                    displayMessage.isNotEmpty) ...[
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    displayMessage,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
+                                  ),
+                                ],
                               ],
                             ),
                           ),
@@ -412,6 +450,4 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
       ),
     );
   }
-
-  // Filter view logic has been moved to RecipesListScreenActions
 }

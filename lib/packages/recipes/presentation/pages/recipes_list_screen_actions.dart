@@ -118,7 +118,14 @@ class RecipesListScreenActions {
         return shared.FilterWidget(
           filterProps: shared.FilterProps(
             onFilterChange: (value) async {
-              cubit.applyFilter(fliter: value);
+              shared.DialogUtils.showSimpleLoadingDialog(
+                context,
+                'Applying filters...',
+              );
+              await cubit.applyFilter(fliter: value);
+              if (context.mounted && Navigator.canPop(context)) {
+                Navigator.pop(context);
+              }
             },
             filters: <shared.FilterListModel>[
               shared.FilterListModel(
@@ -178,6 +185,26 @@ class RecipesListScreenActions {
                     ) ??
                     'Course',
                 filterKey: 'course',
+                backgroundColor: Theme.of(context).colorScheme.surface,
+              ),
+              shared.FilterListModel(
+                type: shared.FilterType.checkboxList,
+                filterOptions:
+                    cubit.ingredientFilterOptionsList ??
+                    <shared.FilterItemModel>[],
+                previousApplied:
+                    _getPreviousAppliedFilters(
+                      cubit.appliedFilterList,
+                      'ingredients',
+                    ) ??
+                    <shared.FilterItemModel>[],
+                title:
+                    context.tr(
+                      shared.LocaleKeys.recipesFilterIngredient,
+                      track: shared.TrackConstants.recipesTrack,
+                    ) ??
+                    'Ingredients',
+                filterKey: 'ingredients',
                 backgroundColor: Theme.of(context).colorScheme.surface,
               ),
               shared.FilterListModel(

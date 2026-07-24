@@ -49,57 +49,34 @@ class FilterCubit extends Cubit<FilterState> {
     switch (filterItem.type) {
       case FilterType.checkboxList:
         {
-          core.PlatformUtils.debugLog(FilterCubit, 'CheckboxList');
           if (checkedItems.contains(item)) {
             checkedItems.remove(item);
           } else {
             checkedItems.add(item);
           }
-          core.PlatformUtils.debugLog(
-            FilterCubit,
-            'CheckboxList:checkedItems:$checkedItems',
-          );
         }
         break;
       case FilterType.radioGroup:
         {
-          core.PlatformUtils.debugLog(FilterCubit, 'RadioGroup');
           if (checkedItems.contains(item)) {
             checkedItems = <FilterItemModel>[];
           } else {
-            checkedItems = <FilterItemModel>[];
-            checkedItems.add(item);
+            checkedItems = <FilterItemModel>[item];
           }
-          core.PlatformUtils.debugLog(
-            FilterCubit,
-            'RadioGroup:checkedItems:$checkedItems',
-          );
         }
         break;
       case FilterType.slider:
         {
-          core.PlatformUtils.debugLog(FilterCubit, 'Slider');
-          checkedItems = <FilterItemModel>[];
-          checkedItems.add(item);
-          core.PlatformUtils.debugLog(
-            FilterCubit,
-            'Slider:Slider:$checkedItems',
-          );
+          checkedItems = <FilterItemModel>[item];
         }
         break;
 
       case FilterType.rangeSlider:
         {
-          core.PlatformUtils.debugLog(FilterCubit, 'RangeSlider');
-          core.PlatformUtils.debugLog(FilterCubit, 'RangeSlider:$item');
           checkedItems = <FilterItemModel>[];
           for (FilterItemModel model in item) {
             checkedItems.add(model);
           }
-          core.PlatformUtils.debugLog(
-            FilterCubit,
-            'RangeSlider:RangeSlider:$checkedItems',
-          );
         }
         break;
       case FilterType.datePicker:
@@ -109,7 +86,6 @@ class FilterCubit extends Cubit<FilterState> {
           } else {
             checkedItems.add(item);
           }
-          core.PlatformUtils.debugLog(FilterCubit, 'DatePicker');
         }
         break;
       case FilterType.timePicker:
@@ -119,7 +95,6 @@ class FilterCubit extends Cubit<FilterState> {
           } else {
             checkedItems.add(item);
           }
-          core.PlatformUtils.debugLog(FilterCubit, 'TimePicker');
         }
         break;
       case FilterType.rangeDatePicker:
@@ -132,17 +107,12 @@ class FilterCubit extends Cubit<FilterState> {
               checkedItems.add(model);
             }
           }
-          core.PlatformUtils.debugLog(FilterCubit, 'RangeDatePicker');
         }
         break;
       case FilterType.rangeTimePicker:
-        {
-          core.PlatformUtils.debugLog(FilterCubit, 'RangeTimePicker');
-        }
         break;
 
       default:
-        core.PlatformUtils.debugLog(FilterCubit, 'default');
         break;
     }
 
@@ -152,10 +122,6 @@ class FilterCubit extends Cubit<FilterState> {
 
     filterModels[state.activeFilterIndex] = updatedItem;
     filters = filterModels;
-    core.PlatformUtils.debugLog(
-      FilterCubit,
-      'CurrentList:${filters.toString()}',
-    );
     emit(state.copyWith(filters: filterModels));
   }
 

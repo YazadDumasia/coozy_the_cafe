@@ -355,7 +355,6 @@ class MaterialTheme {
       backgroundColor: colorScheme.primary,
       iconTheme: const IconThemeData(color: Colors.white, size: 24.0),
       actionsIconTheme: const IconThemeData(color: Colors.white, size: 24.0),
-      leadingWidth: 24.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
     ),
     tabBarTheme: TabBarThemeData(
