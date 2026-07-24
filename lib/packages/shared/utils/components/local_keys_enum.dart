@@ -1,0 +1,14 @@
+enum PreferencesKeys {
+  token,
+  isFirstApp,
+  isLoggedIn,
+  appEnableDarkTheme,
+  userLanguage,
+  commonFirstTime,
+  isAppLoginForFirstTime,
+  recipeList,
+  userRole,
+  businessOnboardingCompleted,
+  currentBusinessId,
+  isSuperUser,
+}

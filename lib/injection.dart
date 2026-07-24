@@ -1,0 +1,43 @@
+import 'package:coozy_the_cafe/packages/auth/coozy_auth.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
+
+import 'package:coozy_the_cafe/packages/home_page/home_injection.dart';
+
+import 'package:coozy_the_cafe/packages/table_info/table_injection.dart';
+import 'package:coozy_the_cafe/packages/menu_category/menu_category_injection.dart';
+import 'package:coozy_the_cafe/packages/menu_subcategory/menu_subcategory_injection.dart';
+import 'package:coozy_the_cafe/packages/menu_item/menu_item_injection.dart';
+import 'package:coozy_the_cafe/packages/inventory/inventory_injection.dart';
+import 'package:coozy_the_cafe/packages/purchase/purchase_injection.dart';
+import 'package:coozy_the_cafe/packages/customer/customer_injection.dart';
+import 'package:coozy_the_cafe/packages/recipes/recipes_injection.dart';
+import 'package:coozy_the_cafe/packages/staff_management/staff_management_injection.dart';
+
+Future<void> initDI() async {
+  // Auth Package Dependencies
+  registerAuthDependencies(sl);
+
+  // Home Package Dependencies
+  registerHomeDependencies(sl);
+
+  // Table Info Package Dependencies
+  registerTableDependencies(sl);
+
+  // Menu Category Package Dependencies
+  registerMenuCategoryDependencies(sl);
+
+  // Menu Subcategory Package Dependencies
+  registerMenuSubcategoryDependencies(sl);
+
+  // Menu Item Package Dependencies
+  registerMenuItemDependencies(sl);
+
+  // Inventory Package Dependencies
+  registerInventoryDependencies(sl);
+  registerPurchaseDependencies(sl);
+  registerCustomerDependencies(sl);
+  registerRecipesDependencies(sl);
+
+  // Staff Management Package Dependencies
+  registerStaffManagementDependencies(sl);
+}
