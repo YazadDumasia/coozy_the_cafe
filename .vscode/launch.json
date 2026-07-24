@@ -35,8 +35,7 @@
             "request": "launch",
             "type": "dart",
             "args": [
-                "--web-renderer",
-                "wasm"
+                "--wasm"
             ]
         },
         {
@@ -47,8 +46,7 @@
             "type": "dart",
             "flutterMode": "profile",
             "args": [
-                "--web-renderer",
-                "wasm"
+                "--wasm"
             ]
         }
     ]
