@@ -5,6 +5,7 @@ import '../../home_page/presentation/navigation/home_routes.dart';
 import '../../shared/coozy_shared.dart' as shared;
 import '../../table_info/presentation/navigation/table_routes.dart';
 import '../../menu_category/presentation/navigation/menu_category_routes.dart';
+import '../../menu_subcategory/presentation/navigation/menu_subcategory_routes.dart';
 import '../../menu_item/presentation/navigation/menu_item_routes.dart';
 import '../../inventory/presentation/navigation/inventory_routes.dart';
 import '../../purchase/presentation/navigation/purchase_routes.dart';
@@ -27,6 +28,7 @@ class AppRouter {
       ...HomeRoutes.routes,
       ...TableRoutes.routes,
       ...MenuCategoryRoutes.routes,
+      ...MenuSubCategoryRoutes.routes,
       ...MenuItemRoutes.routes,
       ...InventoryRoutes.routes,
       ...PurchaseRoutes.routes,

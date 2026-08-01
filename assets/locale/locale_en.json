@@ -195,13 +195,31 @@
     },
     "menu_category_page": {
         "menu_category_appbar_title": "Menu Category",
-        "add_menu_category_appbar_text": "Add new menu category",
-        "add_menu_sub_category_btn_text": "Add new sub-category",
-        "edit_menu_category_appbar_text": "Edit Menu Category",
+        "add_menu_category_icon_tooltip_text": "Add a new menu category",
+        "menu_category_empty_title_text": "No Menu Categories Found",
         "menu_category_add_new_category": "Add new category",
-        "menu_category_hint_text": "Enter the category name",
+        "menu_category_search_no_suggestions": "No suggestions",
+        "add_menu_category_appbar_text": "Add new menu category",
         "menu_category_label_text": "Category Name",
-        "menu_category_name_error_msg": "Category name is required."
+        "menu_category_hint_text": "Enter the category name",
+        "menu_category_error_text": "Category name is required.",
+        "add_menu_sub_category_btn_text": "Add new sub-category",
+        "menu_category_added_successfully_text": "Category added successfully.",
+        "menu_category_added_failed_successfully_text": "Failed to add category.",
+        "edit_menu_category_appbar_text": "Edit Menu Category",
+        "edit_menu_category_failed_to_update_category_msg": "Failed to update category.",
+        "edit_menu_category_failed_to_update_sub_category_msg": "Failed to update sub-category.",
+        "menu_category_updated_successfully_text": "Category updated successfully.",
+        "menu_category_full_list_enable_to_update_category_msg": "${catName} category is activated successfully.",
+        "menu_category_full_list_unable_to_update_category_msg": "${catName} category is deactivated successfully.",
+        "menu_category_full_list_failed_to_update_category_msg": "Failed to update category status.",
+        "menu_category_full_list_enable_to_update_sub_category_msg": "Enabled sub-category status.",
+        "menu_category_full_list_unable_to_update_sub_category_msg": "Disabled sub-category status.",
+        "menu_category_full_list_failed_to_update_sub_category_msg": "Failed to update sub-category status.",
+        "menu_category_name_error_msg": "Category name is required.",
+        "menu_category_full_list_delete_dialog_title": "Are you sure?",
+        "menu_category_full_list_delete_dialog_subTitle": "Do you really want to delete this category information? You will not be able to undo this action.",
+        "menu_category_full_list_enable_status_text": "Enable Status:"
     },
     "menu_item_page": {
         "menu_item_page_add_new_category": "Add new category",
@@ -211,7 +229,10 @@
         "menu_item_page_types": "Types: ${foodType}"
     },
     "menu_sub_category_page": {
-        "menu_sub_category_appbar_title": "All Menu Sub-Categories"
+        "menu_sub_category_appbar_title": "All Menu Sub-Categories",
+        "add_new_menu_sub_category_error_text": "Enter your sub-category name",
+        "add_new_menu_sub_category_label_text": "Sub-category Name",
+        "add_new_menu_sub_category_hint_text": "Enter your subCategory name"
     },
     "menu_main_page": {},
     "permission_page": {},

@@ -53,8 +53,13 @@ class _AddNewMenuCategoryScreenState extends State<AddNewMenuCategoryScreen> {
                       _formKey,
                       _menuCategoryCubit,
                     ),
-                icon: Icon(Icons.check_circle),
-                tooltip: 'Save',
+                icon: const Icon(Icons.check_circle),
+                tooltip:
+                    context.tr(
+                      shared.LocaleKeys.commonSave,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'Save',
               ),
             ],
           ),

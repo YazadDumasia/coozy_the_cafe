@@ -149,8 +149,22 @@ class MenuCategoryFullListScreenActions {
           final catName = category.name ?? 'Category';
           Flushbar(
             message: isEnable
-                ? '$catName category is activated successfully.'
-                : '$catName category is deactivated successfully.',
+                ? (context.tr(
+                      shared
+                          .LocaleKeys
+                          .menuCategoryFullListEnableToUpdateCategoryMsg,
+                      params: {'catName': catName},
+                      track: shared.TrackConstants.menuCategoryPageTrack,
+                    ) ??
+                    '$catName category is activated successfully.')
+                : (context.tr(
+                      shared
+                          .LocaleKeys
+                          .menuCategoryFullListUnableToUpdateCategoryMsg,
+                      params: {'catName': catName},
+                      track: shared.TrackConstants.menuCategoryPageTrack,
+                    ) ??
+                    '$catName category is deactivated successfully.'),
             duration: const Duration(seconds: 2),
             margin: const EdgeInsets.all(8),
             borderRadius: BorderRadius.circular(8),

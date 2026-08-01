@@ -89,7 +89,7 @@ class _MenuSubcategoryFullListScreenState
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   _buildSearchField(context, state),
                   Expanded(child: _buildSubCategoryList(state)),
@@ -132,9 +132,14 @@ class _MenuSubcategoryFullListScreenState
                   SearchMenuSubcategories(query),
                 );
               },
-              decoration: const InputDecoration(
-                hintText: 'Search Subcategories',
-                prefixIcon: Icon(Icons.search),
+              decoration: InputDecoration(
+                hintText:
+                    context.tr(
+                      shared.LocaleKeys.commonSearchHint,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'Search...',
+                prefixIcon: const Icon(Icons.search),
               ),
             ),
           ),
@@ -154,7 +159,7 @@ class _MenuSubcategoryFullListScreenState
       child: AzListView(
         data: _suspensionList,
         itemCount: _suspensionList.length,
-        padding: const EdgeInsets.only(right: 40),
+        padding: const EdgeInsets.only(right: 30),
         physics: const ClampingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
 import '../menu_subcategory_full_list_screen_actions.dart';
 
@@ -19,7 +20,7 @@ class MenuSubcategoryListItem extends StatelessWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
       ),
-      margin: EdgeInsets.only(bottom: isLastItem ? 0 : 10, left: 10, right: 0),
+      margin: EdgeInsets.only(bottom: isLastItem ? 0 : 10, left: 10, right: 10),
       child: Container(
         width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(10.0),
@@ -55,13 +56,35 @@ class MenuSubcategoryListItem extends StatelessWidget {
                       Expanded(
                         child: RichText(
                           text: TextSpan(
-                            text: 'Active Status: ',
+                            text:
+                                context.tr(
+                                  shared
+                                      .LocaleKeys
+                                      .menuCategoryFullListEnableStatusText,
+                                  track: shared
+                                      .TrackConstants
+                                      .menuCategoryPageTrack,
+                                ) ??
+                                'Enable Status:',
                             style: Theme.of(context).textTheme.bodyMedium,
                             children: <InlineSpan>[
+                              const TextSpan(text: ' '),
                               TextSpan(
                                 text: subCategory.isActive == false
-                                    ? 'Inactive'
-                                    : 'Active',
+                                    ? (context.tr(
+                                            shared.LocaleKeys.commonInactive,
+                                            track: shared
+                                                .TrackConstants
+                                                .commonTrack,
+                                          ) ??
+                                          'Inactive')
+                                    : (context.tr(
+                                            shared.LocaleKeys.commonActive,
+                                            track: shared
+                                                .TrackConstants
+                                                .commonTrack,
+                                          ) ??
+                                          'Active'),
                                 style: Theme.of(context).textTheme.bodyMedium!
                                     .copyWith(
                                       color: subCategory.isActive == false
@@ -84,13 +107,12 @@ class MenuSubcategoryListItem extends StatelessWidget {
                 fit: BoxFit.fill,
                 child: Switch.adaptive(
                   value: subCategory.isActive == true,
-                  onChanged:
-                      (bool isEnable) =>
-                          MenuSubcategoryFullListScreenActions.handleToggleSubcategory(
-                            context,
-                            subCategory,
-                            isEnable,
-                          ),
+                  onChanged: (bool isEnable) =>
+                      MenuSubcategoryFullListScreenActions.handleToggleSubcategory(
+                        context,
+                        subCategory,
+                        isEnable,
+                      ),
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
@@ -105,12 +127,11 @@ class MenuSubcategoryListItem extends StatelessWidget {
                   color: Colors.white,
                   size: 20,
                 ),
-                onPressed:
-                    () =>
-                        MenuSubcategoryFullListScreenActions.handleEditSubcategory(
-                          context,
-                          subCategory,
-                        ),
+                onPressed: () =>
+                    MenuSubcategoryFullListScreenActions.handleEditSubcategory(
+                      context,
+                      subCategory,
+                    ),
               ),
             ),
           ],
