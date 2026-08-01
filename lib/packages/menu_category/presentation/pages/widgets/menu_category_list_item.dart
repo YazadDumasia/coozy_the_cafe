@@ -350,20 +350,17 @@ class MenuCategoryListItem extends StatelessWidget {
                       mobile: MenuSubCategoryExpansionChildListViewWidget(
                         key: UniqueKey(),
                         subCategoryList: subCategoryList,
-                        // itemsToShow: 4,
-                        itemsToShow: 2,
+                        itemsToShow: 4,
                       ),
                       tablet: MenuSubCategoryExpansionChildListViewWidget(
                         key: UniqueKey(),
                         subCategoryList: subCategoryList,
-                        // itemsToShow: 6,
-                        itemsToShow: 2,
+                        itemsToShow: 6,
                       ),
                       desktop: MenuSubCategoryExpansionChildListViewWidget(
                         key: UniqueKey(),
                         subCategoryList: subCategoryList,
-                        // itemsToShow: 8,
-                        itemsToShow: 2,
+                        itemsToShow: 8,
                       ),
                     ),
                   ),
