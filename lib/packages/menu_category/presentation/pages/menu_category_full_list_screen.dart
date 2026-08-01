@@ -102,10 +102,12 @@ class _MenuCategoryFullListScreenState
                   if (state is MenuCategoryFullListErrorState) {
                     shared.DialogUtils.showAutoDismissDialog(
                       context: context,
-                      title: context.tr(
-                        shared.LocaleKeys.commonError,
-                        track: shared.TrackConstants.commonTrack,
-                      ) ?? 'Error',
+                      title:
+                          context.tr(
+                            shared.LocaleKeys.commonError,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'Error',
                       descriptions: state.message,
                       titleIcon: const Icon(
                         Icons.error,
@@ -177,10 +179,7 @@ class _MenuCategoryFullListScreenState
                         MenuCategoryFullListScreen,
                         'SearchAnchor:onChanged:$value',
                       );
-
                       if (!controller.isOpen) {
-                        scrollToItemAndExpand(value);
-                      } else {
                         controller.openView();
                       }
                     },
@@ -214,7 +213,6 @@ class _MenuCategoryFullListScreenState
                         suggestions.add(category['name'].toString());
 
                         if (category['subCategories'] != null) {
-                          // Ensure that 'subCategories' is a List<Map<String, dynamic>>
                           suggestions.addAll(
                             (category['subCategories'] as List<dynamic>).map(
                               (subCategory) => subCategory['name'].toString(),
@@ -236,6 +234,7 @@ class _MenuCategoryFullListScreenState
                             title: Text(suggestion),
                             onTap: () {
                               controller.closeView(suggestion);
+                              scrollToItemAndExpand(suggestion);
                             },
                           ),
                         )
@@ -322,6 +321,7 @@ class _MenuCategoryFullListScreenState
     final map = state.data?['categories'];
     if (map != null && map.isNotEmpty) {
       return CustomScrollView(
+        key: ValueKey('category_scroll_view_${map.hashCode}_${map.length}'),
         shrinkWrap: true,
         controller: _controller,
         physics: const ClampingScrollPhysics(
@@ -340,7 +340,7 @@ class _MenuCategoryFullListScreenState
                     totalItemLength: map?.length ?? 0,
                   );
                 },
-                addAutomaticKeepAlives: true,
+                addAutomaticKeepAlives: false,
                 addRepaintBoundaries: false,
                 childCount: map?.length ?? 0,
               ),
@@ -361,7 +361,9 @@ class _MenuCategoryFullListScreenState
     required int totalItemLength,
     dynamic model,
   }) {
+    final catId = (model is Map) ? model['id'] : null;
     return MenuCategoryListItem(
+      key: ValueKey(catId ?? index),
       state: state,
       index: index,
       totalItemLength: totalItemLength,

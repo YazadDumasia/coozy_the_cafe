@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart' as slided;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
@@ -23,11 +24,21 @@ class MenuCategoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dynamic rawActive = model['isActive'];
+    bool? isActiveBool;
+    if (rawActive is bool) {
+      isActiveBool = rawActive;
+    } else if (rawActive is num) {
+      isActiveBool = rawActive == 1;
+    }
+
     final MenuCategory category = MenuCategory(
-      id: model['id'],
-      createdDate: model['createdDate'],
-      isActive: model['isActive'],
-      name: model['name'],
+      id: model['id'] as int?,
+      hashId: model['hashId'] as String?,
+      createdDate: model['createdDate'] as String?,
+      isActive: isActiveBool,
+      position: model['position'] as int?,
+      name: model['name'] as String?,
     );
 
     final List<dynamic>? dynamicSubCategories =
@@ -122,160 +133,242 @@ class MenuCategoryListItem extends StatelessWidget {
                 ),
               ],
             ),
-            child: ExpansionTile(
-              key: state.expansionTileKeys![index] ?? GlobalKey(),
-              maintainState: true,
-              collapsedBackgroundColor: theme.colorScheme.primaryContainer,
-              backgroundColor: theme.colorScheme.primaryContainer,
-              tilePadding: EdgeInsets.zero,
-              childrenPadding: const EdgeInsets.symmetric(horizontal: 10),
-              title: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Expanded(child: Text(category.name ?? '')),
-                  ],
+            child: ListTileTheme(
+              contentPadding: const EdgeInsets.all(0),
+              dense: true,
+              horizontalTitleGap: 0.0,
+              minLeadingWidth: 0,
+              minVerticalPadding: 0,
+              child: ExpansionTile(
+                controller: state.expandedTitleControllerList?[index],
+                tilePadding: EdgeInsets.zero,
+                minTileHeight: 0,
+                shape: const Border(),
+                collapsedShape: const Border(),
+                key: state.expansionTileKeys![index] ?? GlobalKey(),
+                maintainState: true,
+                visualDensity: VisualDensity.compact,
+                collapsedBackgroundColor: theme.colorScheme.primaryContainer,
+                backgroundColor: theme.colorScheme.primaryContainer,
+                title: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 10,
+                    bottom: 0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Expanded(child: Text(category.name ?? '')),
+                    ],
+                  ),
                 ),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 20,
+                    right: 20,
+                    top: 0,
+                    bottom: 0,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          RichText(
+                            text: TextSpan(
+                              text:
+                                  context.tr(
+                                    shared
+                                        .LocaleKeys
+                                        .menuCategoryFullListEnableStatusText,
+                                    track: shared
+                                        .TrackConstants
+                                        .menuCategoryPageTrack,
+                                  ) ??
+                                  'Enable Status:',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              children: <InlineSpan>[
+                                const TextSpan(text: ' '),
+                                TextSpan(
+                                  text: (category.isActive ?? false)
+                                      ? context.tr(
+                                              shared.LocaleKeys.commonActive,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .commonTrack,
+                                            ) ??
+                                            'Active'
+                                      : context.tr(
+                                              shared.LocaleKeys.commonInactive,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .commonTrack,
+                                            ) ??
+                                            'Inactive',
+                                  style: Theme.of(context).textTheme.bodyMedium!
+                                      .copyWith(
+                                        color: (category.isActive ?? false)
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[Expanded(child: Text(''))],
+                      ),
+                    ],
+                  ),
+                ),
+                trailing: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        RichText(
-                          text: TextSpan(
-                            text:
-                                context.tr(
-                                  shared
-                                      .LocaleKeys
-                                      .menuCategoryFullListEnableStatusText,
-                                  track: shared
-                                      .TrackConstants
-                                      .menuCategoryPageTrack,
-                                ) ??
-                                'Enable Status:',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            children: <InlineSpan>[
-                              const TextSpan(text: ' '),
-                              TextSpan(
-                                text: (category.isActive ?? false)
-                                    ? context.tr(
-                                            shared.LocaleKeys.commonActive,
-                                            track: shared
-                                                .TrackConstants
-                                                .commonTrack,
-                                          ) ??
-                                          'Active'
-                                    : context.tr(
-                                            shared.LocaleKeys.commonInactive,
-                                            track: shared
-                                                .TrackConstants
-                                                .commonTrack,
-                                          ) ??
-                                          'Inactive',
-                                style: Theme.of(context).textTheme.bodyMedium!
-                                    .copyWith(
-                                      color: (category.isActive ?? false)
-                                          ? Colors.green
-                                          : Colors.red,
-                                    ),
-                              ),
-                            ],
+                        Visibility(
+                          visible: index == 0 ? false : true,
+                          child: IconButton(
+                            onPressed: () async {
+                              BlocProvider.of<MenuCategoryFullListCubit>(
+                                context,
+                              ).moveCategoryUp(
+                                index,
+                                onError: (error) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          context.tr(
+                                                shared
+                                                    .LocaleKeys
+                                                    .commonErrorMsg,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .commonTrack,
+                                              ) ??
+                                              'Failed to reorder categories.',
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                            icon: const Icon(Icons.keyboard_arrow_up),
+                          ),
+                        ),
+                        Visibility(
+                          visible: index < (totalItemLength - 1),
+                          child: Padding(
+                            padding: index == 0
+                                ? const EdgeInsets.all(0.0)
+                                : const EdgeInsets.only(top: 5.0),
+                            child: IconButton(
+                              onPressed: () async {
+                                BlocProvider.of<MenuCategoryFullListCubit>(
+                                  context,
+                                ).moveCategoryDown(
+                                  index,
+                                  onError: (error) {
+                                    if (context.mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            context.tr(
+                                                  shared
+                                                      .LocaleKeys
+                                                      .commonErrorMsg,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Failed to reorder categories.',
+                                          ),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                );
+                              },
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[Expanded(child: Text(''))],
-                    ),
-                  ],
-                ),
-              ),
-              trailing: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Visibility(
-                        visible: index == 0 ? false : true,
-                        child: IconButton(
-                          onPressed: () async {},
-                          icon: const Icon(Icons.keyboard_arrow_up),
-                        ),
-                      ),
-                      Visibility(
-                        visible: index < (totalItemLength - 1),
-                        child: Padding(
-                          padding: index == 0
-                              ? const EdgeInsets.all(0.0)
-                              : const EdgeInsets.only(top: 5.0),
-                          child: IconButton(
-                            onPressed: () async {},
-                            icon: const Icon(Icons.keyboard_arrow_down),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: SizedBox(
+                        height: 30,
+                        child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Switch.adaptive(
+                            value: category.isActive == true,
+                            onChanged: (bool isEnable) =>
+                                MenuCategoryFullListScreenActions.handleToggleCategory(
+                                  context,
+                                  category,
+                                  isEnable,
+                                ),
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            thumbIcon: thumbIcon,
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                    child: FittedBox(
-                      fit: BoxFit.fill,
-                      child: Switch.adaptive(
-                        value: category.isActive == true,
-                        onChanged: (bool isEnable) =>
-                            MenuCategoryFullListScreenActions.handleToggleCategory(
-                              context,
-                              category,
-                              isEnable,
-                            ),
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        thumbIcon: thumbIcon,
+                    ),
+                  ],
+                ),
+                children: <Widget>[
+                  Visibility(
+                    visible: subCategoryList.isNotEmpty,
+                    child: shared.ResponsiveLayout(
+                      mobile: MenuSubCategoryExpansionChildListViewWidget(
+                        key: UniqueKey(),
+                        subCategoryList: subCategoryList,
+                        // itemsToShow: 4,
+                        itemsToShow: 2,
+                      ),
+                      tablet: MenuSubCategoryExpansionChildListViewWidget(
+                        key: UniqueKey(),
+                        subCategoryList: subCategoryList,
+                        // itemsToShow: 6,
+                        itemsToShow: 2,
+                      ),
+                      desktop: MenuSubCategoryExpansionChildListViewWidget(
+                        key: UniqueKey(),
+                        subCategoryList: subCategoryList,
+                        // itemsToShow: 8,
+                        itemsToShow: 2,
                       ),
                     ),
                   ),
                 ],
               ),
-              children: <Widget>[
-                Visibility(
-                  visible: subCategoryList.isNotEmpty,
-                  child: shared.ResponsiveLayout(
-                    mobile: MenuSubCategoryExpansionChildListViewWidget(
-                      key: UniqueKey(),
-                      subCategoryList: subCategoryList,
-                      itemsToShow: 4,
-                    ),
-                    tablet: MenuSubCategoryExpansionChildListViewWidget(
-                      key: UniqueKey(),
-                      subCategoryList: subCategoryList,
-                      itemsToShow: 6,
-                    ),
-                    desktop: MenuSubCategoryExpansionChildListViewWidget(
-                      key: UniqueKey(),
-                      subCategoryList: subCategoryList,
-                      itemsToShow: 8,
-                    ),
-                  ),
-                ),
-              ],
             ),
           ),
         ),

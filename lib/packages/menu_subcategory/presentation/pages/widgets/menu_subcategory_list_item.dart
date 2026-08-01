@@ -78,6 +78,24 @@ class MenuSubcategoryListItem extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(
+              height: 30,
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child: Switch.adaptive(
+                  value: subCategory.isActive == true,
+                  onChanged:
+                      (bool isEnable) =>
+                          MenuSubcategoryFullListScreenActions.handleToggleSubcategory(
+                            context,
+                            subCategory,
+                            isEnable,
+                          ),
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
             Material(
               shape: const CircleBorder(),
               color: Theme.of(context).colorScheme.primaryContainer,
@@ -87,11 +105,12 @@ class MenuSubcategoryListItem extends StatelessWidget {
                   color: Colors.white,
                   size: 20,
                 ),
-                onPressed: () =>
-                    MenuSubcategoryFullListScreenActions.handleEditSubcategory(
-                      context,
-                      subCategory,
-                    ),
+                onPressed:
+                    () =>
+                        MenuSubcategoryFullListScreenActions.handleEditSubcategory(
+                          context,
+                          subCategory,
+                        ),
               ),
             ),
           ],

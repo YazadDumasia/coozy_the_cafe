@@ -17,13 +17,20 @@ class MenuSubcategory {
     this.createdDate,
   });
 
-    factory MenuSubcategory.fromJson(Map<String, dynamic> json) {
+  factory MenuSubcategory.fromJson(Map<String, dynamic> json) {
+    final dynamic rawActive = json['isActive'];
+    bool? isActive;
+    if (rawActive is bool) {
+      isActive = rawActive;
+    } else if (rawActive is num) {
+      isActive = rawActive == 1;
+    }
     return MenuSubcategory(
       id: json['id'] as int?,
       hashId: json['hashId'] as String?,
       categoryId: json['categoryId'] as int?,
       name: json['name'] as String?,
-      isActive: json['isActive'] as bool?,
+      isActive: isActive,
       position: json['position'] as int?,
       createdDate: json['createdDate'] as String?,
     );

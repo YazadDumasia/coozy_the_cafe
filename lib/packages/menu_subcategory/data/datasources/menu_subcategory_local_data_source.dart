@@ -51,9 +51,33 @@ class MenuSubcategoryLocalDataSourceImpl
 
   @override
   Future<bool> updateSubcategory(MenuSubcategoryModel subcategory) async {
-    return await database
-        .update(database.subcategoriesTable)
-        .replace(subcategory.toCompanion());
+    if (subcategory.id != null) {
+      final companion = SubcategoriesTableCompanion(
+        hashId: subcategory.hashId == null
+            ? const Value.absent()
+            : Value(subcategory.hashId!),
+        categoryId: subcategory.categoryId == null
+            ? const Value.absent()
+            : Value(subcategory.categoryId!),
+        name: subcategory.name == null
+            ? const Value.absent()
+            : Value(subcategory.name!),
+        isActive: subcategory.isActive == null
+            ? const Value.absent()
+            : Value(subcategory.isActive!),
+        position: subcategory.position == null
+            ? const Value.absent()
+            : Value(subcategory.position!),
+        createdDate: subcategory.createdDate == null
+            ? const Value.absent()
+            : Value(subcategory.createdDate!),
+      );
+      final updatedRows = await (database.update(database.subcategoriesTable)
+            ..where((s) => s.id.equals(subcategory.id!)))
+          .write(companion);
+      return updatedRows > 0;
+    }
+    return false;
   }
 
   @override

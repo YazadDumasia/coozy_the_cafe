@@ -34,9 +34,30 @@ class MenuCategoryLocalDataSourceImpl implements MenuCategoryLocalDataSource {
 
   @override
   Future<bool> updateCategory(MenuCategoryModel category) async {
-    return await database
-        .update(database.categoriesTable)
-        .replace(category.toCompanion());
+    if (category.id != null) {
+      final companion = CategoriesTableCompanion(
+        hashId: category.hashId == null
+            ? const Value.absent()
+            : Value(category.hashId!),
+        name: category.name == null
+            ? const Value.absent()
+            : Value(category.name!),
+        isActive: category.isActive == null
+            ? const Value.absent()
+            : Value(category.isActive!),
+        position: category.position == null
+            ? const Value.absent()
+            : Value(category.position!),
+        createdDate: category.createdDate == null
+            ? const Value.absent()
+            : Value(category.createdDate!),
+      );
+      final updatedRows = await (database.update(database.categoriesTable)
+            ..where((c) => c.id.equals(category.id!)))
+          .write(companion);
+      return updatedRows > 0;
+    }
+    return false;
   }
 
   @override

@@ -87,4 +87,59 @@ class MenuSubcategoryFullListScreenActions {
       },
     );
   }
+
+  static void handleToggleSubcategory(
+    BuildContext context,
+    MenuSubcategory subCategory,
+    bool isEnable,
+  ) {
+    final updated = subCategory.copyWith(isActive: isEnable);
+    context.read<MenuSubcategoryBloc>().add(
+      UpdateMenuSubcategory(
+        updated,
+        onSuccess: () {
+          if (context.mounted) {
+            shared.DialogUtils.showAutoDismissDialog(
+              context: context,
+              title:
+                  context.tr(
+                    shared.LocaleKeys.commonSuccess,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Success',
+              descriptions:
+                  isEnable
+                      ? 'Your selected sub-category has been activated.'
+                      : 'Your selected sub-category has been deactivated.',
+              titleIcon: const Icon(
+                Icons.check_circle,
+                color: Colors.green,
+                size: 50,
+              ),
+            );
+          }
+        },
+        onError: (error) {
+          if (context.mounted) {
+            shared.DialogUtils.showAutoDismissDialog(
+              context: context,
+              title:
+                  context.tr(
+                    shared.LocaleKeys.commonError,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Error',
+              descriptions:
+                  context.tr(
+                    shared.LocaleKeys.commonErrorMsg,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Failed to update sub-category status.',
+              titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
+            );
+          }
+        },
+      ),
+    );
+  }
 }

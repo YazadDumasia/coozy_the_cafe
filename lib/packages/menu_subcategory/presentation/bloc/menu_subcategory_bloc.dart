@@ -13,6 +13,9 @@ class MenuSubcategoryBloc
   final DeleteMenuSubcategoryUseCase deleteSubcategoryUseCase;
   final UpdateMenuSubcategoryPositionsUseCase updateSubcategoryPositionsUseCase;
 
+  // Cached full list so search can filter without reloading from DB
+  List<MenuSubcategory> _allSubcategories = [];
+
   MenuSubcategoryBloc({
     required this.getSubcategoriesUseCase,
     required this.getSubcategoriesByCategoryUseCase,
@@ -28,6 +31,7 @@ class MenuSubcategoryBloc
     on<DeleteMenuSubcategory>(_onDeleteMenuSubcategory);
     on<ReorderMenuSubcategories>(_onReorderMenuSubcategories);
     on<ToggleSubcategoryReorderMode>(_onToggleReorderMode);
+    on<SearchMenuSubcategories>(_onSearchMenuSubcategories);
   }
 
   Future<void> _onLoadMenuSubcategories(
@@ -37,8 +41,11 @@ class MenuSubcategoryBloc
     emit(MenuSubcategoryLoading());
     try {
       final subcategories = await getSubcategoriesUseCase();
-      emit(MenuSubcategoryLoaded(subcategories: subcategories));
+      _allSubcategories = subcategories;
+      emit(MenuSubcategoryLoaded(subcategories: subcategories, isSearchActive: false));
+      event.onSuccess?.call();
     } catch (e) {
+      event.onError?.call(e.toString());
       emit(MenuSubcategoryError(e.toString()));
     }
   }
@@ -52,13 +59,17 @@ class MenuSubcategoryBloc
       final subcategories = await getSubcategoriesByCategoryUseCase(
         event.categoryId,
       );
+      _allSubcategories = subcategories;
       emit(
         MenuSubcategoryLoaded(
           subcategories: subcategories,
           categoryIdFilter: event.categoryId,
+          isSearchActive: false,
         ),
       );
+      event.onSuccess?.call();
     } catch (e) {
+      event.onError?.call(e.toString());
       emit(MenuSubcategoryError(e.toString()));
     }
   }
@@ -84,7 +95,21 @@ class MenuSubcategoryBloc
     try {
       await updateSubcategoryUseCase(event.subcategory);
       event.onSuccess?.call();
-      _reload(emit);
+      if (state is MenuSubcategoryLoaded) {
+        final currentState = state as MenuSubcategoryLoaded;
+        final list = List<MenuSubcategory>.from(currentState.subcategories);
+        final index = list.indexWhere((sub) => sub.id == event.subcategory.id);
+        if (index != -1) {
+          list[index] = event.subcategory;
+          emit(currentState.copyWith(subcategories: list));
+        } else {
+          final subcategories = await getSubcategoriesUseCase();
+          emit(currentState.copyWith(subcategories: subcategories));
+        }
+      } else {
+        final subcategories = await getSubcategoriesUseCase();
+        emit(MenuSubcategoryLoaded(subcategories: subcategories));
+      }
     } catch (e) {
       event.onError?.call(e.toString());
       emit(MenuSubcategoryError(e.toString()));
@@ -134,7 +159,9 @@ class MenuSubcategoryBloc
 
       try {
         await updateSubcategoryPositionsUseCase(updatedSubcategories);
+        event.onSuccess?.call();
       } catch (e) {
+        event.onError?.call(e.toString());
         emit(MenuSubcategoryError('Failed to save order: $e'));
         _reload(emit);
       }
@@ -150,6 +177,7 @@ class MenuSubcategoryBloc
       emit(
         currentState.copyWith(isReorderAllowed: !currentState.isReorderAllowed),
       );
+      event.onSuccess?.call();
     }
   }
 
@@ -162,5 +190,39 @@ class MenuSubcategoryBloc
       }
     }
     add(LoadMenuSubcategories());
+  }
+
+  void _onSearchMenuSubcategories(
+    SearchMenuSubcategories event,
+    Emitter<MenuSubcategoryState> emit,
+  ) {
+    final query = event.query.trim().toLowerCase();
+    final bool isSearchActive = query.isNotEmpty;
+
+    final filtered = isSearchActive
+        ? _allSubcategories
+            .where(
+              (sub) =>
+                  sub.name?.toLowerCase().contains(query) ?? false,
+            )
+            .toList()
+        : List<MenuSubcategory>.from(_allSubcategories);
+
+    if (state is MenuSubcategoryLoaded) {
+      final current = state as MenuSubcategoryLoaded;
+      emit(
+        current.copyWith(
+          subcategories: filtered,
+          isSearchActive: isSearchActive,
+        ),
+      );
+    } else {
+      emit(
+        MenuSubcategoryLoaded(
+          subcategories: filtered,
+          isSearchActive: isSearchActive,
+        ),
+      );
+    }
   }
 }

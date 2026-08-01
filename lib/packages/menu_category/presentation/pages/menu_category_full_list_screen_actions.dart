@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -74,14 +75,18 @@ class MenuCategoryFullListScreenActions {
                   if (context.mounted) {
                     shared.DialogUtils.showAutoDismissDialog(
                       context: context,
-                      title: context.tr(
-                        shared.LocaleKeys.commonSuccess,
-                        track: shared.TrackConstants.commonTrack,
-                      ) ?? 'Success',
-                      descriptions: context.tr(
-                        shared.LocaleKeys.crudSuccessDelete,
-                        track: shared.TrackConstants.commonTrack,
-                      ) ?? 'Record deleted successfully.',
+                      title:
+                          context.tr(
+                            shared.LocaleKeys.commonSuccess,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'Success',
+                      descriptions:
+                          context.tr(
+                            shared.LocaleKeys.crudSuccessDelete,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'Record deleted successfully.',
                       titleIcon: const Icon(
                         Icons.check_circle,
                         color: Colors.green,
@@ -94,16 +99,19 @@ class MenuCategoryFullListScreenActions {
                   if (context.mounted) {
                     shared.DialogUtils.showAutoDismissDialog(
                       context: context,
-                      title: context.tr(
-                        shared.LocaleKeys.commonError,
-                        track: shared.TrackConstants.commonTrack,
-                      ) ?? 'Error',
+                      title:
+                          context.tr(
+                            shared.LocaleKeys.commonError,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'Error',
                       descriptions: error.isNotEmpty
                           ? error
                           : (context.tr(
-                              shared.LocaleKeys.commonErrorMsg,
-                              track: shared.TrackConstants.commonTrack,
-                            ) ?? 'An error occurred.'),
+                                  shared.LocaleKeys.commonErrorMsg,
+                                  track: shared.TrackConstants.commonTrack,
+                                ) ??
+                                'An error occurred.'),
                       titleIcon: const Icon(
                         Icons.error,
                         color: Colors.red,
@@ -132,9 +140,40 @@ class MenuCategoryFullListScreenActions {
     MenuCategory category,
     bool isEnable,
   ) {
-    BlocProvider.of<MenuCategoryFullListCubit>(
+    BlocProvider.of<MenuCategoryFullListCubit>(context).handleIsEnableCategory(
       context,
-    ).handleIsEnableCategory(context, category, isEnable);
+      category,
+      isEnable,
+      onSuccess: () {
+        if (context.mounted) {
+          final catName = category.name ?? 'Category';
+          Flushbar(
+            message: isEnable
+                ? '$catName category is activated successfully.'
+                : '$catName category is deactivated successfully.',
+            duration: const Duration(seconds: 2),
+            margin: const EdgeInsets.all(8),
+            borderRadius: BorderRadius.circular(8),
+          ).show(context);
+        }
+      },
+      onError: (error) {
+        if (context.mounted) {
+          Flushbar(
+            message:
+                context.tr(
+                  shared.LocaleKeys.commonErrorMsg,
+                  track: shared.TrackConstants.commonTrack,
+                ) ??
+                'Failed to update category status.',
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 2),
+            margin: const EdgeInsets.all(8),
+            borderRadius: BorderRadius.circular(8),
+          ).show(context);
+        }
+      },
+    );
   }
 
   static void scrollToItemAndExpand({
@@ -143,59 +182,74 @@ class MenuCategoryFullListScreenActions {
     required ScrollController scrollController,
     required SearchController searchController,
   }) {
-    final cubitState = context.read<MenuCategoryFullListCubit>().state;
-    if (cubitState is MenuCategoryFullListLoadedState) {
+    final state = context.read<MenuCategoryFullListCubit>().state;
+    if (state is MenuCategoryFullListLoadedState) {
+      final MenuCategoryFullListLoadedState loadedState = state;
+
       if (keyword.isNotEmpty &&
           keyword != 'menu_category_search_no_suggestions') {
-        int index = cubitState.data!['categories'].indexWhere((category) {
-          final bool isCategoryMatch = category['name']
-              .toString()
-              .toLowerCase()
-              .contains(keyword.toLowerCase());
+        if (searchController.isOpen) {
+          searchController.closeView(keyword);
+        }
 
-          if (isCategoryMatch) {
-            return true;
-          }
-
-          if (category['subCategories'] != null) {
-            return (category['subCategories'] as List).any(
-              (subCategory) => subCategory['name']
+        int index =
+            (loadedState.data?['categories'] as List?)?.indexWhere((category) {
+              final bool isCategoryMatch = category['name']
                   .toString()
                   .toLowerCase()
-                  .contains(keyword.toLowerCase()),
-            );
-          }
+                  .contains(keyword.toLowerCase());
 
-          return false;
-        });
+              if (isCategoryMatch) {
+                return true;
+              }
+
+              if (category['subCategories'] != null) {
+                return (category['subCategories'] as List).any(
+                  (subCategory) => subCategory['name']
+                      .toString()
+                      .toLowerCase()
+                      .contains(keyword.toLowerCase()),
+                );
+              }
+
+              return false;
+            }) ??
+            -1;
 
         if (index != -1) {
-          // Obtain the RenderBox
-          final currentContext =
-              cubitState.expansionTileKeys![index]?.currentContext;
-          if (currentContext != null) {
-            final RenderBox renderBox =
-                currentContext.findRenderObject() as RenderBox;
-            final double itemHeight = renderBox.size.height;
-            final double position = index * itemHeight;
-
-            if ((cubitState.expandedTitleControllerList != null ||
-                    cubitState.expandedTitleControllerList!.isNotEmpty) &&
-                cubitState.expandedTitleControllerList![index].isExpanded ==
+          void doScrollAndExpand() {
+            // 1. Expand the parent category tile if collapsed
+            if (loadedState.expandedTitleControllerList != null &&
+                index < loadedState.expandedTitleControllerList!.length &&
+                loadedState.expandedTitleControllerList![index].isExpanded ==
                     false) {
-              cubitState.expandedTitleControllerList![index].expand();
+              loadedState.expandedTitleControllerList![index].expand();
             }
 
-            scrollController.animateTo(
-              position,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeInOut,
-            );
+            // 2. Wait for tile expansion animation to finish, then scroll to it
+            Future.delayed(const Duration(milliseconds: 300), () {
+              if (!context.mounted) return;
+              final targetContext =
+                  loadedState.expansionTileKeys?[index]?.currentContext;
+              if (targetContext != null) {
+                Scrollable.ensureVisible(
+                  targetContext,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                  alignment: 0.0,
+                );
+              }
+            });
           }
+
+          // Execute after SearchAnchor view closes
+          Future.delayed(const Duration(milliseconds: 200), () {
+            doScrollAndExpand();
+          });
         }
       } else {
-        if (searchController.isOpen == true) {
-          Navigator.of(context).pop();
+        if (searchController.isOpen) {
+          searchController.closeView(null);
         }
         WidgetsBinding.instance.addPostFrameCallback((_) {
           FocusScope.of(context).unfocus();

@@ -1,4 +1,3 @@
-import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_event.dart';
@@ -23,9 +22,8 @@ class MenuSubcategoryFullListScreen extends StatefulWidget {
 class _MenuSubcategoryFullListScreenState
     extends State<MenuSubcategoryFullListScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
   List<SuspensionMenuSubcategory> _suspensionList = [];
-  List<MenuCategory> categories = [];
+
   @override
   void initState() {
     super.initState();
@@ -40,20 +38,8 @@ class _MenuSubcategoryFullListScreenState
     super.dispose();
   }
 
-  void _filterSubcategories(List<MenuSubcategory> subcategories) {
-    var filtered = subcategories;
-    if (_searchQuery.isNotEmpty) {
-      filtered = filtered
-          .where(
-            (element) =>
-                element.name?.toLowerCase().contains(
-                  _searchQuery.toLowerCase(),
-                ) ??
-                false,
-          )
-          .toList();
-    }
-    _suspensionList = filtered
+  void _buildSuspensionList(List<MenuSubcategory> subcategories) {
+    _suspensionList = subcategories
         .map((e) => SuspensionMenuSubcategory(e))
         .toList();
     SuspensionUtil.sortListBySuspensionTag(_suspensionList);
@@ -85,20 +71,27 @@ class _MenuSubcategoryFullListScreenState
           ],
         ),
         body: BlocConsumer<MenuSubcategoryBloc, MenuSubcategoryState>(
-          listener: (context, state) {},
+          listener: (context, state) {
+            if (state is MenuSubcategoryError) {
+              core.PlatformUtils.debugLog(
+                MenuSubcategoryFullListScreen,
+                'MenuSubcategoryError:${state.message}',
+              );
+            }
+          },
           builder: (context, state) {
             if (state is MenuSubcategoryLoading ||
                 state is MenuSubcategoryInitial) {
               return const shared.LoadingPage();
             } else if (state is MenuSubcategoryLoaded) {
-              _filterSubcategories(state.subcategories);
+              _buildSuspensionList(state.subcategories);
 
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  _buildSearchField(context),
+                  _buildSearchField(context, state),
                   Expanded(child: _buildSubCategoryList(state)),
                 ],
               );
@@ -123,7 +116,7 @@ class _MenuSubcategoryFullListScreenState
     );
   }
 
-  Row _buildSearchField(BuildContext context) {
+  Row _buildSearchField(BuildContext context, MenuSubcategoryLoaded state) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -135,9 +128,9 @@ class _MenuSubcategoryFullListScreenState
             child: TextField(
               controller: _searchController,
               onChanged: (query) {
-                setState(() {
-                  _searchQuery = query;
-                });
+                context.read<MenuSubcategoryBloc>().add(
+                  SearchMenuSubcategories(query),
+                );
               },
               decoration: const InputDecoration(
                 hintText: 'Search Subcategories',
@@ -154,7 +147,7 @@ class _MenuSubcategoryFullListScreenState
     return Visibility(
       visible: _suspensionList.isNotEmpty,
       replacement: Visibility(
-        visible: _searchQuery.isNotEmpty,
+        visible: state.isSearchActive,
         replacement: _buildEmptyState(),
         child: _buildNoSearchData(),
       ),

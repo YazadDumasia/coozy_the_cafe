@@ -9,11 +9,23 @@ sealed class MenuSubcategoryEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadMenuSubcategories extends MenuSubcategoryEvent {}
+class LoadMenuSubcategories extends MenuSubcategoryEvent {
+  final VoidCallback? onSuccess;
+  final void Function(String)? onError;
+
+  const LoadMenuSubcategories({this.onSuccess, this.onError});
+}
 
 class LoadMenuSubcategoriesByCategory extends MenuSubcategoryEvent {
   final int categoryId;
-  const LoadMenuSubcategoriesByCategory(this.categoryId);
+  final VoidCallback? onSuccess;
+  final void Function(String)? onError;
+
+  const LoadMenuSubcategoriesByCategory(
+    this.categoryId, {
+    this.onSuccess,
+    this.onError,
+  });
 
   @override
   List<Object?> get props => [categoryId];
@@ -67,10 +79,32 @@ class DeleteMenuSubcategory extends MenuSubcategoryEvent {
 class ReorderMenuSubcategories extends MenuSubcategoryEvent {
   final int oldIndex;
   final int newIndex;
-  const ReorderMenuSubcategories(this.oldIndex, this.newIndex);
+  final VoidCallback? onSuccess;
+  final void Function(String)? onError;
+
+  const ReorderMenuSubcategories(
+    this.oldIndex,
+    this.newIndex, {
+    this.onSuccess,
+    this.onError,
+  });
 
   @override
   List<Object?> get props => [oldIndex, newIndex];
 }
 
-class ToggleSubcategoryReorderMode extends MenuSubcategoryEvent {}
+class ToggleSubcategoryReorderMode extends MenuSubcategoryEvent {
+  final VoidCallback? onSuccess;
+  final void Function(String)? onError;
+
+  const ToggleSubcategoryReorderMode({this.onSuccess, this.onError});
+}
+
+class SearchMenuSubcategories extends MenuSubcategoryEvent {
+  final String query;
+
+  const SearchMenuSubcategories(this.query);
+
+  @override
+  List<Object?> get props => [query];
+}

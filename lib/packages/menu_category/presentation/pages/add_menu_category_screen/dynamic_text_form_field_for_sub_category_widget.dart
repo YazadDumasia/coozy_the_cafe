@@ -26,15 +26,24 @@ class _DynamicTextFormFieldForSubCategoryWidgetState
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: '');
-    _controller.text = widget.initialValue ?? '';
-    _focusNode = FocusNode()..requestFocus();
+    _controller = TextEditingController(text: widget.initialValue ?? '');
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void didUpdateWidget(
+    covariant DynamicTextFormFieldForSubCategoryWidget oldWidget,
+  ) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue ?? '';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      key: UniqueKey(),
       controller: _controller,
       focusNode: _focusNode,
       onChanged: widget.onChanged,

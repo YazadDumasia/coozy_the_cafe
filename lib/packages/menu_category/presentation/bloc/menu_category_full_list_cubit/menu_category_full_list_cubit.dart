@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 import '../../../domain/entities/menu_category.dart';
 import '../../../domain/usecases/menu_category_usecases.dart';
@@ -31,7 +30,10 @@ class MenuCategoryFullListCubit extends Cubit<MenuCategoryFullListState> {
   List<GlobalKey<State<StatefulWidget>>?>? expansionTileKeys;
   List<ExpansibleController>? expandedTitleControllerList;
 
-  Future<void> loadData() async {
+  Future<void> loadData({
+    VoidCallback? onSuccess,
+    void Function(String)? onError,
+  }) async {
     try {
       emit(MenuCategoryFullListLoadingState());
       final data = await fetchDataFromApi();
@@ -39,11 +41,13 @@ class MenuCategoryFullListCubit extends Cubit<MenuCategoryFullListState> {
       if (data == null || data.isEmpty) {
         expansionTileKeys = [];
         expandedTitleControllerList = [];
-        emit(MenuCategoryFullListLoadedState(
-          data: null,
-          expansionTileKeys: null,
-          expandedTitleControllerList: [],
-        ));
+        emit(
+          MenuCategoryFullListLoadedState(
+            data: null,
+            expansionTileKeys: null,
+            expandedTitleControllerList: [],
+          ),
+        );
       } else {
         expansionTileKeys = List.generate(
           data['categories'].length,
@@ -55,29 +59,40 @@ class MenuCategoryFullListCubit extends Cubit<MenuCategoryFullListState> {
           (index) => ExpansibleController(),
         );
 
-        emit(MenuCategoryFullListLoadedState(
-          data: data,
-          expansionTileKeys: expansionTileKeys,
-          expandedTitleControllerList: expandedTitleControllerList,
-        ));
+        emit(
+          MenuCategoryFullListLoadedState(
+            data: data,
+            expansionTileKeys: expansionTileKeys,
+            expandedTitleControllerList: expandedTitleControllerList,
+          ),
+        );
       }
+      onSuccess?.call();
     } catch (e) {
+      onError?.call('An error occurred: $e');
       emit(MenuCategoryFullListErrorState('An error occurred: $e'));
     }
   }
 
-  Future<void> deletecategory({int? categoryId, MenuCategory? category, VoidCallback? onSuccess, void Function(String)? onError}) async {
+  Future<void> deletecategory({
+    int? categoryId,
+    MenuCategory? category,
+    VoidCallback? onSuccess,
+    void Function(String)? onError,
+  }) async {
     try {
       if (categoryId != null) {
-         // Delete associated subcategories first since we don't know if backend cascades
-         final subcategories = await getSubcategoriesUseCase();
-         final associated = subcategories.where((sub) => sub.categoryId == categoryId).toList();
-         for (var sub in associated) {
-           await deleteSubcategoryUseCase(sub.id!);
-         }
-         await deleteCategoryUseCase(categoryId);
+        // Delete associated subcategories first since we don't know if backend cascades
+        final subcategories = await getSubcategoriesUseCase();
+        final associated = subcategories
+            .where((sub) => sub.categoryId == categoryId)
+            .toList();
+        for (var sub in associated) {
+          await deleteSubcategoryUseCase(sub.id!);
+        }
+        await deleteCategoryUseCase(categoryId);
       }
-      
+
       onSuccess?.call();
       await loadData();
     } catch (e) {
@@ -92,20 +107,29 @@ class MenuCategoryFullListCubit extends Cubit<MenuCategoryFullListState> {
       subCategoryList = await getSubcategoriesUseCase();
 
       final result = <String, List<Map<String, Object?>>>{
-        'categories': categoryList?.map((category) {
-              final subCategories = subCategoryList
+        'categories':
+            categoryList?.map((category) {
+              final subCategories =
+                  subCategoryList
                       ?.where((sub) => sub.categoryId == category.id)
-                      .map((sub) => {
-                        'id': sub.id,
-                        'name': sub.name,
-                        'isActive': (sub.isActive ?? false) ? 1 : 0,
-                      })
+                      .map(
+                        (sub) => {
+                          'id': sub.id,
+                          'hashId': sub.hashId,
+                          'categoryId': sub.categoryId,
+                          'name': sub.name,
+                          'isActive': sub.isActive ?? false,
+                          'position': sub.position,
+                          'createdDate': sub.createdDate,
+                        },
+                      )
                       .toList() ??
                   [];
               return <String, Object?>{
                 'id': category.id,
+                'hashId': category.hashId,
                 'name': category.name,
-                'isActive': (category.isActive ?? false) ? 1 : 0,
+                'isActive': category.isActive ?? false,
                 'createdDate': category.createdDate,
                 'position': category.position,
                 'subCategories': subCategories,
@@ -123,106 +147,200 @@ class MenuCategoryFullListCubit extends Cubit<MenuCategoryFullListState> {
   Future<void> handleIsEnableCategory(
     BuildContext context,
     MenuCategory category,
-    bool isEnable,
-  ) async {
+    bool isEnable, {
+    VoidCallback? onSuccess,
+    void Function(String)? onError,
+  }) async {
     try {
       final updated = category.copyWith(isActive: isEnable);
       await updateCategoryUseCase(updated);
 
-      if (context.mounted) {
-        shared.DialogUtils.showAutoDismissDialog(
-          context: context,
-          title: context.tr(
-            shared.LocaleKeys.commonSuccess,
-            track: shared.TrackConstants.commonTrack,
-          ) ?? 'Success',
-          descriptions: isEnable
-              ? 'Your selected Category has been activated.'
-              : 'Your selected Category has been deactivated.',
-          titleIcon: const Icon(
-            Icons.check_circle,
-            color: Colors.green,
-            size: 50,
-          ),
-        );
+      // Patch only this category in the existing state — no full reload
+      if (state is MenuCategoryFullListLoadedState) {
+        final current = state as MenuCategoryFullListLoadedState;
+        final categories = current.data?['categories'] as List?;
+        if (categories != null) {
+          final updatedCategories = categories.map((item) {
+            final c = Map<String, dynamic>.from(item as Map);
+            if (c['id'] == category.id) c['isActive'] = isEnable;
+            return c;
+          }).toList();
+          emit(
+            MenuCategoryFullListLoadedState(
+              data: {...current.data!, 'categories': updatedCategories},
+              expansionTileKeys: expansionTileKeys,
+              expandedTitleControllerList: expandedTitleControllerList,
+            ),
+          );
+        }
       }
-      await loadData();
+
+      onSuccess?.call();
     } catch (error) {
-      if (context.mounted) {
-        shared.DialogUtils.showAutoDismissDialog(
-          context: context,
-          title: context.tr(
-            shared.LocaleKeys.commonError,
-            track: shared.TrackConstants.commonTrack,
-          ) ?? 'Error',
-          descriptions: context.tr(
-            shared.LocaleKeys.commonErrorMsg,
-            track: shared.TrackConstants.commonTrack,
-          ) ?? 'Failed to update category status.',
-          titleIcon: const Icon(
-            Icons.error,
-            color: Colors.red,
-            size: 50,
-          ),
-        );
-      }
+      onError?.call(error.toString());
     }
   }
 
   Future<void> handleIsEnableSubCategory(
     BuildContext context,
     MenuSubcategory subCategory,
-    bool isEnable,
-  ) async {
+    bool isEnable, {
+    VoidCallback? onSuccess,
+    void Function(String)? onError,
+  }) async {
     try {
       final updated = subCategory.copyWith(isActive: isEnable);
       await updateSubcategoryUseCase(updated);
 
-      if (context.mounted) {
-        shared.DialogUtils.showAutoDismissDialog(
-          context: context,
-          title: context.tr(
-            shared.LocaleKeys.commonSuccess,
-            track: shared.TrackConstants.commonTrack,
-          ) ?? 'Success',
-          descriptions: isEnable
-              ? 'Your selected sub-category has been activated.'
-              : 'Your selected sub-category has been deactivated.',
-          titleIcon: const Icon(
-            Icons.check_circle,
-            color: Colors.green,
-            size: 50,
-          ),
-        );
+      // Patch only this subcategory in the existing state — no full reload
+      if (state is MenuCategoryFullListLoadedState) {
+        final current = state as MenuCategoryFullListLoadedState;
+        final categories = current.data?['categories'] as List?;
+        if (categories != null) {
+          final updatedCategories = categories.map((catItem) {
+            final cat = Map<String, dynamic>.from(catItem as Map);
+            final subs = cat['subCategories'] as List?;
+            if (subs != null) {
+              cat['subCategories'] = subs.map((subItem) {
+                final s = Map<String, dynamic>.from(subItem as Map);
+                if (s['id'] == subCategory.id) s['isActive'] = isEnable;
+                return s;
+              }).toList();
+            }
+            return cat;
+          }).toList();
+          emit(
+            MenuCategoryFullListLoadedState(
+              data: {...current.data!, 'categories': updatedCategories},
+              expansionTileKeys: expansionTileKeys,
+              expandedTitleControllerList: expandedTitleControllerList,
+            ),
+          );
+        }
       }
-      await loadData();
+
+      onSuccess?.call();
     } catch (error) {
-      if (context.mounted) {
-        shared.DialogUtils.showAutoDismissDialog(
-          context: context,
-          title: context.tr(
-            shared.LocaleKeys.commonError,
-            track: shared.TrackConstants.commonTrack,
-          ) ?? 'Error',
-          descriptions: context.tr(
-            shared.LocaleKeys.commonErrorMsg,
-            track: shared.TrackConstants.commonTrack,
-          ) ?? 'Failed to update sub-category status.',
-          titleIcon: const Icon(
-            Icons.error,
-            color: Colors.red,
-            size: 50,
-          ),
-        );
-      }
+      onError?.call(error.toString());
     }
   }
-  Future<void> moveCategoryUp(int index, BuildContext context) async {
-    // Position reordering not yet implemented
+
+  Future<void> moveCategoryUp(
+    int index, {
+    VoidCallback? onSuccess,
+    void Function(String)? onError,
+  }) async {
+    if (categoryList == null || index <= 0 || index >= categoryList!.length) {
+      return;
+    }
+    try {
+      final currentCategory = categoryList![index];
+      final previousCategory = categoryList![index - 1];
+
+      final currentPos = currentCategory.position ?? index;
+      final previousPos = previousCategory.position ?? (index - 1);
+
+      final updatedCurrent = currentCategory.copyWith(position: previousPos);
+      final updatedPrevious = previousCategory.copyWith(position: currentPos);
+
+      await updateCategoryUseCase(updatedCurrent);
+      await updateCategoryUseCase(updatedPrevious);
+
+      // Re-fetch sorted categories from DB without emitting LoadingState
+      categoryList = await getCategoriesUseCase();
+      subCategoryList = await getSubcategoriesUseCase();
+
+      final updatedData = await _buildDataFromLists();
+
+      emit(
+        MenuCategoryFullListLoadedState(
+          data: updatedData,
+          expansionTileKeys: expansionTileKeys,
+          expandedTitleControllerList: expandedTitleControllerList,
+        ),
+      );
+
+      onSuccess?.call();
+    } catch (e) {
+      onError?.call(e.toString());
+    }
   }
 
-  Future<void> moveCategoryDown(int index, BuildContext context) async {
-    // Position reordering not yet implemented
+  Future<void> moveCategoryDown(
+    int index, {
+    VoidCallback? onSuccess,
+    void Function(String)? onError,
+  }) async {
+    if (categoryList == null ||
+        index < 0 ||
+        index >= (categoryList!.length - 1)) {
+      return;
+    }
+    try {
+      final currentCategory = categoryList![index];
+      final nextCategory = categoryList![index + 1];
+
+      final currentPos = currentCategory.position ?? index;
+      final nextPos = nextCategory.position ?? (index + 1);
+
+      final updatedCurrent = currentCategory.copyWith(position: nextPos);
+      final updatedNext = nextCategory.copyWith(position: currentPos);
+
+      await updateCategoryUseCase(updatedCurrent);
+      await updateCategoryUseCase(updatedNext);
+
+      // Re-fetch sorted categories from DB without emitting LoadingState
+      categoryList = await getCategoriesUseCase();
+      subCategoryList = await getSubcategoriesUseCase();
+
+      final updatedData = await _buildDataFromLists();
+
+      emit(
+        MenuCategoryFullListLoadedState(
+          data: updatedData,
+          expansionTileKeys: expansionTileKeys,
+          expandedTitleControllerList: expandedTitleControllerList,
+        ),
+      );
+
+      onSuccess?.call();
+    } catch (e) {
+      onError?.call(e.toString());
+    }
   }
 
+  Future<Map<String, dynamic>?> _buildDataFromLists() async {
+    final result = <String, List<Map<String, Object?>>>{
+      'categories':
+          categoryList?.map((category) {
+            final subCategories =
+                subCategoryList
+                    ?.where((sub) => sub.categoryId == category.id)
+                    .map(
+                      (sub) => {
+                        'id': sub.id,
+                        'hashId': sub.hashId,
+                        'categoryId': sub.categoryId,
+                        'name': sub.name,
+                        'isActive': sub.isActive ?? false,
+                        'position': sub.position,
+                        'createdDate': sub.createdDate,
+                      },
+                    )
+                    .toList() ??
+                [];
+            return <String, Object?>{
+              'id': category.id,
+              'hashId': category.hashId,
+              'name': category.name,
+              'isActive': category.isActive ?? false,
+              'createdDate': category.createdDate,
+              'position': category.position,
+              'subCategories': subCategories,
+            };
+          }).toList() ??
+          [],
+    };
+    return result;
+  }
 }
