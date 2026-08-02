@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
+import 'package:coozy_the_cafe/packages/menu_category/domain/usecases/menu_category_usecases.dart';
+import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
+import 'package:coozy_the_cafe/packages/menu_subcategory/domain/usecases/menu_subcategory_usecases.dart';
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 
 class MenuCategoryFullListScreenActions {
@@ -271,4 +274,98 @@ class MenuCategoryFullListScreenActions {
       }
     }
   }
+
+  static Future<void> handleAddDummyCategories(BuildContext context) async {
+    final addCategoryUseCase = core.sl<GetMenuCategoriesUseCase>();
+    // Access database or usecases to insert dummy items
+    final addCatUseCase = core.sl<AddMenuCategoryUseCase>();
+    final addSubCatUseCase = core.sl<AddMenuSubcategoryUseCase>();
+
+    shared.DialogUtils.showLoadingDialog(context);
+
+    final dummyCategories = [
+      {
+        'name': 'Beverages ☕',
+        'subs': ['Espresso & Coffee', 'Herbal Teas', 'Fresh Juices', 'Smoothies', 'Cold Brews'],
+      },
+      {
+        'name': 'Breakfast & Brunch 🥞',
+        'subs': ['Pancakes & Waffles', 'Omelettes', 'Toast & Bagels', 'Granola Bowls', 'Breakfast Sandwiches'],
+      },
+      {
+        'name': 'Main Dishes 🍔',
+        'subs': ['Artisanal Burgers', 'Woodfired Pizzas', 'Pasta Bowls', 'Gourmet Sandwiches', 'Salads & Wraps'],
+      },
+      {
+        'name': 'Desserts & Sweets 🍰',
+        'subs': ['Cakes & Pastries', 'Ice Cream & Gelato', 'Cookies & Brownies', 'Tarts & Pies', 'Macarons'],
+      },
+      {
+        'name': 'Chef Specials ⭐',
+        'subs': ['House Special Platter', 'Truffle Fries', 'Signature Mocktails', 'Seasonal Soups', 'Chef Tacos'],
+      },
+    ];
+
+    try {
+      final existingCategories = await addCategoryUseCase();
+      int currentCategoryPosition = existingCategories.length;
+
+      for (var catData in dummyCategories) {
+        final categoryName = catData['name'] as String;
+        final subNames = catData['subs'] as List<String>;
+
+        final categoryId = await addCatUseCase(
+          MenuCategory(
+            name: categoryName,
+            isActive: true,
+            position: currentCategoryPosition++,
+            createdDate: DateTime.now().toIso8601String(),
+          ),
+        );
+
+        int subPos = 0;
+        for (var subName in subNames) {
+          await addSubCatUseCase(
+            MenuSubcategory(
+              categoryId: categoryId,
+              name: subName,
+              isActive: true,
+              position: subPos++,
+              createdDate: DateTime.now().toIso8601String(),
+            ),
+          );
+        }
+      }
+
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading dialog
+        context.read<MenuCategoryFullListCubit>().loadData();
+        shared.DialogUtils.showAutoDismissDialog(
+          context: context,
+          title: 'Success',
+          descriptions: '5 Dummy categories with subcategories inserted successfully!',
+          titleIcon: const Icon(
+            Icons.check_circle,
+            color: Colors.green,
+            size: 50,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context); // Close loading dialog
+        shared.DialogUtils.showAutoDismissDialog(
+          context: context,
+          title: 'Error',
+          descriptions: 'Failed to insert dummy categories: $e',
+          titleIcon: const Icon(
+            Icons.error,
+            color: Colors.red,
+            size: 50,
+          ),
+        );
+      }
+    }
+  }
 }
+

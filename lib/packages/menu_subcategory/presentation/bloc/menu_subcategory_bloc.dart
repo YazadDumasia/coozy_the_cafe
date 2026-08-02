@@ -31,6 +31,8 @@ class MenuSubcategoryBloc
     on<DeleteMenuSubcategory>(_onDeleteMenuSubcategory);
     on<ReorderMenuSubcategories>(_onReorderMenuSubcategories);
     on<ToggleSubcategoryReorderMode>(_onToggleReorderMode);
+    on<SaveSubcategoryReorder>(_onSaveSubcategoryReorder);
+    on<CancelSubcategoryReorder>(_onCancelSubcategoryReorder);
     on<SearchMenuSubcategories>(_onSearchMenuSubcategories);
   }
 
@@ -42,7 +44,12 @@ class MenuSubcategoryBloc
     try {
       final subcategories = await getSubcategoriesUseCase();
       _allSubcategories = subcategories;
-      emit(MenuSubcategoryLoaded(subcategories: subcategories, isSearchActive: false));
+      emit(
+        MenuSubcategoryLoaded(
+          subcategories: subcategories,
+          isSearchActive: false,
+        ),
+      );
       event.onSuccess?.call();
     } catch (e) {
       event.onError?.call(e.toString());
@@ -95,6 +102,15 @@ class MenuSubcategoryBloc
     try {
       await updateSubcategoryUseCase(event.subcategory);
       event.onSuccess?.call();
+
+      // Update cached _allSubcategories
+      final allIndex = _allSubcategories.indexWhere(
+        (sub) => sub.id == event.subcategory.id,
+      );
+      if (allIndex != -1) {
+        _allSubcategories[allIndex] = event.subcategory;
+      }
+
       if (state is MenuSubcategoryLoaded) {
         final currentState = state as MenuSubcategoryLoaded;
         final list = List<MenuSubcategory>.from(currentState.subcategories);
@@ -102,13 +118,7 @@ class MenuSubcategoryBloc
         if (index != -1) {
           list[index] = event.subcategory;
           emit(currentState.copyWith(subcategories: list));
-        } else {
-          final subcategories = await getSubcategoriesUseCase();
-          emit(currentState.copyWith(subcategories: subcategories));
         }
-      } else {
-        final subcategories = await getSubcategoriesUseCase();
-        emit(MenuSubcategoryLoaded(subcategories: subcategories));
       }
     } catch (e) {
       event.onError?.call(e.toString());
@@ -121,9 +131,52 @@ class MenuSubcategoryBloc
     Emitter<MenuSubcategoryState> emit,
   ) async {
     try {
+      // Find deleted subcategory to identify its categoryId
+      final targetIndex = _allSubcategories.indexWhere(
+        (sub) => sub.id == event.id,
+      );
+      final int? categoryId = targetIndex != -1
+          ? _allSubcategories[targetIndex].categoryId
+          : null;
+
       await deleteSubcategoryUseCase(event.id);
       event.onSuccess?.call();
-      _reload(emit);
+
+      // Remove from cached _allSubcategories
+      _allSubcategories.removeWhere((sub) => sub.id == event.id);
+
+      if (state is MenuSubcategoryLoaded) {
+        final currentState = state as MenuSubcategoryLoaded;
+        final list = List<MenuSubcategory>.from(currentState.subcategories);
+        list.removeWhere((sub) => sub.id == event.id);
+
+        // Re-index position indices for remaining items in this category
+        if (categoryId != null) {
+          final categoryItems = _allSubcategories
+              .where((sub) => sub.categoryId == categoryId)
+              .toList();
+          final updatedPositionsList = <MenuSubcategory>[];
+          for (int i = 0; i < categoryItems.length; i++) {
+            final updatedItem = categoryItems[i].copyWith(position: i);
+            updatedPositionsList.add(updatedItem);
+
+            // Update in _allSubcategories
+            final idx = _allSubcategories.indexWhere(
+              (sub) => sub.id == updatedItem.id,
+            );
+            if (idx != -1) _allSubcategories[idx] = updatedItem;
+
+            // Update in current state list
+            final stateIdx = list.indexWhere((sub) => sub.id == updatedItem.id);
+            if (stateIdx != -1) list[stateIdx] = updatedItem;
+          }
+
+          // Persist updated positions in database asynchronously
+          updateSubcategoryPositionsUseCase(updatedPositionsList);
+        }
+
+        emit(currentState.copyWith(subcategories: list));
+      }
     } catch (e) {
       event.onError?.call(e.toString());
       emit(MenuSubcategoryError(e.toString()));
@@ -136,9 +189,6 @@ class MenuSubcategoryBloc
   ) async {
     if (state is MenuSubcategoryLoaded) {
       final currentState = state as MenuSubcategoryLoaded;
-      final subcategories = List<MenuSubcategory>.from(
-        currentState.subcategories,
-      );
 
       int oldIndex = event.oldIndex;
       int newIndex = event.newIndex;
@@ -147,24 +197,29 @@ class MenuSubcategoryBloc
         newIndex -= 1;
       }
 
-      final item = subcategories.removeAt(oldIndex);
-      subcategories.insert(newIndex, item);
+      final currentList = List<MenuSubcategory>.from(
+        currentState.subcategories,
+      );
+      if (oldIndex < 0 || oldIndex >= currentList.length) return;
+      if (newIndex < 0 || newIndex >= currentList.length) return;
 
-      emit(currentState.copyWith(subcategories: subcategories));
+      final item = currentList.removeAt(oldIndex);
+      currentList.insert(newIndex, item);
 
-      final updatedSubcategories = <MenuSubcategory>[];
-      for (int i = 0; i < subcategories.length; i++) {
-        updatedSubcategories.add(subcategories[i].copyWith(position: i));
+      // Reassign position values for the reordered items
+      for (int i = 0; i < currentList.length; i++) {
+        final updated = currentList[i].copyWith(position: i);
+        currentList[i] = updated;
+
+        final masterIdx = _allSubcategories.indexWhere(
+          (s) => s.id == updated.id,
+        );
+        if (masterIdx != -1) {
+          _allSubcategories[masterIdx] = updated;
+        }
       }
 
-      try {
-        await updateSubcategoryPositionsUseCase(updatedSubcategories);
-        event.onSuccess?.call();
-      } catch (e) {
-        event.onError?.call(e.toString());
-        emit(MenuSubcategoryError('Failed to save order: $e'));
-        _reload(emit);
-      }
+      emit(currentState.copyWith(subcategories: currentList));
     }
   }
 
@@ -174,10 +229,62 @@ class MenuSubcategoryBloc
   ) {
     if (state is MenuSubcategoryLoaded) {
       final currentState = state as MenuSubcategoryLoaded;
-      emit(
-        currentState.copyWith(isReorderAllowed: !currentState.isReorderAllowed),
-      );
+      final bool wasReordering = currentState.isReorderAllowed;
+
+      emit(currentState.copyWith(isReorderAllowed: !wasReordering));
       event.onSuccess?.call();
+    }
+  }
+
+  Future<void> _onSaveSubcategoryReorder(
+    SaveSubcategoryReorder event,
+    Emitter<MenuSubcategoryState> emit,
+  ) async {
+    if (state is MenuSubcategoryLoaded) {
+      final currentState = state as MenuSubcategoryLoaded;
+      try {
+        final currentList = currentState.subcategories;
+        final updatedPositionsList = <MenuSubcategory>[];
+        for (int i = 0; i < currentList.length; i++) {
+          final updated = currentList[i].copyWith(position: i);
+          updatedPositionsList.add(updated);
+        }
+        await updateSubcategoryPositionsUseCase(updatedPositionsList);
+        emit(currentState.copyWith(isReorderAllowed: false));
+        event.onSuccess?.call();
+      } catch (e) {
+        event.onError?.call(e.toString());
+        emit(MenuSubcategoryError(e.toString()));
+      }
+    }
+  }
+
+  Future<void> _onCancelSubcategoryReorder(
+    CancelSubcategoryReorder event,
+    Emitter<MenuSubcategoryState> emit,
+  ) async {
+    if (state is MenuSubcategoryLoaded) {
+      final currentState = state as MenuSubcategoryLoaded;
+      final categoryId = currentState.categoryIdFilter;
+      emit(MenuSubcategoryLoading());
+      try {
+        final subcategories = categoryId == null
+            ? await getSubcategoriesUseCase()
+            : await getSubcategoriesByCategoryUseCase(categoryId);
+        _allSubcategories = subcategories;
+        emit(
+          MenuSubcategoryLoaded(
+            subcategories: subcategories,
+            categoryIdFilter: categoryId,
+            isReorderAllowed: false,
+            isSearchActive: false,
+          ),
+        );
+        event.onSuccess?.call();
+      } catch (e) {
+        event.onError?.call(e.toString());
+        emit(MenuSubcategoryError(e.toString()));
+      }
     }
   }
 
@@ -201,11 +308,8 @@ class MenuSubcategoryBloc
 
     final filtered = isSearchActive
         ? _allSubcategories
-            .where(
-              (sub) =>
-                  sub.name?.toLowerCase().contains(query) ?? false,
-            )
-            .toList()
+              .where((sub) => sub.name?.toLowerCase().contains(query) ?? false)
+              .toList()
         : List<MenuSubcategory>.from(_allSubcategories);
 
     if (state is MenuSubcategoryLoaded) {

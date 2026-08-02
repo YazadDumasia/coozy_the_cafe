@@ -140,6 +140,9 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
     try {
       if (email.trim() == 'admin@coozy.com' &&
           password.trim() == 'Admin@123456') {
+        await authLocalDataSource.saveLoginState(true);
+        await authLocalDataSource.saveUserRole('superUser');
+        await authLocalDataSource.saveSuperUserFlag(true);
         updateButtonLoading(false);
         emit(LoginScreenSuccessState(email: email, role: 'superUser'));
         onSuccess?.call();
@@ -179,6 +182,9 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
         LoginScreenCubit,
         'Superuser registered successfully for: $email',
       );
+
+      await authLocalDataSource.saveLoginState(true);
+      await authLocalDataSource.saveUserRole(user.role.name);
 
       // Navigate directly to HomeScreen since Business Onboarding is removed
       updateButtonLoading(false);

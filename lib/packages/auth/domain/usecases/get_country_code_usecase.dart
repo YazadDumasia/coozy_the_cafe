@@ -6,6 +6,6 @@ class GetCountryCodeUseCase {
   GetCountryCodeUseCase(this.repository);
 
   Future<String?> call() {
-    return repository.getCountryCodeFromIp();
+    return repository.getCountryIsoCode3FromIp();
   }
 }

@@ -77,9 +77,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         child: Scaffold(
           key: _scaffoldKey,
           resizeToAvoidBottomInset: true,
-          drawer: shared.ResponsiveLayout.isDesktop(context)
-              ? null
-              : const HomeScreenDrawer(),
+          drawer: const HomeScreenDrawer(),
           bottomNavigationBar: !shared.ResponsiveLayout.isDesktop(context)
               ? ValueListenableBuilder<int>(
                   valueListenable: currentTabIndex,

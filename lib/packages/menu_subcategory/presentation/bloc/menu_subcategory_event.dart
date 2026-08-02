@@ -100,6 +100,20 @@ class ToggleSubcategoryReorderMode extends MenuSubcategoryEvent {
   const ToggleSubcategoryReorderMode({this.onSuccess, this.onError});
 }
 
+class SaveSubcategoryReorder extends MenuSubcategoryEvent {
+  final VoidCallback? onSuccess;
+  final void Function(String)? onError;
+
+  const SaveSubcategoryReorder({this.onSuccess, this.onError});
+}
+
+class CancelSubcategoryReorder extends MenuSubcategoryEvent {
+  final VoidCallback? onSuccess;
+  final void Function(String)? onError;
+
+  const CancelSubcategoryReorder({this.onSuccess, this.onError});
+}
+
 class SearchMenuSubcategories extends MenuSubcategoryEvent {
   final String query;
 

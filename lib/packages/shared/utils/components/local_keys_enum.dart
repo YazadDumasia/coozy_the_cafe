@@ -11,4 +11,5 @@ enum PreferencesKeys {
   businessOnboardingCompleted,
   currentBusinessId,
   isSuperUser,
+  subcategoryIsGridView,
 }

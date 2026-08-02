@@ -57,15 +57,15 @@ class MenuCategoryListItem extends StatelessWidget {
             WidgetState.disabled,
             WidgetState.selected,
           ])) {
-            return const Icon(Icons.check, color: Colors.red);
+            return const Icon(Icons.check, color: Colors.red, size: 24);
           }
           if (states.contains(WidgetState.disabled)) {
-            return const Icon(Icons.close);
+            return const Icon(Icons.close, size: 24);
           }
           if (states.contains(WidgetState.selected)) {
-            return const Icon(Icons.check, color: Colors.green);
+            return const Icon(Icons.check, color: Colors.green, size: 24);
           }
-          return const Icon(Icons.close);
+          return const Icon(Icons.close, size: 24);
         });
 
     return Theme(

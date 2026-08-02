@@ -17,6 +17,7 @@ import '../domain/usecases/check_auth_status_usecase.dart';
 import '../domain/usecases/get_country_code_usecase.dart';
 import '../domain/usecases/register_superuser_usecase.dart';
 import '../presentation/pages/login_page/cubit/login_screen_cubit.dart';
+import '../presentation/pages/login_via_phone_number_page/cubit/login_with_phone_cubit.dart';
 import '../presentation/pages/sign_up_page/cubit/sign_up_cubit.dart';
 
 void registerAuthDependencies(GetIt sl) {
@@ -127,6 +128,12 @@ void registerAuthDependencies(GetIt sl) {
         validationService: sl(),
         networkInfo: sl(),
       ),
+    );
+  }
+
+  if (!sl.isRegistered<LoginWithPhoneCubit>()) {
+    sl.registerFactory<LoginWithPhoneCubit>(
+      () => LoginWithPhoneCubit(ipLocationRepository: sl()),
     );
   }
 }

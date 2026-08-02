@@ -6,11 +6,15 @@ import '../menu_subcategory_full_list_screen_actions.dart';
 class MenuSubcategoryListItem extends StatelessWidget {
   final MenuSubcategory subCategory;
   final bool isLastItem;
+  final bool isReorderMode;
+  final int index;
 
   const MenuSubcategoryListItem({
     super.key,
     required this.subCategory,
     required this.isLastItem,
+    this.isReorderMode = false,
+    this.index = 0,
   });
 
   @override
@@ -101,39 +105,94 @@ class MenuSubcategoryListItem extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              height: 30,
-              child: FittedBox(
-                fit: BoxFit.fill,
-                child: Switch.adaptive(
-                  value: subCategory.isActive == true,
-                  onChanged: (bool isEnable) =>
-                      MenuSubcategoryFullListScreenActions.handleToggleSubcategory(
+            if (isReorderMode)
+              ReorderableDragStartListener(
+                index: index,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.grab,
+                  child: const Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: Icon(Icons.drag_handle, color: Colors.grey),
+                  ),
+                ),
+              ),
+            if (!isReorderMode) ...[
+              SizedBox(
+                height: 30,
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: Switch.adaptive(
+                    value: subCategory.isActive == true,
+                    onChanged: (bool isEnable) =>
+                        MenuSubcategoryFullListScreenActions.handleToggleSubcategory(
+                          context,
+                          subCategory,
+                          isEnable,
+                        ),
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    thumbIcon: WidgetStateProperty.resolveWith<Icon>((
+                      Set<WidgetState> states,
+                    ) {
+                      if (states.containsAll(<Object?>[
+                        WidgetState.disabled,
+                        WidgetState.selected,
+                      ])) {
+                        return const Icon(
+                          Icons.check,
+                          color: Colors.red,
+                          size: 24,
+                        );
+                      }
+                      if (states.contains(WidgetState.disabled)) {
+                        return const Icon(Icons.close, size: 24);
+                      }
+                      if (states.contains(WidgetState.selected)) {
+                        return const Icon(
+                          Icons.check,
+                          color: Colors.green,
+                          size: 24,
+                        );
+                      }
+                      return const Icon(Icons.close, size: 24);
+                    }),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Material(
+                shape: const CircleBorder(),
+                color: Theme.of(context).colorScheme.primaryContainer,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: () =>
+                      MenuSubcategoryFullListScreenActions.handleEditSubcategory(
                         context,
                         subCategory,
-                        isEnable,
                       ),
-                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Material(
-              shape: const CircleBorder(),
-              color: Theme.of(context).colorScheme.primaryContainer,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.edit_outlined,
-                  color: Colors.white,
-                  size: 20,
+              const SizedBox(width: 6),
+              Material(
+                shape: const CircleBorder(),
+                color: Colors.red.shade100,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: Colors.red.shade700,
+                    size: 20,
+                  ),
+                  onPressed: () =>
+                      MenuSubcategoryFullListScreenActions.handleDeleteSubcategory(
+                        context,
+                        subCategory,
+                      ),
                 ),
-                onPressed: () =>
-                    MenuSubcategoryFullListScreenActions.handleEditSubcategory(
-                      context,
-                      subCategory,
-                    ),
               ),
-            ),
+            ],
           ],
         ),
       ),

@@ -314,11 +314,11 @@ class SignUpCubit extends Cubit<SignUpState> {
       final countryCode = await getCountryCodeUseCase();
       if (countryCode != null && countryCode.isNotEmpty) {
         final shared.Country data =
-            shared.CountryPickerUtils.getCountryByIsoCode(countryCode);
+            shared.CountryPickerUtils.getCountryByIso3Code(countryCode);
         _phoneNumberIosCodeController.sink.add(data);
       } else {
         final shared.Country data =
-            shared.CountryPickerUtils.getCountryByIsoCode('IND');
+            shared.CountryPickerUtils.getCountryByIso3Code('IND');
         _phoneNumberIosCodeController.sink.add(data);
       }
     } catch (e) {

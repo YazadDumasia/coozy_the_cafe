@@ -36,7 +36,7 @@ class AuthRoutes {
     GoRoute(
       path: AppRoutePath.loginViaPhoneNumberRoute,
       builder: (context, state) => BlocProvider<LoginWithPhoneCubit>(
-        create: (context) => LoginWithPhoneCubit(),
+        create: (context) => GetIt.instance<LoginWithPhoneCubit>(),
         child: const LoginViaPhoneNumberPage(isUseForLogin: true),
       ),
     ),

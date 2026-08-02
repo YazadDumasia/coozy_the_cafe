@@ -1,12 +1,14 @@
+import 'dart:ui';
+import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
+import 'package:coozy_the_cafe/packages/menu_category/domain/usecases/menu_category_usecases.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_event.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_state.dart';
-import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/models/suspension_menu_subcategory.dart';
+import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/pages/widgets/menu_subcategory_grid_card.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/pages/widgets/menu_subcategory_list_item.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
-import 'package:coozy_the_cafe/packages/shared/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'menu_subcategory_full_list_screen_actions.dart';
@@ -21,29 +23,129 @@ class MenuSubcategoryFullListScreen extends StatefulWidget {
 
 class _MenuSubcategoryFullListScreenState
     extends State<MenuSubcategoryFullListScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  List<SuspensionMenuSubcategory> _suspensionList = [];
+  final SearchController _searchController = SearchController();
+  final FocusNode _searchFocusNode = FocusNode();
+
+  List<MenuCategory> _categories = [];
+  int? _selectedCategoryId; // null = "All"
+  bool _isGridView = false;
+
+  final ScrollController _categorySidebarScrollController = ScrollController();
+  final ScrollController _subcategoryScrollController = ScrollController();
+  final Map<int, GlobalKey> _subcategoryKeys = {};
 
   @override
   void initState() {
     super.initState();
+    _loadViewModePreference();
+    _fetchCategories();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MenuSubcategoryBloc>().add(LoadMenuSubcategories());
+      context.read<MenuSubcategoryBloc>().add(const LoadMenuSubcategories());
     });
+  }
+
+  void _loadViewModePreference() {
+    final bool savedIsGrid = shared.LocalManager.instance.getBoolValue(
+      key: shared.PreferencesKeys.subcategoryIsGridView,
+    );
+    setState(() {
+      _isGridView = savedIsGrid;
+    });
+  }
+
+  Future<void> _toggleViewMode() async {
+    final bool newMode = !_isGridView;
+    setState(() {
+      _isGridView = newMode;
+    });
+    await shared.LocalManager.instance.setBoolValue(
+      key: shared.PreferencesKeys.subcategoryIsGridView,
+      value: newMode,
+    );
+  }
+
+  Future<void> _fetchCategories() async {
+    try {
+      final getCategoriesUseCase = core.sl<GetMenuCategoriesUseCase>();
+      final list = await getCategoriesUseCase();
+      if (mounted) {
+        setState(() {
+          _categories = list;
+        });
+      }
+    } catch (e) {
+      core.PlatformUtils.debugLog(
+        MenuSubcategoryFullListScreen,
+        'Error fetching categories: $e',
+      );
+    }
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _searchFocusNode.dispose();
+    _categorySidebarScrollController.dispose();
+    _subcategoryScrollController.dispose();
     super.dispose();
   }
 
-  void _buildSuspensionList(List<MenuSubcategory> subcategories) {
-    _suspensionList = subcategories
-        .map((e) => SuspensionMenuSubcategory(e))
+  void _onCategorySelected(int? categoryId) {
+    setState(() {
+      _selectedCategoryId = categoryId;
+    });
+    if (categoryId == null) {
+      context.read<MenuSubcategoryBloc>().add(const LoadMenuSubcategories());
+    } else {
+      context.read<MenuSubcategoryBloc>().add(
+        LoadMenuSubcategoriesByCategory(categoryId),
+      );
+    }
+  }
+
+  List<MenuSubcategory> _getFilteredSubcategories(
+    List<MenuSubcategory> subcategories,
+  ) {
+    if (_selectedCategoryId == null) {
+      return subcategories;
+    }
+    return subcategories
+        .where((sub) => sub.categoryId == _selectedCategoryId)
         .toList();
-    SuspensionUtil.sortListBySuspensionTag(_suspensionList);
-    SuspensionUtil.setShowSuspensionStatus(_suspensionList);
+  }
+
+  void _onSearchResultSelected(
+    String keyword,
+    List<MenuSubcategory> allSubcategories,
+  ) {
+    if (_searchController.isOpen) {
+      _searchController.closeView(keyword);
+    }
+
+    final matchIndex = allSubcategories.indexWhere(
+      (sub) => sub.name?.toLowerCase().contains(keyword.toLowerCase()) ?? false,
+    );
+
+    if (matchIndex != -1) {
+      final matchedSub = allSubcategories[matchIndex];
+
+      setState(() {
+        _selectedCategoryId = matchedSub.categoryId;
+      });
+
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (!mounted) return;
+        final targetKey = _subcategoryKeys[matchedSub.id];
+        if (targetKey?.currentContext != null) {
+          Scrollable.ensureVisible(
+            targetKey!.currentContext!,
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOut,
+            alignment: 0.1,
+          );
+        }
+      });
+    }
   }
 
   @override
@@ -59,293 +161,434 @@ class _MenuSubcategoryFullListScreenState
                 'All Subcategories',
           ),
           actions: [
-            IconButton(
-              onPressed: () =>
-                  MenuSubcategoryFullListScreenActions.handleAddSubcategory(
-                    context,
-                    mounted,
-                  ),
-              icon: const Icon(Icons.add),
-              tooltip: 'Add new subcategory',
+            BlocBuilder<MenuSubcategoryBloc, MenuSubcategoryState>(
+              builder: (context, state) {
+                final bool isReordering =
+                    state is MenuSubcategoryLoaded && state.isReorderAllowed;
+                final bool canReorder = _selectedCategoryId != null;
+
+                if (isReordering) {
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.clear),
+                        tooltip: 'Cancel reordering',
+                        onPressed: () {
+                          context.read<MenuSubcategoryBloc>().add(
+                            const CancelSubcategoryReorder(),
+                          );
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.done),
+                        tooltip: 'Done reordering',
+                        onPressed: () {
+                          context.read<MenuSubcategoryBloc>().add(
+                            const SaveSubcategoryReorder(),
+                          );
+                        },
+                      ),
+                    ],
+                  );
+                }
+
+                return Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (canReorder)
+                      IconButton(
+                        icon: const Icon(Icons.swap_vert),
+                        tooltip: 'Reorder mode',
+                        onPressed: () {
+                          context.read<MenuSubcategoryBloc>().add(
+                            const ToggleSubcategoryReorderMode(),
+                          );
+                        },
+                      ),
+                    IconButton(
+                      icon: Icon(
+                        _isGridView ? Icons.view_list : Icons.grid_view,
+                      ),
+                      tooltip: _isGridView
+                          ? 'Switch to List'
+                          : 'Switch to Grid',
+                      onPressed: _toggleViewMode,
+                    ),
+                    IconButton(
+                      onPressed: () =>
+                          MenuSubcategoryFullListScreenActions.handleAddSubcategory(
+                            context,
+                            mounted,
+                          ),
+                      icon: const Icon(Icons.add),
+                      tooltip: 'Add new subcategory',
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
-        body: BlocConsumer<MenuSubcategoryBloc, MenuSubcategoryState>(
-          listener: (context, state) {
-            if (state is MenuSubcategoryError) {
-              core.PlatformUtils.debugLog(
-                MenuSubcategoryFullListScreen,
-                'MenuSubcategoryError:${state.message}',
-              );
-            }
-          },
-          builder: (context, state) {
-            if (state is MenuSubcategoryLoading ||
-                state is MenuSubcategoryInitial) {
-              return const shared.LoadingPage();
-            } else if (state is MenuSubcategoryLoaded) {
-              _buildSuspensionList(state.subcategories);
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  _buildSearchField(context, state),
-                  Expanded(child: _buildSubCategoryList(state)),
-                ],
-              );
-            } else if (state is MenuSubcategoryError) {
-              core.PlatformUtils.debugLog(
-                MenuSubcategoryFullListScreen,
-                'MenuSubCategoryErrorState:error:${state.message}',
-              );
-              return shared.ErrorPage(
-                onPressedRetryButton: () async {
-                  context.read<MenuSubcategoryBloc>().add(
-                    LoadMenuSubcategories(),
-                  );
-                },
-              );
-            } else {
-              return Container();
-            }
-          },
-        ),
-      ),
-    );
-  }
-
-  Row _buildSearchField(BuildContext context, MenuSubcategoryLoaded state) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (query) {
-                context.read<MenuSubcategoryBloc>().add(
-                  SearchMenuSubcategories(query),
-                );
+        body: Column(
+          children: [
+            BlocBuilder<MenuSubcategoryBloc, MenuSubcategoryState>(
+              builder: (context, state) {
+                if (state is MenuSubcategoryLoaded) {
+                  return _buildSearchAnchor(context, state);
+                }
+                return const SizedBox.shrink();
               },
-              decoration: InputDecoration(
-                hintText:
-                    context.tr(
-                      shared.LocaleKeys.commonSearchHint,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    'Search...',
-                prefixIcon: const Icon(Icons.search),
+            ),
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildCategorySidebar(context),
+                  const VerticalDivider(width: 1, thickness: 1),
+                  Expanded(
+                    child:
+                        BlocConsumer<MenuSubcategoryBloc, MenuSubcategoryState>(
+                          listener: (context, state) {
+                            if (state is MenuSubcategoryError) {
+                              core.PlatformUtils.debugLog(
+                                MenuSubcategoryFullListScreen,
+                                'MenuSubcategoryError:${state.message}',
+                              );
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state is MenuSubcategoryLoading ||
+                                state is MenuSubcategoryInitial) {
+                              return const shared.LoadingPage();
+                            } else if (state is MenuSubcategoryLoaded) {
+                              return _buildSubcategoryContent(state);
+                            } else if (state is MenuSubcategoryError) {
+                              return shared.ErrorPage(
+                                onPressedRetryButton: () async {
+                                  context.read<MenuSubcategoryBloc>().add(
+                                    const LoadMenuSubcategories(),
+                                  );
+                                },
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          },
+                        ),
+                  ),
+                ],
               ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
-  Widget _buildSubCategoryList(MenuSubcategoryLoaded state) {
-    return Visibility(
-      visible: _suspensionList.isNotEmpty,
-      replacement: Visibility(
-        visible: state.isSearchActive,
-        replacement: _buildEmptyState(),
-        child: _buildNoSearchData(),
-      ),
-      child: AzListView(
-        data: _suspensionList,
-        itemCount: _suspensionList.length,
-        padding: const EdgeInsets.only(right: 30),
-        physics: const ClampingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
-        ),
-        indexBarOptions: IndexBarOptions(
-          needRebuild: true,
-          color: Colors.grey.shade300,
-          downColor: Theme.of(context).primaryColor.withValues(alpha: 0.5),
-          indexHintWidth: 50.0,
-        ),
-        indexHintBuilder: (BuildContext context, String hint) {
-          return Container(
-            alignment: Alignment.center,
-            width: 80.0,
-            height: 80.0,
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.5),
-              shape: BoxShape.circle,
+  Widget _buildSearchAnchor(BuildContext context, MenuSubcategoryLoaded state) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: SearchAnchor(
+        searchController: _searchController,
+        builder: (BuildContext context, SearchController controller) {
+          return SearchBar(
+            controller: controller,
+            focusNode: _searchFocusNode,
+            padding: const WidgetStatePropertyAll<EdgeInsets>(
+              EdgeInsets.symmetric(horizontal: 12.0),
             ),
-            child: Text(
-              hint.toUpperCase(),
-              style: Theme.of(
-                context,
-              ).textTheme.displaySmall!.copyWith(color: Colors.white),
+            hintText:
+                context.tr(
+                  shared.LocaleKeys.commonSearchHint,
+                  track: shared.TrackConstants.commonTrack,
+                ) ??
+                'Search subcategories...',
+            leading: const Icon(Icons.search),
+            onTap: () {
+              controller.openView();
+            },
+            onChanged: (value) {
+              if (!controller.isOpen) {
+                controller.openView();
+              }
+            },
+          );
+        },
+        suggestionsBuilder:
+            (BuildContext context, SearchController controller) {
+              final query = controller.text.trim().toLowerCase();
+              final filtered = state.subcategories.where((sub) {
+                final name = sub.name?.toLowerCase() ?? '';
+                return name.contains(query);
+              }).toList();
+
+              if (filtered.isEmpty) {
+                return [
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Text('No subcategories found.'),
+                  ),
+                ];
+              }
+
+              return filtered.map((sub) {
+                final catName = _categories
+                    .firstWhere(
+                      (c) => c.id == sub.categoryId,
+                      orElse: () => const MenuCategory(name: 'Category'),
+                    )
+                    .name;
+
+                return ListTile(
+                  leading: CircleAvatar(
+                    radius: 16,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    child: Text(
+                      (sub.name != null && sub.name!.isNotEmpty)
+                          ? sub.name![0].toUpperCase()
+                          : '?',
+                      style: const TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+                  title: Text(sub.name ?? ''),
+                  subtitle: Text(catName ?? ''),
+                  onTap: () {
+                    _onSearchResultSelected(
+                      sub.name ?? '',
+                      state.subcategories,
+                    );
+                  },
+                );
+              }).toList();
+            },
+      ),
+    );
+  }
+
+  Widget _buildCategorySidebar(BuildContext context) {
+    return SizedBox(
+      width: 100,
+      child: ListView.builder(
+        key: const PageStorageKey('category_sidebar_list'),
+        controller: _categorySidebarScrollController,
+        itemCount: _categories.length + 1, // +1 for "All" tab
+        itemBuilder: (context, index) {
+          final bool isAllTab = index == 0;
+          final MenuCategory? category = isAllTab
+              ? null
+              : _categories[index - 1];
+          final bool isSelected = isAllTab
+              ? _selectedCategoryId == null
+              : _selectedCategoryId == category?.id;
+
+          final String title = isAllTab ? 'All' : (category?.name ?? '');
+
+          return InkWell(
+            onTap: () => _onCategorySelected(isAllTab ? null : category?.id),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Theme.of(context).primaryColor.withValues(alpha: 0.12)
+                    : Colors.transparent,
+                border: Border(
+                  left: BorderSide(
+                    color: isSelected
+                        ? Theme.of(context).primaryColor
+                        : Colors.transparent,
+                    width: 4,
+                  ),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 18,
+                    backgroundColor: isSelected
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey.shade300,
+                    child: Text(
+                      isAllTab ? 'ALL' : (title.isNotEmpty ? title[0] : '?'),
+                      style: TextStyle(
+                        fontSize: isAllTab ? 10 : 14,
+                        fontWeight: FontWeight.bold,
+                        color: isSelected ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    title,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: isSelected
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: isSelected
+                          ? Theme.of(context).primaryColor
+                          : Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
-        itemBuilder: (context, index) {
-          final suspensionItem = _suspensionList[index];
-          final MenuSubcategory subCategory = suspensionItem.subcategory;
-
-          return _itemView(index, state, subCategory, context);
-        },
       ),
+    );
+  }
+
+  Widget _buildSubcategoryContent(MenuSubcategoryLoaded state) {
+    final displayList = _getFilteredSubcategories(state.subcategories);
+
+    if (displayList.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    if (state.isReorderAllowed && _selectedCategoryId != null) {
+      return ReorderableListView.builder(
+        key: UniqueKey(),
+        scrollController: _subcategoryScrollController,
+        padding: const EdgeInsets.all(10),
+        itemCount: displayList.length,
+        buildDefaultDragHandles: false,
+        onReorderItem: (oldIndex, newIndex) async {
+          context.read<MenuSubcategoryBloc>().add(
+            ReorderMenuSubcategories(oldIndex, newIndex),
+          );
+        },
+        proxyDecorator: (child, index, animation) {
+          return AnimatedBuilder(
+            key: UniqueKey(),
+            animation: animation,
+            builder: (BuildContext context, Widget? childWidget) {
+              final double animValue = Curves.easeInOut.transform(
+                animation.value,
+              );
+              final double scale = lerpDouble(1, 1.02, animValue)!;
+              return Transform.scale(
+                scale: scale,
+                child: MenuSubcategoryListItem(
+                  subCategory: displayList[index],
+                  isLastItem: index == (displayList.length - 1),
+                  isReorderMode: true,
+                  index: index,
+                ),
+              );
+            },
+          );
+        },
+        itemBuilder: (context, index) {
+          final item = displayList[index];
+          if (item.id != null) {
+            _subcategoryKeys[item.id!] ??= GlobalKey();
+          }
+          return Container(
+            key: ValueKey(item.id ?? index),
+            margin: const EdgeInsets.only(bottom: 8),
+            child: MenuSubcategoryListItem(
+              subCategory: item,
+              isLastItem: index == (displayList.length - 1),
+              isReorderMode: true,
+              index: index,
+            ),
+          );
+        },
+      );
+    }
+
+    if (_isGridView) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          final double crossAxisExtent = 200.0;
+          final int crossAxisCount = (constraints.maxWidth / crossAxisExtent)
+              .floor()
+              .clamp(2, 6);
+          final double itemWidth =
+              (constraints.maxWidth - ((crossAxisCount - 1) * 10)) /
+              crossAxisCount;
+          // Card height auto proportional to width (approx 160px height)
+          final double childAspectRatio = itemWidth / 180.0;
+
+          return GridView.builder(
+            key: PageStorageKey('subcategory_grid_${_selectedCategoryId ?? 0}'),
+            controller: _subcategoryScrollController,
+            padding: const EdgeInsets.all(10),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              childAspectRatio: childAspectRatio,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: displayList.length,
+            itemBuilder: (context, index) {
+              final item = displayList[index];
+              if (item.id != null) {
+                _subcategoryKeys[item.id!] ??= GlobalKey();
+              }
+              return Container(
+                key: _subcategoryKeys[item.id!],
+                child: MenuSubcategoryGridCard(subCategory: item),
+              );
+            },
+          );
+        },
+      );
+    }
+
+    return ListView.builder(
+      key: PageStorageKey('subcategory_list_${_selectedCategoryId ?? 0}'),
+      controller: _subcategoryScrollController,
+      padding: const EdgeInsets.all(10),
+      itemCount: displayList.length,
+      itemBuilder: (context, index) {
+        final item = displayList[index];
+        if (item.id != null) {
+          _subcategoryKeys[item.id!] ??= GlobalKey();
+        }
+        return Container(
+          key: _subcategoryKeys[item.id!],
+          child: MenuSubcategoryListItem(
+            subCategory: item,
+            isLastItem: index == (displayList.length - 1),
+          ),
+        );
+      },
     );
   }
 
   Widget _buildEmptyState() {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.dashboard_customize_outlined,
-                    color: Theme.of(context).primaryColor,
-                    size: 110,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      'No data has been inserted.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 5),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Text(
-                        'Please insert sub-category from menu category screen or you can add it from below button.',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    onPressed: () =>
-                        MenuSubcategoryFullListScreenActions.handleAddSubcategory(
-                          context,
-                          mounted,
-                        ),
-                    style: ElevatedButton.styleFrom(
-                      textStyle: Theme.of(context).textTheme.bodyLarge,
-                      padding: const EdgeInsets.only(
-                        top: 10,
-                        bottom: 10,
-                        right: 25,
-                        left: 25,
-                      ),
-                      elevation: 5,
-                    ),
-                    child: Text(
-                      context.tr(
-                            shared.LocaleKeys.addMenuSubCategoryBtnText,
-                            track:
-                                shared.TrackConstants.menuSubCategoryPageTrack,
-                          ) ??
-                          'Add new subcategory',
-                    ),
-                  ),
-                ],
-              ),
-            ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.dashboard_customize_outlined,
+            size: 80,
+            color: Theme.of(context).primaryColor,
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNoSearchData() {
-    return Row(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.search_off,
-                color: Theme.of(context).primaryColor,
-                size: 100,
-              ),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Text(
-                      context.tr(
-                            shared.LocaleKeys.commonNoSearchResultFoundMsg,
-                            track:
-                                shared.TrackConstants.menuSubCategoryPageTrack,
-                          ) ??
-                          'No data Found.',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          const SizedBox(height: 12),
+          Text(
+            'No subcategories found.',
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _itemView(
-    int index,
-    MenuSubcategoryLoaded state,
-    MenuSubcategory subCategory,
-    BuildContext context,
-  ) {
-    return MenuSubcategoryListItem(
-      subCategory: subCategory,
-      isLastItem: index == (_suspensionList.length - 1),
+          const SizedBox(height: 12),
+          ElevatedButton.icon(
+            onPressed: () =>
+                MenuSubcategoryFullListScreenActions.handleAddSubcategory(
+                  context,
+                  mounted,
+                ),
+            icon: const Icon(Icons.add),
+            label: const Text('Add Subcategory'),
+          ),
+        ],
+      ),
     );
   }
 }

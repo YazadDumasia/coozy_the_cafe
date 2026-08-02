@@ -525,10 +525,16 @@ class OtpVerificationPageState extends State<OtpVerificationPage>
   Future<void> onClickVerify() async {
     if (currentText == _currentOtpNumber) {
       core.PlatformUtils.debugLog(OtpVerificationPage, 'Otp verficated.....');
-      context.go(
-        AppRoutePath.successfullyScreenRoute,
-        extra: {'redirectPath': AppRoutePath.homeRoute},
+      await LocalManager.instance.setBoolValue(
+        key: PreferencesKeys.isLoggedIn,
+        value: true,
       );
+      if (mounted) {
+        context.go(
+          AppRoutePath.successfullyScreenRoute,
+          extra: {'redirectPath': AppRoutePath.homeRoute},
+        );
+      }
     } else {
       pinController!.triggerError();
     }

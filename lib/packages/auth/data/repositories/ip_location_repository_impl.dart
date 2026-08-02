@@ -7,10 +7,10 @@ class IpLocationRepositoryImpl implements IpLocationRepository {
   IpLocationRepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<String?> getCountryCodeFromIp() async {
+  Future<String?> getCountryIsoCode3FromIp() async {
     final String? ip = await getIpAddress();
     if (ip != null) {
-      return await remoteDataSource.getCountryCodeFromIpInfo(ip);
+      return await remoteDataSource.getCountryIso3CodeFromIpInfo(ip);
     }
     return null;
   }

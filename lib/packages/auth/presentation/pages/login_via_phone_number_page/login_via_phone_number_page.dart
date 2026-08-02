@@ -34,7 +34,6 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
   AnimationController? controller;
   Position? currentPosition;
 
-  String? ipv4, ipv6;
   Position? position;
   ScrollController? _scrollController;
   LoginWithPhoneCubit? _loginWithPhoneCubit;
@@ -824,11 +823,7 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
           context: context,
           title: 'Info',
           descriptions: 'Web OTP: $otpCode',
-          titleIcon: const Icon(
-            Icons.info,
-            color: Colors.blue,
-            size: 50,
-          ),
+          titleIcon: const Icon(Icons.info, color: Colors.blue, size: 50),
         );
       }
 
