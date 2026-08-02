@@ -32,4 +32,12 @@ class MenuCategory {
       createdDate: createdDate ?? this.createdDate,
     );
   }
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is MenuCategory && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }

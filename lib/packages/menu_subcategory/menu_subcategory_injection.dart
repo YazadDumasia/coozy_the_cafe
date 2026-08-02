@@ -5,6 +5,7 @@ import 'data/repositories/menu_subcategory_repository_impl.dart';
 import 'domain/repositories/menu_subcategory_repository.dart';
 import 'domain/usecases/menu_subcategory_usecases.dart';
 import 'presentation/bloc/menu_subcategory_bloc.dart';
+import 'presentation/bloc/add_menu_subcategory_cubit/add_new_menu_subcategory_cubit.dart';
 
 void registerMenuSubcategoryDependencies(GetIt sl) {
   // Data sources
@@ -25,7 +26,7 @@ void registerMenuSubcategoryDependencies(GetIt sl) {
   sl.registerLazySingleton(() => DeleteMenuSubcategoryUseCase(sl()));
   sl.registerLazySingleton(() => UpdateMenuSubcategoryPositionsUseCase(sl()));
 
-  // Bloc
+  // Cubits & Blocs
   sl.registerFactory(
     () => MenuSubcategoryBloc(
       getSubcategoriesUseCase: sl(),
@@ -34,6 +35,14 @@ void registerMenuSubcategoryDependencies(GetIt sl) {
       updateSubcategoryUseCase: sl(),
       deleteSubcategoryUseCase: sl(),
       updateSubcategoryPositionsUseCase: sl(),
+    ),
+  );
+
+  sl.registerFactory(
+    () => AddNewMenuSubcategoryCubit(
+      addMenuSubcategoryUseCase: sl(),
+      getSubcategoriesByCategoryUseCase: sl(),
+      addMenuCategoryUseCase: sl(),
     ),
   );
 }

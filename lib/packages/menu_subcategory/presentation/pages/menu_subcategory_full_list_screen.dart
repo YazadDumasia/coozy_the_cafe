@@ -219,6 +219,7 @@ class _MenuSubcategoryFullListScreenState
                           MenuSubcategoryFullListScreenActions.handleAddSubcategory(
                             context,
                             mounted,
+                            onRefreshCategories: _fetchCategories,
                           ),
                       icon: const Icon(Icons.add),
                       tooltip: 'Add new subcategory',
@@ -291,28 +292,39 @@ class _MenuSubcategoryFullListScreenState
       padding: const EdgeInsets.all(10.0),
       child: SearchAnchor(
         searchController: _searchController,
+        isFullScreen: false,
+        viewConstraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * .35 < 220
+              ? 220
+              : MediaQuery.of(context).size.height * .35 > 220
+              ? 250
+              : MediaQuery.of(context).size.height * .35,
+        ),
         builder: (BuildContext context, SearchController controller) {
-          return SearchBar(
-            controller: controller,
-            focusNode: _searchFocusNode,
-            padding: const WidgetStatePropertyAll<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 12.0),
-            ),
-            hintText:
-                context.tr(
-                  shared.LocaleKeys.commonSearchHint,
-                  track: shared.TrackConstants.commonTrack,
-                ) ??
-                'Search subcategories...',
-            leading: const Icon(Icons.search),
-            onTap: () {
-              controller.openView();
-            },
-            onChanged: (value) {
-              if (!controller.isOpen) {
+          return Theme(
+            data: Theme.of(context),
+            child: SearchBar(
+              controller: controller,
+              focusNode: _searchFocusNode,
+              padding: const WidgetStatePropertyAll<EdgeInsets>(
+                EdgeInsets.symmetric(horizontal: 12.0),
+              ),
+              hintText:
+                  context.tr(
+                    shared.LocaleKeys.commonSearchHint,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Search subcategories...',
+              leading: const Icon(Icons.search),
+              onTap: () {
                 controller.openView();
-              }
-            },
+              },
+              onChanged: (value) {
+                if (!controller.isOpen) {
+                  controller.openView();
+                }
+              },
+            ),
           );
         },
         suggestionsBuilder:
@@ -370,6 +382,7 @@ class _MenuSubcategoryFullListScreenState
       width: 100,
       child: ListView.builder(
         key: const PageStorageKey('category_sidebar_list'),
+        primary: false,
         controller: _categorySidebarScrollController,
         itemCount: _categories.length + 1, // +1 for "All" tab
         itemBuilder: (context, index) {
@@ -585,6 +598,8 @@ class _MenuSubcategoryFullListScreenState
                 MenuSubcategoryFullListScreenActions.handleAddSubcategory(
                   context,
                   mounted,
+                  categoryId: _selectedCategoryId,
+                  onRefreshCategories: _fetchCategories,
                 ),
             icon: const Icon(Icons.add),
             label: const Text('Add Subcategory'),

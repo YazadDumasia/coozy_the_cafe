@@ -11,13 +11,17 @@ import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/pages/menu
 class MenuSubcategoryFullListScreenActions {
   static Future<void> handleAddSubcategory(
     BuildContext context,
-    bool mounted,
-  ) async {
-    await context.push(
-      '${core.AppRoutePath.menuSubCategoryFullListRoute}/${core.AppRoutePath.addNewMenuSubCategoryScreenRoute}',
-    );
+    bool mounted, {
+    int? categoryId,
+    VoidCallback? onRefreshCategories,
+  }) async {
+    final String path = categoryId != null
+        ? '${core.AppRoutePath.menuSubCategoryFullListRoute}/${core.AppRoutePath.addNewMenuSubCategoryScreenRoute}?categoryId=$categoryId'
+        : '${core.AppRoutePath.menuSubCategoryFullListRoute}/${core.AppRoutePath.addNewMenuSubCategoryScreenRoute}';
+    await context.push(path);
     if (!context.mounted) return;
-    context.read<MenuSubcategoryBloc>().add(LoadMenuSubcategories());
+    context.read<MenuSubcategoryBloc>().add(const LoadMenuSubcategories());
+    onRefreshCategories?.call();
   }
 
   static Future<void> handleEditSubcategory(

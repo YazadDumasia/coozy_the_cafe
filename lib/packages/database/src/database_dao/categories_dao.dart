@@ -103,9 +103,30 @@ class CategoriesDao extends DatabaseAccessor<CoozyDatabase>
 
   // Subcategory CRUD operations
 
-  ///Create a new subcategory
-  Future<int> createSubcategory(SubcategoriesTableCompanion subcategory) =>
-      into(subcategoriesTable).insert(subcategory, mode: InsertMode.replace);
+  ///Create a new subcategory with automatic position calculation at the end of the category
+  Future<int> createSubcategory(SubcategoriesTableCompanion subcategory) async {
+    return transaction(() async {
+      final categoryId = subcategory.categoryId.value;
+      int maxPosition = -1;
+      if (categoryId != null) {
+        final maxPositionExpr = subcategoriesTable.position.max();
+        final query = selectOnly(subcategoriesTable)
+          ..where(subcategoriesTable.categoryId.equals(categoryId))
+          ..addColumns([maxPositionExpr]);
+        final maxRow = await query.getSingle();
+        maxPosition = maxRow.read(maxPositionExpr) ?? -1;
+      }
+
+      final newSubcategory = subcategory.copyWith(
+        position: Value(maxPosition + 1),
+      );
+
+      return into(subcategoriesTable).insert(
+        newSubcategory,
+        mode: InsertMode.replace,
+      );
+    });
+  }
 
   /// Get all subcategories
   Future<List<Subcategory>?> getSubcategories() async {
