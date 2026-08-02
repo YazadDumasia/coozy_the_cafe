@@ -14,12 +14,14 @@ class MenuSubcategoryLoading extends MenuSubcategoryState {}
 
 class MenuSubcategoryLoaded extends MenuSubcategoryState {
   final List<MenuSubcategory> subcategories;
+  final List<MenuSubcategory>? initialSubcategories;
   final bool isReorderAllowed;
   final int? categoryIdFilter;
   final bool isSearchActive;
 
   const MenuSubcategoryLoaded({
     required this.subcategories,
+    this.initialSubcategories,
     this.isReorderAllowed = false,
     this.categoryIdFilter,
     this.isSearchActive = false,
@@ -27,12 +29,14 @@ class MenuSubcategoryLoaded extends MenuSubcategoryState {
 
   MenuSubcategoryLoaded copyWith({
     List<MenuSubcategory>? subcategories,
+    List<MenuSubcategory>? initialSubcategories,
     bool? isReorderAllowed,
     int? categoryIdFilter,
     bool? isSearchActive,
   }) {
     return MenuSubcategoryLoaded(
       subcategories: subcategories ?? this.subcategories,
+      initialSubcategories: initialSubcategories ?? this.initialSubcategories,
       isReorderAllowed: isReorderAllowed ?? this.isReorderAllowed,
       categoryIdFilter: categoryIdFilter ?? this.categoryIdFilter,
       isSearchActive: isSearchActive ?? this.isSearchActive,
@@ -42,6 +46,7 @@ class MenuSubcategoryLoaded extends MenuSubcategoryState {
   @override
   List<Object?> get props => [
     subcategories,
+    initialSubcategories,
     isReorderAllowed,
     categoryIdFilter,
     isSearchActive,

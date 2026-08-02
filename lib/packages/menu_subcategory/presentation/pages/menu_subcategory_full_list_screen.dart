@@ -129,11 +129,10 @@ class _MenuSubcategoryFullListScreenState
     if (matchIndex != -1) {
       final matchedSub = allSubcategories[matchIndex];
 
-      setState(() {
-        _selectedCategoryId = matchedSub.categoryId;
-      });
+      // Select parent category and trigger subcategories load for that category
+      _onCategorySelected(matchedSub.categoryId);
 
-      Future.delayed(const Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 350), () {
         if (!mounted) return;
         final targetKey = _subcategoryKeys[matchedSub.id];
         if (targetKey?.currentContext != null) {
@@ -287,6 +286,7 @@ class _MenuSubcategoryFullListScreenState
   }
 
   Widget _buildSearchAnchor(BuildContext context, MenuSubcategoryLoaded state) {
+    final outerContext = context;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: SearchAnchor(
@@ -318,7 +318,10 @@ class _MenuSubcategoryFullListScreenState
         suggestionsBuilder:
             (BuildContext context, SearchController controller) {
               final query = controller.text.trim().toLowerCase();
-              final filtered = state.subcategories.where((sub) {
+              final allSubs = outerContext
+                  .read<MenuSubcategoryBloc>()
+                  .allSubcategories;
+              final filtered = allSubs.where((sub) {
                 final name = sub.name?.toLowerCase() ?? '';
                 return name.contains(query);
               }).toList();
@@ -333,12 +336,11 @@ class _MenuSubcategoryFullListScreenState
               }
 
               return filtered.map((sub) {
-                final catName = _categories
-                    .firstWhere(
-                      (c) => c.id == sub.categoryId,
-                      orElse: () => const MenuCategory(name: 'Category'),
-                    )
-                    .name;
+                final matchCat = _categories.cast<MenuCategory?>().firstWhere(
+                  (c) => c?.id == sub.categoryId,
+                  orElse: () => null,
+                );
+                final catName = matchCat?.name ?? 'Category';
 
                 return ListTile(
                   leading: CircleAvatar(
@@ -352,12 +354,9 @@ class _MenuSubcategoryFullListScreenState
                     ),
                   ),
                   title: Text(sub.name ?? ''),
-                  subtitle: Text(catName ?? ''),
+                  subtitle: Text(catName),
                   onTap: () {
-                    _onSearchResultSelected(
-                      sub.name ?? '',
-                      state.subcategories,
-                    );
+                    _onSearchResultSelected(sub.name ?? '', allSubs);
                   },
                 );
               }).toList();
@@ -452,12 +451,15 @@ class _MenuSubcategoryFullListScreenState
 
     if (state.isReorderAllowed && _selectedCategoryId != null) {
       return ReorderableListView.builder(
-        key: UniqueKey(),
         scrollController: _subcategoryScrollController,
         padding: const EdgeInsets.all(10),
         itemCount: displayList.length,
         buildDefaultDragHandles: false,
-        onReorderItem: (oldIndex, newIndex) async {
+        onReorderItem: (oldIndex, newIndex) {
+          core.PlatformUtils.debugLog(
+            MenuSubcategoryFullListScreen,
+            'Reordering subcategory from index $oldIndex to $newIndex',
+          );
           context.read<MenuSubcategoryBloc>().add(
             ReorderMenuSubcategories(oldIndex, newIndex),
           );

@@ -37,6 +37,27 @@ class MenuSubcategoryModel extends MenuSubcategory {
     );
   }
 
+  @override
+  MenuSubcategoryModel copyWith({
+    int? id,
+    String? hashId,
+    int? categoryId,
+    String? name,
+    bool? isActive,
+    int? position,
+    String? createdDate,
+  }) {
+    return MenuSubcategoryModel(
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      categoryId: categoryId ?? this.categoryId,
+      name: name ?? this.name,
+      isActive: isActive ?? this.isActive,
+      position: position ?? this.position,
+      createdDate: createdDate ?? this.createdDate,
+    );
+  }
+
   SubcategoriesTableCompanion toCompanion() {
     return SubcategoriesTableCompanion(
       id: id == null ? const Value.absent() : Value(id!),
