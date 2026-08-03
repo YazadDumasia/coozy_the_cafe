@@ -40,8 +40,7 @@ class _LoadingPageState extends State<LoadingPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    SizedBox(
-                      width: MediaQuery.sizeOf(context).width,
+                    Container(
                       child: Lottie.asset(
                         Assets.lottie.loading,
                         fit: BoxFit.scaleDown,
@@ -59,8 +58,7 @@ class _LoadingPageState extends State<LoadingPage>
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    SizedBox(
-                      width: MediaQuery.sizeOf(context).width,
+                    Container(
                       child: Lottie.asset(
                         Assets.lottie.loading,
                         fit: BoxFit.scaleDown,

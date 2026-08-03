@@ -26,7 +26,6 @@ class MenuSubcategoryListItem extends StatelessWidget {
       ),
       margin: EdgeInsets.only(bottom: isLastItem ? 0 : 10, left: 10, right: 10),
       child: Container(
-        width: MediaQuery.of(context).size.width,
         padding: const EdgeInsets.all(10.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
