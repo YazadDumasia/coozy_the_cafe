@@ -61,6 +61,8 @@ dependencies:
 #
   bubble_showcase: ^1.1.0
   showcaseview: ^5.1.0
+  flutter_tilt: ^4.1.0
+  faker: ^2.2.0
 
   #
   cached_network_image_ce: ^4.9.0

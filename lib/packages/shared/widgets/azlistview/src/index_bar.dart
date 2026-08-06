@@ -1,4 +1,4 @@
-// ignore_for_file: library_private_types_in_public_api
+import 'dart:async';
 import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -513,32 +513,117 @@ class BaseIndexBar extends StatefulWidget {
   final IndexBarDragNotifier? indexBarDragNotifier;
 
   @override
-  _BaseIndexBarState createState() => _BaseIndexBarState();
+  State<BaseIndexBar> createState() => _BaseIndexBarState();
 }
 
 class _BaseIndexBarState extends State<BaseIndexBar> {
   int lastIndex = -1;
   int _widgetTop = 0;
 
-  /// get index.
-  int _getIndex(double offset) {
-    final int index = offset ~/ widget.itemHeight;
-    return math.min(index, widget.data.length - 1);
+  final ScrollController _scrollController = ScrollController();
+  bool _canScrollUp = false;
+  bool _canScrollDown = true;
+  Timer? _scrollTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScrollChanged);
   }
 
-  /// trigger drag event.
-  void _triggerDragEvent(int action) {
+  @override
+  void dispose() {
+    _scrollTimer?.cancel();
+    _scrollController.removeListener(_onScrollChanged);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScrollChanged() {
+    if (!_scrollController.hasClients) return;
+    final canUp = _scrollController.offset > 0.5;
+    final canDown =
+        _scrollController.offset <
+        _scrollController.position.maxScrollExtent - 0.5;
+    if (canUp != _canScrollUp || canDown != _canScrollDown) {
+      setState(() {
+        _canScrollUp = canUp;
+        _canScrollDown = canDown;
+      });
+    }
+  }
+
+  void _scrollBy(double delta) {
+    if (!_scrollController.hasClients) return;
+    final newOffset = (_scrollController.offset + delta).clamp(
+      0.0,
+      _scrollController.position.maxScrollExtent,
+    );
+    _scrollController.animateTo(
+      newOffset,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeOut,
+    );
+  }
+
+  void _startRepeatScroll(double delta) {
+    _scrollBy(delta);
+    _scrollTimer?.cancel();
+    _scrollTimer = Timer.periodic(const Duration(milliseconds: 150), (_) {
+      _scrollBy(delta);
+    });
+  }
+
+  void _stopRepeatScroll() {
+    _scrollTimer?.cancel();
+    _scrollTimer = null;
+  }
+
+  int _getIndex(double localDy, bool needsScroll, double arrowHeight) {
+    double adjustedDy = localDy;
+    if (needsScroll) {
+      adjustedDy -= arrowHeight;
+    }
+    if (needsScroll && _scrollController.hasClients) {
+      adjustedDy += _scrollController.offset;
+    }
+    final int index = adjustedDy ~/ widget.itemHeight;
+    return math.max(0, math.min(index, widget.data.length - 1));
+  }
+
+  bool _isInArrowZone(
+    double localDy,
+    double totalHeight,
+    double arrowHeight,
+    bool needsScroll,
+  ) {
+    if (!needsScroll) return false;
+    return localDy < arrowHeight || localDy > (totalHeight - arrowHeight);
+  }
+
+  void _triggerDragEvent(int action, bool needsScroll, double arrowHeight) {
     if (widget.hapticFeedback &&
         (action == IndexBarDragDetails.actionDown ||
             action == IndexBarDragDetails.actionUpdate)) {
       HapticFeedback.vibrate();
     }
+
+    double visualLocalY;
+    if (needsScroll) {
+      visualLocalY =
+          arrowHeight +
+          (lastIndex * widget.itemHeight) -
+          (_scrollController.hasClients ? _scrollController.offset : 0);
+    } else {
+      visualLocalY = lastIndex * widget.itemHeight;
+    }
+
     widget.indexBarDragNotifier?.dragDetails.value = IndexBarDragDetails(
       action: action,
       index: lastIndex,
       tag: widget.data[lastIndex],
       localPositionY: lastIndex * widget.itemHeight,
-      globalPositionY: lastIndex * widget.itemHeight + _widgetTop,
+      globalPositionY: visualLocalY + _widgetTop,
     );
   }
 
@@ -551,54 +636,195 @@ class _BaseIndexBarState extends State<BaseIndexBar> {
     return box;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final List<Widget> children = List.generate(widget.data.length, (index) {
-      final Widget child = widget.itemBuilder == null
-          ? Center(child: Text(widget.data[index], style: widget.textStyle))
-          : widget.itemBuilder!(context, index);
-      return SizedBox(
+  Widget _buildArrow({
+    required IconData icon,
+    required bool enabled,
+    required double delta,
+  }) {
+    final Color baseColor = widget.textStyle.color ?? const Color(0xFF666666);
+    final Color color = enabled ? baseColor : baseColor.withValues(alpha: 0.3);
+    return GestureDetector(
+      onTap: enabled ? () => _scrollBy(delta) : null,
+      onLongPressStart: enabled ? (_) => _startRepeatScroll(delta) : null,
+      onLongPressEnd: (_) => _stopRepeatScroll(),
+      onLongPressCancel: _stopRepeatScroll,
+      child: SizedBox(
         width: widget.width,
         height: widget.itemHeight,
-        child: child,
-      );
-    });
-
-    return GestureDetector(
-      onVerticalDragDown: (DragDownDetails details) {
-        final RenderBox? box = _getRenderBox(context);
-        if (box == null) return;
-        final Offset topLeftPosition = box.localToGlobal(Offset.zero);
-        _widgetTop = topLeftPosition.dy.toInt();
-        final int index = _getIndex(details.localPosition.dy);
-        if (index >= 0) {
-          lastIndex = index;
-          _triggerDragEvent(IndexBarDragDetails.actionDown);
-        }
-      },
-      onVerticalDragUpdate: (DragUpdateDetails details) {
-        final int index = _getIndex(details.localPosition.dy);
-        if (index >= 0 && lastIndex != index) {
-          lastIndex = index;
-          //HapticFeedback.lightImpact();
-          //HapticFeedback.vibrate();
-          _triggerDragEvent(IndexBarDragDetails.actionUpdate);
-        }
-      },
-      onVerticalDragEnd: (DragEndDetails details) {
-        _triggerDragEvent(IndexBarDragDetails.actionEnd);
-      },
-      onVerticalDragCancel: () {
-        _triggerDragEvent(IndexBarDragDetails.actionCancel);
-      },
-      onTapUp: (TapUpDetails details) {
-        //_triggerDragEvent(IndexBarDragDetails.actionUp);
-      },
-      behavior: HitTestBehavior.translucent,
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(mainAxisSize: MainAxisSize.min, children: children),
+        child: Center(
+          child: Icon(icon, size: widget.itemHeight, color: color),
+        ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double totalRequiredHeight =
+            widget.data.length * widget.itemHeight;
+        final double mediaQueryHeight = MediaQuery.of(context).size.height;
+        final double availableHeight = constraints.maxHeight.isFinite
+            ? constraints.maxHeight
+            : mediaQueryHeight;
+
+        // Check if total required height is less/greater than available height
+        final bool needsScroll = totalRequiredHeight > availableHeight;
+        final double arrowHeight = needsScroll ? widget.itemHeight : 0;
+
+        final double listHeight = needsScroll
+            ? math.max(availableHeight - (2 * arrowHeight), widget.itemHeight)
+            : totalRequiredHeight;
+
+        if (needsScroll) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _onScrollChanged();
+          });
+        }
+
+        Widget listView;
+        if (needsScroll) {
+          listView = SizedBox(
+            height: listHeight,
+            width: widget.width,
+            child: ListView.builder(
+              primary: false,
+              controller: _scrollController,
+              itemExtent: widget.itemHeight,
+              itemCount: widget.data.length,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                final Widget child = widget.itemBuilder == null
+                    ? Center(
+                        child: Text(
+                          widget.data[index],
+                          style: widget.textStyle,
+                        ),
+                      )
+                    : widget.itemBuilder!(context, index);
+                return SizedBox(
+                  width: widget.width,
+                  height: widget.itemHeight,
+                  child: Center(child: child),
+                );
+              },
+            ),
+          );
+        } else {
+          final List<Widget> children = List.generate(widget.data.length, (
+            index,
+          ) {
+            final Widget child = widget.itemBuilder == null
+                ? Center(
+                    child: Text(widget.data[index], style: widget.textStyle),
+                  )
+                : widget.itemBuilder!(context, index);
+            return SizedBox(
+              width: widget.width,
+              height: widget.itemHeight,
+              child: child,
+            );
+          });
+          listView = Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: children,
+          );
+        }
+
+        final Widget content = Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (needsScroll)
+              _buildArrow(
+                icon: Icons.keyboard_arrow_up,
+                enabled: _canScrollUp,
+                delta: -widget.itemHeight,
+              ),
+            listView,
+            if (needsScroll)
+              _buildArrow(
+                icon: Icons.keyboard_arrow_down,
+                enabled: _canScrollDown,
+                delta: widget.itemHeight,
+              ),
+          ],
+        );
+
+        return GestureDetector(
+          onVerticalDragDown: (DragDownDetails details) {
+            if (_isInArrowZone(
+              details.localPosition.dy,
+              availableHeight,
+              arrowHeight,
+              needsScroll,
+            )) {
+              return;
+            }
+            final RenderBox? box = _getRenderBox(context);
+            if (box == null) return;
+            final Offset topLeftPosition = box.localToGlobal(Offset.zero);
+            _widgetTop = topLeftPosition.dy.toInt();
+            final int index = _getIndex(
+              details.localPosition.dy,
+              needsScroll,
+              arrowHeight,
+            );
+            if (index >= 0) {
+              lastIndex = index;
+              _triggerDragEvent(
+                IndexBarDragDetails.actionDown,
+                needsScroll,
+                arrowHeight,
+              );
+            }
+          },
+          onVerticalDragUpdate: (DragUpdateDetails details) {
+            if (_isInArrowZone(
+              details.localPosition.dy,
+              availableHeight,
+              arrowHeight,
+              needsScroll,
+            )) {
+              return;
+            }
+            final int index = _getIndex(
+              details.localPosition.dy,
+              needsScroll,
+              arrowHeight,
+            );
+            if (index >= 0 && lastIndex != index) {
+              lastIndex = index;
+              _triggerDragEvent(
+                IndexBarDragDetails.actionUpdate,
+                needsScroll,
+                arrowHeight,
+              );
+            }
+          },
+          onVerticalDragEnd: (DragEndDetails details) {
+            _triggerDragEvent(
+              IndexBarDragDetails.actionEnd,
+              needsScroll,
+              arrowHeight,
+            );
+          },
+          onVerticalDragCancel: () {
+            _triggerDragEvent(
+              IndexBarDragDetails.actionCancel,
+              needsScroll,
+              arrowHeight,
+            );
+          },
+          onTapUp: (TapUpDetails details) {
+            //_triggerDragEvent(IndexBarDragDetails.actionUp, needsScroll, arrowHeight);
+          },
+          behavior: HitTestBehavior.translucent,
+          child: content,
+        );
+      },
     );
   }
 }

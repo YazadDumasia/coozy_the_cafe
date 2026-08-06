@@ -170,6 +170,7 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
       child: Scaffold(
         key: const PageStorageKey('employeeSubScreen'),
         floatingActionButton: FloatingActionButton(
+          heroTag: 'addEmployeeFab',
           onPressed: () => _showEmployeeFormDialog(context),
           tooltip:
               context.tr(
@@ -200,8 +201,9 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                     ) ??
                     'Search employees by mobile number',
               ],
-              onChanged: (value) =>
-                  context.read<EmployeeBloc>().add(SearchEmployeesEvent(value)),
+              onChanged: (value) => context.read<EmployeeBloc>().add(
+                SearchEmployeesEvent(value),
+              ),
             ),
             Expanded(
               child: BlocConsumer<EmployeeBloc, EmployeeState>(
@@ -237,7 +239,9 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
 
                     return RefreshIndicator(
                       onRefresh: () async {
-                        context.read<EmployeeBloc>().add(LoadEmployeesEvent());
+                        context.read<EmployeeBloc>().add(
+                          LoadEmployeesEvent(),
+                        );
                       },
                       child: SlidableAutoCloseBehavior(
                         child: shared.AzListView(
