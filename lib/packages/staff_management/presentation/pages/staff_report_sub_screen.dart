@@ -23,11 +23,14 @@ class StaffReportSubScreen extends StatefulWidget {
 
 class _StaffReportSubScreenState extends State<StaffReportSubScreen>
     with AutomaticKeepAliveClientMixin {
-  ReportDuration _selectedDuration = ReportDuration.monthly;
-  int? _selectedEmployeeId; // null = All Employees
+  final ValueNotifier<ReportDuration> _selectedDurationNotifier =
+      ValueNotifier<ReportDuration>(ReportDuration.monthly);
+  final ValueNotifier<int?> _selectedEmployeeIdNotifier =
+      ValueNotifier<int?>(null);
+  final ValueNotifier<SfRangeValues> _sliderRangeValuesNotifier =
+      ValueNotifier<SfRangeValues>(const SfRangeValues(0.0, 100.0));
 
-  // Range Slider values (0.0 to 100.0 representing percentage window of the selected duration)
-  SfRangeValues _sliderRangeValues = const SfRangeValues(0.0, 100.0);
+  late final Listenable _filterListenable;
 
   @override
   bool get wantKeepAlive => true;
@@ -35,9 +38,22 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
   @override
   void initState() {
     super.initState();
+    _filterListenable = Listenable.merge([
+      _selectedDurationNotifier,
+      _selectedEmployeeIdNotifier,
+      _sliderRangeValuesNotifier,
+    ]);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _refreshAllData();
     });
+  }
+
+  @override
+  void dispose() {
+    _selectedDurationNotifier.dispose();
+    _selectedEmployeeIdNotifier.dispose();
+    _sliderRangeValuesNotifier.dispose();
+    super.dispose();
   }
 
   void _refreshAllData() {
@@ -58,151 +74,156 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
           context.read<AttendanceBloc>().add(LoadAttendanceEvent());
           context.read<LeaveBloc>().add(LoadLeavesEvent());
         },
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header Controls Card (Duration & Employee Selector)
-              _buildHeaderFilterCard(theme),
-              const SizedBox(height: 16),
+        child: AnimatedBuilder(
+          animation: _filterListenable,
+          builder: (context, _) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Header Controls Card (Duration & Employee Selector)
+                  _buildHeaderFilterCard(theme),
+                  const SizedBox(height: 16),
 
-              // Syncfusion Interactive Range Slider Component
-              _buildSyncfusionRangeSliderCard(theme),
-              const SizedBox(height: 20),
+                  // Syncfusion Interactive Range Slider Component
+                  _buildSyncfusionRangeSliderCard(theme),
+                  const SizedBox(height: 20),
 
-              // BlocBuilder for combined data summary & charts
-              BlocBuilder<EmployeeBloc, EmployeeState>(
-                builder: (context, employeeState) {
-                  return BlocBuilder<AttendanceBloc, AttendanceState>(
-                    builder: (context, attendanceState) {
-                      return BlocBuilder<LeaveBloc, LeaveState>(
-                        builder: (context, leaveState) {
-                          final employees = employeeState is EmployeeLoadedState
-                              ? employeeState.employees
-                              : <EmployeeEntity>[];
-                          final attendanceList =
-                              attendanceState is AttendanceLoadedState
-                              ? attendanceState.attendanceList
-                              : <AttendanceEntity>[];
-                          final leaves = leaveState is LeaveLoadedState
-                              ? leaveState.leaves
-                              : <LeaveEntity>[];
+                  // BlocBuilder for combined data summary & charts
+                  BlocBuilder<EmployeeBloc, EmployeeState>(
+                    builder: (context, employeeState) {
+                      return BlocBuilder<AttendanceBloc, AttendanceState>(
+                        builder: (context, attendanceState) {
+                          return BlocBuilder<LeaveBloc, LeaveState>(
+                            builder: (context, leaveState) {
+                              final employees = employeeState is EmployeeLoadedState
+                                  ? employeeState.employees
+                                  : <EmployeeEntity>[];
+                              final attendanceList =
+                                  attendanceState is AttendanceLoadedState
+                                  ? attendanceState.attendanceList
+                                  : <AttendanceEntity>[];
+                              final leaves = leaveState is LeaveLoadedState
+                                  ? leaveState.leaves
+                                  : <LeaveEntity>[];
 
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // KPI Cards Summary
-                              _buildKpiMetricsGrid(
-                                theme: theme,
-                                employees: employees,
-                                attendanceList: attendanceList,
-                                leaves: leaves,
-                              ),
-                              const SizedBox(height: 24),
-
-                              // Chart 1: Attendance Trend
-                              _buildChartCard(
-                                theme: theme,
-                                title: 'Attendance & Leave Trend',
-                                subtitle:
-                                    '${_selectedDuration.displayName} overview of Present, Absent, and On Leave days',
-                                child: SizedBox(
-                                  height: 280,
-                                  child: AttendanceTrendChart(
-                                    data: _generateAttendanceTrendData(
-                                      attendanceList,
-                                      leaves,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Chart 2: Working Hours vs Target
-                              _buildChartCard(
-                                theme: theme,
-                                title: 'Working Hours vs Target',
-                                subtitle:
-                                    'Tracked staff working hours against standard targets',
-                                child: SizedBox(
-                                  height: 280,
-                                  child: WorkingHoursChart(
-                                    data: _generateWorkingHoursData(
-                                      attendanceList,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 20),
-
-                              // Two Grid Charts: Leave Distribution & Top Attendance
-                              LayoutBuilder(
-                                builder: (context, constraints) {
-                                  final isWide = constraints.maxWidth > 700;
-                                  final leaveWidget = _buildChartCard(
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // KPI Cards Summary
+                                  _buildKpiMetricsGrid(
                                     theme: theme,
-                                    title: 'Leave Distribution',
-                                    subtitle: 'Breakdown of leaves by category',
+                                    employees: employees,
+                                    attendanceList: attendanceList,
+                                    leaves: leaves,
+                                  ),
+                                  const SizedBox(height: 24),
+
+                                  // Chart 1: Attendance Trend
+                                  _buildChartCard(
+                                    theme: theme,
+                                    title: 'Attendance & Leave Trend',
+                                    subtitle:
+                                        '${_selectedDurationNotifier.value.displayName} overview of Present, Absent, and On Leave days',
                                     child: SizedBox(
-                                      height: 300,
-                                      child: LeaveDistributionChart(
-                                        data: _generateLeaveDistributionData(
+                                      height: 280,
+                                      child: AttendanceTrendChart(
+                                        data: _generateAttendanceTrendData(
+                                          attendanceList,
                                           leaves,
                                         ),
                                       ),
                                     ),
-                                  );
+                                  ),
+                                  const SizedBox(height: 20),
 
-                                  final perfWidget = _buildChartCard(
+                                  // Chart 2: Working Hours vs Target
+                                  _buildChartCard(
                                     theme: theme,
-                                    title: 'Employee Attendance Rate',
+                                    title: 'Working Hours vs Target',
                                     subtitle:
-                                        'Attendance percentage per staff member',
+                                        'Tracked staff working hours against standard targets',
                                     child: SizedBox(
-                                      height: 300,
-                                      child: EmployeePerformanceChart(
-                                        data: _generateEmployeePerformanceData(
-                                          employees,
+                                      height: 280,
+                                      child: WorkingHoursChart(
+                                        data: _generateWorkingHoursData(
                                           attendanceList,
                                         ),
                                       ),
                                     ),
-                                  );
+                                  ),
+                                  const SizedBox(height: 20),
 
-                                  if (isWide) {
-                                    return Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(child: leaveWidget),
-                                        const SizedBox(width: 16),
-                                        Expanded(child: perfWidget),
-                                      ],
-                                    );
-                                  } else {
-                                    return Column(
-                                      children: [
-                                        leaveWidget,
-                                        const SizedBox(height: 20),
-                                        perfWidget,
-                                      ],
-                                    );
-                                  }
-                                },
-                              ),
-                            ],
+                                  // Two Grid Charts: Leave Distribution & Top Attendance
+                                  LayoutBuilder(
+                                    builder: (context, constraints) {
+                                      final isWide = constraints.maxWidth > 700;
+                                      final leaveWidget = _buildChartCard(
+                                        theme: theme,
+                                        title: 'Leave Distribution',
+                                        subtitle: 'Breakdown of leaves by category',
+                                        child: SizedBox(
+                                          height: 300,
+                                          child: LeaveDistributionChart(
+                                            data: _generateLeaveDistributionData(
+                                              leaves,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+
+                                      final perfWidget = _buildChartCard(
+                                        theme: theme,
+                                        title: 'Employee Attendance Rate',
+                                        subtitle:
+                                            'Attendance percentage per staff member',
+                                        child: SizedBox(
+                                          height: 300,
+                                          child: EmployeePerformanceChart(
+                                            data: _generateEmployeePerformanceData(
+                                              employees,
+                                              attendanceList,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+
+                                      if (isWide) {
+                                        return Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(child: leaveWidget),
+                                            const SizedBox(width: 16),
+                                            Expanded(child: perfWidget),
+                                          ],
+                                        );
+                                      } else {
+                                        return Column(
+                                          children: [
+                                            leaveWidget,
+                                            const SizedBox(height: 20),
+                                            perfWidget,
+                                          ],
+                                        );
+                                      }
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
                       );
                     },
-                  );
-                },
+                  ),
+                  const SizedBox(height: 32),
+                ],
               ),
-              const SizedBox(height: 32),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -281,7 +302,7 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                       ),
                                     ),
                                     child: DropdownButton<int?>(
-                                      value: _selectedEmployeeId,
+                                      value: _selectedEmployeeIdNotifier.value,
                                       hint: const Text('All Employees'),
                                       isDense: true,
                                       items: [
@@ -299,9 +320,7 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                         ),
                                       ],
                                       onChanged: (val) {
-                                        setState(() {
-                                          _selectedEmployeeId = val;
-                                        });
+                                        _selectedEmployeeIdNotifier.value = val;
                                       },
                                     ),
                                   ),
@@ -329,25 +348,23 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
               crossAxisAlignment: WrapCrossAlignment.center,
               runAlignment: WrapAlignment.center,
               children: ReportDuration.values.map((duration) {
-                final isSelected = _selectedDuration == duration;
+                final isSelected = _selectedDurationNotifier.value == duration;
                 return FilterChip(
                   selected: isSelected,
                   label: Text(duration.displayName),
                   selectedColor: theme.colorScheme.primary,
                   labelStyle: TextStyle(
                     color: isSelected
-                        ? theme.colorScheme.onPrimary
-                        : theme.textTheme.bodyMedium?.color,
+                      ? theme.colorScheme.onPrimary
+                      : theme.textTheme.bodyMedium?.color,
                     fontWeight: isSelected
-                        ? FontWeight.bold
-                        : FontWeight.normal,
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                   ),
                   onSelected: (bool selected) {
                     if (selected) {
-                      setState(() {
-                        _selectedDuration = duration;
-                        _sliderRangeValues = const SfRangeValues(0.0, 100.0);
-                      });
+                      _selectedDurationNotifier.value = duration;
+                      _sliderRangeValuesNotifier.value = const SfRangeValues(0.0, 100.0);
                     }
                   },
                 );
@@ -362,12 +379,12 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
   /// Syncfusion Range Slider for adjusting the active timeline window
   Widget _buildSyncfusionRangeSliderCard(ThemeData theme) {
     final now = DateTime.now();
-    final fullRange = _selectedDuration.getDateRange(now);
+    final fullRange = _selectedDurationNotifier.value.getDateRange(now);
     final rangeDays = fullRange.end.difference(fullRange.start).inDays + 1;
 
-    final activeStartDays = (rangeDays * (_sliderRangeValues.start / 100))
+    final activeStartDays = (rangeDays * (_sliderRangeValuesNotifier.value.start / 100))
         .round();
-    final activeEndDays = (rangeDays * (_sliderRangeValues.end / 100)).round();
+    final activeEndDays = (rangeDays * (_sliderRangeValuesNotifier.value.end / 100)).round();
 
     final activeStartDate = fullRange.start.add(
       Duration(days: activeStartDays),
@@ -441,7 +458,7 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
               child: SfRangeSlider(
                 min: 0.0,
                 max: 100.0,
-                values: _sliderRangeValues,
+                values: _sliderRangeValuesNotifier.value,
                 interval: 25.0,
                 showTicks: true,
                 showLabels: true,
@@ -456,9 +473,7 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                       return '${double.parse(actualValue.toString()).toStringAsFixed(0)}%';
                     },
                 onChanged: (SfRangeValues newValues) {
-                  setState(() {
-                    _sliderRangeValues = newValues;
-                  });
+                  _sliderRangeValuesNotifier.value = newValues;
                 },
               ),
             ),
@@ -657,13 +672,13 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
   // --- Helpers for Filtering & Chart Data generation ---
 
   List<AttendanceEntity> _filterAttendance(List<AttendanceEntity> list) {
-    if (_selectedEmployeeId == null) return list;
-    return list.where((a) => a.employeeId == _selectedEmployeeId).toList();
+    if (_selectedEmployeeIdNotifier.value == null) return list;
+    return list.where((a) => a.employeeId == _selectedEmployeeIdNotifier.value).toList();
   }
 
   List<LeaveEntity> _filterLeaves(List<LeaveEntity> list) {
-    if (_selectedEmployeeId == null) return list;
-    return list.where((l) => l.employeeId == _selectedEmployeeId).toList();
+    if (_selectedEmployeeIdNotifier.value == null) return list;
+    return list.where((l) => l.employeeId == _selectedEmployeeIdNotifier.value).toList();
   }
 
   List<AttendanceTrendData> _generateAttendanceTrendData(
