@@ -2,6 +2,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_bloc.dart';
+import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_event.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_state.dart';
 import 'inventory_list_screen_actions.dart';
 import 'widgets/inventory_list_item.dart';
@@ -14,12 +15,14 @@ class InventoryListScreen extends StatefulWidget {
 }
 
 class _InventoryListScreenState extends State<InventoryListScreen> {
+  final TextEditingController _searchController = TextEditingController();
   final ValueNotifier<String> _searchQueryNotifier = ValueNotifier<String>('');
   final ValueNotifier<List<shared.AppliedFilterModel>> _appliedFiltersNotifier =
       ValueNotifier([]);
 
   @override
   void dispose() {
+    _searchController.dispose();
     _searchQueryNotifier.dispose();
     _appliedFiltersNotifier.dispose();
     super.dispose();
@@ -84,6 +87,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
         Padding(
           padding: EdgeInsets.all(8.0),
           child: TextField(
+            controller: _searchController,
             decoration: InputDecoration(
               prefixIcon: Icon(Icons.search),
               hintText:
@@ -173,12 +177,95 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                           );
                         }
 
-                        return ListView.builder(
-                          itemCount: filteredItems.length,
-                          itemBuilder: (context, index) {
-                            final item = filteredItems[index];
-                            return InventoryListItem(item: item);
+                        // Re-sort and re-stamp suspension flags on the
+                        // filtered subset so letter headers are always correct.
+                        shared.SuspensionUtil.sortListBySuspensionTag(
+                          filteredItems,
+                        );
+                        shared.SuspensionUtil.setShowSuspensionStatus(
+                          filteredItems,
+                        );
+
+                        final isSearching = searchQuery.isNotEmpty;
+
+                        return RefreshIndicator(
+                          onRefresh: () async {
+                            context.read<InventoryBloc>().add(
+                              LoadInventoryItems(),
+                            );
                           },
+                          child: shared.AzListView(
+                            key: const PageStorageKey('inventoryListView'),
+                            data: filteredItems,
+                            itemCount: filteredItems.length,
+                            indexBarData: isSearching
+                                ? const []
+                                : shared.kIndexBarData
+                                      .where(
+                                        (tag) => filteredItems.any(
+                                          (e) => e.getSuspensionTag() == tag,
+                                        ),
+                                      )
+                                      .toList(),
+                            indexBarOptions: shared.IndexBarOptions(
+                              needRebuild: true,
+                              selectItemDecoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              selectTextStyle: TextStyle(
+                                fontSize: 12,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              indexHintWidth: 64,
+                              indexHintHeight: 64,
+                              indexHintDecoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary
+                                    // ignore: deprecated_member_use
+                                    .withOpacity(0.92),
+                                shape: BoxShape.circle,
+                              ),
+                              indexHintTextStyle: TextStyle(
+                                fontSize: 28.0,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              indexHintAlignment: Alignment.centerRight,
+                              indexHintOffset: const Offset(-40, 0),
+                            ),
+                            itemBuilder: (context, index) {
+                              final item = filteredItems[index];
+                              return InventoryListItem(item: item);
+                            },
+                            susItemBuilder: (context, index) {
+                                    final tag = filteredItems[index]
+                                        .getSuspensionTag();
+                                    return Container(
+                                      height: 36,
+                                      width: double.infinity,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0,
+                                      ),
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.surfaceContainerHighest,
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        tag,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(
+                                                context,
+                                              ).colorScheme.primary,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                          ),
                         );
                       } else if (state is InventoryError) {
                         return Center(

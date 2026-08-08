@@ -1,6 +1,6 @@
 part of 'recipes_bookmark_list_cubit.dart';
 
-abstract class RecipesBookmarkListState extends Equatable {
+sealed class RecipesBookmarkListState extends Equatable {
   const RecipesBookmarkListState();
 
   @override

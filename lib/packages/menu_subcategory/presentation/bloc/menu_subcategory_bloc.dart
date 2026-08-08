@@ -3,6 +3,7 @@ import '../../domain/entities/menu_subcategory.dart';
 import '../../domain/usecases/menu_subcategory_usecases.dart';
 import 'menu_subcategory_event.dart';
 import 'menu_subcategory_state.dart';
+import '../../../shared/coozy_shared.dart' as shared;
 
 class MenuSubcategoryBloc
     extends Bloc<MenuSubcategoryEvent, MenuSubcategoryState> {
@@ -44,6 +45,8 @@ class MenuSubcategoryBloc
     emit(MenuSubcategoryLoading());
     try {
       final subcategories = await getSubcategoriesUseCase();
+      shared.SuspensionUtil.sortListBySuspensionTag(subcategories);
+      shared.SuspensionUtil.setShowSuspensionStatus(subcategories);
       _allSubcategories = subcategories;
       emit(
         MenuSubcategoryLoaded(
@@ -362,6 +365,11 @@ class MenuSubcategoryBloc
               .where((sub) => sub.name?.toLowerCase().contains(query) ?? false)
               .toList()
         : List<MenuSubcategory>.from(_allSubcategories);
+
+    // Always re-sort and re-stamp so letter headers are correct
+    // regardless of whether the user is browsing or searching.
+    shared.SuspensionUtil.sortListBySuspensionTag(filtered);
+    shared.SuspensionUtil.setShowSuspensionStatus(filtered);
 
     if (state is MenuSubcategoryLoaded) {
       final current = state as MenuSubcategoryLoaded;

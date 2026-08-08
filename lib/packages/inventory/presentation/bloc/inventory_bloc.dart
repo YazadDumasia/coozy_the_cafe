@@ -3,6 +3,7 @@ import '../../domain/usecases/inventory_usecases.dart';
 import 'inventory_event.dart';
 import 'inventory_state.dart';
 import '../../../shared/l10n/locale_keys.dart';
+import '../../../shared/coozy_shared.dart' as shared;
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final GetInventoryItemsUseCase getInventoryItemsUseCase;
@@ -29,6 +30,8 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     emit(InventoryLoading());
     try {
       final items = await getInventoryItemsUseCase();
+      shared.SuspensionUtil.sortListBySuspensionTag(items);
+      shared.SuspensionUtil.setShowSuspensionStatus(items);
       emit(InventoryLoaded(items));
     } catch (e) {
       emit(InventoryError(e.toString()));

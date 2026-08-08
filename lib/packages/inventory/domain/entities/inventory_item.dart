@@ -1,6 +1,6 @@
-import 'package:equatable/equatable.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
-class InventoryItem extends Equatable {
+class InventoryItem implements shared.ISuspensionBean {
   final int? id;
   final String? hashId;
   final String? name;
@@ -11,7 +11,10 @@ class InventoryItem extends Equatable {
   final String? createdDate;
   final String? modifiedDate;
 
-  const InventoryItem({
+  @override
+  bool isShowSuspension = false;
+
+  InventoryItem({
     this.id,
     this.hashId,
     this.name,
@@ -21,7 +24,19 @@ class InventoryItem extends Equatable {
     this.isEnabled,
     this.createdDate,
     this.modifiedDate,
+    this.isShowSuspension = false,
   });
+
+  @override
+  String getSuspensionTag() {
+    if (name != null && name!.isNotEmpty) {
+      final tag = name![0].toUpperCase();
+      if (RegExp(r'[A-Z]').hasMatch(tag)) {
+        return tag;
+      }
+    }
+    return '#';
+  }
 
   InventoryItem copyWith({
     int? id,
@@ -48,7 +63,21 @@ class InventoryItem extends Equatable {
   }
 
   @override
-  List<Object?> get props => [
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is InventoryItem &&
+          id == other.id &&
+          hashId == other.hashId &&
+          name == other.name &&
+          shortDescription == other.shortDescription &&
+          purchaseUnit == other.purchaseUnit &&
+          currentStock == other.currentStock &&
+          isEnabled == other.isEnabled &&
+          createdDate == other.createdDate &&
+          modifiedDate == other.modifiedDate;
+
+  @override
+  int get hashCode => Object.hash(
     id,
     hashId,
     name,
@@ -58,5 +87,5 @@ class InventoryItem extends Equatable {
     isEnabled,
     createdDate,
     modifiedDate,
-  ];
+  );
 }

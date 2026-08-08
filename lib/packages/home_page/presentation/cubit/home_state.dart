@@ -1,4 +1,6 @@
-abstract class HomeState {
+part of 'home_cubit.dart';
+
+sealed class HomeState {
   const HomeState();
 }
 

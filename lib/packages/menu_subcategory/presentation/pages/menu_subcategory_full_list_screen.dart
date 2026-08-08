@@ -556,21 +556,81 @@ class _MenuSubcategoryFullListScreenState
       );
     }
 
-    return ListView.builder(
+    final bool isSearchActive = state.isSearchActive;
+    // Sidebar index bar only when viewing all subcategories and not searching.
+    // Letter-group headers (susItemBuilder) always appear.
+    final bool showIndexBar =
+        _selectedCategoryId == null && !isSearchActive;
+
+    return shared.AzListView(
       key: PageStorageKey('subcategory_list_${_selectedCategoryId ?? 0}'),
-      controller: _subcategoryScrollController,
-      padding: const EdgeInsets.all(10),
+      data: displayList,
       itemCount: displayList.length,
+      indexBarData: showIndexBar
+          ? shared.kIndexBarData
+                .where(
+                  (tag) =>
+                      displayList.any((e) => e.getSuspensionTag() == tag),
+                )
+                .toList()
+          : const [],
+      indexBarOptions: shared.IndexBarOptions(
+        needRebuild: true,
+        selectItemDecoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        selectTextStyle: TextStyle(
+          fontSize: 12,
+          color: Theme.of(context).colorScheme.onPrimary,
+          fontWeight: FontWeight.bold,
+        ),
+        indexHintWidth: 64,
+        indexHintHeight: 64,
+        indexHintDecoration: BoxDecoration(
+          color: Theme.of(context)
+              .colorScheme
+              .primary
+              // ignore: deprecated_member_use
+              .withOpacity(0.92),
+          shape: BoxShape.circle,
+        ),
+        indexHintTextStyle: TextStyle(
+          fontSize: 28.0,
+          color: Theme.of(context).colorScheme.onPrimary,
+          fontWeight: FontWeight.bold,
+        ),
+        indexHintAlignment: Alignment.centerRight,
+        indexHintOffset: const Offset(-40, 0),
+      ),
       itemBuilder: (context, index) {
         final item = displayList[index];
         if (item.id != null) {
           _subcategoryKeys[item.id!] ??= GlobalKey();
         }
         return Container(
-          key: _subcategoryKeys[item.id!],
+          key: item.id != null ? _subcategoryKeys[item.id!] : null,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           child: MenuSubcategoryListItem(
             subCategory: item,
             isLastItem: index == (displayList.length - 1),
+          ),
+        );
+      },
+      susItemBuilder: (context, index) {
+        final tag = displayList[index].getSuspensionTag();
+        return Container(
+          height: 36,
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+          alignment: Alignment.centerLeft,
+          child: Text(
+            tag,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
         );
       },

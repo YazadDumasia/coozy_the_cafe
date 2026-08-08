@@ -1,4 +1,6 @@
-class MenuSubcategory {
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
+class MenuSubcategory implements shared.ISuspensionBean {
   final int? id;
   final String? hashId;
   final int? categoryId;
@@ -7,7 +9,10 @@ class MenuSubcategory {
   final int? position;
   final String? createdDate;
 
-  const MenuSubcategory({
+  @override
+  bool isShowSuspension = false;
+
+  MenuSubcategory({
     this.id,
     this.hashId,
     this.categoryId,
@@ -15,7 +20,19 @@ class MenuSubcategory {
     this.isActive,
     this.position,
     this.createdDate,
+    this.isShowSuspension = false,
   });
+
+  @override
+  String getSuspensionTag() {
+    if (name != null && name!.isNotEmpty) {
+      final tag = name![0].toUpperCase();
+      if (RegExp(r'[A-Z]').hasMatch(tag)) {
+        return tag;
+      }
+    }
+    return '#';
+  }
 
   factory MenuSubcategory.fromJson(Map<String, dynamic> json) {
     final dynamic rawActive = json['isActive'];
@@ -56,3 +73,4 @@ class MenuSubcategory {
     );
   }
 }
+

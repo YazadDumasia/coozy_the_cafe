@@ -1,6 +1,6 @@
 part of 'edit_menu_category_bloc.dart';
 
-abstract class EditMenuCategoryEvent {}
+sealed class EditMenuCategoryEvent {}
 
 class LoadEditMenuCategoryDataEvent extends EditMenuCategoryEvent {
   final MenuCategory? category;

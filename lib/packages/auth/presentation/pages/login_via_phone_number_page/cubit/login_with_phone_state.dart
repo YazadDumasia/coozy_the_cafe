@@ -1,6 +1,6 @@
 part of 'login_with_phone_cubit.dart';
 
-abstract class LoginWithPhoneState extends Equatable {
+sealed class LoginWithPhoneState extends Equatable {
   const LoginWithPhoneState();
 }
 

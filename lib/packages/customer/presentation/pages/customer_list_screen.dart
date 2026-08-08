@@ -120,37 +120,72 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 return shared.AzListView(
                   data: state.customers,
                   itemCount: state.customers.length,
-                  indexBarData: isSearching ? const [] : shared.kIndexBarData,
+                  indexBarData: isSearching
+                      ? const []
+                      : shared.kIndexBarData
+                            .where(
+                              (tag) => state.customers.any(
+                                (e) => e.getSuspensionTag() == tag,
+                              ),
+                            )
+                            .toList(),
+                  indexBarOptions: shared.IndexBarOptions(
+                    needRebuild: true,
+                    selectItemDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    selectTextStyle: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    indexHintWidth: 64,
+                    indexHintHeight: 64,
+                    indexHintDecoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          // ignore: deprecated_member_use
+                          .withOpacity(0.92),
+                      shape: BoxShape.circle,
+                    ),
+                    indexHintTextStyle: TextStyle(
+                      fontSize: 28.0,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    indexHintAlignment: Alignment.centerRight,
+                    indexHintOffset: const Offset(-40, 0),
+                  ),
                   itemBuilder: (context, index) {
                     final customer = state.customers[index];
                     return CustomerListItem(customer: customer);
                   },
-                  susItemBuilder: isSearching
-                      ? null
-                      : (context, index) {
-                          final tag = state.customers[index].getSuspensionTag();
-                          return Container(
-                            height: 36,
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0,
-                            ),
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              tag,
-                              style: Theme.of(context).textTheme.titleSmall
-                                  ?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
-                                  ),
-                            ),
-                          );
-                        },
+                  susItemBuilder: (context, index) {
+                      final tag = state.customers[index].getSuspensionTag();
+                      return Container(
+                        height: 36,
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                        ),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.surfaceContainerHighest,
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          tag,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.primary,
+                              ),
+                        ),
+                      );
+                    },
                 );
               }
 

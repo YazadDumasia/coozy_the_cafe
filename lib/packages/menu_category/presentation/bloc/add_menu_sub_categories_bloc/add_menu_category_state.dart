@@ -1,6 +1,6 @@
 part of 'add_menu_categories_cubit.dart';
 
-abstract class AddMenuCategoryState {}
+sealed class AddMenuCategoryState {}
 
 class AddMenuCategoryInitial extends AddMenuCategoryState {}
 

@@ -1,6 +1,6 @@
 part of 'recipes_full_list_cubit.dart';
 
-abstract class RecipesFullListState extends Equatable {
+sealed class RecipesFullListState extends Equatable {
   const RecipesFullListState();
 
   @override

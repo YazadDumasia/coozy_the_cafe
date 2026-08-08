@@ -1,6 +1,6 @@
 part of 'edit_menu_category_bloc.dart';
 
-abstract class EditMenuCategoryState {}
+sealed class EditMenuCategoryState {}
 
 class EditMenuCategoryInitial extends EditMenuCategoryState {}
 

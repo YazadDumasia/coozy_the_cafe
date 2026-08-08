@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import '../../../domain/entities/staff_entities.dart';
 
-abstract class EmployeeEvent extends Equatable {
+sealed class EmployeeEvent extends Equatable {
   const EmployeeEvent();
   @override
   List<Object?> get props => [];
@@ -50,7 +50,7 @@ class DeleteEmployeeEvent extends EmployeeEvent {
   List<Object?> get props => [id, permanent];
 }
 
-abstract class EmployeeState extends Equatable {
+sealed class EmployeeState extends Equatable {
   const EmployeeState();
   @override
   List<Object?> get props => [];

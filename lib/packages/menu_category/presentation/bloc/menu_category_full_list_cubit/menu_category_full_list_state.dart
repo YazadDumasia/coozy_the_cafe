@@ -1,6 +1,6 @@
 part of 'menu_category_full_list_cubit.dart';
 
-abstract class MenuCategoryFullListState {}
+sealed class MenuCategoryFullListState {}
 
 class MenuCategoryFullListInitialState extends MenuCategoryFullListState {}
 
