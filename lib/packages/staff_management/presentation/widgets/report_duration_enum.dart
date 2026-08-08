@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 enum ReportDuration { weekly, monthly, quarterly, halfYear, yearly }
 
@@ -16,6 +17,41 @@ extension ReportDurationExt on ReportDuration {
         return 'Half Year';
       case ReportDuration.yearly:
         return 'Yearly';
+    }
+  }
+
+  String getLocalizedName(BuildContext context) {
+    switch (this) {
+      case ReportDuration.weekly:
+        return context.tr(
+              shared.LocaleKeys.reportDurationWeekly,
+              track: shared.TrackConstants.staffManagementPageTrack,
+            ) ??
+            'Weekly';
+      case ReportDuration.monthly:
+        return context.tr(
+              shared.LocaleKeys.reportDurationMonthly,
+              track: shared.TrackConstants.staffManagementPageTrack,
+            ) ??
+            'Monthly';
+      case ReportDuration.quarterly:
+        return context.tr(
+              shared.LocaleKeys.reportDurationQuarterly,
+              track: shared.TrackConstants.staffManagementPageTrack,
+            ) ??
+            'Quarterly';
+      case ReportDuration.halfYear:
+        return context.tr(
+              shared.LocaleKeys.reportDurationHalfYear,
+              track: shared.TrackConstants.staffManagementPageTrack,
+            ) ??
+            'Half Year';
+      case ReportDuration.yearly:
+        return context.tr(
+              shared.LocaleKeys.reportDurationYearly,
+              track: shared.TrackConstants.staffManagementPageTrack,
+            ) ??
+            'Yearly';
     }
   }
 

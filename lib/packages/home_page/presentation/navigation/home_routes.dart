@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/navigation/app_routes.dart';
 import '../cubit/home_cubit.dart';
 import '../pages/home_screen.dart';
+import '../pages/settings_screen.dart';
 
 class HomeRoutes {
   static List<RouteBase> get routes => [
@@ -14,5 +15,10 @@ class HomeRoutes {
         child: const HomeScreen(),
       ),
     ),
+    GoRoute(
+      path: AppRoutePath.settingsScreenRoute,
+      builder: (context, state) => const SettingsScreen(),
+    ),
   ];
 }
+

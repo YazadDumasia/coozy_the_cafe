@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 class LanguageModel {
   LanguageModel({
     this.name,
@@ -12,7 +14,26 @@ class LanguageModel {
   final bool? isRTL;
   final String? countryCode;
 
+  /// Returns only the languages whose JSON asset files actually exist in `assets/locale/`.
+  static Future<List<LanguageModel>> getSupportedLanguages() async {
+    try {
+      final manifest = await AssetManifest.loadFromAssetBundle(rootBundle);
+      final assetKeys = manifest.listAssets();
+      final all = getLanguages();
+      final supported = all.where((lang) {
+        return assetKeys.contains('assets/locale/${lang.file}');
+      }).toList();
+      if (supported.isNotEmpty) {
+        return supported;
+      }
+    } catch (_) {}
+    return getLanguages()
+        .where((lang) => lang.file == 'locale_en.json')
+        .toList();
+  }
+
   static List<LanguageModel> getLanguages() {
+
     return <LanguageModel>[
       LanguageModel(
         name: 'English',

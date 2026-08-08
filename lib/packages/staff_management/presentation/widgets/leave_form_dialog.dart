@@ -307,8 +307,16 @@ class _LeaveFormDialogState extends State<LeaveFormDialog> {
                         child: TextFormField(
                           controller: _startDateTimeController,
                           decoration: InputDecoration(
-                            labelText: 'Start DateTime',
-                            hintText: 'Select start date',
+                            labelText: context.tr(
+                                  shared.LocaleKeys.startDateTimeLabel,
+                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                ) ??
+                                'Start DateTime',
+                            hintText: context.tr(
+                                  shared.LocaleKeys.startDateTimeHint,
+                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                ) ??
+                                'Select start date',
                             border: const OutlineInputBorder(),
                             suffixIcon: const Icon(Icons.calendar_today),
                           ),
@@ -338,14 +346,23 @@ class _LeaveFormDialogState extends State<LeaveFormDialog> {
                         child: TextFormField(
                           controller: _endDateTimeController,
                           decoration: InputDecoration(
-                            labelText: 'End DateTime',
-                            hintText: 'Select end date',
+                            labelText: context.tr(
+                                  shared.LocaleKeys.endDateTimeLabel,
+                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                ) ??
+                                'End DateTime',
+                            hintText: context.tr(
+                                  shared.LocaleKeys.endDateTimeHint,
+                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                ) ??
+                                'Select end date',
                             border: const OutlineInputBorder(),
                             suffixIcon: const Icon(Icons.calendar_today),
                           ),
                         ),
                       ),
                     ),
+
                     const SizedBox(height: 10),
                     TextFormField(
                       controller: _reasonController,

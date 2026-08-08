@@ -829,4 +829,114 @@ abstract class LocaleKeys {
   static const String employeeCardStartTime = 'employee_card_start_time';
   static const String employeeCardEndTime = 'employee_card_end_time';
   static const String employeeCardTotalLeaves = 'employee_card_total_leaves';
+
+  // staff report
+  static const String staffAnalyticsReportsTitle =
+      'staff_analytics_reports_title';
+  static const String allEmployeesDropdown = 'all_employees_dropdown';
+  static const String staffIdFallback = 'staff_id_fallback';
+  static const String selectReportDurationLabel =
+      'select_report_duration_label';
+  static const String interactiveTimeWindowTitle =
+      'interactive_time_window_title';
+  static const String reportDurationWeekly = 'report_duration_weekly';
+  static const String reportDurationMonthly = 'report_duration_monthly';
+  static const String reportDurationQuarterly = 'report_duration_quarterly';
+  static const String reportDurationHalfYear = 'report_duration_half_year';
+  static const String reportDurationYearly = 'report_duration_yearly';
+  static const String attendanceLeaveTrendTitle =
+      'attendance_leave_trend_title';
+  static const String attendanceLeaveTrendSubtitle =
+      'attendance_leave_trend_subtitle';
+  static const String workingHoursVsTargetTitle =
+      'working_hours_vs_target_title';
+  static const String workingHoursVsTargetSubtitle =
+      'working_hours_vs_target_subtitle';
+  static const String leaveDistributionTitle = 'leave_distribution_title';
+  static const String leaveDistributionSubtitle =
+      'leave_distribution_subtitle';
+  static const String employeeAttendanceRateTitle =
+      'employee_attendance_rate_title';
+  static const String employeeAttendanceRateSubtitle =
+      'employee_attendance_rate_subtitle';
+  static const String totalActiveStaffKpi = 'total_active_staff_kpi';
+  static const String attendanceRateKpi = 'attendance_rate_kpi';
+  static const String leavesRequestedKpi = 'leaves_requested_kpi';
+  static const String presentDaysKpi = 'present_days_kpi';
+  static const String refreshChartTooltip = 'refresh_chart_tooltip';
+  static const String chartSeriesPresent = 'chart_series_present';
+  static const String chartSeriesAbsent = 'chart_series_absent';
+  static const String chartSeriesOnLeave = 'chart_series_on_leave';
+  static const String chartSeriesWorkedHours = 'chart_series_worked_hours';
+  static const String chartSeriesTargetHours = 'chart_series_target_hours';
+  static const String chartSeriesLeaves = 'chart_series_leaves';
+  static const String chartSeriesAttendancePercent =
+      'chart_series_attendance_percent';
+
+  // settings page
+  static const String settingsTitle = 'settings_title';
+  static const String settingsAppearanceSection = 'settings_appearance_section';
+  static const String settingsDarkThemeLabel = 'settings_dark_theme_label';
+  static const String settingsDarkThemeEnabled = 'settings_dark_theme_enabled';
+  static const String settingsDarkThemeDisabled = 'settings_dark_theme_disabled';
+  static const String settingsLanguageSection = 'settings_language_section';
+  static const String settingsAppLanguageLabel = 'settings_app_language_label';
+  static const String settingsDemoTestingSection = 'settings_demo_testing_section';
+  static const String settingsFakeDataModeLabel = 'settings_fake_data_mode_label';
+  static const String settingsFakeDataModeSubtitle = 'settings_fake_data_mode_subtitle';
+  static const String settingsFakeDataActive = 'settings_fake_data_active';
+  static const String settingsFakeDataInactive = 'settings_fake_data_inactive';
+  static const String settingsGeneratingFakeData = 'settings_generating_fake_data';
+  static const String settingsRemovingFakeData = 'settings_removing_fake_data';
+  static const String settingsFakeDataRemoved = 'settings_fake_data_removed';
+  static const String settingsIncludedDataSetsTitle = 'settings_included_data_sets_title';
+  static const String settingsCustomersSetTitle = 'settings_customers_set_title';
+  static const String settingsCustomersSetSubtitle = 'settings_customers_set_subtitle';
+  static const String settingsStaffSetTitle = 'settings_staff_set_title';
+  static const String settingsStaffSetSubtitle = 'settings_staff_set_subtitle';
+  static const String settingsOrdersSetTitle = 'settings_orders_set_title';
+  static const String settingsOrdersSetSubtitle = 'settings_orders_set_subtitle';
+  static const String settingsInventorySetTitle = 'settings_inventory_set_title';
+  static const String settingsInventorySetSubtitle = 'settings_inventory_set_subtitle';
+  static const String settingsReservationsSetTitle = 'settings_reservations_set_title';
+  static const String settingsReservationsSetSubtitle = 'settings_reservations_set_subtitle';
+
+  // form labels, hints, error msgs & tooltips
+  static const String addressLine1Label = 'address_line_1_label';
+  static const String addressLine1Hint = 'address_line_1_hint';
+  static const String addressLine2Label = 'address_line_2_label';
+  static const String addressLine2Hint = 'address_line_2_hint';
+  static const String idProofLabel = 'id_proof_label';
+  static const String idProofHint = 'id_proof_hint';
+  static const String idProofNumberLabel = 'id_proof_number_label';
+  static const String idProofNumberHint = 'id_proof_number_hint';
+  static const String totalLeavesLabel = 'total_leaves_label';
+  static const String totalLeavesHint = 'total_leaves_hint';
+  static const String joiningDateLabel = 'joining_date_label';
+  static const String joiningDateHint = 'joining_date_hint';
+  static const String leavingDateLabel = 'leaving_date_label';
+  static const String leavingDateHint = 'leaving_date_hint';
+  static const String startDateTimeLabel = 'start_date_time_label';
+  static const String startDateTimeHint = 'start_date_time_hint';
+  static const String endDateTimeLabel = 'end_date_time_label';
+  static const String endDateTimeHint = 'end_date_time_hint';
+  static const String showDialogTooltip = 'show_dialog_tooltip';
+  static const String reloadReportDataTooltip = 'reload_report_data_tooltip';
+  static const String cancelReorderingTooltip = 'cancel_reordering_tooltip';
+  static const String doneReorderingTooltip = 'done_reordering_tooltip';
+  static const String reorderModeTooltip = 'reorder_mode_tooltip';
+  static const String addNewSubcategoryTooltip = 'add_new_subcategory_tooltip';
+  static const String addIngredientTagTooltip = 'add_ingredient_tag_tooltip';
+  static const String staffReportsReloadedSuccess = 'staff_reports_reloaded_success';
+  static const String dialogStatusActive = 'dialog_status_active';
+  static const String dialogStatusInactive = 'dialog_status_inactive';
+  static const String dialogDemoDataActive = 'dialog_demo_data_active';
+  static const String dialogToggleSwitchToEnable = 'dialog_toggle_switch_to_enable';
+  static const String populateDataButton = 'populate_data_button';
+  static const String removeDataButton = 'remove_data_button';
+  static const String datasetActiveText = 'dataset_active_text';
+  static const String datasetInactiveText = 'dataset_inactive_text';
 }
+
+
+

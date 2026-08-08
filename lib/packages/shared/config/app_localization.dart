@@ -17,11 +17,19 @@ class AppLocalizations {
   Map<String, dynamic>? _localizedStrings;
 
   Future<bool> load() async {
-    final String jsonString = await rootBundle.loadString(
-      'assets/locale/${language!.file}',
-    );
+    String jsonString;
+    try {
+      jsonString = await rootBundle.loadString(
+        'assets/locale/${language!.file}',
+      );
+    } catch (_) {
+      jsonString = await rootBundle.loadString(
+        'assets/locale/locale_en.json',
+      );
+    }
     final Map<String, dynamic> jsonMap = json.decode(jsonString);
     _localizedStrings = {};
+
 
     // Recursively flatten the JSON map for O(1) lookups
     void flattenMap(Map<String, dynamic> map, [String? prefix]) {

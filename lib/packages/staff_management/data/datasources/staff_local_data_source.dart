@@ -121,7 +121,7 @@ class StaffLocalDataSourceImpl implements StaffRepository {
             id: a.id,
             employeeId: a.employeeId,
             employeeName: a.employeeName,
-            date: a.checkIn,
+            date: a.creationDate ?? a.checkIn,
             status: a.currentStatus?.toString() ?? '1',
             checkIn: a.checkIn,
             checkOut: a.checkOut,
@@ -193,6 +193,12 @@ class StaffLocalDataSourceImpl implements StaffRepository {
             employeeName: l.employeeName,
             startDate: l.startDate,
             endDate: l.endDate,
+            startDateTime: l.startDate,
+            endDateTime: l.endDate,
+            leaveType:
+                (l.reason != null && l.reason!.contains('Half Day'))
+                    ? 'Half Day'
+                    : 'Full Day',
             status: l.currentStatus?.toString() ?? '1',
             reason: l.reason,
             createdDate: l.creationDate,
@@ -202,6 +208,7 @@ class StaffLocalDataSourceImpl implements StaffRepository {
         )
         .toList();
   }
+
 
   @override
   Future<int> addLeave(LeaveEntity leave) async {

@@ -13,6 +13,7 @@ import '../bloc/leave/leave_event_state.dart';
 import '../../domain/entities/staff_entities.dart';
 import '../widgets/report_duration_enum.dart';
 import '../widgets/staff_report_charts.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class StaffReportSubScreen extends StatefulWidget {
   const StaffReportSubScreen({super.key});
@@ -124,9 +125,34 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                   // Chart 1: Attendance Trend
                                   _buildChartCard(
                                     theme: theme,
-                                    title: 'Attendance & Leave Trend',
+                                    title:
+                                        context.tr(
+                                          shared
+                                              .LocaleKeys
+                                              .attendanceLeaveTrendTitle,
+                                          track:
+                                              shared
+                                                  .TrackConstants
+                                                  .staffManagementPageTrack,
+                                        ) ??
+                                        'Attendance & Leave Trend',
                                     subtitle:
-                                        '${_selectedDurationNotifier.value.displayName} overview of Present, Absent, and On Leave days',
+                                        context.tr(
+                                          shared
+                                              .LocaleKeys
+                                              .attendanceLeaveTrendSubtitle,
+                                          track:
+                                              shared
+                                                  .TrackConstants
+                                                  .staffManagementPageTrack,
+                                          params: {
+                                            'duration':
+                                                _selectedDurationNotifier
+                                                    .value
+                                                    .getLocalizedName(context),
+                                          },
+                                        ) ??
+                                        '${_selectedDurationNotifier.value.getLocalizedName(context)} overview of Present, Absent, and On Leave days',
                                     child: SizedBox(
                                       height: 280,
                                       child: AttendanceTrendChart(
@@ -142,8 +168,27 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                   // Chart 2: Working Hours vs Target
                                   _buildChartCard(
                                     theme: theme,
-                                    title: 'Working Hours vs Target',
+                                    title:
+                                        context.tr(
+                                          shared
+                                              .LocaleKeys
+                                              .workingHoursVsTargetTitle,
+                                          track:
+                                              shared
+                                                  .TrackConstants
+                                                  .staffManagementPageTrack,
+                                        ) ??
+                                        'Working Hours vs Target',
                                     subtitle:
+                                        context.tr(
+                                          shared
+                                              .LocaleKeys
+                                              .workingHoursVsTargetSubtitle,
+                                          track:
+                                              shared
+                                                  .TrackConstants
+                                                  .staffManagementPageTrack,
+                                        ) ??
                                         'Tracked staff working hours against standard targets',
                                     child: SizedBox(
                                       height: 280,
@@ -162,8 +207,28 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                       final isWide = constraints.maxWidth > 700;
                                       final leaveWidget = _buildChartCard(
                                         theme: theme,
-                                        title: 'Leave Distribution',
-                                        subtitle: 'Breakdown of leaves by category',
+                                        title:
+                                            context.tr(
+                                              shared
+                                                  .LocaleKeys
+                                                  .leaveDistributionTitle,
+                                              track:
+                                                  shared
+                                                      .TrackConstants
+                                                      .staffManagementPageTrack,
+                                            ) ??
+                                            'Leave Distribution',
+                                        subtitle:
+                                            context.tr(
+                                              shared
+                                                  .LocaleKeys
+                                                  .leaveDistributionSubtitle,
+                                              track:
+                                                  shared
+                                                      .TrackConstants
+                                                      .staffManagementPageTrack,
+                                            ) ??
+                                            'Breakdown of leaves by category',
                                         child: SizedBox(
                                           height: 300,
                                           child: LeaveDistributionChart(
@@ -176,8 +241,27 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
 
                                       final perfWidget = _buildChartCard(
                                         theme: theme,
-                                        title: 'Employee Attendance Rate',
+                                        title:
+                                            context.tr(
+                                              shared
+                                                  .LocaleKeys
+                                                  .employeeAttendanceRateTitle,
+                                              track:
+                                                  shared
+                                                      .TrackConstants
+                                                      .staffManagementPageTrack,
+                                            ) ??
+                                            'Employee Attendance Rate',
                                         subtitle:
+                                            context.tr(
+                                              shared
+                                                  .LocaleKeys
+                                                  .employeeAttendanceRateSubtitle,
+                                              track:
+                                                  shared
+                                                      .TrackConstants
+                                                      .staffManagementPageTrack,
+                                            ) ??
                                             'Attendance percentage per staff member',
                                         child: SizedBox(
                                           height: 300,
@@ -265,10 +349,47 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Staff Analytics & Reports',
+                            context.tr(
+                                  shared.LocaleKeys.staffAnalyticsReportsTitle,
+                                  track:
+                                      shared
+                                          .TrackConstants
+                                          .staffManagementPageTrack,
+                                ) ??
+                                'Staff Analytics & Reports',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
+                          ),
+                          const SizedBox(width: 4),
+                          IconButton(
+                            icon: const Icon(Icons.refresh_rounded),
+                            tooltip:
+                                context.tr(
+                                  shared.LocaleKeys.reloadReportDataTooltip,
+                                  track:
+                                      shared
+                                          .TrackConstants
+                                          .staffManagementPageTrack,
+                                ) ??
+                                'Reload Report Data',
+
+                            onPressed: () {
+                              _refreshAllData();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    context.tr(
+                                          shared.LocaleKeys.staffReportsReloadedSuccess,
+                                          track: shared.TrackConstants.staffManagementPageTrack,
+                                        ) ??
+                                        'Staff reports reloaded successfully!',
+                                  ),
+                                  duration: const Duration(seconds: 1),
+                                ),
+                              );
+
+                            },
                           ),
                         ],
                       ),
@@ -283,6 +404,15 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                 final employees = state is EmployeeLoadedState
                                     ? state.employees
                                     : <EmployeeEntity>[];
+                                final allEmployeesText =
+                                    context.tr(
+                                      shared.LocaleKeys.allEmployeesDropdown,
+                                      track:
+                                          shared
+                                              .TrackConstants
+                                              .staffManagementPageTrack,
+                                    ) ??
+                                    'All Employees';
                                 return DropdownButtonHideUnderline(
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
@@ -303,18 +433,29 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                     ),
                                     child: DropdownButton<int?>(
                                       value: _selectedEmployeeIdNotifier.value,
-                                      hint: const Text('All Employees'),
+                                      hint: Text(allEmployeesText),
                                       isDense: true,
                                       items: [
-                                        const DropdownMenuItem<int?>(
+                                        DropdownMenuItem<int?>(
                                           value: null,
-                                          child: Text('All Employees'),
+                                          child: Text(allEmployeesText),
                                         ),
                                         ...employees.map(
                                           (e) => DropdownMenuItem<int?>(
                                             value: e.id,
                                             child: Text(
-                                              e.name ?? 'Staff #${e.id}',
+                                              e.name ??
+                                                  context.tr(
+                                                    shared
+                                                        .LocaleKeys
+                                                        .staffIdFallback,
+                                                    track:
+                                                        shared
+                                                            .TrackConstants
+                                                            .staffManagementPageTrack,
+                                                    params: {'id': '${e.id}'},
+                                                  ) ??
+                                                  'Staff #${e.id}',
                                             ),
                                           ),
                                         ),
@@ -336,9 +477,13 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
               ],
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Select Report Duration:',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+            Text(
+              context.tr(
+                    shared.LocaleKeys.selectReportDurationLabel,
+                    track: shared.TrackConstants.staffManagementPageTrack,
+                  ) ??
+                  'Select Report Duration:',
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
             ),
             const SizedBox(height: 8),
             Wrap(
@@ -351,7 +496,7 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                 final isSelected = _selectedDurationNotifier.value == duration;
                 return FilterChip(
                   selected: isSelected,
-                  label: Text(duration.displayName),
+                  label: Text(duration.getLocalizedName(context)),
                   selectedColor: theme.colorScheme.primary,
                   labelStyle: TextStyle(
                     color: isSelected
@@ -413,7 +558,14 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      'Interactive Time Window',
+                      context.tr(
+                            shared.LocaleKeys.interactiveTimeWindowTitle,
+                            track:
+                                shared
+                                    .TrackConstants
+                                    .staffManagementPageTrack,
+                          ) ??
+                          'Interactive Time Window',
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -522,28 +674,48 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
           children: [
             _buildMetricCard(
               theme: theme,
-              title: 'Total Active Staff',
+              title:
+                  context.tr(
+                    shared.LocaleKeys.totalActiveStaffKpi,
+                    track: shared.TrackConstants.staffManagementPageTrack,
+                  ) ??
+                  'Total Active Staff',
               value: '$activeStaffCount',
               icon: Icons.people_alt_rounded,
               color: Colors.blue,
             ),
             _buildMetricCard(
               theme: theme,
-              title: 'Attendance Rate',
+              title:
+                  context.tr(
+                    shared.LocaleKeys.attendanceRateKpi,
+                    track: shared.TrackConstants.staffManagementPageTrack,
+                  ) ??
+                  'Attendance Rate',
               value: '$attendanceRate%',
               icon: Icons.fact_check_rounded,
               color: Colors.teal,
             ),
             _buildMetricCard(
               theme: theme,
-              title: 'Leaves Requested',
+              title:
+                  context.tr(
+                    shared.LocaleKeys.leavesRequestedKpi,
+                    track: shared.TrackConstants.staffManagementPageTrack,
+                  ) ??
+                  'Leaves Requested',
               value: '$totalLeavesCount',
               icon: Icons.event_busy_rounded,
               color: Colors.orange,
             ),
             _buildMetricCard(
               theme: theme,
-              title: 'Present Days',
+              title:
+                  context.tr(
+                    shared.LocaleKeys.presentDaysKpi,
+                    track: shared.TrackConstants.staffManagementPageTrack,
+                  ) ??
+                  'Present Days',
               value: '$totalPresent',
               icon: Icons.check_circle_rounded,
               color: Colors.green,
@@ -656,7 +828,12 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                 IconButton(
                   icon: const Icon(Icons.refresh_rounded),
                   iconSize: 20,
-                  tooltip: 'Refresh chart',
+                  tooltip:
+                      context.tr(
+                        shared.LocaleKeys.refreshChartTooltip,
+                        track: shared.TrackConstants.staffManagementPageTrack,
+                      ) ??
+                      'Refresh chart',
                   onPressed: onRefresh ?? _refreshAllData,
                 ),
               ],
@@ -681,6 +858,19 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
     return list.where((l) => l.employeeId == _selectedEmployeeIdNotifier.value).toList();
   }
 
+  DateTime? _parseDateTime(String? rawDate) {
+    if (rawDate == null || rawDate.trim().isEmpty) return null;
+    final parsed = DateTime.tryParse(rawDate.trim());
+    if (parsed != null) return parsed;
+    try {
+      return DateFormat('dd-MM-yyyy').parse(rawDate.trim());
+    } catch (_) {}
+    try {
+      return DateFormat('yyyy-MM-dd').parse(rawDate.trim());
+    } catch (_) {}
+    return null;
+  }
+
   List<AttendanceTrendData> _generateAttendanceTrendData(
     List<AttendanceEntity> attendanceList,
     List<LeaveEntity> leaves,
@@ -691,23 +881,33 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
       return [];
     }
 
-    final Map<String, Map<String, int>> map = {};
+    final Map<DateTime, Map<String, int>> map = {};
     for (final a in filtered) {
-      final label = a.date ?? 'N/A';
-      map.putIfAbsent(label, () => {'present': 0, 'absent': 0, 'leave': 0});
+      final parsedDate = _parseDateTime(a.date);
+      final dayDate = parsedDate != null
+          ? DateTime(parsedDate.year, parsedDate.month, parsedDate.day)
+          : DateTime(2026, 1, 1);
+
+      map.putIfAbsent(dayDate, () => {'present': 0, 'absent': 0, 'leave': 0});
       final status = (a.status ?? '1').toLowerCase();
       if (status == 'present' || status == '1') {
-        map[label]!['present'] = (map[label]!['present'] ?? 0) + 1;
+        map[dayDate]!['present'] = (map[dayDate]!['present'] ?? 0) + 1;
       } else if (status == 'absent' || status == '2') {
-        map[label]!['absent'] = (map[label]!['absent'] ?? 0) + 1;
+        map[dayDate]!['absent'] = (map[dayDate]!['absent'] ?? 0) + 1;
       } else {
-        map[label]!['leave'] = (map[label]!['leave'] ?? 0) + 1;
+        map[dayDate]!['leave'] = (map[dayDate]!['leave'] ?? 0) + 1;
       }
     }
-    return map.entries
+
+    final sortedEntries = map.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+
+    final dateFormat = DateFormat('MMM d');
+    return sortedEntries
         .map(
           (e) => AttendanceTrendData(
-            periodLabel: e.key,
+            date: e.key,
+            periodLabel: dateFormat.format(e.key),
             present: e.value['present']!,
             absent: e.value['absent']!,
             leave: e.value['leave']!,
@@ -724,27 +924,37 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
       return [];
     }
 
-    final Map<String, double> workedMap = {};
+    final Map<DateTime, double> workedMap = {};
     for (final a in filtered) {
-      final label = a.date ?? 'N/A';
+      final parsedDate = _parseDateTime(a.date);
+      final dayDate = parsedDate != null
+          ? DateTime(parsedDate.year, parsedDate.month, parsedDate.day)
+          : DateTime(2026, 1, 1);
+
       final double durationHours =
           double.tryParse(
             a.employeeWorkingDurations ?? a.workingTimeDurations ?? '8.0',
           ) ??
           8.0;
-      workedMap[label] = (workedMap[label] ?? 0.0) + durationHours;
+      workedMap[dayDate] = (workedMap[dayDate] ?? 0.0) + durationHours;
     }
 
-    return workedMap.entries
+    final sortedEntries = workedMap.entries.toList()
+      ..sort((a, b) => a.key.compareTo(b.key));
+
+    final dateFormat = DateFormat('MMM d');
+    return sortedEntries
         .map(
           (e) => WorkingHoursData(
-            periodLabel: e.key,
+            date: e.key,
+            periodLabel: dateFormat.format(e.key),
             workedHours: e.value,
             targetHours: 8.0,
           ),
         )
         .toList();
   }
+
 
   List<LeaveDistributionData> _generateLeaveDistributionData(
     List<LeaveEntity> leaves,
@@ -787,7 +997,14 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
     }
 
     return employees.where((e) => e.isDeleted != true).map((e) {
-      final name = e.name ?? 'Staff #${e.id}';
+      final name =
+          e.name ??
+          context.tr(
+            shared.LocaleKeys.staffIdFallback,
+            track: shared.TrackConstants.staffManagementPageTrack,
+            params: {'id': '${e.id}'},
+          ) ??
+          'Staff #${e.id}';
       final empAttendance = attendanceList.where((a) => a.employeeId == e.id);
       final total = empAttendance.length;
       final present = empAttendance

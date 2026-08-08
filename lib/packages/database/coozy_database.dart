@@ -18,3 +18,8 @@ export 'src/database_dao/recipes_dao.dart';
 export 'src/database_dao/reports_dao.dart';
 export 'src/database_dao/reservations_dao.dart';
 export 'src/database_dao/user_logins_dao.dart';
+
+// src/utils
+export 'src/utils/fake_data_helper.dart';
+
+

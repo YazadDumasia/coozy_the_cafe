@@ -375,16 +375,25 @@ class _AttendanceFormDialogState extends State<AttendanceFormDialog> {
                                 ),
                               );
                             }).toList(),
-                            decoration: const InputDecoration(
-                              labelText: 'Employee name',
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              labelText: context.tr(
+                                    shared.LocaleKeys.employeeNameLabel,
+                                    track: shared.TrackConstants.staffManagementPageTrack,
+                                  ) ??
+                                  'Employee name',
+                              border: const OutlineInputBorder(),
                             ),
                             validator: (value) {
                               if (value == null && !isEditing) {
-                                return 'Please select an employee name.';
+                                return context.tr(
+                                      shared.LocaleKeys.selectEmployeeError,
+                                      track: shared.TrackConstants.staffManagementPageTrack,
+                                    ) ??
+                                    'Please select an employee name.';
                               }
                               return null;
                             },
+
                           );
                         },
                       ),

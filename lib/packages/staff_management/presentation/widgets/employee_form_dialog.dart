@@ -446,49 +446,90 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _addressLine1Controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Address Line 1',
-                    hintText: 'Enter address line 1',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.tr(
+                          shared.LocaleKeys.addressLine1Label,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'Address Line 1',
+                    hintText: context.tr(
+                          shared.LocaleKeys.addressLine1Hint,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'Enter address line 1',
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _addressLine2Controller,
-                  decoration: const InputDecoration(
-                    labelText: 'Address Line 2',
-                    hintText: 'Enter address line 2',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.tr(
+                          shared.LocaleKeys.addressLine2Label,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'Address Line 2',
+                    hintText: context.tr(
+                          shared.LocaleKeys.addressLine2Hint,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'Enter address line 2',
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _idProofController,
-                  decoration: const InputDecoration(
-                    labelText: 'ID Proof (e.g. Passport, License)',
-                    hintText: 'Enter ID proof type',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.tr(
+                          shared.LocaleKeys.idProofLabel,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'ID Proof (e.g. Passport, License)',
+                    hintText: context.tr(
+                          shared.LocaleKeys.idProofHint,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'Enter ID proof type',
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _idProofNumberController,
-                  decoration: const InputDecoration(
-                    labelText: 'ID Proof Number',
-                    hintText: 'Enter ID proof number',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.tr(
+                          shared.LocaleKeys.idProofNumberLabel,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'ID Proof Number',
+                    hintText: context.tr(
+                          shared.LocaleKeys.idProofNumberHint,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'Enter ID proof number',
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _totalLeavesController,
-                  decoration: const InputDecoration(
-                    labelText: 'Total Number of Leaves',
-                    hintText: 'Enter total leaves allocated',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.tr(
+                          shared.LocaleKeys.totalLeavesLabel,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'Total Number of Leaves',
+                    hintText: context.tr(
+                          shared.LocaleKeys.totalLeavesHint,
+                          track: shared.TrackConstants.staffManagementPageTrack,
+                        ) ??
+                        'Enter total leaves allocated',
+                    border: const OutlineInputBorder(),
                   ),
                   keyboardType: TextInputType.number,
                 ),
+
                 const SizedBox(height: 10),
                 TextFormField(
                   controller: _positionController,
@@ -592,7 +633,11 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                         );
                       },
                       decoration: InputDecoration(
-                        labelText: 'Joining Date',
+                        labelText: context.tr(
+                              shared.LocaleKeys.joiningDateLabel,
+                              track: shared.TrackConstants.staffManagementPageTrack,
+                            ) ??
+                            'Joining Date',
                         border: const OutlineInputBorder(),
                         suffixIcon: val.text.isNotEmpty
                             ? GestureDetector(
@@ -632,11 +677,23 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         TextButton(
-                                          child: const Text('Cancel'),
+                                          child: Text(
+                                            context.tr(
+                                                  shared.LocaleKeys.commonCancel,
+                                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                                ) ??
+                                                'Cancel',
+                                          ),
                                           onPressed: () => Navigator.pop(ctx),
                                         ),
                                         TextButton(
-                                          child: const Text('Done'),
+                                          child: Text(
+                                            context.tr(
+                                                  shared.LocaleKeys.commonDone,
+                                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                                ) ??
+                                                'Done',
+                                          ),
                                           onPressed: () {
                                             _leavingDateController.text =
                                                 DateFormat(
@@ -673,8 +730,13 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                         );
                       },
                       decoration: InputDecoration(
-                        labelText: 'Leaving Date',
+                        labelText: context.tr(
+                              shared.LocaleKeys.leavingDateLabel,
+                              track: shared.TrackConstants.staffManagementPageTrack,
+                            ) ??
+                            'Leaving Date',
                         border: const OutlineInputBorder(),
+
                         suffixIcon: val.text.isNotEmpty
                             ? GestureDetector(
                                 onTap: () => _leavingDateController.clear(),

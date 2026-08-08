@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:line_icons/line_icons.dart';
 import '../../../core/coozy_core.dart' as core;
+
 import '../../../shared/coozy_shared.dart' as shared;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'home_screen_drawer_actions.dart';
@@ -346,7 +346,7 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
 
                   _buildDrawerItem(
                     context,
-                    icon: LineIcons.paperHandAlt,
+                    icon: Icons.people,
                     title:
                         context.tr(
                           shared.LocaleKeys.homeDrawerStaffLabel,
