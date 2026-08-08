@@ -43,8 +43,7 @@ class MenuItemRoutes {
                 value: GetIt.instance<MenuItemBloc>(),
               ),
               BlocProvider<MenuCategoryFullListCubit>.value(
-                value: GetIt.instance<MenuCategoryFullListCubit>()
-                  ..loadData(),
+                value: GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
               ),
               BlocProvider<MenuSubcategoryBloc>.value(
                 value: GetIt.instance<MenuSubcategoryBloc>()

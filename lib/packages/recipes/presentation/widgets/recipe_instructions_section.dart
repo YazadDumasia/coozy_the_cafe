@@ -374,14 +374,18 @@ class _RecipeInstructionsSectionState extends State<RecipeInstructionsSection> {
       Navigator.pop(context);
       shared.DialogUtils.showAutoDismissDialog(
         context: context,
-        title: context.tr(
-          shared.LocaleKeys.commonError,
-          track: shared.TrackConstants.commonTrack,
-        ) ?? 'Error',
-        descriptions: context.tr(
-          shared.LocaleKeys.recipesDetailNoInternetMsg,
-          track: shared.TrackConstants.recipesTrack,
-        ) ?? 'Internet not Connected',
+        title:
+            context.tr(
+              shared.LocaleKeys.commonError,
+              track: shared.TrackConstants.commonTrack,
+            ) ??
+            'Error',
+        descriptions:
+            context.tr(
+              shared.LocaleKeys.recipesDetailNoInternetMsg,
+              track: shared.TrackConstants.recipesTrack,
+            ) ??
+            'Internet not Connected',
         titleIcon: const Icon(Icons.wifi_off, color: Colors.red, size: 50),
       );
     } catch (e) {
@@ -389,14 +393,18 @@ class _RecipeInstructionsSectionState extends State<RecipeInstructionsSection> {
       Navigator.pop(context);
       shared.DialogUtils.showAutoDismissDialog(
         context: context,
-        title: context.tr(
-          shared.LocaleKeys.commonError,
-          track: shared.TrackConstants.commonTrack,
-        ) ?? 'Error',
-        descriptions: context.tr(
-          shared.LocaleKeys.recipesDetailTranslateFailMsg,
-          track: shared.TrackConstants.recipesTrack,
-        ) ?? 'Failed to translate content. Please try again',
+        title:
+            context.tr(
+              shared.LocaleKeys.commonError,
+              track: shared.TrackConstants.commonTrack,
+            ) ??
+            'Error',
+        descriptions:
+            context.tr(
+              shared.LocaleKeys.recipesDetailTranslateFailMsg,
+              track: shared.TrackConstants.recipesTrack,
+            ) ??
+            'Failed to translate content. Please try again',
         titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
       );
     }

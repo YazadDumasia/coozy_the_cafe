@@ -16,7 +16,8 @@ class AddEmployeeUseCase {
 class UpdateEmployeeUseCase {
   final StaffRepository repository;
   UpdateEmployeeUseCase(this.repository);
-  Future<int> call(EmployeeEntity employee) => repository.updateEmployee(employee);
+  Future<int> call(EmployeeEntity employee) =>
+      repository.updateEmployee(employee);
 }
 
 class DeleteSoftEmployeeUseCase {
@@ -41,13 +42,15 @@ class GetAttendanceUseCase {
 class AddAttendanceUseCase {
   final StaffRepository repository;
   AddAttendanceUseCase(this.repository);
-  Future<int> call(AttendanceEntity attendance) => repository.addAttendance(attendance);
+  Future<int> call(AttendanceEntity attendance) =>
+      repository.addAttendance(attendance);
 }
 
 class UpdateAttendanceUseCase {
   final StaffRepository repository;
   UpdateAttendanceUseCase(this.repository);
-  Future<int> call(AttendanceEntity attendance) => repository.updateAttendance(attendance);
+  Future<int> call(AttendanceEntity attendance) =>
+      repository.updateAttendance(attendance);
 }
 
 class DeleteAttendanceUseCase {
@@ -84,7 +87,8 @@ class UpdateLeaveUseCase {
 class UpdateLeavesBatchUseCase {
   final StaffRepository repository;
   UpdateLeavesBatchUseCase(this.repository);
-  Future<void> call(List<LeaveEntity> leaves) => repository.updateLeavesBatch(leaves);
+  Future<void> call(List<LeaveEntity> leaves) =>
+      repository.updateLeavesBatch(leaves);
 }
 
 class DeleteLeaveUseCase {

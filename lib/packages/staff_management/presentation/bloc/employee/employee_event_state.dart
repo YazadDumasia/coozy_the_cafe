@@ -40,7 +40,12 @@ class DeleteEmployeeEvent extends EmployeeEvent {
   final bool permanent;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  const DeleteEmployeeEvent(this.id, {this.permanent = false, this.onSuccess, this.onError});
+  const DeleteEmployeeEvent(
+    this.id, {
+    this.permanent = false,
+    this.onSuccess,
+    this.onError,
+  });
   @override
   List<Object?> get props => [id, permanent];
 }
@@ -52,13 +57,16 @@ abstract class EmployeeState extends Equatable {
 }
 
 class EmployeeInitialState extends EmployeeState {}
+
 class EmployeeLoadingState extends EmployeeState {}
+
 class EmployeeLoadedState extends EmployeeState {
   final List<EmployeeEntity> employees;
   const EmployeeLoadedState(this.employees);
   @override
   List<Object?> get props => [employees];
 }
+
 class EmployeeErrorState extends EmployeeState {
   final String message;
   const EmployeeErrorState(this.message);

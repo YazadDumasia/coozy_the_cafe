@@ -350,16 +350,14 @@ class OtpVerificationPageState extends State<OtpVerificationPage>
         DialogUtils.showAutoDismissDialog(
           showDuration: const Duration(seconds: 5),
           context: context,
-          title: context.tr(
-            LocaleKeys.commonInfo,
-            track: TrackConstants.commonTrack,
-          ) ?? 'Info',
+          title:
+              context.tr(
+                LocaleKeys.commonInfo,
+                track: TrackConstants.commonTrack,
+              ) ??
+              'Info',
           descriptions: 'Web OTP: $_currentOtpNumber',
-          titleIcon: const Icon(
-            Icons.info,
-            color: Colors.blue,
-            size: 50,
-          ),
+          titleIcon: const Icon(Icons.info, color: Colors.blue, size: 50),
         );
       }
     }

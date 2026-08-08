@@ -29,7 +29,10 @@ class RecipeListItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(5),
             onTap: () async {
               await RecipesListScreenActions.onRecipeItemTapped(
-                  context, model, index);
+                context,
+                model,
+                index,
+              );
             },
             child: Padding(
               padding: const EdgeInsets.all(10.0),
@@ -45,7 +48,8 @@ class RecipeListItem extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Visibility(
-                          visible: model.translatedRecipeName != null &&
+                          visible:
+                              model.translatedRecipeName != null &&
                               model.translatedRecipeName!.isNotEmpty,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -55,9 +59,7 @@ class RecipeListItem extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   model.translatedRecipeName ?? '',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge
+                                  style: Theme.of(context).textTheme.bodyLarge
                                       ?.copyWith(fontWeight: FontWeight.w700),
                                 ),
                               ),
@@ -65,7 +67,8 @@ class RecipeListItem extends StatelessWidget {
                           ),
                         ),
                         Visibility(
-                          visible: model.recipeOriginalName != null &&
+                          visible:
+                              model.recipeOriginalName != null &&
                               model.recipeOriginalName!.isNotEmpty,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 5),
@@ -77,9 +80,9 @@ class RecipeListItem extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     model.recipeOriginalName ?? '',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
                                   ),
                                 ),
                               ],
@@ -96,20 +99,23 @@ class RecipeListItem extends StatelessWidget {
                               Expanded(
                                 child: RichText(
                                   text: TextSpan(
-                                    text: context.tr(
-                                          shared.LocaleKeys
+                                    text:
+                                        context.tr(
+                                          shared
+                                              .LocaleKeys
                                               .recipesDetailServingsLabel,
                                           params: {
                                             'servings':
                                                 '${model.recipeServings ?? 0}',
                                           },
-                                          track: shared.TrackConstants
+                                          track: shared
+                                              .TrackConstants
                                               .recipesTrack,
                                         ) ??
                                         'Servings: ${model.recipeServings ?? 0}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -132,8 +138,10 @@ class RecipeListItem extends StatelessWidget {
                                   spacing: 10,
                                   children: <Widget>[
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         Icon(
@@ -143,15 +151,17 @@ class RecipeListItem extends StatelessWidget {
                                         const SizedBox(width: 5),
                                         Text(
                                           '${model.recipeTotalTimeInMins ?? '0'} mins',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyLarge,
                                         ),
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         Icon(
@@ -161,15 +171,17 @@ class RecipeListItem extends StatelessWidget {
                                         const SizedBox(width: 5),
                                         Text(
                                           '${model.recipeCookingTimeInMins ?? '0'} mins',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyLarge,
                                         ),
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       mainAxisSize: MainAxisSize.min,
                                       children: <Widget>[
                                         Icon(
@@ -179,9 +191,9 @@ class RecipeListItem extends StatelessWidget {
                                         const SizedBox(width: 5),
                                         Text(
                                           '${model.recipePreparationTimeInMins ?? '0'} mins',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge,
+                                          style: Theme.of(
+                                            context,
+                                          ).textTheme.bodyLarge,
                                         ),
                                       ],
                                     ),
@@ -201,20 +213,23 @@ class RecipeListItem extends StatelessWidget {
                               Expanded(
                                 child: RichText(
                                   text: TextSpan(
-                                    text: context.tr(
-                                          shared.LocaleKeys
+                                    text:
+                                        context.tr(
+                                          shared
+                                              .LocaleKeys
                                               .recipesDetailCuisineLabel,
                                           params: {
                                             'cuisine':
                                                 model.recipeCuisine ?? '',
                                           },
-                                          track: shared.TrackConstants
+                                          track: shared
+                                              .TrackConstants
                                               .recipesTrack,
                                         ) ??
                                         'Cuisine: ${model.recipeCuisine ?? ''}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -231,19 +246,22 @@ class RecipeListItem extends StatelessWidget {
                               Expanded(
                                 child: RichText(
                                   text: TextSpan(
-                                    text: context.tr(
-                                          shared.LocaleKeys
+                                    text:
+                                        context.tr(
+                                          shared
+                                              .LocaleKeys
                                               .recipesDetailCourseLabel,
                                           params: {
                                             'course': model.recipeCourse ?? '',
                                           },
-                                          track: shared.TrackConstants
+                                          track: shared
+                                              .TrackConstants
                                               .recipesTrack,
                                         ) ??
                                         'Course: ${model.recipeCourse ?? ''}',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyMedium,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -260,10 +278,13 @@ class RecipeListItem extends StatelessWidget {
                         IconButton(
                           onPressed: () async {
                             await RecipesListScreenActions.onEditRecipePressed(
-                                context, model);
+                              context,
+                              model,
+                            );
                           },
                           icon: const Icon(Icons.edit),
-                          tooltip: context.tr(
+                          tooltip:
+                              context.tr(
                                 shared.LocaleKeys.recipesEditTooltip,
                                 track: shared.TrackConstants.recipesTrack,
                               ) ??
@@ -272,7 +293,10 @@ class RecipeListItem extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           RecipesListScreenActions.onBookmarkTogglePressed(
-                              context, model, index);
+                            context,
+                            model,
+                            index,
+                          );
                         },
                         icon: Icon(
                           model.isBookmark == true

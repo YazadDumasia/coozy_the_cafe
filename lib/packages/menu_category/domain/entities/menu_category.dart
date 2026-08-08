@@ -32,6 +32,7 @@ class MenuCategory {
       createdDate: createdDate ?? this.createdDate,
     );
   }
+
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;

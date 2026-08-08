@@ -53,7 +53,9 @@ class AddPurchaseScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.purchasePurchaseAddedSuccessfullyAndStockUp,
+                      shared
+                          .LocaleKeys
+                          .purchasePurchaseAddedSuccessfullyAndStockUp,
                       track: shared.TrackConstants.purchasePageTrack,
                     ) ??
                     'Purchase added successfully and stock updated!',
@@ -79,9 +81,10 @@ class AddPurchaseScreenActions {
                 descriptions: error.isNotEmpty
                     ? error
                     : (context.tr(
-                        shared.LocaleKeys.commonErrorMsg,
-                        track: shared.TrackConstants.commonTrack,
-                      ) ?? 'An error occurred.'),
+                            shared.LocaleKeys.commonErrorMsg,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'An error occurred.'),
                 titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
               );
             }

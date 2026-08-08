@@ -439,7 +439,6 @@ class RecipesFullListCubit extends Cubit<RecipesFullListState> {
     return filtered.toSet().toList(); // Unique results
   }
 
-
   static _ExtractedFilterOptions _extractFilterOptionsTask(List<Recipe> data) {
     final List<int?> uniqueServings = <int?>[];
     final List<FilterItemModel> servingsFilterOptionsList = <FilterItemModel>[];

@@ -72,9 +72,9 @@ class MenuSubcategoryLocalDataSourceImpl
             ? const Value.absent()
             : Value(subcategory.createdDate!),
       );
-      final updatedRows = await (database.update(database.subcategoriesTable)
-            ..where((s) => s.id.equals(subcategory.id!)))
-          .write(companion);
+      final updatedRows = await (database.update(
+        database.subcategoriesTable,
+      )..where((s) => s.id.equals(subcategory.id!))).write(companion);
       return updatedRows > 0;
     }
     return false;

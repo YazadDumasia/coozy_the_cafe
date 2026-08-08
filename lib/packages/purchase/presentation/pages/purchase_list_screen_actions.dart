@@ -68,9 +68,10 @@ class PurchaseListScreenActions {
                   descriptions: error.isNotEmpty
                       ? error
                       : (context.tr(
-                          shared.LocaleKeys.commonErrorMsg,
-                          track: shared.TrackConstants.commonTrack,
-                        ) ?? 'An error occurred.'),
+                              shared.LocaleKeys.commonErrorMsg,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'An error occurred.'),
                   titleIcon: const Icon(
                     Icons.error,
                     color: Colors.red,
@@ -124,9 +125,10 @@ class PurchaseListScreenActions {
                   descriptions: error.isNotEmpty
                       ? error
                       : (context.tr(
-                          shared.LocaleKeys.commonErrorMsg,
-                          track: shared.TrackConstants.commonTrack,
-                        ) ?? 'An error occurred.'),
+                              shared.LocaleKeys.commonErrorMsg,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'An error occurred.'),
                   titleIcon: const Icon(
                     Icons.error,
                     color: Colors.red,
@@ -232,9 +234,10 @@ class PurchaseListScreenActions {
                     descriptions: error.isNotEmpty
                         ? error
                         : (context.tr(
-                            shared.LocaleKeys.commonErrorMsg,
-                            track: shared.TrackConstants.commonTrack,
-                          ) ?? 'An error occurred.'),
+                                shared.LocaleKeys.commonErrorMsg,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'An error occurred.'),
                     titleIcon: const Icon(
                       Icons.error,
                       color: Colors.red,

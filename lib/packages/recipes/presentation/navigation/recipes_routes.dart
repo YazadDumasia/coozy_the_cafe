@@ -12,8 +12,22 @@ import '../pages/add_edit_recipe_screen.dart';
 
 class RecipesRoutes {
   static List<RouteBase> get routes => [
+    GoRoute(
+      path: AppRoutePath.recipesListScreenRoute,
+      builder: (context, state) => MultiBlocProvider(
+        providers: [
+          BlocProvider<RecipesFullListCubit>(
+            create: (context) => GetIt.instance<RecipesFullListCubit>(),
+          ),
+          BlocProvider<RecipesBookmarkListCubit>(
+            create: (context) => GetIt.instance<RecipesBookmarkListCubit>(),
+          ),
+        ],
+        child: const RecipesListScreen(),
+      ),
+      routes: [
         GoRoute(
-          path: AppRoutePath.recipesListScreenRoute,
+          path: AppRoutePath.recipesBookmarkListScreenRoute,
           builder: (context, state) => MultiBlocProvider(
             providers: [
               BlocProvider<RecipesFullListCubit>(
@@ -23,56 +37,40 @@ class RecipesRoutes {
                 create: (context) => GetIt.instance<RecipesBookmarkListCubit>(),
               ),
             ],
-            child: const RecipesListScreen(),
+            child: const RecipesBookmarkListScreen(),
           ),
-          routes: [
-            GoRoute(
-              path: AppRoutePath.recipesBookmarkListScreenRoute,
-              builder: (context, state) => MultiBlocProvider(
-                providers: [
-                  BlocProvider<RecipesFullListCubit>(
-                    create: (context) => GetIt.instance<RecipesFullListCubit>(),
-                  ),
-                  BlocProvider<RecipesBookmarkListCubit>(
-                    create: (context) => GetIt.instance<RecipesBookmarkListCubit>(),
-                  ),
-                ],
-                child: const RecipesBookmarkListScreen(),
-              ),
-            ),
-            GoRoute(
-              path: AppRoutePath.recipesInfoScreenRoute,
-              builder: (context, state) {
-                final extra = state.extra as Map<String, dynamic>;
-                final model = extra['model'] as Recipe;
-                final index = extra['index'] as int?;
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider<RecipesFullListCubit>(
-                      create: (context) => GetIt.instance<RecipesFullListCubit>(),
-                    ),
-                    BlocProvider<RecipesBookmarkListCubit>(
-                      create: (context) => GetIt.instance<RecipesBookmarkListCubit>(),
-                    ),
-                  ],
-                  child: RecipesInfoScreen(
-                    model: model,
-                    currentIndex: index,
-                  ),
-                );
-              },
-            ),
-            GoRoute(
-              path: AppRoutePath.recipesAddOrEditScreenRoute,
-              builder: (context, state) {
-                final model = state.extra as Recipe?;
-                return BlocProvider<RecipesFullListCubit>(
-                  create: (context) => GetIt.instance<RecipesFullListCubit>(),
-                  child: AddEditRecipeScreen(recipe: model),
-                );
-              },
-            ),
-          ],
         ),
-      ];
+        GoRoute(
+          path: AppRoutePath.recipesInfoScreenRoute,
+          builder: (context, state) {
+            final extra = state.extra as Map<String, dynamic>;
+            final model = extra['model'] as Recipe;
+            final index = extra['index'] as int?;
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<RecipesFullListCubit>(
+                  create: (context) => GetIt.instance<RecipesFullListCubit>(),
+                ),
+                BlocProvider<RecipesBookmarkListCubit>(
+                  create: (context) =>
+                      GetIt.instance<RecipesBookmarkListCubit>(),
+                ),
+              ],
+              child: RecipesInfoScreen(model: model, currentIndex: index),
+            );
+          },
+        ),
+        GoRoute(
+          path: AppRoutePath.recipesAddOrEditScreenRoute,
+          builder: (context, state) {
+            final model = state.extra as Recipe?;
+            return BlocProvider<RecipesFullListCubit>(
+              create: (context) => GetIt.instance<RecipesFullListCubit>(),
+              child: AddEditRecipeScreen(recipe: model),
+            );
+          },
+        ),
+      ],
+    ),
+  ];
 }

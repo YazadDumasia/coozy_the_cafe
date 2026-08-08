@@ -121,10 +121,9 @@ class CategoriesDao extends DatabaseAccessor<CoozyDatabase>
         position: Value(maxPosition + 1),
       );
 
-      return into(subcategoriesTable).insert(
-        newSubcategory,
-        mode: InsertMode.replace,
-      );
+      return into(
+        subcategoriesTable,
+      ).insert(newSubcategory, mode: InsertMode.replace);
     });
   }
 

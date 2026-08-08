@@ -9,7 +9,9 @@ class RecipesRepositoryImpl implements RecipesRepository {
   RecipesRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<void> initializeRecipes({void Function(int current, int total)? onProgress}) async {
+  Future<void> initializeRecipes({
+    void Function(int current, int total)? onProgress,
+  }) async {
     await localDataSource.initializeRecipes(onProgress: onProgress);
   }
 

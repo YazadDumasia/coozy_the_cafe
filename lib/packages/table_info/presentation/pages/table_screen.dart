@@ -136,10 +136,12 @@ class _TableScreenState extends State<TableScreen>
               if (state is TableError) {
                 shared.DialogUtils.showAutoDismissDialog(
                   context: context,
-                  title: context.tr(
-                    shared.LocaleKeys.commonError,
-                    track: shared.TrackConstants.commonTrack,
-                  ) ?? 'Error',
+                  title:
+                      context.tr(
+                        shared.LocaleKeys.commonError,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Error',
                   descriptions: state.message,
                   titleIcon: const Icon(
                     Icons.error,

@@ -179,7 +179,8 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
         key: const PageStorageKey('attendanceSubScreen'),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showAttendanceDialog(context),
-          tooltip: context.tr(
+          tooltip:
+              context.tr(
                 shared.LocaleKeys.addAttendanceTooltip,
                 track: shared.TrackConstants.staffManagementPageTrack,
               ) ??
@@ -363,7 +364,8 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
                     child: Text(
                       context.tr(
                             shared.LocaleKeys.noAttendanceRecords,
-                            track: shared.TrackConstants.staffManagementPageTrack,
+                            track:
+                                shared.TrackConstants.staffManagementPageTrack,
                           ) ??
                           'No Attendance Records',
                     ),

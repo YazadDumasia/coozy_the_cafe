@@ -83,21 +83,20 @@ class LoginPageActions {
           if (context.mounted) {
             share.DialogUtils.showAutoDismissDialog(
               context: context,
-              title: context.tr(
-                share.LocaleKeys.commonError,
-                track: share.TrackConstants.commonTrack,
-              ) ?? 'Error',
+              title:
+                  context.tr(
+                    share.LocaleKeys.commonError,
+                    track: share.TrackConstants.commonTrack,
+                  ) ??
+                  'Error',
               descriptions: error.isNotEmpty
                   ? error
                   : (context.tr(
-                      share.LocaleKeys.commonErrorMsg,
-                      track: share.TrackConstants.commonTrack,
-                    ) ?? 'An error occurred.'),
-              titleIcon: const Icon(
-                Icons.error,
-                color: Colors.red,
-                size: 50,
-              ),
+                          share.LocaleKeys.commonErrorMsg,
+                          track: share.TrackConstants.commonTrack,
+                        ) ??
+                        'An error occurred.'),
+              titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
             );
           }
         },

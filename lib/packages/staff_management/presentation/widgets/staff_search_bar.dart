@@ -89,4 +89,3 @@ class StaffSearchBar extends StatelessWidget {
     );
   }
 }
-

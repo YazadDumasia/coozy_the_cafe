@@ -53,7 +53,6 @@ class MenuSubcategoryLoaded extends MenuSubcategoryState {
   ];
 }
 
-
 class MenuSubcategoryError extends MenuSubcategoryState {
   final String message;
   const MenuSubcategoryError(this.message);

@@ -10,7 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/recipe_model.dart';
 
 abstract class RecipesLocalDataSource {
-  Future<void> initializeRecipes({void Function(int current, int total)? onProgress});
+  Future<void> initializeRecipes({
+    void Function(int current, int total)? onProgress,
+  });
   Future<List<RecipeModel>> getRecipes();
   Future<List<RecipeModel>> getBookmarkedRecipes();
   Future<int> insertRecipe(RecipeModel recipe);
@@ -55,7 +57,9 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
   }
 
   @override
-  Future<void> initializeRecipes({void Function(int current, int total)? onProgress}) async {
+  Future<void> initializeRecipes({
+    void Function(int current, int total)? onProgress,
+  }) async {
     final bool isFirstTime = await Constants.isFirstTime(
       PreferencesKeys.recipeList.name,
     );

@@ -35,14 +35,13 @@ class CustomerListItem extends StatelessWidget {
             if (phone.isEmpty) {
               return Text(
                 context.tr(
-                  shared.LocaleKeys.commonNoPhone,
-                  track: shared.TrackConstants.commonTrack,
-                ) ?? 'No Phone',
+                      shared.LocaleKeys.commonNoPhone,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'No Phone',
               );
             }
-            final displayPhone = isoCode.isNotEmpty
-                ? '$isoCode $phone'
-                : phone;
+            final displayPhone = isoCode.isNotEmpty ? '$isoCode $phone' : phone;
             return Text(displayPhone);
           },
         ),

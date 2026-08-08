@@ -11,9 +11,11 @@ import '../../../../menu_subcategory/domain/usecases/menu_subcategory_usecases.d
 part 'edit_menu_category_event.dart';
 part 'edit_menu_category_state.dart';
 
-class EditMenuCategoryBloc extends Bloc<EditMenuCategoryEvent, EditMenuCategoryState> {
+class EditMenuCategoryBloc
+    extends Bloc<EditMenuCategoryEvent, EditMenuCategoryState> {
   final UpdateMenuCategoryUseCase updateMenuCategoryUseCase;
-  final GetMenuSubcategoriesByCategoryUseCase getMenuSubcategoriesByCategoryUseCase;
+  final GetMenuSubcategoriesByCategoryUseCase
+  getMenuSubcategoriesByCategoryUseCase;
   final AddMenuSubcategoryUseCase addMenuSubcategoryUseCase;
   final DeleteMenuSubcategoryUseCase deleteMenuSubcategoryUseCase;
 
@@ -28,7 +30,9 @@ class EditMenuCategoryBloc extends Bloc<EditMenuCategoryEvent, EditMenuCategoryS
     required this.deleteMenuSubcategoryUseCase,
   }) : super(EditMenuCategoryInitial()) {
     on<LoadEditMenuCategoryDataEvent>(_handleInitialLoadingData);
-    on<OnAddNewSubCategoryEditMenuCategoryEvent>(_handleOnAddNewSubCategoryData);
+    on<OnAddNewSubCategoryEditMenuCategoryEvent>(
+      _handleOnAddNewSubCategoryData,
+    );
     on<DeleteSubCategoryEditMenuEvent>(_handleDeleteSubCategoryData);
     on<SubmitSubCategoryEditMenuEvent>(_handleSubmitSubCategoryData);
   }
@@ -43,7 +47,9 @@ class EditMenuCategoryBloc extends Bloc<EditMenuCategoryEvent, EditMenuCategoryS
     emit(EditMenuCategoryLoadingState());
 
     try {
-      initialSubCategories = await getMenuSubcategoriesByCategoryUseCase(event.category?.id ?? 0);
+      initialSubCategories = await getMenuSubcategoriesByCategoryUseCase(
+        event.category?.id ?? 0,
+      );
     } catch (e) {
       emit(EditMenuCategoryErrorState(e.toString()));
       return;
@@ -57,11 +63,13 @@ class EditMenuCategoryBloc extends Bloc<EditMenuCategoryEvent, EditMenuCategoryS
       }
     }
 
-    emit(EditMenuCategoryLoadedState(
-      initialCategory: initialCategory,
-      initialSubCategories: initialSubCategories,
-      listController: listController,
-    ));
+    emit(
+      EditMenuCategoryLoadedState(
+        initialCategory: initialCategory,
+        initialSubCategories: initialSubCategories,
+        listController: listController,
+      ),
+    );
   }
 
   Future<void> _handleOnAddNewSubCategoryData(
@@ -69,11 +77,13 @@ class EditMenuCategoryBloc extends Bloc<EditMenuCategoryEvent, EditMenuCategoryS
     Emitter<EditMenuCategoryState> emit,
   ) async {
     listController!.add(TextEditingController());
-    emit(EditMenuCategoryLoadedState(
-      initialCategory: initialCategory,
-      initialSubCategories: initialSubCategories,
-      listController: listController,
-    ));
+    emit(
+      EditMenuCategoryLoadedState(
+        initialCategory: initialCategory,
+        initialSubCategories: initialSubCategories,
+        listController: listController,
+      ),
+    );
   }
 
   Future<void> _handleDeleteSubCategoryData(
@@ -84,11 +94,13 @@ class EditMenuCategoryBloc extends Bloc<EditMenuCategoryEvent, EditMenuCategoryS
     listController![event.index].dispose();
     listController!.removeAt(event.index);
 
-    emit(EditMenuCategoryLoadedState(
-      initialCategory: initialCategory,
-      initialSubCategories: initialSubCategories,
-      listController: listController,
-    ));
+    emit(
+      EditMenuCategoryLoadedState(
+        initialCategory: initialCategory,
+        initialSubCategories: initialSubCategories,
+        listController: listController,
+      ),
+    );
   }
 
   Future<void> _handleSubmitSubCategoryData(
@@ -119,15 +131,15 @@ class EditMenuCategoryBloc extends Bloc<EditMenuCategoryEvent, EditMenuCategoryS
       if (list.isNotEmpty) {
         for (int i = 0; i < list.length; i++) {
           if (list[i].trim().isNotEmpty) {
-             final newSub = MenuSubcategory(
-                hashId: const Uuid().v4(),
-                categoryId: initialCategory!.id!,
-                name: list[i].trim(),
-                isActive: true,
-                createdDate: DateTime.now().toIso8601String(),
-                position: i,
-             );
-             await addMenuSubcategoryUseCase(newSub);
+            final newSub = MenuSubcategory(
+              hashId: const Uuid().v4(),
+              categoryId: initialCategory!.id!,
+              name: list[i].trim(),
+              isActive: true,
+              createdDate: DateTime.now().toIso8601String(),
+              position: i,
+            );
+            await addMenuSubcategoryUseCase(newSub);
           }
         }
       }

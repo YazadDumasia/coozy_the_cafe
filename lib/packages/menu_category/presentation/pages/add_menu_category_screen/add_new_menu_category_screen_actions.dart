@@ -15,14 +15,18 @@ class AddNewMenuCategoryScreenActions {
           if (context.mounted) {
             shared.DialogUtils.showAutoDismissDialog(
               context: context,
-              title: context.tr(
-                shared.LocaleKeys.commonSuccess,
-                track: shared.TrackConstants.commonTrack,
-              ) ?? 'Success',
-              descriptions: context.tr(
-                shared.LocaleKeys.crudSuccessAdd,
-                track: shared.TrackConstants.commonTrack,
-              ) ?? 'Record added successfully.',
+              title:
+                  context.tr(
+                    shared.LocaleKeys.commonSuccess,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Success',
+              descriptions:
+                  context.tr(
+                    shared.LocaleKeys.crudSuccessAdd,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Record added successfully.',
               titleIcon: const Icon(
                 Icons.check_circle,
                 color: Colors.green,
@@ -35,16 +39,19 @@ class AddNewMenuCategoryScreenActions {
           if (context.mounted) {
             shared.DialogUtils.showAutoDismissDialog(
               context: context,
-              title: context.tr(
-                shared.LocaleKeys.commonError,
-                track: shared.TrackConstants.commonTrack,
-              ) ?? 'Error',
+              title:
+                  context.tr(
+                    shared.LocaleKeys.commonError,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Error',
               descriptions: error.isNotEmpty
                   ? error
                   : (context.tr(
-                      shared.LocaleKeys.commonErrorMsg,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ?? 'An error occurred.'),
+                          shared.LocaleKeys.commonErrorMsg,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'An error occurred.'),
               titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
             );
           }

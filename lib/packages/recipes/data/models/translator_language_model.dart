@@ -12,10 +12,7 @@ class TranslatorLanguageModel {
   }
 
   Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'name': name,
-      'code_2': code2,
-    };
+    return <String, dynamic>{'name': name, 'code_2': code2};
   }
 
   @override

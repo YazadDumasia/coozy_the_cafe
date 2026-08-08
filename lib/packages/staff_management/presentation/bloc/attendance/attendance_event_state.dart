@@ -33,7 +33,12 @@ class DeleteAttendanceEvent extends AttendanceEvent {
   final bool permanent;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  const DeleteAttendanceEvent(this.id, {this.permanent = false, this.onSuccess, this.onError});
+  const DeleteAttendanceEvent(
+    this.id, {
+    this.permanent = false,
+    this.onSuccess,
+    this.onError,
+  });
   @override
   List<Object?> get props => [id, permanent];
 }
@@ -45,13 +50,16 @@ abstract class AttendanceState extends Equatable {
 }
 
 class AttendanceInitialState extends AttendanceState {}
+
 class AttendanceLoadingState extends AttendanceState {}
+
 class AttendanceLoadedState extends AttendanceState {
   final List<AttendanceEntity> attendanceList;
   const AttendanceLoadedState(this.attendanceList);
   @override
   List<Object?> get props => [attendanceList];
 }
+
 class AttendanceErrorState extends AttendanceState {
   final String message;
   const AttendanceErrorState(this.message);

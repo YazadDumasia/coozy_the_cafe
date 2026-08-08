@@ -26,7 +26,9 @@ class LeaveBloc extends Bloc<LeaveEvent, LeaveState> {
   }
 
   Future<void> _onLoadLeaves(
-      LoadLeavesEvent event, Emitter<LeaveState> emit) async {
+    LoadLeavesEvent event,
+    Emitter<LeaveState> emit,
+  ) async {
     emit(LeaveLoadingState());
     try {
       final list = await getLeavesUseCase();
@@ -37,7 +39,9 @@ class LeaveBloc extends Bloc<LeaveEvent, LeaveState> {
   }
 
   Future<void> _onAddLeave(
-      AddLeaveEvent event, Emitter<LeaveState> emit) async {
+    AddLeaveEvent event,
+    Emitter<LeaveState> emit,
+  ) async {
     try {
       await addLeaveUseCase(event.leave);
       event.onSuccess?.call();
@@ -49,7 +53,9 @@ class LeaveBloc extends Bloc<LeaveEvent, LeaveState> {
   }
 
   Future<void> _onUpdateLeave(
-      UpdateLeaveEvent event, Emitter<LeaveState> emit) async {
+    UpdateLeaveEvent event,
+    Emitter<LeaveState> emit,
+  ) async {
     try {
       await updateLeaveUseCase(event.leave);
       event.onSuccess?.call();
@@ -61,7 +67,9 @@ class LeaveBloc extends Bloc<LeaveEvent, LeaveState> {
   }
 
   Future<void> _onUpdateLeavesBatch(
-      UpdateLeavesBatchEvent event, Emitter<LeaveState> emit) async {
+    UpdateLeavesBatchEvent event,
+    Emitter<LeaveState> emit,
+  ) async {
     try {
       await updateLeavesBatchUseCase(event.leaves);
       event.onSuccess?.call();
@@ -73,7 +81,9 @@ class LeaveBloc extends Bloc<LeaveEvent, LeaveState> {
   }
 
   Future<void> _onDeleteLeave(
-      DeleteLeaveEvent event, Emitter<LeaveState> emit) async {
+    DeleteLeaveEvent event,
+    Emitter<LeaveState> emit,
+  ) async {
     try {
       if (event.permanent) {
         await deleteLeavePermanentUseCase(event.id);

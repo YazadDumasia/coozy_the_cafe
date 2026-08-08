@@ -59,6 +59,14 @@ class CustomerEntity extends Equatable implements shared.ISuspensionBean {
   }
 
   @override
-  List<Object?> get props => [id, hashId, name, phoneNumber, isoCode, createdDate, tagIndex, isShowSuspension];
+  List<Object?> get props => [
+    id,
+    hashId,
+    name,
+    phoneNumber,
+    isoCode,
+    createdDate,
+    tagIndex,
+    isShowSuspension,
+  ];
 }
-

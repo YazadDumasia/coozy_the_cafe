@@ -42,7 +42,12 @@ class DeleteLeaveEvent extends LeaveEvent {
   final bool permanent;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  const DeleteLeaveEvent(this.id, {this.permanent = false, this.onSuccess, this.onError});
+  const DeleteLeaveEvent(
+    this.id, {
+    this.permanent = false,
+    this.onSuccess,
+    this.onError,
+  });
   @override
   List<Object?> get props => [id, permanent];
 }
@@ -54,13 +59,16 @@ abstract class LeaveState extends Equatable {
 }
 
 class LeaveInitialState extends LeaveState {}
+
 class LeaveLoadingState extends LeaveState {}
+
 class LeaveLoadedState extends LeaveState {
   final List<LeaveEntity> leaves;
   const LeaveLoadedState(this.leaves);
   @override
   List<Object?> get props => [leaves];
 }
+
 class LeaveErrorState extends LeaveState {
   final String message;
   const LeaveErrorState(this.message);

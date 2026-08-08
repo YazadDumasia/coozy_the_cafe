@@ -11,10 +11,7 @@ import 'add_new_menu_subcategory_screen_actions.dart';
 class AddNewMenuSubcategoryScreen extends StatefulWidget {
   final int? initialCategoryId;
 
-  const AddNewMenuSubcategoryScreen({
-    super.key,
-    this.initialCategoryId,
-  });
+  const AddNewMenuSubcategoryScreen({super.key, this.initialCategoryId});
 
   @override
   State<AddNewMenuSubcategoryScreen> createState() =>
@@ -37,9 +34,7 @@ class _AddNewMenuSubcategoryScreenState
     _cubit = context.read<AddNewMenuSubcategoryCubit>();
     _cubit.resetData();
     if (widget.initialCategoryId != null) {
-      _cubit.setSelectedCategory(
-        MenuCategory(id: widget.initialCategoryId),
-      );
+      _cubit.setSelectedCategory(MenuCategory(id: widget.initialCategoryId));
     }
     _fetchCategories();
   }
@@ -132,13 +127,19 @@ class _AddNewMenuSubcategoryScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 DropdownButtonFormField<dynamic>(
-                                  key: ValueKey('${_cubit.isCreatingNewCategory}_${_cubit.selectedCategory?.id}'),
+                                  key: ValueKey(
+                                    '${_cubit.isCreatingNewCategory}_${_cubit.selectedCategory?.id}',
+                                  ),
                                   initialValue: _cubit.isCreatingNewCategory
                                       ? 'NEW_CATEGORY_OPTION'
-                                      : _categories.cast<MenuCategory?>().firstWhere(
-                                          (c) => c?.id == _cubit.selectedCategory?.id,
-                                          orElse: () => null,
-                                        ),
+                                      : _categories
+                                            .cast<MenuCategory?>()
+                                            .firstWhere(
+                                              (c) =>
+                                                  c?.id ==
+                                                  _cubit.selectedCategory?.id,
+                                              orElse: () => null,
+                                            ),
                                   decoration: InputDecoration(
                                     floatingLabelBehavior:
                                         FloatingLabelBehavior.never,

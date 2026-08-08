@@ -18,7 +18,8 @@ class MenuCategoryRoutes {
     GoRoute(
       path: AppRoutePath.menuCategoryFullListRoute,
       builder: (context, state) => BlocProvider<MenuCategoryFullListCubit>(
-        create: (context) => GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
+        create: (context) =>
+            GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
         child: const MenuCategoryFullListScreen(),
       ),
       routes: [
@@ -35,7 +36,9 @@ class MenuCategoryRoutes {
             create: (context) {
               return GetIt.instance<EditMenuCategoryBloc>();
             },
-            child: EditMenuCategoryScreen(category: state.extra as MenuCategory?),
+            child: EditMenuCategoryScreen(
+              category: state.extra as MenuCategory?,
+            ),
           ),
         ),
       ],

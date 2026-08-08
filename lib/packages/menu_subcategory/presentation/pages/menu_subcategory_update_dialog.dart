@@ -22,7 +22,8 @@ class _MenuSubcategoryUpdateDialogState
   TextEditingController? _subCategoryNameController;
   FocusNode? _subCategoryNameFocusNode;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final ValueNotifier<List<bool>> _isSelectedNotifier = ValueNotifier<List<bool>>(<bool>[false, true]);
+  final ValueNotifier<List<bool>> _isSelectedNotifier =
+      ValueNotifier<List<bool>>(<bool>[false, true]);
 
   @override
   void initState() {
@@ -107,8 +108,14 @@ class _MenuSubcategoryUpdateDialogState
                       return ToggleButtons(
                         isSelected: isSelected,
                         onPressed: (int index) {
-                          final List<bool> newSelection = List<bool>.from(isSelected);
-                          for (int buttonIndex = 0; buttonIndex < newSelection.length; buttonIndex++) {
+                          final List<bool> newSelection = List<bool>.from(
+                            isSelected,
+                          );
+                          for (
+                            int buttonIndex = 0;
+                            buttonIndex < newSelection.length;
+                            buttonIndex++
+                          ) {
                             newSelection[buttonIndex] = buttonIndex == index;
                           }
                           _isSelectedNotifier.value = newSelection;
@@ -116,7 +123,9 @@ class _MenuSubcategoryUpdateDialogState
                         textStyle: Theme.of(context).textTheme.bodyMedium,
                         renderBorder: true,
                         borderColor: Theme.of(context).colorScheme.primary,
-                        selectedBorderColor: Theme.of(context).colorScheme.primary,
+                        selectedBorderColor: Theme.of(
+                          context,
+                        ).colorScheme.primary,
                         borderWidth: 1,
                         constraints: const BoxConstraints(
                           minHeight: 30,

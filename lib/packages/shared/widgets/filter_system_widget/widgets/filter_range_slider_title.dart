@@ -27,8 +27,7 @@ class FilterRangerSliderTitle extends StatefulWidget {
   final SliderTileThemeProps? sliderTileThemeProps;
 
   @override
-  FilterRangerSliderTitleState createState() =>
-      FilterRangerSliderTitleState();
+  FilterRangerSliderTitleState createState() => FilterRangerSliderTitleState();
 }
 
 class FilterRangerSliderTitleState extends State<FilterRangerSliderTitle> {

@@ -23,7 +23,7 @@ class AddCustomer extends CustomerEvent {
   final CustomerEntity customer;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const AddCustomer(this.customer, {this.onSuccess, this.onError});
 
   @override
@@ -34,7 +34,7 @@ class UpdateCustomer extends CustomerEvent {
   final CustomerEntity customer;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const UpdateCustomer(this.customer, {this.onSuccess, this.onError});
 
   @override
@@ -45,7 +45,7 @@ class DeleteCustomer extends CustomerEvent {
   final int id;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const DeleteCustomer(this.id, {this.onSuccess, this.onError});
 
   @override

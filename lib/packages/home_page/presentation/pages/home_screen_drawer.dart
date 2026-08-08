@@ -236,9 +236,7 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.purchaseListScreenRoute,
                       )) {
-                        context.push(
-                          core.AppRoutePath.purchaseListScreenRoute,
-                        );
+                        context.push(core.AppRoutePath.purchaseListScreenRoute);
                       }
                     },
                   ),

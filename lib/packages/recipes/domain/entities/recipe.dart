@@ -67,18 +67,26 @@ class Recipe {
       id: id ?? this.id,
       recipeOriginalName: recipeOriginalName ?? this.recipeOriginalName,
       translatedRecipeName: translatedRecipeName ?? this.translatedRecipeName,
-      recipeOriginalIngredients: recipeOriginalIngredients ?? this.recipeOriginalIngredients,
-      recipeTranslatedIngredientList: recipeTranslatedIngredientList ?? this.recipeTranslatedIngredientList,
-      recipeTranslatedIngredients: recipeTranslatedIngredients ?? this.recipeTranslatedIngredients,
-      recipePreparationTimeInMins: recipePreparationTimeInMins ?? this.recipePreparationTimeInMins,
-      recipeCookingTimeInMins: recipeCookingTimeInMins ?? this.recipeCookingTimeInMins,
-      recipeTotalTimeInMins: recipeTotalTimeInMins ?? this.recipeTotalTimeInMins,
+      recipeOriginalIngredients:
+          recipeOriginalIngredients ?? this.recipeOriginalIngredients,
+      recipeTranslatedIngredientList:
+          recipeTranslatedIngredientList ?? this.recipeTranslatedIngredientList,
+      recipeTranslatedIngredients:
+          recipeTranslatedIngredients ?? this.recipeTranslatedIngredients,
+      recipePreparationTimeInMins:
+          recipePreparationTimeInMins ?? this.recipePreparationTimeInMins,
+      recipeCookingTimeInMins:
+          recipeCookingTimeInMins ?? this.recipeCookingTimeInMins,
+      recipeTotalTimeInMins:
+          recipeTotalTimeInMins ?? this.recipeTotalTimeInMins,
       recipeServings: recipeServings ?? this.recipeServings,
       recipeCuisine: recipeCuisine ?? this.recipeCuisine,
       recipeCourse: recipeCourse ?? this.recipeCourse,
       recipeDiet: recipeDiet ?? this.recipeDiet,
-      recipeOriginalInstructions: recipeOriginalInstructions ?? this.recipeOriginalInstructions,
-      recipeTranslatedInstructions: recipeTranslatedInstructions ?? this.recipeTranslatedInstructions,
+      recipeOriginalInstructions:
+          recipeOriginalInstructions ?? this.recipeOriginalInstructions,
+      recipeTranslatedInstructions:
+          recipeTranslatedInstructions ?? this.recipeTranslatedInstructions,
       recipeReferenceUrl: recipeReferenceUrl ?? this.recipeReferenceUrl,
       isBookmark: isBookmark ?? this.isBookmark,
       images: images ?? this.images,

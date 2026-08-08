@@ -88,7 +88,8 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
                                   track:
                                       shared.TrackConstants.purchasePageTrack,
                                   params: {
-                                    "purchase_unit": widget.item.purchaseUnit ?? 'units',
+                                    "purchase_unit":
+                                        widget.item.purchaseUnit ?? 'units',
                                   },
                                 ) ??
                                 'Quantity (${widget.item.purchaseUnit})',

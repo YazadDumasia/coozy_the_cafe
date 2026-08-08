@@ -29,11 +29,13 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
   late TextEditingController _referenceUrlController;
 
   // Dynamic ingredient tag list
-  final ValueNotifier<List<String>> _ingredientTagsNotifier = ValueNotifier<List<String>>([]);
+  final ValueNotifier<List<String>> _ingredientTagsNotifier =
+      ValueNotifier<List<String>>([]);
   final TextEditingController _tagInputController = TextEditingController();
   final FocusNode _tagFocusNode = FocusNode();
 
-  final ValueNotifier<List<RecipeImageEntity>> _selectedImagesNotifier = ValueNotifier<List<RecipeImageEntity>>([]);
+  final ValueNotifier<List<RecipeImageEntity>> _selectedImagesNotifier =
+      ValueNotifier<List<RecipeImageEntity>>([]);
   final ImagePicker _imagePicker = ImagePicker();
 
   bool get isEdit => widget.recipe != null;
@@ -86,11 +88,15 @@ class _AddEditRecipeScreenState extends State<AddEditRecipeScreen> {
     if (existingList != null && existingList.isNotEmpty) {
       _ingredientTagsNotifier.value = List.from(_ingredientTagsNotifier.value)
         ..addAll(
-          existingList.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty),
+          existingList
+              .split(',')
+              .map((e) => e.trim())
+              .where((e) => e.isNotEmpty),
         );
     }
     if (widget.recipe?.images != null) {
-      _selectedImagesNotifier.value = List.from(_selectedImagesNotifier.value)..addAll(widget.recipe!.images!);
+      _selectedImagesNotifier.value = List.from(_selectedImagesNotifier.value)
+        ..addAll(widget.recipe!.images!);
     }
   }
 

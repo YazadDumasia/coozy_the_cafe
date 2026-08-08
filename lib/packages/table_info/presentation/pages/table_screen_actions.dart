@@ -29,12 +29,14 @@ class TableScreenActions {
     } else {
       shared.DialogUtils.showAutoDismissDialog(
         context: context,
-        title: context.tr(
+        title:
+            context.tr(
               shared.LocaleKeys.commonError,
               track: shared.TrackConstants.commonTrack,
             ) ??
             'Error',
-        descriptions: context.tr(
+        descriptions:
+            context.tr(
               shared.LocaleKeys.disableReorderIconTableIconTooltipText,
               track: shared.TrackConstants.tablePageTrack,
             ) ??

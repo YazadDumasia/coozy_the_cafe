@@ -104,15 +104,15 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
         title: Text(
           widget.item == null
               ? context.tr(
-                    shared.LocaleKeys.inventoryAddEditDailogAddTitle,
-                    track: shared.TrackConstants.inventoryPageTrack,
-                  ) ??
-                  'Add Inventory Item'
+                      shared.LocaleKeys.inventoryAddEditDailogAddTitle,
+                      track: shared.TrackConstants.inventoryPageTrack,
+                    ) ??
+                    'Add Inventory Item'
               : context.tr(
-                    shared.LocaleKeys.inventoryAddEditDailogEditTitle,
-                    track: shared.TrackConstants.inventoryPageTrack,
-                  ) ??
-                  'Edit Inventory Item',
+                      shared.LocaleKeys.inventoryAddEditDailogEditTitle,
+                      track: shared.TrackConstants.inventoryPageTrack,
+                    ) ??
+                    'Edit Inventory Item',
         ),
         actions: [
           IconButton(icon: const Icon(Icons.check), onPressed: _saveItem),

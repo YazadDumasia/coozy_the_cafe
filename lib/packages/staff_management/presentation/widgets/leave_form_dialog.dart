@@ -381,9 +381,11 @@ class _LeaveFormDialogState extends State<LeaveFormDialog> {
                               if (_formKey.currentState?.validate() ?? false) {
                                 final entity = LeaveEntity(
                                   id: widget.leave?.id,
-                                  employeeId: _selectedEmployeeId ??
+                                  employeeId:
+                                      _selectedEmployeeId ??
                                       widget.leave?.employeeId,
-                                  employeeName: _selectedEmployeeName ??
+                                  employeeName:
+                                      _selectedEmployeeName ??
                                       widget.leave?.employeeName,
                                   leaveType: _leaveType,
                                   status: _status,

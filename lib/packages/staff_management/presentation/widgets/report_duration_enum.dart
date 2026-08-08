@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-enum ReportDuration {
-  weekly,
-  monthly,
-  quarterly,
-  halfYear,
-  yearly,
-}
+enum ReportDuration { weekly, monthly, quarterly, halfYear, yearly }
 
 extension ReportDurationExt on ReportDuration {
   String get displayName {
@@ -35,7 +29,11 @@ extension ReportDurationExt on ReportDuration {
       case ReportDuration.weekly:
         // Current week (starting Monday)
         final weekday = now.weekday;
-        start = DateTime(now.year, now.month, now.day).subtract(Duration(days: weekday - 1));
+        start = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(Duration(days: weekday - 1));
         break;
       case ReportDuration.monthly:
         // Current month

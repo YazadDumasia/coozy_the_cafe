@@ -21,11 +21,7 @@ class AddPurchaseRecord extends ItemPurchaseEvent {
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
 
-  const AddPurchaseRecord(
-    this.record, {
-    this.onSuccess,
-    this.onError,
-  });
+  const AddPurchaseRecord(this.record, {this.onSuccess, this.onError});
 
   @override
   List<Object?> get props => [record];

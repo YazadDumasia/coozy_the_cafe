@@ -153,21 +153,21 @@ class MenuCategoryFullListScreenActions {
           Flushbar(
             message: isEnable
                 ? (context.tr(
-                      shared
-                          .LocaleKeys
-                          .menuCategoryFullListEnableToUpdateCategoryMsg,
-                      params: {'catName': catName},
-                      track: shared.TrackConstants.menuCategoryPageTrack,
-                    ) ??
-                    '$catName category is activated successfully.')
+                        shared
+                            .LocaleKeys
+                            .menuCategoryFullListEnableToUpdateCategoryMsg,
+                        params: {'catName': catName},
+                        track: shared.TrackConstants.menuCategoryPageTrack,
+                      ) ??
+                      '$catName category is activated successfully.')
                 : (context.tr(
-                      shared
-                          .LocaleKeys
-                          .menuCategoryFullListUnableToUpdateCategoryMsg,
-                      params: {'catName': catName},
-                      track: shared.TrackConstants.menuCategoryPageTrack,
-                    ) ??
-                    '$catName category is deactivated successfully.'),
+                        shared
+                            .LocaleKeys
+                            .menuCategoryFullListUnableToUpdateCategoryMsg,
+                        params: {'catName': catName},
+                        track: shared.TrackConstants.menuCategoryPageTrack,
+                      ) ??
+                      '$catName category is deactivated successfully.'),
             duration: const Duration(seconds: 2),
             margin: const EdgeInsets.all(8),
             borderRadius: BorderRadius.circular(8),
@@ -286,23 +286,53 @@ class MenuCategoryFullListScreenActions {
     final dummyCategories = [
       {
         'name': 'Beverages ☕',
-        'subs': ['Espresso & Coffee', 'Herbal Teas', 'Fresh Juices', 'Smoothies', 'Cold Brews'],
+        'subs': [
+          'Espresso & Coffee',
+          'Herbal Teas',
+          'Fresh Juices',
+          'Smoothies',
+          'Cold Brews',
+        ],
       },
       {
         'name': 'Breakfast & Brunch 🥞',
-        'subs': ['Pancakes & Waffles', 'Omelettes', 'Toast & Bagels', 'Granola Bowls', 'Breakfast Sandwiches'],
+        'subs': [
+          'Pancakes & Waffles',
+          'Omelettes',
+          'Toast & Bagels',
+          'Granola Bowls',
+          'Breakfast Sandwiches',
+        ],
       },
       {
         'name': 'Main Dishes 🍔',
-        'subs': ['Artisanal Burgers', 'Woodfired Pizzas', 'Pasta Bowls', 'Gourmet Sandwiches', 'Salads & Wraps'],
+        'subs': [
+          'Artisanal Burgers',
+          'Woodfired Pizzas',
+          'Pasta Bowls',
+          'Gourmet Sandwiches',
+          'Salads & Wraps',
+        ],
       },
       {
         'name': 'Desserts & Sweets 🍰',
-        'subs': ['Cakes & Pastries', 'Ice Cream & Gelato', 'Cookies & Brownies', 'Tarts & Pies', 'Macarons'],
+        'subs': [
+          'Cakes & Pastries',
+          'Ice Cream & Gelato',
+          'Cookies & Brownies',
+          'Tarts & Pies',
+          'Macarons',
+        ],
       },
       {
         'name': 'Chef Specials ⭐',
-        'subs': ['House Special Platter', 'Truffle Fries', 'Signature Mocktails', 'Seasonal Soups', 'Chef Tacos'],
+        'subs': [
+          'House Special Platter',
+          'Truffle Fries',
+          'Signature Mocktails',
+          'Seasonal Soups',
+          'Chef Tacos',
+        ],
       },
     ];
 
@@ -343,7 +373,8 @@ class MenuCategoryFullListScreenActions {
         shared.DialogUtils.showAutoDismissDialog(
           context: context,
           title: 'Success',
-          descriptions: '5 Dummy categories with subcategories inserted successfully!',
+          descriptions:
+              '5 Dummy categories with subcategories inserted successfully!',
           titleIcon: const Icon(
             Icons.check_circle,
             color: Colors.green,
@@ -358,14 +389,9 @@ class MenuCategoryFullListScreenActions {
           context: context,
           title: 'Error',
           descriptions: 'Failed to insert dummy categories: $e',
-          titleIcon: const Icon(
-            Icons.error,
-            color: Colors.red,
-            size: 50,
-          ),
+          titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
         );
       }
     }
   }
 }
-

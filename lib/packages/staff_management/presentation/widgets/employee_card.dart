@@ -139,8 +139,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.employeeCardPosition,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'position': position},
                                 ) ??
                                 'Position: $position',
@@ -149,8 +150,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.employeeCardPhone,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'phone': phone},
                                 ) ??
                                 'Phone: $phone',
@@ -160,8 +162,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.employeeCardEmail,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'email': employee.email!},
                                 ) ??
                                 'Email: ${employee.email}',
@@ -170,8 +173,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.employeeCardStartTime,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'time': startWorkingTime},
                                 ) ??
                                 'Start Working Time: $startWorkingTime',
@@ -180,8 +184,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.employeeCardEndTime,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'time': endWorkingTime},
                                 ) ??
                                 'End Working Time: $endWorkingTime',
@@ -190,8 +195,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.employeeCardTotalLeaves,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'count': '${totalLeaves ?? 0}'},
                                 ) ??
                                 'Total Leaves: $totalLeaves',
@@ -202,8 +208,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.cardCreationDate,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'date': formattedCreation},
                                 ) ??
                                 'Creation Date: $formattedCreation',
@@ -213,8 +220,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.cardModificationDate,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'date': formattedModification},
                                 ) ??
                                 'Modification Date: $formattedModification',
@@ -223,8 +231,9 @@ class EmployeeCard extends StatelessWidget {
                           Text(
                             context.tr(
                                   shared.LocaleKeys.cardCreationDate,
-                                  track:
-                                      shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                   params: {'date': formattedCreation},
                                 ) ??
                                 'Creation Date: $formattedCreation',

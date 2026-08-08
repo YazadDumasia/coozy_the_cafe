@@ -15,7 +15,7 @@ class AddInventoryItem extends InventoryEvent {
   final InventoryItem item;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const AddInventoryItem(this.item, {this.onSuccess, this.onError});
 
   @override
@@ -26,7 +26,7 @@ class UpdateInventoryItem extends InventoryEvent {
   final InventoryItem item;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const UpdateInventoryItem(this.item, {this.onSuccess, this.onError});
 
   @override
@@ -37,7 +37,7 @@ class DeleteInventoryItem extends InventoryEvent {
   final int id;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const DeleteInventoryItem(this.id, {this.onSuccess, this.onError});
 
   @override

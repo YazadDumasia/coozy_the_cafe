@@ -36,11 +36,7 @@ class AddMenuSubcategory extends MenuSubcategoryEvent {
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
 
-  const AddMenuSubcategory(
-    this.subcategory, {
-    this.onSuccess,
-    this.onError,
-  });
+  const AddMenuSubcategory(this.subcategory, {this.onSuccess, this.onError});
 
   @override
   List<Object?> get props => [subcategory];
@@ -51,11 +47,7 @@ class UpdateMenuSubcategory extends MenuSubcategoryEvent {
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
 
-  const UpdateMenuSubcategory(
-    this.subcategory, {
-    this.onSuccess,
-    this.onError,
-  });
+  const UpdateMenuSubcategory(this.subcategory, {this.onSuccess, this.onError});
 
   @override
   List<Object?> get props => [subcategory];
@@ -66,11 +58,7 @@ class DeleteMenuSubcategory extends MenuSubcategoryEvent {
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
 
-  const DeleteMenuSubcategory(
-    this.id, {
-    this.onSuccess,
-    this.onError,
-  });
+  const DeleteMenuSubcategory(this.id, {this.onSuccess, this.onError});
 
   @override
   List<Object?> get props => [id];

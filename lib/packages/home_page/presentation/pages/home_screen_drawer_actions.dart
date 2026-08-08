@@ -13,19 +13,19 @@ class HomeScreenDrawerActions {
     Navigator.pop(context);
     shared.DialogUtils.showAutoDismissDialog(
       context: context,
-      title: context.tr(
-        shared.LocaleKeys.commonInfo,
-        track: shared.TrackConstants.commonTrack,
-      ) ?? 'Info',
-      descriptions: context.tr(
-        shared.LocaleKeys.commonComingSoon,
-        track: shared.TrackConstants.commonTrack,
-      ) ?? message,
-      titleIcon: const Icon(
-        Icons.info,
-        color: Colors.blue,
-        size: 50,
-      ),
+      title:
+          context.tr(
+            shared.LocaleKeys.commonInfo,
+            track: shared.TrackConstants.commonTrack,
+          ) ??
+          'Info',
+      descriptions:
+          context.tr(
+            shared.LocaleKeys.commonComingSoon,
+            track: shared.TrackConstants.commonTrack,
+          ) ??
+          message,
+      titleIcon: const Icon(Icons.info, color: Colors.blue, size: 50),
     );
   }
 

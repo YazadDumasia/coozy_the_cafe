@@ -31,7 +31,7 @@ class AddMenuItem extends MenuItemEvent {
   final MenuItem item;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const AddMenuItem(this.item, {this.onSuccess, this.onError});
 
   @override
@@ -42,7 +42,7 @@ class UpdateMenuItem extends MenuItemEvent {
   final MenuItem item;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const UpdateMenuItem(this.item, {this.onSuccess, this.onError});
 
   @override
@@ -53,7 +53,7 @@ class DeleteMenuItem extends MenuItemEvent {
   final int id;
   final VoidCallback? onSuccess;
   final void Function(String)? onError;
-  
+
   const DeleteMenuItem(this.id, {this.onSuccess, this.onError});
 
   @override

@@ -60,8 +60,7 @@ class RecipesDao extends DatabaseAccessor<CoozyDatabase>
   Future<void> insertRecipesChunked(
     List<RecipesTableCompanion> recipes, {
     int chunkSize = _defaultChunkSize,
-  }) =>
-      insertRecipesInChunks(recipes, chunkSize: chunkSize);
+  }) => insertRecipesInChunks(recipes, chunkSize: chunkSize);
 
   // ---------------------------------------------------------------------------
   // UPDATE
@@ -102,13 +101,17 @@ class RecipesDao extends DatabaseAccessor<CoozyDatabase>
   /// Deletes a **single** recipe by [id].
   /// Returns the number of rows deleted from [RecipesTable] (0 or 1).
   Future<int> deleteRecipe({required int id}) async {
-    return await (delete(recipesTable)..where((t) => t.recipeId.equals(id))).go();
+    return await (delete(
+      recipesTable,
+    )..where((t) => t.recipeId.equals(id))).go();
   }
 
   /// Deletes recipes by [recipeIds] in one transaction.
   Future<void> deleteRecipes(List<int> recipeIds) async {
     await transaction(() async {
-      await (delete(recipesTable)..where((t) => t.recipeId.isIn(recipeIds))).go();
+      await (delete(
+        recipesTable,
+      )..where((t) => t.recipeId.isIn(recipeIds))).go();
     });
   }
 
@@ -149,8 +152,9 @@ class RecipesDao extends DatabaseAccessor<CoozyDatabase>
 
     final countExpr = recipesTable.recipeId.count();
     final countQuery = selectOnly(recipesTable)..addColumns([countExpr]);
-    final totalCount =
-        await countQuery.map((row) => row.read(countExpr) ?? 0).getSingle();
+    final totalCount = await countQuery
+        .map((row) => row.read(countExpr) ?? 0)
+        .getSingle();
 
     final dataQuery = select(recipesTable)
       ..orderBy([(t) => OrderingTerm.asc(t.recipeId)])
@@ -166,9 +170,7 @@ class RecipesDao extends DatabaseAccessor<CoozyDatabase>
   }
 
   /// Returns all [Recipe] rows fetched page-by-page internally.
-  Future<List<Recipe>> getAllRecipes({
-    int pageSize = _defaultChunkSize,
-  }) async {
+  Future<List<Recipe>> getAllRecipes({int pageSize = _defaultChunkSize}) async {
     final all = <Recipe>[];
     var page = 1;
     while (true) {

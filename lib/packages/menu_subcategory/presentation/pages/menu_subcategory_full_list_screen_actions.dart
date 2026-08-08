@@ -53,10 +53,16 @@ class MenuSubcategoryFullListScreenActions {
                     shared.DialogUtils.showAutoDismissDialog(
                       context: context,
                       title:
-                          context.tr(shared.LocaleKeys.commonSuccess, track: shared.TrackConstants.commonTrack) ??
+                          context.tr(
+                            shared.LocaleKeys.commonSuccess,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
                           'Success',
                       descriptions:
-                          context.tr(shared.LocaleKeys.crudSuccessUpdate, track: shared.TrackConstants.commonTrack) ??
+                          context.tr(
+                            shared.LocaleKeys.crudSuccessUpdate,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
                           'Record updated successfully.',
                       titleIcon: const Icon(
                         Icons.check_circle,
@@ -72,9 +78,16 @@ class MenuSubcategoryFullListScreenActions {
                     shared.DialogUtils.showAutoDismissDialog(
                       context: context,
                       title:
-                          context.tr(shared.LocaleKeys.commonError, track: shared.TrackConstants.commonTrack) ?? 'Error',
+                          context.tr(
+                            shared.LocaleKeys.commonError,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'Error',
                       descriptions:
-                          context.tr(shared.LocaleKeys.crudErrorUpdate, track: shared.TrackConstants.commonTrack) ??
+                          context.tr(
+                            shared.LocaleKeys.crudErrorUpdate,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
                           'Failed to update the record.',
                       titleIcon: const Icon(
                         Icons.error,
@@ -111,10 +124,9 @@ class MenuSubcategoryFullListScreenActions {
                     track: shared.TrackConstants.commonTrack,
                   ) ??
                   'Success',
-              descriptions:
-                  isEnable
-                      ? 'Your selected sub-category has been activated.'
-                      : 'Your selected sub-category has been deactivated.',
+              descriptions: isEnable
+                  ? 'Your selected sub-category has been activated.'
+                  : 'Your selected sub-category has been deactivated.',
               titleIcon: const Icon(
                 Icons.check_circle,
                 color: Colors.green,
@@ -248,4 +260,3 @@ class MenuSubcategoryFullListScreenActions {
     );
   }
 }
-

@@ -29,7 +29,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
   }
 
   Future<void> _onLoadEmployees(
-      LoadEmployeesEvent event, Emitter<EmployeeState> emit) async {
+    LoadEmployeesEvent event,
+    Emitter<EmployeeState> emit,
+  ) async {
     emit(EmployeeLoadingState());
     try {
       _allEmployees = await getEmployeesUseCase();
@@ -40,7 +42,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
   }
 
   void _onSearchEmployees(
-      SearchEmployeesEvent event, Emitter<EmployeeState> emit) {
+    SearchEmployeesEvent event,
+    Emitter<EmployeeState> emit,
+  ) {
     _currentQuery = event.query.toLowerCase();
     _emitFilteredEmployees(emit);
   }
@@ -49,7 +53,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
     final filtered = _allEmployees.where((e) {
       final nameMatch = (e.name ?? '').toLowerCase().contains(_currentQuery);
       final posMatch = (e.position ?? '').toLowerCase().contains(_currentQuery);
-      final phoneMatch = (e.phoneNumber ?? '').toLowerCase().contains(_currentQuery);
+      final phoneMatch = (e.phoneNumber ?? '').toLowerCase().contains(
+        _currentQuery,
+      );
       return nameMatch || posMatch || phoneMatch;
     }).toList();
 
@@ -60,7 +66,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
   }
 
   Future<void> _onAddEmployee(
-      AddEmployeeEvent event, Emitter<EmployeeState> emit) async {
+    AddEmployeeEvent event,
+    Emitter<EmployeeState> emit,
+  ) async {
     try {
       await addEmployeeUseCase(event.employee);
       event.onSuccess?.call();
@@ -72,7 +80,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
   }
 
   Future<void> _onUpdateEmployee(
-      UpdateEmployeeEvent event, Emitter<EmployeeState> emit) async {
+    UpdateEmployeeEvent event,
+    Emitter<EmployeeState> emit,
+  ) async {
     try {
       await updateEmployeeUseCase(event.employee);
       event.onSuccess?.call();
@@ -84,7 +94,9 @@ class EmployeeBloc extends Bloc<EmployeeEvent, EmployeeState> {
   }
 
   Future<void> _onDeleteEmployee(
-      DeleteEmployeeEvent event, Emitter<EmployeeState> emit) async {
+    DeleteEmployeeEvent event,
+    Emitter<EmployeeState> emit,
+  ) async {
     try {
       if (event.permanent) {
         await deletePermanentEmployeeUseCase(event.id);

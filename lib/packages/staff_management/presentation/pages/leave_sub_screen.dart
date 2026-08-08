@@ -176,7 +176,8 @@ class _LeaveSubScreenState extends State<LeaveSubScreen>
         key: const PageStorageKey('leaveSubScreen'),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showLeaveDialog(context),
-          tooltip: context.tr(
+          tooltip:
+              context.tr(
                 shared.LocaleKeys.addLeaveTooltip,
                 track: shared.TrackConstants.staffManagementPageTrack,
               ) ??
@@ -191,31 +192,25 @@ class _LeaveSubScreenState extends State<LeaveSubScreen>
                 startOfMonth,
                 daysCount: daysInMonth,
                 initialSelectedDate: _selectedDateNotifier.value,
-                selectionColor:
-                    Theme.of(context).colorScheme.primaryContainer,
-                selectedTextColor:
-                    Theme.of(context).colorScheme.onPrimaryContainer,
-                deactivatedColor:
-                    Theme.of(context).colorScheme.outline,
-                monthTextStyle:
-                    Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurfaceVariant,
-                          fontWeight: FontWeight.w500,
-                        ),
-                dayTextStyle:
-                    Theme.of(context).textTheme.labelSmall!.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurfaceVariant,
-                          fontWeight: FontWeight.w500,
-                        ),
-                dateTextStyle:
-                    Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface,
-                          fontWeight: FontWeight.w700,
-                        ),
+                selectionColor: Theme.of(context).colorScheme.primaryContainer,
+                selectedTextColor: Theme.of(
+                  context,
+                ).colorScheme.onPrimaryContainer,
+                deactivatedColor: Theme.of(context).colorScheme.outline,
+                monthTextStyle: Theme.of(context).textTheme.labelSmall!
+                    .copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      fontWeight: FontWeight.w500,
+                    ),
+                dayTextStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
+                dateTextStyle: Theme.of(context).textTheme.titleMedium!
+                    .copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w700,
+                    ),
                 onDateChange: (date) {
                   _selectedDateNotifier.value = date;
                 },
@@ -389,7 +384,8 @@ class _LeaveSubScreenState extends State<LeaveSubScreen>
                     child: Text(
                       context.tr(
                             shared.LocaleKeys.noLeaveApplications,
-                            track: shared.TrackConstants.staffManagementPageTrack,
+                            track:
+                                shared.TrackConstants.staffManagementPageTrack,
                           ) ??
                           'No Leave Applications',
                     ),

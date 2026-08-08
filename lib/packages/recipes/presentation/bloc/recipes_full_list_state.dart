@@ -23,7 +23,12 @@ class RecipesLoadingState extends RecipesFullListState {
   });
 
   @override
-  List<Object?> get props => [progress, message, currentProgress, totalProgress];
+  List<Object?> get props => [
+    progress,
+    message,
+    currentProgress,
+    totalProgress,
+  ];
 }
 
 class RecipesLoadedState extends RecipesFullListState {
@@ -83,18 +88,18 @@ class RecipesLoadedState extends RecipesFullListState {
 
   @override
   List<Object?> get props => <Object?>[
-        list,
-        paginatedData,
-        appliedFilterList,
-        currentPage,
-        itemsPerPage,
-        totalPages,
-        totalElements,
-        itemsPerPageList,
-        startIndex,
-        endIndex,
-        isInternalLoading,
-      ];
+    list,
+    paginatedData,
+    appliedFilterList,
+    currentPage,
+    itemsPerPage,
+    totalPages,
+    totalElements,
+    itemsPerPageList,
+    startIndex,
+    endIndex,
+    isInternalLoading,
+  ];
 }
 
 class RecipesErrorState extends RecipesFullListState {

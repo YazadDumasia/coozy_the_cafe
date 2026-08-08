@@ -23,7 +23,9 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
   }
 
   Future<void> _onLoadAttendance(
-      LoadAttendanceEvent event, Emitter<AttendanceState> emit) async {
+    LoadAttendanceEvent event,
+    Emitter<AttendanceState> emit,
+  ) async {
     emit(AttendanceLoadingState());
     try {
       final list = await getAttendanceUseCase();
@@ -34,7 +36,9 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
   }
 
   Future<void> _onAddAttendance(
-      AddAttendanceEvent event, Emitter<AttendanceState> emit) async {
+    AddAttendanceEvent event,
+    Emitter<AttendanceState> emit,
+  ) async {
     try {
       await addAttendanceUseCase(event.attendance);
       event.onSuccess?.call();
@@ -46,7 +50,9 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
   }
 
   Future<void> _onUpdateAttendance(
-      UpdateAttendanceEvent event, Emitter<AttendanceState> emit) async {
+    UpdateAttendanceEvent event,
+    Emitter<AttendanceState> emit,
+  ) async {
     try {
       await updateAttendanceUseCase(event.attendance);
       event.onSuccess?.call();
@@ -58,7 +64,9 @@ class AttendanceBloc extends Bloc<AttendanceEvent, AttendanceState> {
   }
 
   Future<void> _onDeleteAttendance(
-      DeleteAttendanceEvent event, Emitter<AttendanceState> emit) async {
+    DeleteAttendanceEvent event,
+    Emitter<AttendanceState> emit,
+  ) async {
     try {
       if (event.permanent) {
         await deletePermanentlyAttendanceUseCase(event.id);

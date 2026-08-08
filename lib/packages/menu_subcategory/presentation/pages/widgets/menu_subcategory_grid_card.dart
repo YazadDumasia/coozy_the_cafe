@@ -104,18 +104,28 @@ class MenuSubcategoryGridCard extends StatelessWidget {
                             subCategory,
                             isEnable,
                           ),
-                      thumbIcon: WidgetStateProperty.resolveWith<Icon>((Set<WidgetState> states) {
+                      thumbIcon: WidgetStateProperty.resolveWith<Icon>((
+                        Set<WidgetState> states,
+                      ) {
                         if (states.containsAll(<Object?>[
                           WidgetState.disabled,
                           WidgetState.selected,
                         ])) {
-                          return const Icon(Icons.check, color: Colors.red, size: 24);
+                          return const Icon(
+                            Icons.check,
+                            color: Colors.red,
+                            size: 24,
+                          );
                         }
                         if (states.contains(WidgetState.disabled)) {
                           return const Icon(Icons.close, size: 24);
                         }
                         if (states.contains(WidgetState.selected)) {
-                          return const Icon(Icons.check, color: Colors.green, size: 24);
+                          return const Icon(
+                            Icons.check,
+                            color: Colors.green,
+                            size: 24,
+                          );
                         }
                         return const Icon(Icons.close, size: 24);
                       }),

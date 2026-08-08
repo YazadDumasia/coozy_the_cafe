@@ -201,9 +201,8 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                     ) ??
                     'Search employees by mobile number',
               ],
-              onChanged: (value) => context.read<EmployeeBloc>().add(
-                SearchEmployeesEvent(value),
-              ),
+              onChanged: (value) =>
+                  context.read<EmployeeBloc>().add(SearchEmployeesEvent(value)),
             ),
             Expanded(
               child: BlocConsumer<EmployeeBloc, EmployeeState>(
@@ -239,9 +238,7 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
 
                     return RefreshIndicator(
                       onRefresh: () async {
-                        context.read<EmployeeBloc>().add(
-                          LoadEmployeesEvent(),
-                        );
+                        context.read<EmployeeBloc>().add(LoadEmployeesEvent());
                       },
                       child: SlidableAutoCloseBehavior(
                         child: shared.AzListView(
@@ -257,6 +254,33 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                                       ),
                                     )
                                     .toList(),
+                          indexBarOptions: shared.IndexBarOptions(
+                            needRebuild: true,
+                            selectItemDecoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            selectTextStyle: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            indexHintWidth: 64,
+                            indexHintHeight: 64,
+                            indexHintDecoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.primary
+                                  // ignore: deprecated_member_use
+                                  .withOpacity(0.92),
+                              shape: BoxShape.circle,
+                            ),
+                            indexHintTextStyle: TextStyle(
+                              fontSize: 28.0,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            indexHintAlignment: Alignment.centerRight,
+                            indexHintOffset: const Offset(-40, 0),
+                          ),
                           itemBuilder: (context, index) {
                             final item = state.employees[index];
                             return EmployeeCard(

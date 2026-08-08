@@ -149,9 +149,9 @@ class AttendanceCard extends StatelessWidget {
                         params: {'name': employeeName},
                       ) ??
                       'Employee: $employeeName',
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
             ],

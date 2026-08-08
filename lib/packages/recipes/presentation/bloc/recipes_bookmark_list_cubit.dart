@@ -17,7 +17,8 @@ class RecipesBookmarkListCubit extends Cubit<RecipesBookmarkListState> {
     required this.deleteRecipeUseCase,
   }) : super(RecipesBookmarkListInitialState());
 
-  final BehaviorSubject<RecipesBookmarkListState> _stateSubject = BehaviorSubject();
+  final BehaviorSubject<RecipesBookmarkListState> _stateSubject =
+      BehaviorSubject();
   Stream<RecipesBookmarkListState> get stateStream => _stateSubject.stream;
 
   List<Recipe>? list;

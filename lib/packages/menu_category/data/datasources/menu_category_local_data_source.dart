@@ -52,9 +52,9 @@ class MenuCategoryLocalDataSourceImpl implements MenuCategoryLocalDataSource {
             ? const Value.absent()
             : Value(category.createdDate!),
       );
-      final updatedRows = await (database.update(database.categoriesTable)
-            ..where((c) => c.id.equals(category.id!)))
-          .write(companion);
+      final updatedRows = await (database.update(
+        database.categoriesTable,
+      )..where((c) => c.id.equals(category.id!))).write(companion);
       return updatedRows > 0;
     }
     return false;

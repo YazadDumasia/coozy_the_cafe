@@ -406,7 +406,6 @@ class RecipeImagesTable extends BaseTable {
   TextColumn get base64Data => text()();
 }
 
-
 @DataClassName('Employee')
 @TableIndex(name: 'idx_employee_name', columns: {#name})
 @TableIndex(name: 'idx_employee_phone', columns: {#phoneNumber}, unique: true)

@@ -47,7 +47,8 @@ export '../../shared/widgets/dynamic_height_grid_view/dynamic_height_grid_view.d
 export '../../shared/widgets/empty_category_full_list_body.dart';
 
 // filter_system_widget
-export '../../shared/widgets/filter_system_widget/filter_system.dart' hide DateTimeField, showDatePickerSheet, showTimePickerSheet, Filter;
+export '../../shared/widgets/filter_system_widget/filter_system.dart'
+    hide DateTimeField, showDatePickerSheet, showTimePickerSheet, Filter;
 
 // hover_scale_widget
 export '../../shared/widgets/hover_scale_widget/hover_scale_widget.dart';
