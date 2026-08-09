@@ -225,7 +225,11 @@ class _TableScreenState extends State<TableScreen>
   }
 
   Widget buildGridItem(TableInfo model, int index, List<TableInfo>? list) {
-    return TableGridItem(model: model, index: index);
+    return TableGridItem(
+      key: ValueKey(model.id), // Assign a unique key here
+      model: model,
+      index: index,
+    );
   }
 
   Widget buildListView(List<TableInfo>? list, bool isReorderAllowedListView) {
@@ -286,6 +290,7 @@ class _TableScreenState extends State<TableScreen>
     bool isReorderAllowedListView,
   ) {
     return TableListItem(
+      key: ValueKey(model.id),
       model: model,
       index: index,
       isReorderAllowedListView: isReorderAllowedListView,

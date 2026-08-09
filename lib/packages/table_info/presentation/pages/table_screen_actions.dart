@@ -103,7 +103,7 @@ class TableScreenActions {
             if (context.mounted) {
               Navigator.pop(context); // Pop loading dialog
               shared.DialogUtils.showAutoDismissDialog(
-                showDuration: const Duration(minutes: 5),
+                showDuration: const Duration(minutes: 3),
                 context: context,
                 descriptions:
                     context.tr(
