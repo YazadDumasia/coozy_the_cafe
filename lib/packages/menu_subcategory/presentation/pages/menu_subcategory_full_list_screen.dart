@@ -456,11 +456,17 @@ class _MenuSubcategoryFullListScreenState
   }
 
   Widget _buildSubcategoryContent(MenuSubcategoryLoaded state) {
-    final displayList = _getFilteredSubcategories(state.subcategories);
+    final displayList = List<MenuSubcategory>.from(
+      _getFilteredSubcategories(state.subcategories),
+    );
 
     if (displayList.isEmpty) {
       return _buildEmptyState();
     }
+
+    // Re-sort and re-stamp suspension flags on the filtered subset so letter headers are always correct.
+    shared.SuspensionUtil.sortListBySuspensionTag(displayList);
+    shared.SuspensionUtil.setShowSuspensionStatus(displayList);
 
     if (state.isReorderAllowed && _selectedCategoryId != null) {
       return ReorderableListView.builder(
@@ -559,18 +565,17 @@ class _MenuSubcategoryFullListScreenState
     final bool isSearchActive = state.isSearchActive;
     // Sidebar index bar only when viewing all subcategories and not searching.
     // Letter-group headers (susItemBuilder) always appear.
-    final bool showIndexBar =
-        _selectedCategoryId == null && !isSearchActive;
+    final bool showIndexBar = _selectedCategoryId == null && !isSearchActive;
 
     return shared.AzListView(
       key: PageStorageKey('subcategory_list_${_selectedCategoryId ?? 0}'),
       data: displayList,
       itemCount: displayList.length,
+      susItemHeight: 46,
       indexBarData: showIndexBar
           ? shared.kIndexBarData
                 .where(
-                  (tag) =>
-                      displayList.any((e) => e.getSuspensionTag() == tag),
+                  (tag) => displayList.any((e) => e.getSuspensionTag() == tag),
                 )
                 .toList()
           : const [],
@@ -588,9 +593,7 @@ class _MenuSubcategoryFullListScreenState
         indexHintWidth: 64,
         indexHintHeight: 64,
         indexHintDecoration: BoxDecoration(
-          color: Theme.of(context)
-              .colorScheme
-              .primary
+          color: Theme.of(context).colorScheme.primary
               // ignore: deprecated_member_use
               .withOpacity(0.92),
           shape: BoxShape.circle,
@@ -608,12 +611,18 @@ class _MenuSubcategoryFullListScreenState
         if (item.id != null) {
           _subcategoryKeys[item.id!] ??= GlobalKey();
         }
+        final isLastItem = index == displayList.length - 1;
         return Container(
           key: item.id != null ? _subcategoryKeys[item.id!] : null,
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          padding: EdgeInsets.only(
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: isLastItem ? 10 : 0,
+          ),
           child: MenuSubcategoryListItem(
             subCategory: item,
-            isLastItem: index == (displayList.length - 1),
+            isLastItem: isLastItem,
           ),
         );
       },
@@ -622,6 +631,7 @@ class _MenuSubcategoryFullListScreenState
         return Container(
           height: 36,
           width: double.infinity,
+          margin: EdgeInsets.only(top: index == 0 ? 0 : 10),
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
           alignment: Alignment.centerLeft,

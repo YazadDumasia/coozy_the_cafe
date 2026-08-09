@@ -145,7 +145,7 @@ class PurchaseListScreenActions {
 
   static Future<void> onAddPurchaseTap(BuildContext context) async {
     final selectedItem = await context.push<InventoryItem>(
-      core.AppRoutePath.inventoryPickerPageRoute,
+      '${core.AppRoutePath.inventoryListScreenRoute}/${core.AppRoutePath.inventoryPickerPageRoute}',
     );
     if (!context.mounted) return;
     if (selectedItem != null) {

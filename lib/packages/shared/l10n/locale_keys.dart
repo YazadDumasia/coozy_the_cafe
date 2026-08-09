@@ -688,6 +688,7 @@ abstract class LocaleKeys {
   static String homeDrawerPurchasesLabel = 'home_drawer_purchases_label';
   static String homeDrawerRecipesLabel = 'home_drawer_recipes_label';
   static String homeDrawerStaffLabel = 'home_drawer_staff_label';
+  static String homeDrawerCustomersLabel = 'home_drawer_customers_label';
   static String homeDrawerSettingsLabel = 'home_drawer_settings_label';
   static String homeDrawerReservationsLabel = 'home_drawer_reservations_label';
   static String homeDrawerOrderListLabel = 'home_drawer_order_list_label';

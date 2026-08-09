@@ -36,13 +36,18 @@ class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
       _currentSearchQuery = event.searchQuery;
       emit(CustomerLoading());
     } else {
-      if (state is CustomerLoaded && (state as CustomerLoaded).hasReachedMax) {
-        return;
+      if (state is CustomerLoaded) {
+        final current = state as CustomerLoaded;
+        if (current.hasReachedMax || current.isLoadingMore) return;
+        emit(current.copyWith(isLoadingMore: true));
+      } else {
+        emit(CustomerLoading());
       }
-      if (state is! CustomerLoaded) emit(CustomerLoading());
     }
 
     try {
+      //just lodad delay
+      // await Future.delayed(const Duration(seconds: 2));
       final customers = await getCustomersUseCase(
         limit: _limit,
         pageNumber: _currentPage,

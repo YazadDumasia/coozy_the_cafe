@@ -61,9 +61,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
             ),
           ),
           Expanded(
-            child: Scrollbar(
-              interactive: true,
-              child: ListView(
+            child: PrimaryScrollController(
+              controller: ScrollController(),
+              child: Scrollbar(
+                interactive: true,
+                child: ListView(
                 key: const PageStorageKey<String>('drawer_list_scroll_key'),
                 physics: const ClampingScrollPhysics(
                   parent: AlwaysScrollableScrollPhysics(),
@@ -300,7 +302,7 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.invoiceListScreenRoute,
                       )) {
-                        context.push(core.AppRoutePath.orderListScreenRoute);
+                        context.push(core.AppRoutePath.invoiceListScreenRoute);
                       }
                     },
                   ),
@@ -371,6 +373,31 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                   ),
                   _buildDrawerItem(
                     context,
+                    icon: Icons.person_outline,
+                    title:
+                        context.tr(
+                          shared.LocaleKeys.homeDrawerCustomersLabel,
+                          track: shared.TrackConstants.homePageTrack,
+                        ) ??
+                        'Customers',
+                    isSelected: _isRouteActive(
+                      currentLocation,
+                      core.AppRoutePath.customerListScreenRoute,
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      if (!_isRouteActive(
+                        currentLocation,
+                        core.AppRoutePath.customerListScreenRoute,
+                      )) {
+                        context.push(
+                          core.AppRoutePath.customerListScreenRoute,
+                        );
+                      }
+                    },
+                  ),
+                  _buildDrawerItem(
+                    context,
                     icon: Icons.settings,
                     title:
                         context.tr(
@@ -410,6 +437,7 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                 ],
               ),
             ),
+          ),
           ),
 
           Divider(color: Colors.grey.shade300, thickness: 1),

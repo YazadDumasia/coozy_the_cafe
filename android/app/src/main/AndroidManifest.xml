@@ -140,6 +140,9 @@
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,HardcodedDebugMode,LockedOrientationActivity"
         tools:replace="android:allowBackup"
         tools:targetApi="33">
+        <meta-data 
+        android:name="io.flutter.embedding.android.EnableHcpp"
+        android:value="true" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

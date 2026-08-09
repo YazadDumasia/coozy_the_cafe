@@ -15,21 +15,28 @@ class CustomerLoading extends CustomerState {}
 class CustomerLoaded extends CustomerState {
   final List<CustomerEntity> customers;
   final bool hasReachedMax;
+  final bool isLoadingMore;
 
-  const CustomerLoaded({required this.customers, this.hasReachedMax = false});
+  const CustomerLoaded({
+    required this.customers,
+    this.hasReachedMax = false,
+    this.isLoadingMore = false,
+  });
 
   CustomerLoaded copyWith({
     List<CustomerEntity>? customers,
     bool? hasReachedMax,
+    bool? isLoadingMore,
   }) {
     return CustomerLoaded(
       customers: customers ?? this.customers,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
   @override
-  List<Object?> get props => [customers, hasReachedMax];
+  List<Object?> get props => [customers, hasReachedMax, isLoadingMore];
 }
 
 class CustomerError extends CustomerState {

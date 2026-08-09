@@ -245,6 +245,7 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                           key: const PageStorageKey('employeeListView'),
                           data: state.employees,
                           itemCount: state.employees.length,
+                          susItemHeight: 46,
                           indexBarData: isSearching
                               ? const []
                               : shared.kIndexBarData
@@ -283,17 +284,27 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                           ),
                           itemBuilder: (context, index) {
                             final item = state.employees[index];
-                            return EmployeeCard(
-                              employee: item,
-                              onEdit: () => _showEmployeeFormDialog(
-                                context,
-                                employee: item,
+                            final isLastItem =
+                                index == state.employees.length - 1;
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                top: 10,
+                                bottom: isLastItem ? 10 : 0,
+                                left: 0,
+                                right: 30,
                               ),
-                              onDelete: () {
-                                if (item.id != null) {
-                                  _confirmDelete(context, item.id!);
-                                }
-                              },
+                              child: EmployeeCard(
+                                employee: item,
+                                onEdit: () => _showEmployeeFormDialog(
+                                  context,
+                                  employee: item,
+                                ),
+                                onDelete: () {
+                                  if (item.id != null) {
+                                    _confirmDelete(context, item.id!);
+                                  }
+                                },
+                              ),
                             );
                           },
                           susItemBuilder: isSearching
@@ -304,6 +315,9 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                                   return Container(
                                     height: 36,
                                     width: double.infinity,
+                                    margin: EdgeInsets.only(
+                                      top: index == 0 ? 0 : 10,
+                                    ),
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16.0,
                                     ),

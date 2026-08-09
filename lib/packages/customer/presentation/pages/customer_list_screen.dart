@@ -1,13 +1,11 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../shared/coozy_shared.dart' as shared;
 import '../bloc/customer_bloc.dart';
 import '../bloc/customer_event.dart';
 import '../bloc/customer_state.dart';
-import 'widgets/customer_list_mobile_layout.dart';
-import 'widgets/customer_list_tablet_layout.dart';
-import 'widgets/customer_list_desktop_layout.dart';
 import 'customer_list_screen_actions.dart';
 import '../widgets/customer_list_item.dart';
 
@@ -57,9 +55,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         child: Icon(Icons.add),
       ),
       body: shared.ResponsiveLayout(
-        mobile: CustomerListMobileLayout(bodyWidget: _buildBody()),
-        tablet: CustomerListTabletLayout(bodyWidget: _buildBody()),
-        desktop: CustomerListDesktopLayout(bodyWidget: _buildBody()),
+        mobile: _buildBody(),
+        tablet: _buildBody(),
+        desktop: _buildBody(),
       ),
     );
   }
@@ -117,75 +115,121 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
                 final isSearching = _searchController.text.trim().isNotEmpty;
 
-                return shared.AzListView(
-                  data: state.customers,
-                  itemCount: state.customers.length,
-                  indexBarData: isSearching
-                      ? const []
-                      : shared.kIndexBarData
-                            .where(
-                              (tag) => state.customers.any(
-                                (e) => e.getSuspensionTag() == tag,
-                              ),
-                            )
-                            .toList(),
-                  indexBarOptions: shared.IndexBarOptions(
-                    needRebuild: true,
-                    selectItemDecoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    selectTextStyle: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    indexHintWidth: 64,
-                    indexHintHeight: 64,
-                    indexHintDecoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          // ignore: deprecated_member_use
-                          .withOpacity(0.92),
-                      shape: BoxShape.circle,
-                    ),
-                    indexHintTextStyle: TextStyle(
-                      fontSize: 28.0,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    indexHintAlignment: Alignment.centerRight,
-                    indexHintOffset: const Offset(-40, 0),
-                  ),
-                  itemBuilder: (context, index) {
-                    final customer = state.customers[index];
-                    return CustomerListItem(customer: customer);
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    context.read<CustomerBloc>().add(
+                      const LoadCustomers(isRefresh: true),
+                    );
                   },
-                  susItemBuilder: (context, index) {
-                      final tag = state.customers[index].getSuspensionTag();
-                      return Container(
-                        height: 36,
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                        ),
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.surfaceContainerHighest,
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          tag,
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.primary,
-                              ),
-                        ),
-                      );
+                  child: NotificationListener<ScrollNotification>(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (scrollInfo.metrics.pixels >=
+                          scrollInfo.metrics.maxScrollExtent * 0.9) {
+                        context.read<CustomerBloc>().add(
+                          const LoadCustomers(isRefresh: false),
+                        );
+                      }
+                      return false;
                     },
+                    child: shared.AzListView(
+                      key: const PageStorageKey('customerListView'),
+                      data: state.customers,
+                      itemCount: state.customers.length,
+                      susItemHeight: 46,
+                      indexBarData: isSearching
+                          ? const []
+                          : shared.kIndexBarData
+                                .where(
+                                  (tag) => state.customers.any(
+                                    (e) => e.getSuspensionTag() == tag,
+                                  ),
+                                )
+                                .toList(),
+                      indexBarOptions: shared.IndexBarOptions(
+                        needRebuild: true,
+                        selectItemDecoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        selectTextStyle: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        indexHintWidth: 64,
+                        indexHintHeight: 64,
+                        indexHintDecoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primary
+                              // ignore: deprecated_member_use
+                              .withOpacity(0.92),
+                          shape: BoxShape.circle,
+                        ),
+                        indexHintTextStyle: TextStyle(
+                          fontSize: 28.0,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        indexHintAlignment: Alignment.centerRight,
+                        indexHintOffset: const Offset(-40, 0),
+                      ),
+                      itemBuilder: (context, index) {
+                        final customer = state.customers[index];
+                        final isLastItem = index == state.customers.length - 1;
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                top: 10,
+                                bottom: isLastItem && !state.isLoadingMore
+                                    ? 10
+                                    : 0,
+                                left: 10,
+                                right: 30,
+                              ),
+                              child: CustomerListItem(customer: customer),
+                            ),
+                            if (isLastItem && state.isLoadingMore)
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16.0,
+                                ),
+                                child: Center(
+                                  child: CupertinoActivityIndicator(
+                                    animating: true,
+                                    color: Theme.of(
+                                      context,
+                                    ).colorScheme.primary,
+                                    radius: 15,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        );
+                      },
+                      susItemBuilder: (context, index) {
+                        final tag = state.customers[index].getSuspensionTag();
+                        return Container(
+                          height: 36,
+                          width: double.infinity,
+                          margin: EdgeInsets.only(top: index == 0 ? 0 : 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.surfaceContainerHighest,
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            tag,
+                            style: Theme.of(context).textTheme.titleSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                 );
               }
 

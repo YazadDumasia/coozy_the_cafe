@@ -198,6 +198,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                             key: const PageStorageKey('inventoryListView'),
                             data: filteredItems,
                             itemCount: filteredItems.length,
+                            susItemHeight: 46,
                             indexBarData: isSearching
                                 ? const []
                                 : shared.kIndexBarData
@@ -207,6 +208,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                                         ),
                                       )
                                       .toList(),
+
                             indexBarOptions: shared.IndexBarOptions(
                               needRebuild: true,
                               selectItemDecoration: BoxDecoration(
@@ -236,35 +238,46 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                             ),
                             itemBuilder: (context, index) {
                               final item = filteredItems[index];
-                              return InventoryListItem(item: item);
+                              final isLastItem =
+                                  index == filteredItems.length - 1;
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  top: 10,
+                                  bottom: isLastItem ? 10 : 0,
+                                  left: 0,
+                                  right: 30,
+                                ),
+                                child: InventoryListItem(item: item),
+                              );
                             },
                             susItemBuilder: (context, index) {
-                                    final tag = filteredItems[index]
-                                        .getSuspensionTag();
-                                    return Container(
-                                      height: 36,
-                                      width: double.infinity,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0,
+                              final tag = filteredItems[index]
+                                  .getSuspensionTag();
+                              return Container(
+                                height: 36,
+                                width: double.infinity,
+                                margin: EdgeInsets.only(
+                                  top: index == 0 ? 0 : 10,
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                ),
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.surfaceContainerHighest,
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  tag,
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.primary,
                                       ),
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.surfaceContainerHighest,
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        tag,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .titleSmall
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
-                                            ),
-                                      ),
-                                    );
-                                  },
+                                ),
+                              );
+                            },
                           ),
                         );
                       } else if (state is InventoryError) {
