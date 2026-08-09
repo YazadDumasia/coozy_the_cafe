@@ -1,5 +1,4 @@
-import 'package:drift/drift.dart';
-import 'package:coozy_the_cafe/packages/database/src/database.dart';
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import '../models/menu_category_model.dart';
 
 abstract class MenuCategoryLocalDataSource {
@@ -15,57 +14,40 @@ class MenuCategoryLocalDataSourceImpl implements MenuCategoryLocalDataSource {
 
   MenuCategoryLocalDataSourceImpl({required this.database});
 
+  CategoriesDao get _categoriesDao => database.categoriesDao;
+
   @override
   Future<List<MenuCategoryModel>> getCategories() async {
-    final query = database.select(database.categoriesTable)
-      ..orderBy([
-        (c) => OrderingTerm(expression: c.position, mode: OrderingMode.asc),
-      ]);
-    final results = await query.get();
+    final results = await _categoriesDao.getCategories();
     return results.map((data) => MenuCategoryModel.fromData(data)).toList();
   }
 
   @override
   Future<int> insertCategory(MenuCategoryModel category) async {
-    return await database
-        .into(database.categoriesTable)
-        .insert(category.toCompanion());
+    final result = await _categoriesDao.addCategory(category.toCompanion());
+    return result ?? 0;
   }
 
   @override
   Future<bool> updateCategory(MenuCategoryModel category) async {
     if (category.id != null) {
-      final companion = CategoriesTableCompanion(
-        hashId: category.hashId == null
-            ? const Value.absent()
-            : Value(category.hashId!),
-        name: category.name == null
-            ? const Value.absent()
-            : Value(category.name!),
-        isActive: category.isActive == null
-            ? const Value.absent()
-            : Value(category.isActive!),
-        position: category.position == null
-            ? const Value.absent()
-            : Value(category.position!),
-        createdDate: category.createdDate == null
-            ? const Value.absent()
-            : Value(category.createdDate!),
+      final result = await _categoriesDao.updateCategory(
+        category.id!,
+        category.toCompanion(),
       );
-      final updatedRows = await (database.update(
-        database.categoriesTable,
-      )..where((c) => c.id.equals(category.id!))).write(companion);
-      return updatedRows > 0;
+      return result != null && result > 0;
     }
     return false;
   }
 
   @override
   Future<bool> deleteCategory(int id) async {
-    final deleted = await (database.delete(
-      database.categoriesTable,
-    )..where((c) => c.id.equals(id))).go();
-    return deleted > 0;
+    final cat = await _categoriesDao.getCategoryBasedOnCategoryId(categoryId: id);
+    if (cat != null) {
+      final result = await _categoriesDao.deleteCategory(cat);
+      return result != null && result > 0;
+    }
+    return false;
   }
 
   @override

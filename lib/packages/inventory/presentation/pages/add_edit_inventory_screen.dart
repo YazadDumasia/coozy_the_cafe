@@ -85,16 +85,19 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
   }
 
   void _saveItem() {
-    AddEditInventoryScreenActions.saveItem(
-      context: context,
-      formKey: _formKey,
-      existingItem: widget.item,
-      name: _name,
-      shortDescription: _shortDescription,
-      purchaseUnit: _purchaseUnit,
-      currentStock: _currentStock,
-      isEnabled: _isEnabledNotifier.value,
-    );
+    if (_formKey.currentState?.validate() ?? false) {
+      _formKey.currentState?.save();
+      AddEditInventoryScreenActions.saveItem(
+        context: context,
+        existingItem: widget.item,
+        name: _nameController.text.trim(),
+        shortDescription: _shortDescriptionController.text.trim(),
+        purchaseUnit: _purchaseUnitController.text.trim(),
+        currentStock:
+            double.tryParse(_currentStockController.text.trim()) ?? 0.0,
+        isEnabled: _isEnabledNotifier.value,
+      );
+    }
   }
 
   @override
@@ -234,18 +237,41 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
             ValueListenableBuilder<bool>(
               valueListenable: _isEnabledNotifier,
               builder: (context, isEnabled, child) {
-                return SwitchListTile(
-                  title: Text(
-                    context.tr(
-                          shared.LocaleKeys.inventoryAddEditDailogIsEnabled,
-                          track: shared.TrackConstants.inventoryPageTrack,
-                        ) ??
-                        'Is Enabled',
+                return InputDecorator(
+                  decoration: const InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    border: OutlineInputBorder(),
                   ),
-                  value: isEnabled,
-                  onChanged: (val) {
-                    _isEnabledNotifier.value = val;
-                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        context.tr(
+                              shared.LocaleKeys.inventoryAddEditDailogIsEnabled,
+                              track: shared.TrackConstants.inventoryPageTrack,
+                            ) ??
+                            'Is Enabled',
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      Switch(
+                        value: isEnabled,
+                        thumbIcon: WidgetStateProperty.resolveWith<Icon>((
+                          Set<WidgetState> states,
+                        ) {
+                          if (states.contains(WidgetState.selected)) {
+                            return const Icon(Icons.check, color: Colors.green);
+                          }
+                          return const Icon(Icons.close, color: Colors.red);
+                        }),
+                        onChanged: (val) {
+                          _isEnabledNotifier.value = val;
+                        },
+                      ),
+                    ],
+                  ),
                 );
               },
             ).inExpandedRow(),

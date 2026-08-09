@@ -7,6 +7,7 @@ import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_bloc.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_event.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/pages/widgets/adjust_stock_dialog.dart';
+import 'package:coozy_the_cafe/packages/purchase/presentation/pages/purchase_list_screen_actions.dart';
 
 class InventoryListScreenActions {
   static Future<void> navigateToAddPurchase(BuildContext context) async {
@@ -14,25 +15,31 @@ class InventoryListScreenActions {
       '${core.AppRoutePath.inventoryListScreenRoute}/${core.AppRoutePath.inventoryPickerPageRoute}',
     );
     if (selectedItem != null && context.mounted) {
-      context.push(
-        core.AppRoutePath.addPurchaseScreenRoute.replaceFirst(
-          ':id',
-          selectedItem.id.toString(),
-        ),
-        extra: selectedItem,
+      await PurchaseListScreenActions.showPurchaseForm(
+        context: context,
+        item: selectedItem,
       );
+      if (context.mounted) {
+        context.read<InventoryBloc>().add(LoadInventoryItems());
+      }
     }
   }
 
   static void navigateToAddInventory(BuildContext context) {
-    context.push(core.AppRoutePath.addNewInventoryScreenRoute);
+    context.push(
+      '${core.AppRoutePath.inventoryListScreenRoute}/${core.AppRoutePath.addNewInventoryScreenRoute}',
+    );
   }
 
   static void showAdjustStockDialog(BuildContext context, InventoryItem item) {
+    final inventoryBloc = context.read<InventoryBloc>();
     showDialog(
       context: context,
       builder: (ctx) {
-        return AdjustStockDialog(item: item);
+        return BlocProvider<InventoryBloc>.value(
+          value: inventoryBloc,
+          child: AdjustStockDialog(item: item),
+        );
       },
     );
   }
@@ -109,19 +116,127 @@ class InventoryListScreenActions {
   ) {
     if (value == 'enable') {
       context.read<InventoryBloc>().add(
-        UpdateInventoryItem(item.copyWith(isEnabled: true)),
+        UpdateInventoryItem(
+          item.copyWith(
+            isEnabled: true,
+            modifiedDate: DateTime.now().toIso8601String(),
+          ),
+          onSuccess: () {
+            if (context.mounted) {
+              shared.DialogUtils.showAutoDismissDialog(
+                context: context,
+                title:
+                    context.tr(
+                      shared.LocaleKeys.commonSuccess,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'Success',
+                descriptions:
+                    context.tr(
+                      shared.LocaleKeys.crudSuccessUpdate,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'Record updated successfully.',
+                titleIcon: const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 50,
+                ),
+              );
+            }
+          },
+          onError: (error) {
+            if (context.mounted) {
+              shared.DialogUtils.showAutoDismissDialog(
+                context: context,
+                title:
+                    context.tr(
+                      shared.LocaleKeys.commonError,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'Error',
+                descriptions: error.isNotEmpty
+                    ? error
+                    : (context.tr(
+                            shared.LocaleKeys.commonErrorMsg,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'An error occurred.'),
+                titleIcon: const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                  size: 50,
+                ),
+              );
+            }
+          },
+        ),
       );
     } else if (value == 'disable') {
       context.read<InventoryBloc>().add(
-        UpdateInventoryItem(item.copyWith(isEnabled: false)),
+        UpdateInventoryItem(
+          item.copyWith(
+            isEnabled: false,
+            modifiedDate: DateTime.now().toIso8601String(),
+          ),
+          onSuccess: () {
+            if (context.mounted) {
+              shared.DialogUtils.showAutoDismissDialog(
+                context: context,
+                title:
+                    context.tr(
+                      shared.LocaleKeys.commonSuccess,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'Success',
+                descriptions:
+                    context.tr(
+                      shared.LocaleKeys.crudSuccessUpdate,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'Record updated successfully.',
+                titleIcon: const Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 50,
+                ),
+              );
+            }
+          },
+          onError: (error) {
+            if (context.mounted) {
+              shared.DialogUtils.showAutoDismissDialog(
+                context: context,
+                title:
+                    context.tr(
+                      shared.LocaleKeys.commonError,
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    'Error',
+                descriptions: error.isNotEmpty
+                    ? error
+                    : (context.tr(
+                            shared.LocaleKeys.commonErrorMsg,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'An error occurred.'),
+                titleIcon: const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                  size: 50,
+                ),
+              );
+            }
+          },
+        ),
       );
     } else if (value == 'edit') {
+      final editRoutePath =
+          '${core.AppRoutePath.inventoryListScreenRoute}/${core.AppRoutePath.updateInventoryScreenRoute}'
+              .replaceFirst(':id', item.id.toString());
       context
           .push(
-            core.AppRoutePath.updateInventoryScreenRoute.replaceFirst(
-              ':id',
-              item.id.toString(),
-            ),
+            editRoutePath,
             extra: item,
           )
           .then((_) {
@@ -130,120 +245,122 @@ class InventoryListScreenActions {
             }
           });
     } else if (value == 'update') {
-      context
-          .push(
-            core.AppRoutePath.addPurchaseScreenRoute.replaceFirst(
-              ':id',
-              item.id.toString(),
-            ),
-            extra: item,
-          )
-          .then((_) {
-            if (context.mounted) {
-              context.read<InventoryBloc>().add(LoadInventoryItems());
-            }
-          });
+      PurchaseListScreenActions.showPurchaseForm(
+        context: context,
+        item: item,
+      ).then((_) {
+        if (context.mounted) {
+          context.read<InventoryBloc>().add(LoadInventoryItems());
+        }
+      });
     } else if (value == 'adjust') {
       showAdjustStockDialog(context, item);
     } else if (value == 'delete') {
+      final inventoryBloc = context.read<InventoryBloc>();
       showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(
-            context.tr(
-                  shared.LocaleKeys.inventoryDeleteDialogTitleText,
-                  track: shared.TrackConstants.inventoryPageTrack,
-                ) ??
-                'Delete Inventory Item?',
-          ),
-          content: Text(
-            context.tr(
-                  shared.LocaleKeys.inventoryDeleteDialogContentText,
-                  track: shared.TrackConstants.inventoryPageTrack,
-                ) ??
-                'Are you sure you want to delete this item?',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(
-                context.tr(
-                      shared.LocaleKeys.commonCancel,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    'Cancel',
-              ),
+        builder: (ctx) => BlocProvider<InventoryBloc>.value(
+          value: inventoryBloc,
+          child: AlertDialog(
+            title: Text(
+              context.tr(
+                    shared.LocaleKeys.inventoryDeleteDialogTitleText,
+                    track: shared.TrackConstants.inventoryPageTrack,
+                  ) ??
+                  'Delete Inventory Item?',
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-                context.read<InventoryBloc>().add(
-                  DeleteInventoryItem(
-                    item.id!,
-                    onSuccess: () {
-                      if (context.mounted) {
-                        shared.DialogUtils.showAutoDismissDialog(
-                          context: context,
-                          title:
-                              context.tr(
-                                shared.LocaleKeys.commonSuccess,
-                                track: shared.TrackConstants.commonTrack,
-                              ) ??
-                              'Success',
-                          descriptions:
-                              context.tr(
-                                shared.LocaleKeys.crudSuccessDelete,
-                                track: shared.TrackConstants.commonTrack,
-                              ) ??
-                              'Record deleted successfully.',
-                          titleIcon: const Icon(
-                            Icons.check_circle,
-                            color: Colors.green,
-                            size: 50,
-                          ),
-                        );
-                      }
-                    },
-                    onError: (error) {
-                      if (context.mounted) {
-                        shared.DialogUtils.showAutoDismissDialog(
-                          context: context,
-                          title:
-                              context.tr(
-                                shared.LocaleKeys.commonError,
-                                track: shared.TrackConstants.commonTrack,
-                              ) ??
-                              'Error',
-                          descriptions: error.isNotEmpty
-                              ? error
-                              : (context.tr(
-                                      shared.LocaleKeys.commonErrorMsg,
-                                      track: shared.TrackConstants.commonTrack,
-                                    ) ??
-                                    'An error occurred.'),
-                          titleIcon: const Icon(
-                            Icons.error,
-                            color: Colors.red,
-                            size: 50,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                );
-              },
-              child: Text(
-                context.tr(
-                      shared.LocaleKeys.commonDelete,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    'Delete',
-                style: const TextStyle(color: Colors.red),
-              ),
+            content: Text(
+              context.tr(
+                    shared.LocaleKeys.inventoryDeleteDialogContentText,
+                    track: shared.TrackConstants.inventoryPageTrack,
+                  ) ??
+                  'Are you sure you want to delete this item?',
             ),
-          ],
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(
+                  context.tr(
+                        shared.LocaleKeys.commonCancel,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Cancel',
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  if (item.id != null) {
+                    inventoryBloc.add(
+                      DeleteInventoryItem(
+                        item.id!,
+                        onSuccess: () {
+                          if (context.mounted) {
+                            shared.DialogUtils.showAutoDismissDialog(
+                              context: context,
+                              title:
+                                  context.tr(
+                                    shared.LocaleKeys.commonSuccess,
+                                    track: shared.TrackConstants.commonTrack,
+                                  ) ??
+                                  'Success',
+                              descriptions:
+                                  context.tr(
+                                    shared.LocaleKeys.crudSuccessDelete,
+                                    track: shared.TrackConstants.commonTrack,
+                                  ) ??
+                                  'Record deleted successfully.',
+                              titleIcon: const Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                                size: 50,
+                              ),
+                            );
+                          }
+                        },
+                        onError: (error) {
+                          if (context.mounted) {
+                            shared.DialogUtils.showAutoDismissDialog(
+                              context: context,
+                              title:
+                                  context.tr(
+                                    shared.LocaleKeys.commonError,
+                                    track: shared.TrackConstants.commonTrack,
+                                  ) ??
+                                  'Error',
+                              descriptions: error.isNotEmpty
+                                  ? error
+                                  : (context.tr(
+                                          shared.LocaleKeys.commonErrorMsg,
+                                          track: shared.TrackConstants.commonTrack,
+                                        ) ??
+                                        'An error occurred.'),
+                              titleIcon: const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                                size: 50,
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                    );
+                  }
+                },
+                child: Text(
+                  context.tr(
+                        shared.LocaleKeys.commonDelete,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Delete',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     }
   }
 }
+

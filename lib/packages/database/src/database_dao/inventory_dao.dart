@@ -26,6 +26,8 @@ class InventoryDao extends DatabaseAccessor<CoozyDatabase>
 
   Future<int> deleteInventory(int id) async {
     return await transaction(() async {
+      await (update(purchaseTable)..where((t) => t.inventoryId.equals(id)))
+          .write(const PurchaseTableCompanion(inventoryId: Value(null)));
       return await (delete(inventoryTable)..where((t) => t.id.equals(id))).go();
     });
   }
@@ -141,6 +143,11 @@ class InventoryDao extends DatabaseAccessor<CoozyDatabase>
     return await query.map((row) => row.read(countExp)).getSingle() ?? 0;
   }
 
+  Future<InventoryItem?> getInventoryById(int id) async {
+    final query = select(inventoryTable)..where((t) => t.id.equals(id));
+    return await query.getSingleOrNull();
+  }
+
   Future<List<InventoryItem>> getAllInventory() async {
     final query = select(inventoryTable);
     return await (query..orderBy([
@@ -232,19 +239,87 @@ class InventoryDao extends DatabaseAccessor<CoozyDatabase>
 
   Future<int> insertPurchase(PurchaseTableCompanion purchase) async {
     return await transaction(() async {
-      return await into(purchaseTable).insert(purchase);
+      final purchaseId = await into(purchaseTable).insert(purchase);
+      if (purchase.inventoryId.present &&
+          purchase.inventoryId.value != null &&
+          purchase.purchaseQty.present &&
+          purchase.purchaseQty.value != null) {
+        final invId = purchase.inventoryId.value!;
+        final qty = purchase.purchaseQty.value!;
+        final item = await (select(inventoryTable)
+              ..where((t) => t.id.equals(invId)))
+            .getSingleOrNull();
+        if (item != null) {
+          final currentStock = item.currentStock ?? 0.0;
+          await (update(inventoryTable)..where((t) => t.id.equals(invId)))
+              .write(
+                InventoryTableCompanion(
+                  currentStock: Value(currentStock + qty),
+                  modifiedDate: Value(DateTime.now().toIso8601String()),
+                ),
+              );
+        }
+      }
+      return purchaseId;
     });
   }
 
   Future<int> updatePurchase(PurchaseTableCompanion purchase) async {
     return await transaction(() async {
+      if (purchase.id.present) {
+        final oldRecord = await (select(purchaseTable)
+              ..where((t) => t.id.equals(purchase.id.value)))
+            .getSingleOrNull();
+        if (oldRecord != null) {
+          final oldQty = oldRecord.purchaseQty ?? 0.0;
+          final newQty = purchase.purchaseQty.value ?? oldQty;
+          final qtyDelta = newQty - oldQty;
+          final invId = purchase.inventoryId.value ?? oldRecord.inventoryId;
+          if (invId != null && qtyDelta != 0.0) {
+            final item = await (select(inventoryTable)
+                  ..where((t) => t.id.equals(invId)))
+                .getSingleOrNull();
+            if (item != null) {
+              final currentStock = item.currentStock ?? 0.0;
+              await (update(inventoryTable)..where((t) => t.id.equals(invId)))
+                  .write(
+                    InventoryTableCompanion(
+                      currentStock: Value(currentStock + qtyDelta),
+                      modifiedDate: Value(DateTime.now().toIso8601String()),
+                    ),
+                  );
+            }
+          }
+        }
+      }
       await update(purchaseTable).replace(purchase);
-      return 1;
+      return purchase.id.value;
     });
   }
 
   Future<int> deletePurchase(int id) async {
     return await transaction(() async {
+      final record = await (select(purchaseTable)..where((t) => t.id.equals(id)))
+          .getSingleOrNull();
+      if (record != null) {
+        final qty = record.purchaseQty ?? 0.0;
+        if (record.inventoryId != null && qty != 0.0) {
+          final item = await (select(inventoryTable)
+                ..where((t) => t.id.equals(record.inventoryId!)))
+              .getSingleOrNull();
+          if (item != null) {
+            final currentStock = item.currentStock ?? 0.0;
+            await (update(inventoryTable)
+                  ..where((t) => t.id.equals(item.id)))
+                .write(
+                  InventoryTableCompanion(
+                    currentStock: Value(currentStock - qty),
+                    modifiedDate: Value(DateTime.now().toIso8601String()),
+                  ),
+                );
+          }
+        }
+      }
       return await (delete(purchaseTable)..where((t) => t.id.equals(id))).go();
     });
   }

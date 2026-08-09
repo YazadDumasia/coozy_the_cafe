@@ -31,7 +31,7 @@ abstract class RecipesLocalDataSource {
     await prefs.setBool(PreferencesKeys.recipeList.name, true);
 
     // 2. Clear DB tables
-    await database.delete(database.recipesTable).go();
+    await database.recipesDao.deleteAllRecipes();
 
     PlatformUtils.debugLog(
       RecipesLocalDataSource,
@@ -146,19 +146,17 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
 
   @override
   Future<int> insertRecipe(RecipeModel recipe) async {
-    final companion = recipe.toCompanion();
-    return await database.into(database.recipesTable).insert(companion);
+    return await database.recipesDao.insertSingleRecipe(recipe.toCompanion());
   }
 
   @override
   Future<bool> updateRecipe(RecipeModel recipe) async {
-    final companion = recipe.toCompanion();
-    return await database.update(database.recipesTable).replace(companion);
+    return await database.recipesDao.updateSingleRecipe(recipe.toCompanion());
   }
 
   @override
   Future<bool> deleteRecipe(int id) async {
-    final count = await database.recipesDao.deleteRecipe(id: id);
-    return count > 0;
+    final deleted = await database.recipesDao.deleteRecipe(id: id);
+    return deleted > 0;
   }
 }

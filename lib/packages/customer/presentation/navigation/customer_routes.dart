@@ -9,6 +9,7 @@ class CustomerRoutes {
   static final List<RouteBase> routes = [
     GoRoute(
       path: AppRoutePath.customerListScreenRoute,
+      name: AppRouteName.customerList,
       builder: (context, state) => BlocProvider<CustomerBloc>(
         create: (_) => sl<CustomerBloc>(),
         child: const CustomerListScreen(),

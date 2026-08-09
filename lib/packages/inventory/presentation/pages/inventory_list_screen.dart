@@ -244,7 +244,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                                 padding: EdgeInsets.only(
                                   top: 10,
                                   bottom: isLastItem ? 10 : 0,
-                                  left: 0,
+                                  left: 10,
                                   right: 30,
                                 ),
                                 child: InventoryListItem(item: item),

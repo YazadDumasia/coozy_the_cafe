@@ -15,6 +15,7 @@ class InventoryRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.inventoryListScreenRoute,
+      name: AppRouteName.inventoryList,
       builder: (context, state) => BlocProvider<InventoryBloc>(
         create: (context) =>
             GetIt.instance<InventoryBloc>()..add(LoadInventoryItems()),
@@ -23,23 +24,26 @@ class InventoryRoutes {
       routes: [
         GoRoute(
           path: AppRoutePath.addNewInventoryScreenRoute,
-          builder: (context, state) => BlocProvider<InventoryBloc>.value(
-            value: GetIt.instance<InventoryBloc>(),
+          name: AppRouteName.inventoryAdd,
+          builder: (context, state) => BlocProvider<InventoryBloc>(
+            create: (context) => GetIt.instance<InventoryBloc>(),
             child: const AddEditInventoryScreen(),
           ),
         ),
         GoRoute(
           path: AppRoutePath.updateInventoryScreenRoute,
+          name: AppRouteName.inventoryUpdate,
           builder: (context, state) {
             final item = state.extra as InventoryItem?;
-            return BlocProvider<InventoryBloc>.value(
-              value: GetIt.instance<InventoryBloc>(),
+            return BlocProvider<InventoryBloc>(
+              create: (context) => GetIt.instance<InventoryBloc>(),
               child: AddEditInventoryScreen(item: item),
             );
           },
         ),
         GoRoute(
           path: AppRoutePath.inventoryPickerPageRoute,
+          name: AppRouteName.inventoryPicker,
           builder: (context, state) {
             return BlocProvider<InventoryPickerBloc>(
               create: (context) =>

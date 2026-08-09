@@ -13,6 +13,7 @@ class PurchaseRoutes {
   static final List<GoRoute> routes = [
     GoRoute(
       path: AppRoutePath.purchaseListScreenRoute,
+      name: AppRouteName.purchaseList,
       builder: (context, state) {
         return BlocProvider<PurchaseListBloc>(
           create: (context) =>
@@ -24,6 +25,7 @@ class PurchaseRoutes {
     ),
     GoRoute(
       path: AppRoutePath.addPurchaseScreenRoute,
+      name: AppRouteName.addPurchase,
       builder: (context, state) {
         final item = state.extra as InventoryItem;
         return BlocProvider<ItemPurchaseBloc>(

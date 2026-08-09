@@ -1,5 +1,4 @@
-import 'package:drift/drift.dart';
-import 'package:coozy_the_cafe/packages/database/src/database.dart' as db;
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart' as db;
 import '../models/inventory_item_model.dart';
 
 abstract class InventoryLocalDataSource {
@@ -20,10 +19,11 @@ class InventoryLocalDataSourceImpl implements InventoryLocalDataSource {
 
   InventoryLocalDataSourceImpl({required this.database});
 
+  db.InventoryDao get _inventoryDao => database.inventoryDao;
+
   @override
   Future<List<InventoryItemModel>> getInventoryItems() async {
-    final query = database.select(database.inventoryTable);
-    final results = await query.get();
+    final results = await _inventoryDao.getAllInventory();
     return results.map((e) => InventoryItemModel.fromData(e)).toList();
   }
 
@@ -33,42 +33,35 @@ class InventoryLocalDataSourceImpl implements InventoryLocalDataSource {
     int offset,
     String? search,
   ) async {
-    final query = database.select(database.inventoryTable);
-    if (search != null && search.isNotEmpty) {
-      query.where((t) => t.name.like('%$search%'));
-    }
-    query.limit(limit, offset: offset);
-    final results = await query.get();
+    final page = limit > 0 ? offset ~/ limit : 0;
+    final results = await _inventoryDao.getInventoryPage(
+      page: page,
+      pageSize: limit,
+      searchQuery: search,
+    );
     return results.map((e) => InventoryItemModel.fromData(e)).toList();
   }
 
   @override
   Future<InventoryItemModel?> getInventoryItemById(int id) async {
-    final query = database.select(database.inventoryTable)
-      ..where((t) => t.id.equals(id));
-    final result = await query.getSingleOrNull();
+    final result = await _inventoryDao.getInventoryById(id);
     return result != null ? InventoryItemModel.fromData(result) : null;
   }
 
   @override
   Future<int> insertInventoryItem(InventoryItemModel item) async {
-    return await database
-        .into(database.inventoryTable)
-        .insert(item.toCompanion());
+    return await _inventoryDao.insertInventory(item.toCompanion());
   }
 
   @override
   Future<bool> updateInventoryItem(InventoryItemModel item) async {
-    return await database
-        .update(database.inventoryTable)
-        .replace(item.toCompanion());
+    final result = await _inventoryDao.updateInventory(item.toCompanion());
+    return result > 0;
   }
 
   @override
   Future<bool> deleteInventoryItem(int id) async {
-    final deletedRows = await (database.delete(
-      database.inventoryTable,
-    )..where((t) => t.id.equals(id))).go();
+    final deletedRows = await _inventoryDao.deleteInventory(id);
     return deletedRows > 0;
   }
 }

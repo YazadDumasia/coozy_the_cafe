@@ -39,51 +39,51 @@ class AppRoutePath {
   static const String settingsScreenRoute = '/settings';
 
   // Sub-routes for Table Info (Nested under Home -> Table Info)
-  static const String addNewTableInfoScreenRoute = 'add';
-  static const String updateTableInfoScreenRoute = 'update';
+  static const String addNewTableInfoScreenRoute = 'table-add';
+  static const String updateTableInfoScreenRoute = 'table-update';
 
   // Sub-routes for Menu Items
-  static const String addNewMenuItemScreenRoute = 'add';
-  static const String updateMenuItemScreenRoute = 'update';
+  static const String addNewMenuItemScreenRoute = 'menu-item-add';
+  static const String updateMenuItemScreenRoute = 'menu-item-update';
 
   // Sub-routes for Menu Categories
-  static const String addNewMenuCategoryScreenRoute = 'add';
-  static const String updateMenuCategoryScreenRoute = 'update';
+  static const String addNewMenuCategoryScreenRoute = 'menu-category-add';
+  static const String updateMenuCategoryScreenRoute = 'menu-category-update';
 
   // Sub-routes for Menu Sub Categories
   static const String addNewMenuSubCategoryScreenRoute = 'add-subcategory';
   static const String updateMenuSubCategoryScreenRoute = 'update-subcategory';
 
   // Sub-routes for Inventory
-  static const String addNewInventoryScreenRoute = 'add';
-  static const String updateInventoryScreenRoute = 'update/:id';
-  static const String addPurchaseScreenRoute = 'add-purchase/:id';
-  static const String inventoryAddOrEditItemRoute = 'edit';
-  static const String inventoryPickerPageRoute = 'picker';
+  static const String addNewInventoryScreenRoute = 'inventory-add';
+  static const String updateInventoryScreenRoute = 'inventory-update/:id';
+  static const String addPurchaseScreenRoute = '/add-purchase/:id';
+  static const String inventoryAddOrEditItemRoute = 'inventory-edit';
+  static const String inventoryPickerPageRoute = 'inventory-picker';
 
   // Sub-routes for Purchases
-  static const String purchaseAddOrEditItemRoute = 'edit';
-  static const String purchasePickerPageRoute = 'picker';
+  static const String purchaseAddOrEditItemRoute = 'purchase-edit';
+  static const String purchasePickerPageRoute = 'purchase-picker';
 
   // Sub-routes for Reservations
-  static const String reservationAddOrEditItemRoute = 'edit';
-  static const String reservationPickerPageRoute = 'picker';
+  static const String reservationAddOrEditItemRoute = 'reservation-edit';
+  static const String reservationPickerPageRoute = 'reservation-picker';
 
   // Sub-routes for Recipes
-  static const String recipesInfoScreenRoute = 'info';
-  static const String recipesBookmarkListScreenRoute = 'bookmarks';
-  static const String recipesAddOrEditScreenRoute = 'edit';
+  static const String recipesInfoScreenRoute = 'recipe-info';
+  static const String recipesBookmarkListScreenRoute = 'recipe-bookmarks';
+  static const String recipesAddOrEditScreenRoute = 'recipe-edit';
 
   // Sub-routes for Orders
-  static const String orderInfoScreenRoute = 'info';
-  static const String orderPickerPageRoute = 'picker';
-  static const String orderStatusUpdateScreenRoute = 'status-update';
+  static const String orderInfoScreenRoute = 'order-info';
+  static const String orderPickerPageRoute = 'order-picker';
+  static const String orderStatusUpdateScreenRoute = 'order-status-update';
 
   // Sub-routes for Invoices
-  static const String invoiceInfoScreenRoute = 'info';
-  static const String invoicePickerPageRoute = 'picker';
-  static const String invoiceStatusUpdateScreenRoute = 'status-update';
-  static const String invoiceAddOrEditScreenRoute = 'edit';
+  static const String invoiceInfoScreenRoute = 'invoice-info';
+  static const String invoicePickerPageRoute = 'invoice-picker';
+  static const String invoiceStatusUpdateScreenRoute = 'invoice-status-update';
+  static const String invoiceAddOrEditScreenRoute = 'invoice-edit';
 
   // Sub-routes for Invoice Payments
   static const String invoicePaymentScreenRoute = 'payment';
@@ -177,7 +177,47 @@ class AppRoutePath {
   static const String addOrEditEmployeeLeaveScreenRoute = 'edit-leave';
 
   // Sub-routes for Customers
-  static const String customerInfoScreenRoute = 'info';
-  static const String addOrEditCustomerScreenRoute = 'edit';
-  static const String customerPickerPageRoute = 'picker';
+  static const String customerInfoScreenRoute = 'customer-info';
+  static const String addOrEditCustomerScreenRoute = 'customer-edit';
+  static const String customerPickerPageRoute = 'customer-picker';
+}
+
+class AppRouteName {
+  static const String home = 'home';
+  static const String license = 'license';
+  static const String splash = 'splash';
+  static const String login = 'login';
+  static const String registration = 'registration';
+  static const String loginViaPhone = 'login-via-phone';
+  static const String otp = 'otp';
+  static const String otpVerification = 'otp-verification';
+  static const String successfully = 'successfully';
+  static const String businessOnboarding = 'business-onboarding';
+  static const String mainHome = 'main-home';
+
+  static const String inventoryList = 'inventory-list';
+  static const String inventoryAdd = 'inventory-add';
+  static const String inventoryUpdate = 'inventory-update';
+  static const String inventoryPicker = 'inventory-picker';
+
+  static const String purchaseList = 'purchase-list';
+  static const String addPurchase = 'add-purchase';
+  static const String purchasePicker = 'purchase-picker';
+
+  static const String tableInfoList = 'table-info-list';
+  static const String tableInfoAdd = 'table-info-add';
+  static const String tableInfoUpdate = 'table-info-update';
+
+  static const String menuItemList = 'menu-item-list';
+  static const String menuItemAdd = 'menu-item-add';
+  static const String menuItemUpdate = 'menu-item-update';
+
+  static const String menuCategoryList = 'menu-category-list';
+  static const String menuCategoryAdd = 'menu-category-add';
+  static const String menuCategoryUpdate = 'menu-category-update';
+
+  static const String customerList = 'customer-list';
+  static const String customerInfo = 'customer-info';
+  static const String customerEdit = 'customer-edit';
+  static const String customerPicker = 'customer-picker';
 }

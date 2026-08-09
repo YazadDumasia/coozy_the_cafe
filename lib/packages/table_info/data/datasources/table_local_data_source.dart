@@ -1,5 +1,4 @@
-import 'package:drift/drift.dart' hide TableInfo;
-import 'package:coozy_the_cafe/packages/database/src/database.dart';
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import '../models/table_info_model.dart';
 
 abstract class TableLocalDataSource {
@@ -15,39 +14,36 @@ class TableLocalDataSourceImpl implements TableLocalDataSource {
 
   TableLocalDataSourceImpl({required this.database});
 
+  CustomersDao get _customersDao => database.customersDao;
+
   @override
   Future<List<TableInfoModel>> getTables() async {
-    final query = database.select(database.tableInfoTable)
-      ..orderBy([
-        (t) =>
-            OrderingTerm(expression: t.sortOrderIndex, mode: OrderingMode.asc),
-      ]);
-    final results = await query.get();
-    return results
+    final results = await _customersDao.getTableInfos();
+    return (results ?? [])
         .map((data) => TableInfoModel.fromTableInfoData(data))
         .toList();
   }
 
   @override
   Future<int> insertTable(TableInfoModel table) async {
-    return await database
-        .into(database.tableInfoTable)
-        .insert(table.toCompanion());
+    final result = await _customersDao.addTableInfo(table.toCompanion());
+    return result ?? 0;
   }
 
   @override
   Future<bool> updateTable(TableInfoModel table) async {
-    return await database
-        .update(database.tableInfoTable)
-        .replace(table.toCompanion());
+    final result = await _customersDao.updateTableInfo(table.toCompanion());
+    return result != null && result > 0;
   }
 
   @override
   Future<bool> deleteTable(int id) async {
-    final deleted = await (database.delete(
-      database.tableInfoTable,
-    )..where((t) => t.id.equals(id))).go();
-    return deleted > 0;
+    final model = await _customersDao.getTableInfo(id);
+    if (model != null) {
+      final result = await _customersDao.deleteTableInfo(model);
+      return result != null && result > 0;
+    }
+    return false;
   }
 
   @override

@@ -1,5 +1,4 @@
-import 'package:drift/drift.dart';
-import 'package:coozy_the_cafe/packages/database/src/database.dart';
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import '../models/menu_subcategory_model.dart';
 
 abstract class MenuSubcategoryLocalDataSource {
@@ -19,73 +18,43 @@ class MenuSubcategoryLocalDataSourceImpl
 
   MenuSubcategoryLocalDataSourceImpl({required this.database});
 
+  CategoriesDao get _categoriesDao => database.categoriesDao;
+
   @override
   Future<List<MenuSubcategoryModel>> getSubcategories() async {
-    final query = database.select(database.subcategoriesTable)
-      ..orderBy([
-        (s) => OrderingTerm(expression: s.position, mode: OrderingMode.asc),
-      ]);
-    final results = await query.get();
-    return results.map((data) => MenuSubcategoryModel.fromData(data)).toList();
+    final results = await _categoriesDao.getSubcategories();
+    return (results ?? []).map((data) => MenuSubcategoryModel.fromData(data)).toList();
   }
 
   @override
   Future<List<MenuSubcategoryModel>> getSubcategoriesByCategoryId(
     int categoryId,
   ) async {
-    final query = database.select(database.subcategoriesTable)
-      ..where((s) => s.categoryId.equals(categoryId))
-      ..orderBy([
-        (s) => OrderingTerm(expression: s.position, mode: OrderingMode.asc),
-      ]);
-    final results = await query.get();
-    return results.map((data) => MenuSubcategoryModel.fromData(data)).toList();
+    final results = await _categoriesDao.getSubcategoryBaseCategoryId(categoryId);
+    return (results ?? []).map((data) => MenuSubcategoryModel.fromData(data)).toList();
   }
 
   @override
   Future<int> insertSubcategory(MenuSubcategoryModel subcategory) async {
-    return await database
-        .into(database.subcategoriesTable)
-        .insert(subcategory.toCompanion());
+    return await _categoriesDao.createSubcategory(subcategory.toCompanion());
   }
 
   @override
   Future<bool> updateSubcategory(MenuSubcategoryModel subcategory) async {
     if (subcategory.id != null) {
-      final companion = SubcategoriesTableCompanion(
-        hashId: subcategory.hashId == null
-            ? const Value.absent()
-            : Value(subcategory.hashId!),
-        categoryId: subcategory.categoryId == null
-            ? const Value.absent()
-            : Value(subcategory.categoryId!),
-        name: subcategory.name == null
-            ? const Value.absent()
-            : Value(subcategory.name!),
-        isActive: subcategory.isActive == null
-            ? const Value.absent()
-            : Value(subcategory.isActive!),
-        position: subcategory.position == null
-            ? const Value.absent()
-            : Value(subcategory.position!),
-        createdDate: subcategory.createdDate == null
-            ? const Value.absent()
-            : Value(subcategory.createdDate!),
+      final result = await _categoriesDao.updateSubcategory(
+        subcategory.id!,
+        subcategory.toCompanion(),
       );
-      final updatedRows = await (database.update(
-        database.subcategoriesTable,
-      )..where((s) => s.id.equals(subcategory.id!))).write(companion);
-      return updatedRows > 0;
+      return result != null && result > 0;
     }
     return false;
   }
 
   @override
   Future<bool> deleteSubcategory(int id) async {
-    final deleted = await (database.delete(
-      database.subcategoriesTable,
-    )..where((s) => s.id.equals(id))).go();
-    return deleted > 0;
+    final deleted = await _categoriesDao.deleteSubcategory(id);
+    return deleted != null && deleted > 0;
   }
 
   @override

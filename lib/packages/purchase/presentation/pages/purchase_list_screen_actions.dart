@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
@@ -10,6 +11,14 @@ import 'package:coozy_the_cafe/packages/purchase/presentation/bloc/purchase_list
 import 'package:coozy_the_cafe/packages/purchase/presentation/widgets/purchase_form_bottom_sheet.dart';
 
 class PurchaseListScreenActions {
+  static PurchaseListBloc _getPurchaseBloc(BuildContext context) {
+    try {
+      return context.read<PurchaseListBloc>();
+    } catch (_) {
+      return GetIt.instance<PurchaseListBloc>();
+    }
+  }
+
   static Future<void> showPurchaseForm({
     required BuildContext context,
     required InventoryItem item,
@@ -25,8 +34,9 @@ class PurchaseListScreenActions {
     if (result != null) {
       if (!context.mounted) return;
       shared.DialogUtils.showLoadingDialog(context);
+      final purchaseBloc = _getPurchaseBloc(context);
       if (existingRecord == null) {
-        context.read<PurchaseListBloc>().add(
+        purchaseBloc.add(
           AddPurchaseRecordFromList(
             result,
             onSuccess: () {
@@ -83,7 +93,7 @@ class PurchaseListScreenActions {
           ),
         );
       } else {
-        context.read<PurchaseListBloc>().add(
+        purchaseBloc.add(
           UpdatePurchaseRecord(
             result,
             onSuccess: () {
@@ -192,7 +202,7 @@ class PurchaseListScreenActions {
         Navigator.pop(context);
         shared.DialogUtils.showLoadingDialog(context);
         if (record.id != null) {
-          context.read<PurchaseListBloc>().add(
+          _getPurchaseBloc(context).add(
             DeletePurchaseRecord(
               record.id!,
               onSuccess: () {

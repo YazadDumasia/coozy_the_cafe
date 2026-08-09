@@ -202,11 +202,67 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                     currentStock: newStock,
                     modifiedDate: DateTime.now().toIso8601String(),
                   );
+                  final navigator = Navigator.of(context);
+                  final rootContext = context;
                   context.read<InventoryBloc>().add(
-                    UpdateInventoryItem(updatedItem),
+                    UpdateInventoryItem(
+                      updatedItem,
+                      onSuccess: () {
+                        if (rootContext.mounted) {
+                          shared.DialogUtils.showAutoDismissDialog(
+                            context: rootContext,
+                            title:
+                                rootContext.tr(
+                                  shared.LocaleKeys.commonSuccess,
+                                  track: shared.TrackConstants.commonTrack,
+                                ) ??
+                                'Success',
+                            descriptions:
+                                rootContext.tr(
+                                  shared.LocaleKeys.crudSuccessUpdate,
+                                  track: shared.TrackConstants.commonTrack,
+                                ) ??
+                                'Record updated successfully.',
+                            titleIcon: const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                              size: 50,
+                            ),
+                          );
+                        }
+                      },
+                      onError: (error) {
+                        if (rootContext.mounted) {
+                          shared.DialogUtils.showAutoDismissDialog(
+                            context: rootContext,
+                            title:
+                                rootContext.tr(
+                                  shared.LocaleKeys.commonError,
+                                  track: shared.TrackConstants.commonTrack,
+                                ) ??
+                                'Error',
+                            descriptions: error.isNotEmpty
+                                ? error
+                                : (rootContext.tr(
+                                        shared.LocaleKeys.commonErrorMsg,
+                                        track:
+                                            shared.TrackConstants.commonTrack,
+                                      ) ??
+                                      'An error occurred.'),
+                            titleIcon: const Icon(
+                              Icons.error,
+                              color: Colors.red,
+                              size: 50,
+                            ),
+                          );
+                        }
+                      },
+                    ),
                   );
+                  navigator.pop();
+                } else {
+                  Navigator.pop(context);
                 }
-                Navigator.pop(context);
               },
               child: Text(
                 context.tr(

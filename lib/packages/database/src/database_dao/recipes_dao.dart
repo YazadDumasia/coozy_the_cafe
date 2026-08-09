@@ -29,6 +29,14 @@ class RecipesDao extends DatabaseAccessor<CoozyDatabase>
   // INSERT
   // ---------------------------------------------------------------------------
 
+  Future<int> insertSingleRecipe(RecipesTableCompanion recipe) async {
+    return await into(recipesTable).insert(recipe);
+  }
+
+  Future<bool> updateSingleRecipe(RecipesTableCompanion recipe) async {
+    return await update(recipesTable).replace(recipe);
+  }
+
   /// Inserts a list of recipes atomically.
   Future<void> insertRecipes(List<RecipesTableCompanion> recipes) async {
     await transaction(() async {
@@ -104,6 +112,10 @@ class RecipesDao extends DatabaseAccessor<CoozyDatabase>
     return await (delete(
       recipesTable,
     )..where((t) => t.recipeId.equals(id))).go();
+  }
+
+  Future<int> deleteAllRecipes() async {
+    return await delete(recipesTable).go();
   }
 
   /// Deletes recipes by [recipeIds] in one transaction.

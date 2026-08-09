@@ -10,7 +10,6 @@ import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_ev
 class AddEditInventoryScreenActions {
   static void saveItem({
     required BuildContext context,
-    required GlobalKey<FormState> formKey,
     required InventoryItem? existingItem,
     required String name,
     required String shortDescription,
@@ -18,10 +17,7 @@ class AddEditInventoryScreenActions {
     required double currentStock,
     required bool isEnabled,
   }) {
-    if (formKey.currentState!.validate()) {
-      formKey.currentState!.save();
-
-      final newItem = InventoryItem(
+    final newItem = InventoryItem(
         id: existingItem?.id,
         hashId: existingItem?.hashId ?? const Uuid().v4(),
         name: name,
@@ -151,6 +147,5 @@ class AddEditInventoryScreenActions {
           ),
         );
       }
-    }
   }
 }
