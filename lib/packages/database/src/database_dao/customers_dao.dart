@@ -68,10 +68,31 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
 
   /// Delete a customer
   Future<int?> deleteCustomer(int id) async {
-    await transaction(() async {
-      await (delete(customersTable)..where((t) => t.id.equals(id))).go();
+    return await transaction(() async {
+      // // Unlink customer from orders, invoices, reservations, and reviews to prevent foreign key constraint failures
+      // await customUpdate(
+      //   'UPDATE orders_table SET customer_id = NULL WHERE customer_id = ?',
+      //   variables: [Variable.withInt(id)],
+      //   updates: {db.ordersTable},
+      // );
+      // await customUpdate(
+      //   'UPDATE invoices_table SET customer_id = NULL WHERE customer_id = ?',
+      //   variables: [Variable.withInt(id)],
+      //   updates: {db.invoicesTable},
+      // );
+      // await customUpdate(
+      //   'UPDATE reservations_table SET customer_id = NULL WHERE customer_id = ?',
+      //   variables: [Variable.withInt(id)],
+      //   updates: {db.reservationsTable},
+      // );
+      // await customUpdate(
+      //   'UPDATE menu_item_reviews_table SET customer_id = NULL WHERE customer_id = ?',
+      //   variables: [Variable.withInt(id)],
+      //   updates: {db.menuItemReviewsTable},
+      // );
+
+      return await (delete(customersTable)..where((t) => t.id.equals(id))).go();
     });
-    return 1;
   }
 
   // TableInfo CRUD operations

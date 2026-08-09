@@ -32,13 +32,16 @@ class MenuSubcategoryLoaded extends MenuSubcategoryState {
     List<MenuSubcategory>? initialSubcategories,
     bool? isReorderAllowed,
     int? categoryIdFilter,
+    bool clearCategoryIdFilter = false,
     bool? isSearchActive,
   }) {
     return MenuSubcategoryLoaded(
       subcategories: subcategories ?? this.subcategories,
       initialSubcategories: initialSubcategories ?? this.initialSubcategories,
       isReorderAllowed: isReorderAllowed ?? this.isReorderAllowed,
-      categoryIdFilter: categoryIdFilter ?? this.categoryIdFilter,
+      categoryIdFilter: clearCategoryIdFilter
+          ? categoryIdFilter
+          : (categoryIdFilter ?? this.categoryIdFilter),
       isSearchActive: isSearchActive ?? this.isSearchActive,
     );
   }

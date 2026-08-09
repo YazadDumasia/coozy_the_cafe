@@ -36,6 +36,7 @@ class MenuSubcategoryBloc
     on<SaveSubcategoryReorder>(_onSaveSubcategoryReorder);
     on<CancelSubcategoryReorder>(_onCancelSubcategoryReorder);
     on<SearchMenuSubcategories>(_onSearchMenuSubcategories);
+    on<FilterMenuSubcategoriesByCategory>(_onFilterByCategory);
   }
 
   Future<void> _onLoadMenuSubcategories(
@@ -47,7 +48,7 @@ class MenuSubcategoryBloc
       final subcategories = await getSubcategoriesUseCase();
       shared.SuspensionUtil.sortListBySuspensionTag(subcategories);
       shared.SuspensionUtil.setShowSuspensionStatus(subcategories);
-      _allSubcategories = subcategories;
+      _allSubcategories = List<MenuSubcategory>.from(subcategories);
       emit(
         MenuSubcategoryLoaded(
           subcategories: subcategories,
@@ -108,21 +109,40 @@ class MenuSubcategoryBloc
       await updateSubcategoryUseCase(event.subcategory);
       event.onSuccess?.call();
 
-      // Update cached _allSubcategories
-      final allIndex = _allSubcategories.indexWhere(
-        (sub) => sub.id == event.subcategory.id,
-      );
-      if (allIndex != -1) {
-        _allSubcategories[allIndex] = event.subcategory;
-      }
-
       if (state is MenuSubcategoryLoaded) {
         final currentState = state as MenuSubcategoryLoaded;
+        // IMPORTANT: Copy the state list BEFORE updating _allSubcategories
+        // to avoid shared-reference mutation that silences Equatable emit.
         final list = List<MenuSubcategory>.from(currentState.subcategories);
         final index = list.indexWhere((sub) => sub.id == event.subcategory.id);
         if (index != -1) {
           list[index] = event.subcategory;
+        }
+
+        // Now update the cached master list
+        final allIndex = _allSubcategories.indexWhere(
+          (sub) => sub.id == event.subcategory.id,
+        );
+        if (allIndex != -1) {
+          _allSubcategories[allIndex] = event.subcategory;
+        }
+
+        if (index != -1) {
           emit(currentState.copyWith(subcategories: list));
+        } else if (currentState.categoryIdFilter == null) {
+          emit(
+            currentState.copyWith(
+              subcategories: List<MenuSubcategory>.from(_allSubcategories),
+            ),
+          );
+        }
+      } else {
+        // Update cached _allSubcategories even if not in loaded state
+        final allIndex = _allSubcategories.indexWhere(
+          (sub) => sub.id == event.subcategory.id,
+        );
+        if (allIndex != -1) {
+          _allSubcategories[allIndex] = event.subcategory;
         }
       }
     } catch (e) {
@@ -384,6 +404,46 @@ class MenuSubcategoryBloc
         MenuSubcategoryLoaded(
           subcategories: filtered,
           isSearchActive: isSearchActive,
+        ),
+      );
+    }
+  }
+
+  void _onFilterByCategory(
+    FilterMenuSubcategoriesByCategory event,
+    Emitter<MenuSubcategoryState> emit,
+  ) {
+    final int? categoryId = event.categoryId;
+    final List<MenuSubcategory> filtered;
+
+    if (categoryId == null) {
+      filtered = List<MenuSubcategory>.from(_allSubcategories);
+    } else {
+      filtered = _allSubcategories
+          .where((sub) => sub.categoryId == categoryId)
+          .toList();
+    }
+
+    shared.SuspensionUtil.sortListBySuspensionTag(filtered);
+    shared.SuspensionUtil.setShowSuspensionStatus(filtered);
+
+    if (state is MenuSubcategoryLoaded) {
+      final current = state as MenuSubcategoryLoaded;
+      emit(
+        current.copyWith(
+          subcategories: filtered,
+          categoryIdFilter: categoryId,
+          clearCategoryIdFilter: true,
+          isSearchActive: false,
+          isReorderAllowed: false,
+        ),
+      );
+    } else {
+      emit(
+        MenuSubcategoryLoaded(
+          subcategories: filtered,
+          categoryIdFilter: categoryId,
+          isSearchActive: false,
         ),
       );
     }

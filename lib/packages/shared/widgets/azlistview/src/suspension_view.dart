@@ -79,6 +79,15 @@ class _SuspensionViewState extends State<SuspensionView> {
   }
 
   @override
+  void didUpdateWidget(covariant SuspensionView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.data != widget.data ||
+        oldWidget.itemCount != widget.itemCount) {
+      setState(() {});
+    }
+  }
+
+  @override
   void dispose() {
     super.dispose();
   }

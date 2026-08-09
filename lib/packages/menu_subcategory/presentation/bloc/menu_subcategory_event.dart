@@ -110,3 +110,12 @@ class SearchMenuSubcategories extends MenuSubcategoryEvent {
   @override
   List<Object?> get props => [query];
 }
+
+class FilterMenuSubcategoriesByCategory extends MenuSubcategoryEvent {
+  final int? categoryId;
+
+  const FilterMenuSubcategoriesByCategory(this.categoryId);
+
+  @override
+  List<Object?> get props => [categoryId];
+}

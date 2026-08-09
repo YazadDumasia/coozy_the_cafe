@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
 import 'package:coozy_the_cafe/packages/menu_category/domain/usecases/menu_category_usecases.dart';
@@ -94,24 +95,27 @@ class _MenuSubcategoryFullListScreenState
     setState(() {
       _selectedCategoryId = categoryId;
     });
-    if (categoryId == null) {
-      context.read<MenuSubcategoryBloc>().add(const LoadMenuSubcategories());
-    } else {
-      context.read<MenuSubcategoryBloc>().add(
-        LoadMenuSubcategoriesByCategory(categoryId),
-      );
-    }
+    context.read<MenuSubcategoryBloc>().add(
+      FilterMenuSubcategoriesByCategory(categoryId),
+    );
   }
 
-  List<MenuSubcategory> _getFilteredSubcategories(
-    List<MenuSubcategory> subcategories,
-  ) {
-    if (_selectedCategoryId == null) {
-      return subcategories;
-    }
-    return subcategories
-        .where((sub) => sub.categoryId == _selectedCategoryId)
-        .toList();
+  Future<void> _onRefresh() async {
+    final completer = Completer<void>();
+    _selectedCategoryId = null;
+    context.read<MenuSubcategoryBloc>().add(
+      LoadMenuSubcategories(
+        onSuccess: () {
+          if (!completer.isCompleted) completer.complete();
+        },
+        onError: (error) {
+          if (!completer.isCompleted) completer.complete();
+        },
+      ),
+    );
+    await _fetchCategories();
+    await completer.future;
+    if (mounted) setState(() {});
   }
 
   void _onSearchResultSelected(
@@ -456,9 +460,7 @@ class _MenuSubcategoryFullListScreenState
   }
 
   Widget _buildSubcategoryContent(MenuSubcategoryLoaded state) {
-    final displayList = List<MenuSubcategory>.from(
-      _getFilteredSubcategories(state.subcategories),
-    );
+    final displayList = List<MenuSubcategory>.from(state.subcategories);
 
     if (displayList.isEmpty) {
       return _buildEmptyState();
@@ -524,41 +526,43 @@ class _MenuSubcategoryFullListScreenState
     }
 
     if (_isGridView) {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          final double crossAxisExtent = 200.0;
-          final int crossAxisCount = (constraints.maxWidth / crossAxisExtent)
-              .floor()
-              .clamp(2, 6);
-          final double itemWidth =
-              (constraints.maxWidth - ((crossAxisCount - 1) * 10)) /
-              crossAxisCount;
-          // Card height auto proportional to width (approx 160px height)
-          final double childAspectRatio = itemWidth / 180.0;
+      return RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final double crossAxisExtent = 200.0;
+            final int crossAxisCount = (constraints.maxWidth / crossAxisExtent)
+                .floor()
+                .clamp(2, 6);
+            final double itemWidth =
+                (constraints.maxWidth - ((crossAxisCount - 1) * 10)) /
+                crossAxisCount;
+            // Card height auto proportional to width (approx 160px height)
+            final double childAspectRatio = itemWidth / 180.0;
 
-          return GridView.builder(
-            key: PageStorageKey('subcategory_grid_${_selectedCategoryId ?? 0}'),
-            controller: _subcategoryScrollController,
-            padding: const EdgeInsets.all(10),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              childAspectRatio: childAspectRatio,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-            ),
-            itemCount: displayList.length,
-            itemBuilder: (context, index) {
-              final item = displayList[index];
-              if (item.id != null) {
-                _subcategoryKeys[item.id!] ??= GlobalKey();
-              }
-              return Container(
-                key: _subcategoryKeys[item.id!],
-                child: MenuSubcategoryGridCard(subCategory: item),
-              );
-            },
-          );
-        },
+            return GridView.builder(
+              key: PageStorageKey(
+                'subcategory_grid_${_selectedCategoryId ?? 0}',
+              ),
+              controller: _subcategoryScrollController,
+              padding: const EdgeInsets.all(10),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                childAspectRatio: childAspectRatio,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: displayList.length,
+              itemBuilder: (context, index) {
+                final item = displayList[index];
+                return Container(
+                  key: ValueKey('grid_${item.id}_${item.isActive}'),
+                  child: MenuSubcategoryGridCard(subCategory: item),
+                );
+              },
+            );
+          },
+        ),
       );
     }
 
@@ -567,83 +571,87 @@ class _MenuSubcategoryFullListScreenState
     // Letter-group headers (susItemBuilder) always appear.
     final bool showIndexBar = _selectedCategoryId == null && !isSearchActive;
 
-    return shared.AzListView(
-      key: PageStorageKey('subcategory_list_${_selectedCategoryId ?? 0}'),
-      data: displayList,
-      itemCount: displayList.length,
-      susItemHeight: 46,
-      indexBarData: showIndexBar
-          ? shared.kIndexBarData
-                .where(
-                  (tag) => displayList.any((e) => e.getSuspensionTag() == tag),
-                )
-                .toList()
-          : const [],
-      indexBarOptions: shared.IndexBarOptions(
-        needRebuild: true,
-        selectItemDecoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: Theme.of(context).colorScheme.primary,
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: shared.AzListView(
+        key: ValueKey(
+          'subcategory_list_${_selectedCategoryId ?? 'all'}_${displayList.map((e) => '${e.id}:${e.isActive}').join('_')}',
         ),
-        selectTextStyle: TextStyle(
-          fontSize: 12,
-          color: Theme.of(context).colorScheme.onPrimary,
-          fontWeight: FontWeight.bold,
-        ),
-        indexHintWidth: 64,
-        indexHintHeight: 64,
-        indexHintDecoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.primary
-              // ignore: deprecated_member_use
-              .withOpacity(0.92),
-          shape: BoxShape.circle,
-        ),
-        indexHintTextStyle: TextStyle(
-          fontSize: 28.0,
-          color: Theme.of(context).colorScheme.onPrimary,
-          fontWeight: FontWeight.bold,
-        ),
-        indexHintAlignment: Alignment.centerRight,
-        indexHintOffset: const Offset(-40, 0),
-      ),
-      itemBuilder: (context, index) {
-        final item = displayList[index];
-        if (item.id != null) {
-          _subcategoryKeys[item.id!] ??= GlobalKey();
-        }
-        final isLastItem = index == displayList.length - 1;
-        return Container(
-          key: item.id != null ? _subcategoryKeys[item.id!] : null,
-          padding: EdgeInsets.only(
-            left: 10,
-            right: 10,
-            top: 10,
-            bottom: isLastItem ? 10 : 0,
+        data: displayList,
+        itemCount: displayList.length,
+        physics: const AlwaysScrollableScrollPhysics(),
+        susItemHeight: 46,
+        indexBarData: showIndexBar
+            ? shared.kIndexBarData
+                  .where(
+                    (tag) =>
+                        displayList.any((e) => e.getSuspensionTag() == tag),
+                  )
+                  .toList()
+            : const [],
+        indexBarOptions: shared.IndexBarOptions(
+          needRebuild: true,
+          selectItemDecoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Theme.of(context).colorScheme.primary,
           ),
-          child: MenuSubcategoryListItem(
-            subCategory: item,
-            isLastItem: isLastItem,
+          selectTextStyle: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontWeight: FontWeight.bold,
           ),
-        );
-      },
-      susItemBuilder: (context, index) {
-        final tag = displayList[index].getSuspensionTag();
-        return Container(
-          height: 36,
-          width: double.infinity,
-          margin: EdgeInsets.only(top: index == 0 ? 0 : 10),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-          alignment: Alignment.centerLeft,
-          child: Text(
-            tag,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
+          indexHintWidth: 64,
+          indexHintHeight: 64,
+          indexHintDecoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary
+                // ignore: deprecated_member_use
+                .withOpacity(0.92),
+            shape: BoxShape.circle,
+          ),
+          indexHintTextStyle: TextStyle(
+            fontSize: 28.0,
+            color: Theme.of(context).colorScheme.onPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+          indexHintAlignment: Alignment.centerRight,
+          indexHintOffset: const Offset(-40, 0),
+        ),
+        itemBuilder: (context, index) {
+          final item = displayList[index];
+          final isLastItem = index == displayList.length - 1;
+          return Container(
+            key: ValueKey('list_${item.id}_${item.isActive}'),
+            padding: EdgeInsets.only(
+              left: 10,
+              right: 10,
+              top: 10,
+              bottom: isLastItem ? 10 : 0,
             ),
-          ),
-        );
-      },
+            child: MenuSubcategoryListItem(
+              subCategory: item,
+              isLastItem: isLastItem,
+            ),
+          );
+        },
+        susItemBuilder: (context, index) {
+          final tag = displayList[index].getSuspensionTag();
+          return Container(
+            height: 36,
+            width: double.infinity,
+            margin: EdgeInsets.only(top: index == 0 ? 0 : 10),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              tag,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 

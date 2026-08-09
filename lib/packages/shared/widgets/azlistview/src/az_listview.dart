@@ -124,6 +124,16 @@ class _AzListViewState extends State<AzListView> {
   }
 
   @override
+  void didUpdateWidget(covariant AzListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.data != widget.data ||
+        oldWidget.itemCount != widget.itemCount ||
+        oldWidget.indexBarData != widget.indexBarData) {
+      setState(() {});
+    }
+  }
+
+  @override
   void dispose() {
     super.dispose();
     dragListener.dragDetails.removeListener(_valueChanged);
