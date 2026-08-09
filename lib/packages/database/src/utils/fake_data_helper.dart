@@ -368,8 +368,6 @@ class FakeDataHelper {
       totalInsertedRecords++;
     }
 
-
-
     // 4. Tables & Menu (12 Tables, 7 Categories, 35 Menu Items)
     onProgress?.call(
       'tables_menu',
@@ -473,56 +471,62 @@ class FakeDataHelper {
         menuItemNamesMap[itemId] = itemNames[m];
         totalInsertedRecords++;
 
-
         // Add 2 variations (Small / Large)
-        await db.into(db.menuItemVariationsTable).insert(
-          MenuItemVariationsTableCompanion.insert(
-            hashId: Value('$fakePrefix${uuid.v4()}'),
-            menuItemId: Value(itemId),
-            quantity: const Value(1),
-            purchaseUnit: const Value('Small Portion'),
-            isTodayAvailable: const Value(true),
-            costPrice: Value(costPrice * 0.8),
-            sellingPrice: Value(sellingPrice * 0.8),
-            stockQuantity: const Value(100),
-            sortOrderIndex: const Value(1),
-            creationDate: Value(startDate.toIso8601String()),
-          ),
-        );
+        await db
+            .into(db.menuItemVariationsTable)
+            .insert(
+              MenuItemVariationsTableCompanion.insert(
+                hashId: Value('$fakePrefix${uuid.v4()}'),
+                menuItemId: Value(itemId),
+                quantity: const Value(1),
+                purchaseUnit: const Value('Small Portion'),
+                isTodayAvailable: const Value(true),
+                costPrice: Value(costPrice * 0.8),
+                sellingPrice: Value(sellingPrice * 0.8),
+                stockQuantity: const Value(100),
+                sortOrderIndex: const Value(1),
+                creationDate: Value(startDate.toIso8601String()),
+              ),
+            );
         totalInsertedRecords++;
 
-        await db.into(db.menuItemVariationsTable).insert(
-          MenuItemVariationsTableCompanion.insert(
-            hashId: Value('$fakePrefix${uuid.v4()}'),
-            menuItemId: Value(itemId),
-            quantity: const Value(1),
-            purchaseUnit: const Value('Large Portion'),
-            isTodayAvailable: const Value(true),
-            costPrice: Value(costPrice * 1.3),
-            sellingPrice: Value(sellingPrice * 1.3),
-            stockQuantity: const Value(100),
-            sortOrderIndex: const Value(2),
-            creationDate: Value(startDate.toIso8601String()),
-          ),
-        );
+        await db
+            .into(db.menuItemVariationsTable)
+            .insert(
+              MenuItemVariationsTableCompanion.insert(
+                hashId: Value('$fakePrefix${uuid.v4()}'),
+                menuItemId: Value(itemId),
+                quantity: const Value(1),
+                purchaseUnit: const Value('Large Portion'),
+                isTodayAvailable: const Value(true),
+                costPrice: Value(costPrice * 1.3),
+                sellingPrice: Value(sellingPrice * 1.3),
+                stockQuantity: const Value(100),
+                sortOrderIndex: const Value(2),
+                creationDate: Value(startDate.toIso8601String()),
+              ),
+            );
         totalInsertedRecords++;
 
         // Add a customer review
         final custId = customerIds[m % customerIds.length];
-        await db.into(db.menuItemReviewsTable).insert(
-          MenuItemReviewsTableCompanion.insert(
-            id: Value(totalInsertedRecords + 100000),
-            itemId: Value(itemId),
-            customerId: Value(custId),
-            rating: Value(4.0 + (m % 3) * 0.5),
-            reviewText: Value('Delicious ${itemNames[m]}! High quality and fast preparation.'),
-            reviewDate: Value(getRandomDate()),
-          ),
-        );
+        await db
+            .into(db.menuItemReviewsTable)
+            .insert(
+              MenuItemReviewsTableCompanion.insert(
+                id: Value(totalInsertedRecords + 100000),
+                itemId: Value(itemId),
+                customerId: Value(custId),
+                rating: Value(4.0 + (m % 3) * 0.5),
+                reviewText: Value(
+                  'Delicious ${itemNames[m]}! High quality and fast preparation.',
+                ),
+                reviewDate: Value(getRandomDate()),
+              ),
+            );
         totalInsertedRecords++;
       }
     }
-
 
     // 5. Inventory & Purchases (20 Items, 150 Purchases)
     onProgress?.call(
@@ -789,7 +793,6 @@ class FakeDataHelper {
       totalInsertedRecords++;
     }
 
-
     return totalInsertedRecords;
   }
 
@@ -828,7 +831,6 @@ class FakeDataHelper {
     await db.customStatement(
       "DELETE FROM menu_subcategories WHERE hash_id LIKE '$fakePrefix%' OR category_id IN (SELECT id FROM menu_categories WHERE hash_id LIKE '$fakePrefix%');",
     );
-
 
     onProgress?.call(
       'cleaning_parent_tables',
@@ -984,4 +986,3 @@ class FakeDataHelper {
     return counts;
   }
 }
-

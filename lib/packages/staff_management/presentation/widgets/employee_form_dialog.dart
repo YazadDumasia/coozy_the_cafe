@@ -447,12 +447,14 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                 TextFormField(
                   controller: _addressLine1Controller,
                   decoration: InputDecoration(
-                    labelText: context.tr(
+                    labelText:
+                        context.tr(
                           shared.LocaleKeys.addressLine1Label,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
                         'Address Line 1',
-                    hintText: context.tr(
+                    hintText:
+                        context.tr(
                           shared.LocaleKeys.addressLine1Hint,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
@@ -464,12 +466,14 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                 TextFormField(
                   controller: _addressLine2Controller,
                   decoration: InputDecoration(
-                    labelText: context.tr(
+                    labelText:
+                        context.tr(
                           shared.LocaleKeys.addressLine2Label,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
                         'Address Line 2',
-                    hintText: context.tr(
+                    hintText:
+                        context.tr(
                           shared.LocaleKeys.addressLine2Hint,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
@@ -481,12 +485,14 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                 TextFormField(
                   controller: _idProofController,
                   decoration: InputDecoration(
-                    labelText: context.tr(
+                    labelText:
+                        context.tr(
                           shared.LocaleKeys.idProofLabel,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
                         'ID Proof (e.g. Passport, License)',
-                    hintText: context.tr(
+                    hintText:
+                        context.tr(
                           shared.LocaleKeys.idProofHint,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
@@ -498,12 +504,14 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                 TextFormField(
                   controller: _idProofNumberController,
                   decoration: InputDecoration(
-                    labelText: context.tr(
+                    labelText:
+                        context.tr(
                           shared.LocaleKeys.idProofNumberLabel,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
                         'ID Proof Number',
-                    hintText: context.tr(
+                    hintText:
+                        context.tr(
                           shared.LocaleKeys.idProofNumberHint,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
@@ -515,12 +523,14 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                 TextFormField(
                   controller: _totalLeavesController,
                   decoration: InputDecoration(
-                    labelText: context.tr(
+                    labelText:
+                        context.tr(
                           shared.LocaleKeys.totalLeavesLabel,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
                         'Total Number of Leaves',
-                    hintText: context.tr(
+                    hintText:
+                        context.tr(
                           shared.LocaleKeys.totalLeavesHint,
                           track: shared.TrackConstants.staffManagementPageTrack,
                         ) ??
@@ -633,9 +643,12 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                         );
                       },
                       decoration: InputDecoration(
-                        labelText: context.tr(
+                        labelText:
+                            context.tr(
                               shared.LocaleKeys.joiningDateLabel,
-                              track: shared.TrackConstants.staffManagementPageTrack,
+                              track: shared
+                                  .TrackConstants
+                                  .staffManagementPageTrack,
                             ) ??
                             'Joining Date',
                         border: const OutlineInputBorder(),
@@ -679,8 +692,12 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                         TextButton(
                                           child: Text(
                                             context.tr(
-                                                  shared.LocaleKeys.commonCancel,
-                                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                                  shared
+                                                      .LocaleKeys
+                                                      .commonCancel,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .staffManagementPageTrack,
                                                 ) ??
                                                 'Cancel',
                                           ),
@@ -690,7 +707,9 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                           child: Text(
                                             context.tr(
                                                   shared.LocaleKeys.commonDone,
-                                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .staffManagementPageTrack,
                                                 ) ??
                                                 'Done',
                                           ),
@@ -730,9 +749,12 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                         );
                       },
                       decoration: InputDecoration(
-                        labelText: context.tr(
+                        labelText:
+                            context.tr(
                               shared.LocaleKeys.leavingDateLabel,
-                              track: shared.TrackConstants.staffManagementPageTrack,
+                              track: shared
+                                  .TrackConstants
+                                  .staffManagementPageTrack,
                             ) ??
                             'Leaving Date',
                         border: const OutlineInputBorder(),

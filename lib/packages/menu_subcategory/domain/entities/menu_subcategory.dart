@@ -73,4 +73,3 @@ class MenuSubcategory implements shared.ISuspensionBean {
     );
   }
 }
-

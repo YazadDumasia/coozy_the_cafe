@@ -811,7 +811,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }) {
     final theme = Theme.of(context);
     return ValueListenableBuilder<String?>(
-
       valueListenable: _activeStageKeyNotifier,
       builder: (context, activeStageKey, child) {
         return ValueListenableBuilder<Set<String>>(
@@ -1207,7 +1206,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         )
                                       : _tr(
                                           context,
-                                          shared.LocaleKeys.dialogStatusInactive,
+                                          shared
+                                              .LocaleKeys
+                                              .dialogStatusInactive,
                                           'Status: Inactive',
                                         ),
                                   style: TextStyle(
@@ -1268,12 +1269,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       isActive
                                           ? _tr(
                                               context,
-                                              shared.LocaleKeys.dialogDemoDataActive,
+                                              shared
+                                                  .LocaleKeys
+                                                  .dialogDemoDataActive,
                                               'Demo data active in database',
                                             )
                                           : _tr(
                                               context,
-                                              shared.LocaleKeys.dialogToggleSwitchToEnable,
+                                              shared
+                                                  .LocaleKeys
+                                                  .dialogToggleSwitchToEnable,
                                               'Toggle switch to enable data',
                                             ),
                                       style: TextStyle(
@@ -1320,7 +1325,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         builder: (context, stepDesc, child) {
                                           final double progress = totalSteps > 0
                                               ? (currentStep / totalSteps)
-                                                  .clamp(0.0, 1.0)
+                                                    .clamp(0.0, 1.0)
                                               : 0.0;
                                           final int percentage =
                                               (progress * 100).round();

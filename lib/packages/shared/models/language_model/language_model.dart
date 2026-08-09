@@ -33,7 +33,6 @@ class LanguageModel {
   }
 
   static List<LanguageModel> getLanguages() {
-
     return <LanguageModel>[
       LanguageModel(
         name: 'English',

@@ -26,8 +26,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
     with AutomaticKeepAliveClientMixin {
   final ValueNotifier<ReportDuration> _selectedDurationNotifier =
       ValueNotifier<ReportDuration>(ReportDuration.monthly);
-  final ValueNotifier<int?> _selectedEmployeeIdNotifier =
-      ValueNotifier<int?>(null);
+  final ValueNotifier<int?> _selectedEmployeeIdNotifier = ValueNotifier<int?>(
+    null,
+  );
   final ValueNotifier<SfRangeValues> _sliderRangeValuesNotifier =
       ValueNotifier<SfRangeValues>(const SfRangeValues(0.0, 100.0));
 
@@ -99,7 +100,8 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                         builder: (context, attendanceState) {
                           return BlocBuilder<LeaveBloc, LeaveState>(
                             builder: (context, leaveState) {
-                              final employees = employeeState is EmployeeLoadedState
+                              final employees =
+                                  employeeState is EmployeeLoadedState
                                   ? employeeState.employees
                                   : <EmployeeEntity>[];
                               final attendanceList =
@@ -130,10 +132,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                           shared
                                               .LocaleKeys
                                               .attendanceLeaveTrendTitle,
-                                          track:
-                                              shared
-                                                  .TrackConstants
-                                                  .staffManagementPageTrack,
+                                          track: shared
+                                              .TrackConstants
+                                              .staffManagementPageTrack,
                                         ) ??
                                         'Attendance & Leave Trend',
                                     subtitle:
@@ -141,14 +142,12 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                           shared
                                               .LocaleKeys
                                               .attendanceLeaveTrendSubtitle,
-                                          track:
-                                              shared
-                                                  .TrackConstants
-                                                  .staffManagementPageTrack,
+                                          track: shared
+                                              .TrackConstants
+                                              .staffManagementPageTrack,
                                           params: {
                                             'duration':
-                                                _selectedDurationNotifier
-                                                    .value
+                                                _selectedDurationNotifier.value
                                                     .getLocalizedName(context),
                                           },
                                         ) ??
@@ -173,10 +172,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                           shared
                                               .LocaleKeys
                                               .workingHoursVsTargetTitle,
-                                          track:
-                                              shared
-                                                  .TrackConstants
-                                                  .staffManagementPageTrack,
+                                          track: shared
+                                              .TrackConstants
+                                              .staffManagementPageTrack,
                                         ) ??
                                         'Working Hours vs Target',
                                     subtitle:
@@ -184,10 +182,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                           shared
                                               .LocaleKeys
                                               .workingHoursVsTargetSubtitle,
-                                          track:
-                                              shared
-                                                  .TrackConstants
-                                                  .staffManagementPageTrack,
+                                          track: shared
+                                              .TrackConstants
+                                              .staffManagementPageTrack,
                                         ) ??
                                         'Tracked staff working hours against standard targets',
                                     child: SizedBox(
@@ -212,10 +209,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                               shared
                                                   .LocaleKeys
                                                   .leaveDistributionTitle,
-                                              track:
-                                                  shared
-                                                      .TrackConstants
-                                                      .staffManagementPageTrack,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .staffManagementPageTrack,
                                             ) ??
                                             'Leave Distribution',
                                         subtitle:
@@ -223,18 +219,18 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                               shared
                                                   .LocaleKeys
                                                   .leaveDistributionSubtitle,
-                                              track:
-                                                  shared
-                                                      .TrackConstants
-                                                      .staffManagementPageTrack,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .staffManagementPageTrack,
                                             ) ??
                                             'Breakdown of leaves by category',
                                         child: SizedBox(
                                           height: 300,
                                           child: LeaveDistributionChart(
-                                            data: _generateLeaveDistributionData(
-                                              leaves,
-                                            ),
+                                            data:
+                                                _generateLeaveDistributionData(
+                                                  leaves,
+                                                ),
                                           ),
                                         ),
                                       );
@@ -246,10 +242,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                               shared
                                                   .LocaleKeys
                                                   .employeeAttendanceRateTitle,
-                                              track:
-                                                  shared
-                                                      .TrackConstants
-                                                      .staffManagementPageTrack,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .staffManagementPageTrack,
                                             ) ??
                                             'Employee Attendance Rate',
                                         subtitle:
@@ -257,19 +252,19 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                               shared
                                                   .LocaleKeys
                                                   .employeeAttendanceRateSubtitle,
-                                              track:
-                                                  shared
-                                                      .TrackConstants
-                                                      .staffManagementPageTrack,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .staffManagementPageTrack,
                                             ) ??
                                             'Attendance percentage per staff member',
                                         child: SizedBox(
                                           height: 300,
                                           child: EmployeePerformanceChart(
-                                            data: _generateEmployeePerformanceData(
-                                              employees,
-                                              attendanceList,
-                                            ),
+                                            data:
+                                                _generateEmployeePerformanceData(
+                                                  employees,
+                                                  attendanceList,
+                                                ),
                                           ),
                                         ),
                                       );
@@ -351,10 +346,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                           Text(
                             context.tr(
                                   shared.LocaleKeys.staffAnalyticsReportsTitle,
-                                  track:
-                                      shared
-                                          .TrackConstants
-                                          .staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                 ) ??
                                 'Staff Analytics & Reports',
                             style: theme.textTheme.titleMedium?.copyWith(
@@ -367,10 +361,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                             tooltip:
                                 context.tr(
                                   shared.LocaleKeys.reloadReportDataTooltip,
-                                  track:
-                                      shared
-                                          .TrackConstants
-                                          .staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                 ) ??
                                 'Reload Report Data',
 
@@ -380,15 +373,18 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                 SnackBar(
                                   content: Text(
                                     context.tr(
-                                          shared.LocaleKeys.staffReportsReloadedSuccess,
-                                          track: shared.TrackConstants.staffManagementPageTrack,
+                                          shared
+                                              .LocaleKeys
+                                              .staffReportsReloadedSuccess,
+                                          track: shared
+                                              .TrackConstants
+                                              .staffManagementPageTrack,
                                         ) ??
                                         'Staff reports reloaded successfully!',
                                   ),
                                   duration: const Duration(seconds: 1),
                                 ),
                               );
-
                             },
                           ),
                         ],
@@ -407,10 +403,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                 final allEmployeesText =
                                     context.tr(
                                       shared.LocaleKeys.allEmployeesDropdown,
-                                      track:
-                                          shared
-                                              .TrackConstants
-                                              .staffManagementPageTrack,
+                                      track: shared
+                                          .TrackConstants
+                                          .staffManagementPageTrack,
                                     ) ??
                                     'All Employees';
                                 return DropdownButtonHideUnderline(
@@ -449,10 +444,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                                                     shared
                                                         .LocaleKeys
                                                         .staffIdFallback,
-                                                    track:
-                                                        shared
-                                                            .TrackConstants
-                                                            .staffManagementPageTrack,
+                                                    track: shared
+                                                        .TrackConstants
+                                                        .staffManagementPageTrack,
                                                     params: {'id': '${e.id}'},
                                                   ) ??
                                                   'Staff #${e.id}',
@@ -500,16 +494,19 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                   selectedColor: theme.colorScheme.primary,
                   labelStyle: TextStyle(
                     color: isSelected
-                      ? theme.colorScheme.onPrimary
-                      : theme.textTheme.bodyMedium?.color,
+                        ? theme.colorScheme.onPrimary
+                        : theme.textTheme.bodyMedium?.color,
                     fontWeight: isSelected
-                      ? FontWeight.bold
-                      : FontWeight.normal,
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                   onSelected: (bool selected) {
                     if (selected) {
                       _selectedDurationNotifier.value = duration;
-                      _sliderRangeValuesNotifier.value = const SfRangeValues(0.0, 100.0);
+                      _sliderRangeValuesNotifier.value = const SfRangeValues(
+                        0.0,
+                        100.0,
+                      );
                     }
                   },
                 );
@@ -527,9 +524,10 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
     final fullRange = _selectedDurationNotifier.value.getDateRange(now);
     final rangeDays = fullRange.end.difference(fullRange.start).inDays + 1;
 
-    final activeStartDays = (rangeDays * (_sliderRangeValuesNotifier.value.start / 100))
-        .round();
-    final activeEndDays = (rangeDays * (_sliderRangeValuesNotifier.value.end / 100)).round();
+    final activeStartDays =
+        (rangeDays * (_sliderRangeValuesNotifier.value.start / 100)).round();
+    final activeEndDays =
+        (rangeDays * (_sliderRangeValuesNotifier.value.end / 100)).round();
 
     final activeStartDate = fullRange.start.add(
       Duration(days: activeStartDays),
@@ -561,9 +559,7 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                       context.tr(
                             shared.LocaleKeys.interactiveTimeWindowTitle,
                             track:
-                                shared
-                                    .TrackConstants
-                                    .staffManagementPageTrack,
+                                shared.TrackConstants.staffManagementPageTrack,
                           ) ??
                           'Interactive Time Window',
                       style: theme.textTheme.titleSmall?.copyWith(
@@ -850,12 +846,16 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
 
   List<AttendanceEntity> _filterAttendance(List<AttendanceEntity> list) {
     if (_selectedEmployeeIdNotifier.value == null) return list;
-    return list.where((a) => a.employeeId == _selectedEmployeeIdNotifier.value).toList();
+    return list
+        .where((a) => a.employeeId == _selectedEmployeeIdNotifier.value)
+        .toList();
   }
 
   List<LeaveEntity> _filterLeaves(List<LeaveEntity> list) {
     if (_selectedEmployeeIdNotifier.value == null) return list;
-    return list.where((l) => l.employeeId == _selectedEmployeeIdNotifier.value).toList();
+    return list
+        .where((l) => l.employeeId == _selectedEmployeeIdNotifier.value)
+        .toList();
   }
 
   DateTime? _parseDateTime(String? rawDate) {
@@ -954,7 +954,6 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
         )
         .toList();
   }
-
 
   List<LeaveDistributionData> _generateLeaveDistributionData(
     List<LeaveEntity> leaves,

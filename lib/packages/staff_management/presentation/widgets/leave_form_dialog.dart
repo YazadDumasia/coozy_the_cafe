@@ -307,14 +307,20 @@ class _LeaveFormDialogState extends State<LeaveFormDialog> {
                         child: TextFormField(
                           controller: _startDateTimeController,
                           decoration: InputDecoration(
-                            labelText: context.tr(
+                            labelText:
+                                context.tr(
                                   shared.LocaleKeys.startDateTimeLabel,
-                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                 ) ??
                                 'Start DateTime',
-                            hintText: context.tr(
+                            hintText:
+                                context.tr(
                                   shared.LocaleKeys.startDateTimeHint,
-                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                 ) ??
                                 'Select start date',
                             border: const OutlineInputBorder(),
@@ -346,14 +352,20 @@ class _LeaveFormDialogState extends State<LeaveFormDialog> {
                         child: TextFormField(
                           controller: _endDateTimeController,
                           decoration: InputDecoration(
-                            labelText: context.tr(
+                            labelText:
+                                context.tr(
                                   shared.LocaleKeys.endDateTimeLabel,
-                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                 ) ??
                                 'End DateTime',
-                            hintText: context.tr(
+                            hintText:
+                                context.tr(
                                   shared.LocaleKeys.endDateTimeHint,
-                                  track: shared.TrackConstants.staffManagementPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .staffManagementPageTrack,
                                 ) ??
                                 'Select end date',
                             border: const OutlineInputBorder(),

@@ -42,7 +42,9 @@ class MenuCategoryLocalDataSourceImpl implements MenuCategoryLocalDataSource {
 
   @override
   Future<bool> deleteCategory(int id) async {
-    final cat = await _categoriesDao.getCategoryBasedOnCategoryId(categoryId: id);
+    final cat = await _categoriesDao.getCategoryBasedOnCategoryId(
+      categoryId: id,
+    );
     if (cat != null) {
       final result = await _categoriesDao.deleteCategory(cat);
       return result != null && result > 0;

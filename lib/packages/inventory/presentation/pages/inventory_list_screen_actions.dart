@@ -162,11 +162,7 @@ class InventoryListScreenActions {
                             track: shared.TrackConstants.commonTrack,
                           ) ??
                           'An error occurred.'),
-                titleIcon: const Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 50,
-                ),
+                titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
               );
             }
           },
@@ -220,11 +216,7 @@ class InventoryListScreenActions {
                             track: shared.TrackConstants.commonTrack,
                           ) ??
                           'An error occurred.'),
-                titleIcon: const Icon(
-                  Icons.error,
-                  color: Colors.red,
-                  size: 50,
-                ),
+                titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
               );
             }
           },
@@ -234,16 +226,11 @@ class InventoryListScreenActions {
       final editRoutePath =
           '${core.AppRoutePath.inventoryListScreenRoute}/${core.AppRoutePath.updateInventoryScreenRoute}'
               .replaceFirst(':id', item.id.toString());
-      context
-          .push(
-            editRoutePath,
-            extra: item,
-          )
-          .then((_) {
-            if (context.mounted) {
-              context.read<InventoryBloc>().add(LoadInventoryItems());
-            }
-          });
+      context.push(editRoutePath, extra: item).then((_) {
+        if (context.mounted) {
+          context.read<InventoryBloc>().add(LoadInventoryItems());
+        }
+      });
     } else if (value == 'update') {
       PurchaseListScreenActions.showPurchaseForm(
         context: context,
@@ -332,7 +319,8 @@ class InventoryListScreenActions {
                                   ? error
                                   : (context.tr(
                                           shared.LocaleKeys.commonErrorMsg,
-                                          track: shared.TrackConstants.commonTrack,
+                                          track:
+                                              shared.TrackConstants.commonTrack,
                                         ) ??
                                         'An error occurred.'),
                               titleIcon: const Icon(
@@ -363,4 +351,3 @@ class InventoryListScreenActions {
     }
   }
 }
-

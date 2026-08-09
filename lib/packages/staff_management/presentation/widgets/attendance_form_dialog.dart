@@ -376,9 +376,12 @@ class _AttendanceFormDialogState extends State<AttendanceFormDialog> {
                               );
                             }).toList(),
                             decoration: InputDecoration(
-                              labelText: context.tr(
+                              labelText:
+                                  context.tr(
                                     shared.LocaleKeys.employeeNameLabel,
-                                    track: shared.TrackConstants.staffManagementPageTrack,
+                                    track: shared
+                                        .TrackConstants
+                                        .staffManagementPageTrack,
                                   ) ??
                                   'Employee name',
                               border: const OutlineInputBorder(),
@@ -387,13 +390,14 @@ class _AttendanceFormDialogState extends State<AttendanceFormDialog> {
                               if (value == null && !isEditing) {
                                 return context.tr(
                                       shared.LocaleKeys.selectEmployeeError,
-                                      track: shared.TrackConstants.staffManagementPageTrack,
+                                      track: shared
+                                          .TrackConstants
+                                          .staffManagementPageTrack,
                                     ) ??
                                     'Please select an employee name.';
                               }
                               return null;
                             },
-
                           );
                         },
                       ),

@@ -23,15 +23,21 @@ class MenuSubcategoryLocalDataSourceImpl
   @override
   Future<List<MenuSubcategoryModel>> getSubcategories() async {
     final results = await _categoriesDao.getSubcategories();
-    return (results ?? []).map((data) => MenuSubcategoryModel.fromData(data)).toList();
+    return (results ?? [])
+        .map((data) => MenuSubcategoryModel.fromData(data))
+        .toList();
   }
 
   @override
   Future<List<MenuSubcategoryModel>> getSubcategoriesByCategoryId(
     int categoryId,
   ) async {
-    final results = await _categoriesDao.getSubcategoryBaseCategoryId(categoryId);
-    return (results ?? []).map((data) => MenuSubcategoryModel.fromData(data)).toList();
+    final results = await _categoriesDao.getSubcategoryBaseCategoryId(
+      categoryId,
+    );
+    return (results ?? [])
+        .map((data) => MenuSubcategoryModel.fromData(data))
+        .toList();
   }
 
   @override

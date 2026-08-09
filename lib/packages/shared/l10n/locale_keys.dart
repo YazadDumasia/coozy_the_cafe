@@ -854,8 +854,7 @@ abstract class LocaleKeys {
   static const String workingHoursVsTargetSubtitle =
       'working_hours_vs_target_subtitle';
   static const String leaveDistributionTitle = 'leave_distribution_title';
-  static const String leaveDistributionSubtitle =
-      'leave_distribution_subtitle';
+  static const String leaveDistributionSubtitle = 'leave_distribution_subtitle';
   static const String employeeAttendanceRateTitle =
       'employee_attendance_rate_title';
   static const String employeeAttendanceRateSubtitle =
@@ -879,28 +878,41 @@ abstract class LocaleKeys {
   static const String settingsAppearanceSection = 'settings_appearance_section';
   static const String settingsDarkThemeLabel = 'settings_dark_theme_label';
   static const String settingsDarkThemeEnabled = 'settings_dark_theme_enabled';
-  static const String settingsDarkThemeDisabled = 'settings_dark_theme_disabled';
+  static const String settingsDarkThemeDisabled =
+      'settings_dark_theme_disabled';
   static const String settingsLanguageSection = 'settings_language_section';
   static const String settingsAppLanguageLabel = 'settings_app_language_label';
-  static const String settingsDemoTestingSection = 'settings_demo_testing_section';
-  static const String settingsFakeDataModeLabel = 'settings_fake_data_mode_label';
-  static const String settingsFakeDataModeSubtitle = 'settings_fake_data_mode_subtitle';
+  static const String settingsDemoTestingSection =
+      'settings_demo_testing_section';
+  static const String settingsFakeDataModeLabel =
+      'settings_fake_data_mode_label';
+  static const String settingsFakeDataModeSubtitle =
+      'settings_fake_data_mode_subtitle';
   static const String settingsFakeDataActive = 'settings_fake_data_active';
   static const String settingsFakeDataInactive = 'settings_fake_data_inactive';
-  static const String settingsGeneratingFakeData = 'settings_generating_fake_data';
+  static const String settingsGeneratingFakeData =
+      'settings_generating_fake_data';
   static const String settingsRemovingFakeData = 'settings_removing_fake_data';
   static const String settingsFakeDataRemoved = 'settings_fake_data_removed';
-  static const String settingsIncludedDataSetsTitle = 'settings_included_data_sets_title';
-  static const String settingsCustomersSetTitle = 'settings_customers_set_title';
-  static const String settingsCustomersSetSubtitle = 'settings_customers_set_subtitle';
+  static const String settingsIncludedDataSetsTitle =
+      'settings_included_data_sets_title';
+  static const String settingsCustomersSetTitle =
+      'settings_customers_set_title';
+  static const String settingsCustomersSetSubtitle =
+      'settings_customers_set_subtitle';
   static const String settingsStaffSetTitle = 'settings_staff_set_title';
   static const String settingsStaffSetSubtitle = 'settings_staff_set_subtitle';
   static const String settingsOrdersSetTitle = 'settings_orders_set_title';
-  static const String settingsOrdersSetSubtitle = 'settings_orders_set_subtitle';
-  static const String settingsInventorySetTitle = 'settings_inventory_set_title';
-  static const String settingsInventorySetSubtitle = 'settings_inventory_set_subtitle';
-  static const String settingsReservationsSetTitle = 'settings_reservations_set_title';
-  static const String settingsReservationsSetSubtitle = 'settings_reservations_set_subtitle';
+  static const String settingsOrdersSetSubtitle =
+      'settings_orders_set_subtitle';
+  static const String settingsInventorySetTitle =
+      'settings_inventory_set_title';
+  static const String settingsInventorySetSubtitle =
+      'settings_inventory_set_subtitle';
+  static const String settingsReservationsSetTitle =
+      'settings_reservations_set_title';
+  static const String settingsReservationsSetSubtitle =
+      'settings_reservations_set_subtitle';
 
   // form labels, hints, error msgs & tooltips
   static const String addressLine1Label = 'address_line_1_label';
@@ -928,16 +940,15 @@ abstract class LocaleKeys {
   static const String reorderModeTooltip = 'reorder_mode_tooltip';
   static const String addNewSubcategoryTooltip = 'add_new_subcategory_tooltip';
   static const String addIngredientTagTooltip = 'add_ingredient_tag_tooltip';
-  static const String staffReportsReloadedSuccess = 'staff_reports_reloaded_success';
+  static const String staffReportsReloadedSuccess =
+      'staff_reports_reloaded_success';
   static const String dialogStatusActive = 'dialog_status_active';
   static const String dialogStatusInactive = 'dialog_status_inactive';
   static const String dialogDemoDataActive = 'dialog_demo_data_active';
-  static const String dialogToggleSwitchToEnable = 'dialog_toggle_switch_to_enable';
+  static const String dialogToggleSwitchToEnable =
+      'dialog_toggle_switch_to_enable';
   static const String populateDataButton = 'populate_data_button';
   static const String removeDataButton = 'remove_data_button';
   static const String datasetActiveText = 'dataset_active_text';
   static const String datasetInactiveText = 'dataset_inactive_text';
 }
-
-
-
