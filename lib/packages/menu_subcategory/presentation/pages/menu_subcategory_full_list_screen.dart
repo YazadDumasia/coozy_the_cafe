@@ -6,13 +6,16 @@ import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_su
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_event.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_state.dart';
-import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/pages/widgets/menu_subcategory_grid_card.dart';
-import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/pages/widgets/menu_subcategory_list_item.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'menu_subcategory_full_list_screen_actions.dart';
+import 'widgets/menu_subcategory_grid_card.dart';
+import 'widgets/menu_subcategory_list_item.dart';
+import 'widgets/subcategory_category_sidebar.dart';
+import 'widgets/subcategory_empty_view.dart';
+import 'widgets/subcategory_search_anchor.dart';
 
 class MenuSubcategoryFullListScreen extends StatefulWidget {
   const MenuSubcategoryFullListScreen({super.key});
@@ -266,7 +269,14 @@ class _MenuSubcategoryFullListScreenState
             BlocBuilder<MenuSubcategoryBloc, MenuSubcategoryState>(
               builder: (context, state) {
                 if (state is MenuSubcategoryLoaded) {
-                  return _buildSearchAnchor(context, state);
+                  return SubcategorySearchAnchor(
+                    searchController: _searchController,
+                    searchFocusNode: _searchFocusNode,
+                    subcategories: context
+                        .read<MenuSubcategoryBloc>()
+                        .allSubcategories,
+                    onResultSelected: _onSearchResultSelected,
+                  );
                 }
                 return const SizedBox.shrink();
               },
@@ -275,7 +285,12 @@ class _MenuSubcategoryFullListScreenState
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildCategorySidebar(context),
+                  SubcategoryCategorySidebar(
+                    categories: _categories,
+                    selectedCategoryId: _selectedCategoryId,
+                    scrollController: _categorySidebarScrollController,
+                    onCategorySelected: _onCategorySelected,
+                  ),
                   const VerticalDivider(width: 1, thickness: 1),
                   Expanded(
                     child:
@@ -317,187 +332,19 @@ class _MenuSubcategoryFullListScreenState
     );
   }
 
-  Widget _buildSearchAnchor(BuildContext context, MenuSubcategoryLoaded state) {
-    final outerContext = context;
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: SearchAnchor(
-        searchController: _searchController,
-        isFullScreen: false,
-        viewConstraints: BoxConstraints(
-          maxHeight: MediaQuery.of(context).size.height * .35 < 220
-              ? 220
-              : MediaQuery.of(context).size.height * .35 > 220
-              ? 250
-              : MediaQuery.of(context).size.height * .35,
-        ),
-        builder: (BuildContext context, SearchController controller) {
-          return Theme(
-            data: Theme.of(context),
-            child: SearchBar(
-              controller: controller,
-              focusNode: _searchFocusNode,
-              padding: const WidgetStatePropertyAll<EdgeInsets>(
-                EdgeInsets.symmetric(horizontal: 12.0),
-              ),
-              hintText:
-                  context.tr(
-                    shared.LocaleKeys.commonSearchHint,
-                    track: shared.TrackConstants.commonTrack,
-                  ) ??
-                  'Search subcategories...',
-              leading: const Icon(Icons.search),
-              onTap: () {
-                controller.openView();
-              },
-              onChanged: (value) {
-                if (!controller.isOpen) {
-                  controller.openView();
-                }
-              },
-            ),
-          );
-        },
-        suggestionsBuilder:
-            (BuildContext context, SearchController controller) {
-              final query = controller.text.trim().toLowerCase();
-              final allSubs = outerContext
-                  .read<MenuSubcategoryBloc>()
-                  .allSubcategories;
-              final filtered = allSubs.where((sub) {
-                final name = sub.name?.toLowerCase() ?? '';
-                return name.contains(query);
-              }).toList();
-
-              if (filtered.isEmpty) {
-                return [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      context.tr(
-                            shared.LocaleKeys.noSubcategoriesFound,
-                            track:
-                                shared.TrackConstants.menuSubCategoryPageTrack,
-                          ) ??
-                          'No subcategories found.',
-                    ),
-                  ),
-                ];
-              }
-
-              return filtered.map((sub) {
-                final matchCat = _categories.cast<MenuCategory?>().firstWhere(
-                  (c) => c?.id == sub.categoryId,
-                  orElse: () => null,
-                );
-                final catName = matchCat?.name ?? 'Category';
-
-                return ListTile(
-                  leading: CircleAvatar(
-                    radius: 16,
-                    backgroundColor: Theme.of(context).primaryColor,
-                    child: Text(
-                      (sub.name != null && sub.name!.isNotEmpty)
-                          ? sub.name![0].toUpperCase()
-                          : '?',
-                      style: const TextStyle(color: Colors.white, fontSize: 14),
-                    ),
-                  ),
-                  title: Text(sub.name ?? ''),
-                  subtitle: Text(catName),
-                  onTap: () {
-                    _onSearchResultSelected(sub.name ?? '', allSubs);
-                  },
-                );
-              }).toList();
-            },
-      ),
-    );
-  }
-
-  Widget _buildCategorySidebar(BuildContext context) {
-    return SizedBox(
-      width: 100,
-      child: ListView.builder(
-        key: const PageStorageKey('category_sidebar_list'),
-        primary: false,
-        controller: _categorySidebarScrollController,
-        itemCount: _categories.length + 1, // +1 for "All" tab
-        itemBuilder: (context, index) {
-          final bool isAllTab = index == 0;
-          final MenuCategory? category = isAllTab
-              ? null
-              : _categories[index - 1];
-          final bool isSelected = isAllTab
-              ? _selectedCategoryId == null
-              : _selectedCategoryId == category?.id;
-
-          final String title = isAllTab ? 'All' : (category?.name ?? '');
-
-          return InkWell(
-            onTap: () => _onCategorySelected(isAllTab ? null : category?.id),
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
-              decoration: BoxDecoration(
-                color: isSelected
-                    ? Theme.of(context).primaryColor.withValues(alpha: 0.12)
-                    : Colors.transparent,
-                border: Border(
-                  left: BorderSide(
-                    color: isSelected
-                        ? Theme.of(context).primaryColor
-                        : Colors.transparent,
-                    width: 4,
-                  ),
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    radius: 18,
-                    backgroundColor: isSelected
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey.shade300,
-                    child: Text(
-                      isAllTab ? 'ALL' : (title.isNotEmpty ? title[0] : '?'),
-                      style: TextStyle(
-                        fontSize: isAllTab ? 10 : 14,
-                        fontWeight: FontWeight.bold,
-                        color: isSelected ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    title,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: isSelected
-                          ? FontWeight.bold
-                          : FontWeight.normal,
-                      color: isSelected
-                          ? Theme.of(context).primaryColor
-                          : Colors.black87,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _buildSubcategoryContent(MenuSubcategoryLoaded state) {
     final displayList = List<MenuSubcategory>.from(state.subcategories);
 
     if (displayList.isEmpty) {
-      return _buildEmptyState();
+      return SubcategoryEmptyView(
+        onAddSubcategory: () =>
+            MenuSubcategoryFullListScreenActions.handleAddSubcategory(
+              context,
+              mounted,
+              categoryId: _selectedCategoryId,
+              onRefreshCategories: _fetchCategories,
+            ),
+      );
     }
 
     // Re-sort and re-stamp suspension flags on the filtered subset so letter headers are always correct.
@@ -685,44 +532,6 @@ class _MenuSubcategoryFullListScreenState
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.dashboard_customize_outlined,
-            size: 80,
-            color: Theme.of(context).primaryColor,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'No subcategories found.',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 12),
-          ElevatedButton.icon(
-            onPressed: () =>
-                MenuSubcategoryFullListScreenActions.handleAddSubcategory(
-                  context,
-                  mounted,
-                  categoryId: _selectedCategoryId,
-                  onRefreshCategories: _fetchCategories,
-                ),
-            icon: const Icon(Icons.add),
-            label: Text(
-              context.tr(
-                    shared.LocaleKeys.addMenuSubCategoryBtnText,
-                    track: shared.TrackConstants.menuCategoryPageTrack,
-                  ) ??
-                  'Add Subcategory',
-            ),
-          ),
-        ],
       ),
     );
   }

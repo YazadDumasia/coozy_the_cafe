@@ -42,6 +42,9 @@ class $AssetsIconsGen {
   /// File path: assets/icons/CustomIcon.ttf
   String get customIcon => 'assets/icons/CustomIcon.ttf';
 
+  /// File path: assets/icons/EmplyeeIcons.ttf
+  String get emplyeeIcons => 'assets/icons/EmplyeeIcons.ttf';
+
   /// File path: assets/icons/InventoryIcon.ttf
   String get inventoryIcon => 'assets/icons/InventoryIcon.ttf';
 
@@ -55,6 +58,7 @@ class $AssetsIconsGen {
   List<String> get values => [
     appLogoIcon,
     customIcon,
+    emplyeeIcons,
     inventoryIcon,
     menuIcons,
     menuSearch,

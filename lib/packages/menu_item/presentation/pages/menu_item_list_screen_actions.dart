@@ -10,28 +10,23 @@ import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bl
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_event.dart';
 
 class MenuItemListScreenActions {
-  static void handleAddMenuItem(BuildContext context) {
-    context.push(core.AppRoutePath.addNewMenuItemScreenRoute).then((_) {
-      if (context.mounted) {
-        context.read<MenuItemBloc>().add(LoadMenuItems());
-      }
-    });
+  static void handleAddMenuItem(BuildContext context) async {
+    await context.push(
+      '${core.AppRoutePath.menuItemFullListScreenRoute}/${core.AppRoutePath.addNewMenuItemScreenRoute}',
+    );
+    if (context.mounted) {
+      context.read<MenuItemBloc>().add(LoadMenuItems());
+    }
   }
 
-  static void handleEditMenuItem(BuildContext context, MenuItem item) {
-    context
-        .push(
-          core.AppRoutePath.updateMenuItemScreenRoute.replaceFirst(
-            ':id',
-            item.id.toString(),
-          ),
-          extra: item,
-        )
-        .then((_) {
-          if (context.mounted) {
-            context.read<MenuItemBloc>().add(LoadMenuItems());
-          }
-        });
+  static void handleEditMenuItem(BuildContext context, MenuItem item) async {
+    await context.push(
+      '${core.AppRoutePath.menuItemFullListScreenRoute}/${core.AppRoutePath.updateMenuItemScreenRoute}',
+      extra: item,
+    );
+    if (context.mounted) {
+      context.read<MenuItemBloc>().add(LoadMenuItems());
+    }
   }
 
   static void handleDeleteMenuItem(BuildContext context, MenuItem item) {

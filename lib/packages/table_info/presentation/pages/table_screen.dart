@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'table_screen_actions.dart';
+import '../widgets/table_empty_view.dart';
 import 'widgets/table_grid_item.dart';
 import 'widgets/table_list_item.dart';
 
@@ -178,7 +179,9 @@ class _TableScreenState extends State<TableScreen>
 
   Widget buildGridView(List<TableInfo>? list, BuildContext context) {
     if (list == null || list.isEmpty) {
-      return emptyDataWidget();
+      return TableEmptyView(
+        onAddNewTable: () => TableScreenActions.addNewTableInfo(context),
+      );
     }
     return shared.ResponsiveLayout(
       mobile: _buildGridViewWidget(list, 2),
@@ -234,7 +237,9 @@ class _TableScreenState extends State<TableScreen>
 
   Widget buildListView(List<TableInfo>? list, bool isReorderAllowedListView) {
     if (list == null || list.isEmpty) {
-      return emptyDataWidget();
+      return TableEmptyView(
+        onAddNewTable: () => TableScreenActions.addNewTableInfo(context),
+      );
     }
     return shared.ResponsiveLayout(
       mobile: _buildListViewWidget(list, isReorderAllowedListView),
@@ -294,77 +299,6 @@ class _TableScreenState extends State<TableScreen>
       model: model,
       index: index,
       isReorderAllowedListView: isReorderAllowedListView,
-    );
-  }
-
-  Widget emptyDataWidget() {
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Icon(
-              shared.MenuIcons.roundTable,
-              color: Theme.of(context).primaryColor,
-              size: 110,
-            ),
-          ],
-        ),
-        SizedBox(height: 10),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Text(
-                context.tr(
-                      shared.LocaleKeys.commonNoDataFoundMsg,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    'No data Found.',
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 10),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: () async {
-                TableScreenActions.addNewTableInfo(context);
-              },
-              style: ElevatedButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.bodyLarge,
-                padding: EdgeInsets.only(
-                  top: 10,
-                  bottom: 10,
-                  right: 25,
-                  left: 25,
-                ),
-                elevation: 5,
-              ),
-              child: Text(
-                context.tr(
-                      shared.LocaleKeys.tableBtnAddNewTableText,
-                      track: shared.TrackConstants.tablePageTrack,
-                    ) ??
-                    'Add new table info',
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

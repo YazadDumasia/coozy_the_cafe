@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'menu_item_list_screen_actions.dart';
+import 'widgets/menu_item_category_filter_header.dart';
+import 'widgets/menu_item_empty_view.dart';
 import 'widgets/menu_item_list_item.dart';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_state.dart';
-import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
-import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 
-import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
+import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_state.dart';
-
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
@@ -211,134 +210,56 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
   Widget _buildBody(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child:
-                    BlocBuilder<
-                      MenuCategoryFullListCubit,
-                      MenuCategoryFullListState
-                    >(
-                      builder: (context, state) {
-                        List<MenuCategory> categories = const [];
-                        if (state is MenuCategoryFullListLoadedState) {
-                          categories =
-                              context
-                                  .read<MenuCategoryFullListCubit>()
-                                  .categoryList ??
-                              [];
-                        }
-                        return DropdownButton<int?>(
-                          isExpanded: true,
-                          hint: Text(
-                            context.tr(
-                                  LocaleKeys.menuItemPageAllCategories,
-                                  track: TrackConstants.menuItemPageTrack,
-                                ) ??
-                                'All Categories',
-                          ),
-                          value: _selectedCategoryIdNotifier.value,
-                          items: [
-                            DropdownMenuItem(
-                              value: null,
-                              child: Text(
-                                context.tr(
-                                      LocaleKeys.menuItemPageAllCategories,
-                                      track: TrackConstants.menuItemPageTrack,
-                                    ) ??
-                                    'All Categories',
-                              ),
-                            ),
-                            ...categories.map(
-                              (c) => DropdownMenuItem(
-                                value: c.id,
-                                child: Text(c.name ?? ''),
-                              ),
-                            ),
-                          ],
-                          onChanged: (val) {
-                            _selectedCategoryIdNotifier.value = val;
-                            _selectedSubcategoryIdNotifier.value = null;
-                          },
-                        );
-                      },
-                    ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: BlocBuilder<MenuSubcategoryBloc, MenuSubcategoryState>(
-                  builder: (context, state) {
-                    List<MenuSubcategory> subs = const [];
-                    if (state is MenuSubcategoryLoaded &&
-                        _selectedCategoryIdNotifier.value != null) {
-                      subs = state.subcategories
-                          .where(
-                            (s) =>
-                                s.categoryId ==
-                                _selectedCategoryIdNotifier.value,
-                          )
-                          .toList();
-                    }
-                    return DropdownButton<int?>(
-                      isExpanded: true,
-                      hint: Text(
-                        context.tr(
-                              LocaleKeys.menuItemPageAllSubcategories,
-                              track: TrackConstants.menuItemPageTrack,
-                            ) ??
-                            'All Subcategories',
-                      ),
-                      value: _selectedSubcategoryIdNotifier.value,
-                      items: [
-                        DropdownMenuItem(
-                          value: null,
-                          child: Text(
-                            context.tr(
-                                  LocaleKeys.menuItemPageAllSubcategories,
-                                  track: TrackConstants.menuItemPageTrack,
-                                ) ??
-                                'All Subcategories',
-                          ),
-                        ),
-                        ...subs.map(
-                          (s) => DropdownMenuItem(
-                            value: s.id,
-                            child: Text(s.name ?? ''),
-                          ),
-                        ),
-                      ],
-                      onChanged: _selectedCategoryIdNotifier.value == null
-                          ? null
-                          : (val) {
-                              _selectedSubcategoryIdNotifier.value = val;
-                            },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+        MenuItemCategoryFilterHeader(
+          selectedCategoryId: _selectedCategoryIdNotifier.value,
+          selectedSubcategoryId: _selectedSubcategoryIdNotifier.value,
+          onCategoryChanged: (val) {
+            _selectedCategoryIdNotifier.value = val;
+            _selectedSubcategoryIdNotifier.value = null;
+          },
+          onSubcategoryChanged: (val) {
+            _selectedSubcategoryIdNotifier.value = val;
+          },
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
           child: SearchBar(
             controller: _searchController,
-            leading: const Icon(Icons.search),
+            elevation: WidgetStateProperty.all(0),
+            backgroundColor: WidgetStateProperty.all(
+              Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+            ),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+                side: BorderSide(
+                  color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+            leading: Icon(
+              Icons.search_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             hintText:
                 context.tr(
                   LocaleKeys.menuItemPageSearchItems,
                   track: TrackConstants.menuItemPageTrack,
                 ) ??
                 'Search dish...',
+            hintStyle: WidgetStateProperty.all(
+              TextStyle(
+                fontSize: 14,
+                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+              ),
+            ),
             onChanged: (val) {
               _searchQueryNotifier.value = val.toLowerCase();
             },
             trailing: [
               if (_searchController.text.isNotEmpty)
                 IconButton(
-                  icon: const Icon(Icons.clear),
+                  icon: const Icon(Icons.clear, size: 18),
                   onPressed: () {
                     _searchController.clear();
                     _searchQueryNotifier.value = '';
@@ -347,6 +268,7 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
             ],
           ),
         ),
+        _buildActiveFiltersRow(context),
         // List section
         Expanded(
           child: BlocBuilder<MenuItemBloc, MenuItemState>(
@@ -376,9 +298,30 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                       if (appliedFilter.filterKey == 'food_type' &&
                           appliedFilter.applied.isNotEmpty) {
                         var types = appliedFilter.applied
-                            .map((e) => e.filterKey)
+                            .map((e) => e.filterKey.toLowerCase())
                             .toList();
-                        if (!types.contains(item.foodType)) {
+                        final itemFoodType = (item.foodType ?? '').toLowerCase();
+                        bool matches = types.any((t) {
+                          if (t == itemFoodType) return true;
+                          if (t == 'veg' &&
+                              (itemFoodType == 'vegetarian' ||
+                                  itemFoodType == 'veg')) {
+                            return true;
+                          }
+                          if (t == 'non-veg' &&
+                              (itemFoodType == 'non-vegetarian' ||
+                                  itemFoodType == 'non_vegetarian' ||
+                                  itemFoodType == 'non-veg')) {
+                            return true;
+                          }
+                          if (t == 'egg' &&
+                              (itemFoodType == 'egg' ||
+                                  itemFoodType == 'ovo-vegetarian')) {
+                            return true;
+                          }
+                          return false;
+                        });
+                        if (!matches) {
                           return false;
                         }
                       }
@@ -401,32 +344,21 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                 }).toList();
 
                 if (filteredItems.isEmpty) {
-                  return Center(
-                    child: Text(
-                      context.tr(
-                            LocaleKeys.menuItemPageNoMenuDishesFound,
-                            track: TrackConstants.menuItemPageTrack,
-                          ) ??
-                          'No menu dishes found.',
-                    ),
-                  );
+                  return const MenuItemEmptyView();
                 }
 
-                return CustomScrollView(
-                  slivers: [
-                    SlidableAutoCloseBehavior(
-                      child: SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final item = filteredItems[index];
-                          return MenuItemListItem(
-                            item: item,
-                            index: index,
-                            totalLength: filteredItems.length,
-                          );
-                        }, childCount: filteredItems.length),
-                      ),
-                    ),
-                  ],
+                return SlidableAutoCloseBehavior(
+                  child: ListView.builder(
+                    itemCount: filteredItems.length,
+                    itemBuilder: (context, index) {
+                      final item = filteredItems[index];
+                      return MenuItemListItem(
+                        item: item,
+                        index: index,
+                        totalLength: filteredItems.length,
+                      );
+                    },
+                  ),
                 );
               } else if (state is MenuItemError) {
                 return Center(
@@ -444,6 +376,150 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildActiveFiltersRow(BuildContext context) {
+    final bool hasCategory = _selectedCategoryIdNotifier.value != null;
+    final bool hasSubcategory = _selectedSubcategoryIdNotifier.value != null;
+    final bool hasSearch = _searchQueryNotifier.value.isNotEmpty;
+    final bool hasBottomSheetFilters =
+        _appliedFiltersNotifier.value.isNotEmpty;
+
+    if (!hasCategory &&
+        !hasSubcategory &&
+        !hasSearch &&
+        !hasBottomSheetFilters) {
+      return const SizedBox.shrink();
+    }
+
+    final theme = Theme.of(context);
+    final List<Widget> chips = [];
+
+    if (hasCategory) {
+      String catName = 'Category';
+      final catState = context.read<MenuCategoryFullListCubit>().state;
+      if (catState is MenuCategoryFullListLoadedState) {
+        final list =
+            context.read<MenuCategoryFullListCubit>().categoryList ?? [];
+        for (final c in list) {
+          if (c.id == _selectedCategoryIdNotifier.value) {
+            if (c.name != null && c.name!.isNotEmpty) {
+              catName = c.name!;
+            }
+            break;
+          }
+        }
+      }
+      chips.add(
+        InputChip(
+          label: Text(catName, style: const TextStyle(fontSize: 12)),
+          selected: true,
+          showCheckmark: false,
+          avatar: const Icon(Icons.category_outlined, size: 14),
+          onDeleted: () {
+            _selectedCategoryIdNotifier.value = null;
+            _selectedSubcategoryIdNotifier.value = null;
+          },
+        ),
+      );
+    }
+
+    if (hasSubcategory) {
+      String subName = 'Subcategory';
+      final subState = context.read<MenuSubcategoryBloc>().state;
+      if (subState is MenuSubcategoryLoaded) {
+        for (final s in subState.subcategories) {
+          if (s.id == _selectedSubcategoryIdNotifier.value) {
+            if (s.name != null && s.name!.isNotEmpty) {
+              subName = s.name!;
+            }
+            break;
+          }
+        }
+      }
+      chips.add(
+        InputChip(
+          label: Text(subName, style: const TextStyle(fontSize: 12)),
+          selected: true,
+          showCheckmark: false,
+          avatar: const Icon(Icons.polyline_outlined, size: 14),
+          onDeleted: () {
+            _selectedSubcategoryIdNotifier.value = null;
+          },
+        ),
+      );
+    }
+
+    if (hasSearch) {
+      chips.add(
+        InputChip(
+          label: Text(
+            '"${_searchQueryNotifier.value}"',
+            style: const TextStyle(fontSize: 12),
+          ),
+          selected: true,
+          showCheckmark: false,
+          avatar: const Icon(Icons.search, size: 14),
+          onDeleted: () {
+            _searchController.clear();
+            _searchQueryNotifier.value = '';
+          },
+        ),
+      );
+    }
+
+    for (final filter in _appliedFiltersNotifier.value) {
+      for (final item in filter.applied) {
+        chips.add(
+          InputChip(
+            label: Text(
+              item.filterTitle,
+              style: const TextStyle(fontSize: 12),
+            ),
+            selected: true,
+            showCheckmark: false,
+            avatar: const Icon(Icons.tune, size: 14),
+            onDeleted: () {
+              final current = List<shared.AppliedFilterModel>.from(
+                _appliedFiltersNotifier.value,
+              );
+              current.removeWhere((f) => f.filterKey == filter.filterKey);
+              _appliedFiltersNotifier.value = current;
+            },
+          ),
+        );
+      }
+    }
+
+    chips.add(
+      ActionChip(
+        label: const Text(
+          'Clear All',
+          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+        ),
+        avatar: Icon(
+          Icons.refresh_rounded,
+          size: 14,
+          color: theme.colorScheme.primary,
+        ),
+        onPressed: () {
+          _selectedCategoryIdNotifier.value = null;
+          _selectedSubcategoryIdNotifier.value = null;
+          _searchController.clear();
+          _searchQueryNotifier.value = '';
+          _appliedFiltersNotifier.value = [];
+        },
+      ),
+    );
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(children: chips.map((c) => Padding(padding: const EdgeInsets.only(right: 6), child: c)).toList()),
+      ),
     );
   }
 }

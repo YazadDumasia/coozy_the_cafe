@@ -6,6 +6,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../bloc/leave/leave_event_state.dart';
 import '../../domain/entities/staff_entities.dart';
 import '../widgets/leave_card.dart';
+import '../widgets/leave_empty_view.dart';
 import '../widgets/leave_form_dialog.dart';
 import '../widgets/staff_search_bar.dart';
 import 'staff_management_screen_actions.dart';
@@ -253,17 +254,7 @@ class _LeaveSubScreenState extends State<LeaveSubScreen>
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is LeaveLoadedState) {
                     if (state.leaves.isEmpty) {
-                      return Center(
-                        child: Text(
-                          context.tr(
-                                shared.LocaleKeys.noLeaveApplications,
-                                track: shared
-                                    .TrackConstants
-                                    .staffManagementPageTrack,
-                              ) ??
-                              'No Leave Applications',
-                        ),
-                      );
+                      return const LeaveEmptyView();
                     }
                     return ValueListenableBuilder<DateTime>(
                       valueListenable: _selectedDateNotifier,
@@ -331,18 +322,17 @@ class _LeaveSubScreenState extends State<LeaveSubScreen>
                             }).toList();
 
                             if (filteredList.isEmpty) {
-                              return Center(
-                                child: Text(
-                                  context.tr(
-                                        shared
-                                            .LocaleKeys
-                                            .noMatchingLeaveApplications,
-                                        track: shared
-                                            .TrackConstants
-                                            .staffManagementPageTrack,
-                                      ) ??
-                                      'No Leave Applications',
-                                ),
+                              return LeaveEmptyView(
+                                message:
+                                    context.tr(
+                                      shared
+                                          .LocaleKeys
+                                          .noMatchingLeaveApplications,
+                                      track: shared
+                                          .TrackConstants
+                                          .staffManagementPageTrack,
+                                    ) ??
+                                    'No Leave Applications',
                               );
                             }
 

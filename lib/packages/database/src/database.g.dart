@@ -3984,6 +3984,15 @@ class $MenuItemVariationsTableTable extends MenuItemVariationsTable
     defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
     clientDefault: () => const Uuid().v8(),
   );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _menuItemIdMeta = const VerificationMeta(
     'menuItemId',
   );
@@ -4106,6 +4115,7 @@ class $MenuItemVariationsTableTable extends MenuItemVariationsTable
     updatedBy,
     id,
     hashId,
+    name,
     menuItemId,
     quantity,
     purchaseUnit,
@@ -4148,6 +4158,12 @@ class $MenuItemVariationsTableTable extends MenuItemVariationsTable
       context.handle(
         _hashIdMeta,
         hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
       );
     }
     if (data.containsKey('menu_item_id')) {
@@ -4259,6 +4275,10 @@ class $MenuItemVariationsTableTable extends MenuItemVariationsTable
         DriftSqlType.string,
         data['${effectivePrefix}hash_id'],
       )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      ),
       menuItemId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}menu_item_id'],
@@ -4314,6 +4334,7 @@ class MenuItemVariation extends DataClass
   final int? updatedBy;
   final int id;
   final String hashId;
+  final String? name;
   final int? menuItemId;
   final int? quantity;
   final String? purchaseUnit;
@@ -4329,6 +4350,7 @@ class MenuItemVariation extends DataClass
     this.updatedBy,
     required this.id,
     required this.hashId,
+    this.name,
     this.menuItemId,
     this.quantity,
     this.purchaseUnit,
@@ -4351,6 +4373,9 @@ class MenuItemVariation extends DataClass
     }
     map['id'] = Variable<int>(id);
     map['hash_id'] = Variable<String>(hashId);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
     if (!nullToAbsent || menuItemId != null) {
       map['menu_item_id'] = Variable<int>(menuItemId);
     }
@@ -4394,6 +4419,7 @@ class MenuItemVariation extends DataClass
           : Value(updatedBy),
       id: Value(id),
       hashId: Value(hashId),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       menuItemId: menuItemId == null && nullToAbsent
           ? const Value.absent()
           : Value(menuItemId),
@@ -4437,6 +4463,7 @@ class MenuItemVariation extends DataClass
       updatedBy: serializer.fromJson<int?>(json['updatedBy']),
       id: serializer.fromJson<int>(json['id']),
       hashId: serializer.fromJson<String>(json['hashId']),
+      name: serializer.fromJson<String?>(json['name']),
       menuItemId: serializer.fromJson<int?>(json['menuItemId']),
       quantity: serializer.fromJson<int?>(json['quantity']),
       purchaseUnit: serializer.fromJson<String?>(json['purchaseUnit']),
@@ -4457,6 +4484,7 @@ class MenuItemVariation extends DataClass
       'updatedBy': serializer.toJson<int?>(updatedBy),
       'id': serializer.toJson<int>(id),
       'hashId': serializer.toJson<String>(hashId),
+      'name': serializer.toJson<String?>(name),
       'menuItemId': serializer.toJson<int?>(menuItemId),
       'quantity': serializer.toJson<int?>(quantity),
       'purchaseUnit': serializer.toJson<String?>(purchaseUnit),
@@ -4475,6 +4503,7 @@ class MenuItemVariation extends DataClass
     Value<int?> updatedBy = const Value.absent(),
     int? id,
     String? hashId,
+    Value<String?> name = const Value.absent(),
     Value<int?> menuItemId = const Value.absent(),
     Value<int?> quantity = const Value.absent(),
     Value<String?> purchaseUnit = const Value.absent(),
@@ -4490,6 +4519,7 @@ class MenuItemVariation extends DataClass
     updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
     id: id ?? this.id,
     hashId: hashId ?? this.hashId,
+    name: name.present ? name.value : this.name,
     menuItemId: menuItemId.present ? menuItemId.value : this.menuItemId,
     quantity: quantity.present ? quantity.value : this.quantity,
     purchaseUnit: purchaseUnit.present ? purchaseUnit.value : this.purchaseUnit,
@@ -4515,6 +4545,7 @@ class MenuItemVariation extends DataClass
       updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
       id: data.id.present ? data.id.value : this.id,
       hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      name: data.name.present ? data.name.value : this.name,
       menuItemId: data.menuItemId.present
           ? data.menuItemId.value
           : this.menuItemId,
@@ -4551,6 +4582,7 @@ class MenuItemVariation extends DataClass
           ..write('updatedBy: $updatedBy, ')
           ..write('id: $id, ')
           ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
           ..write('menuItemId: $menuItemId, ')
           ..write('quantity: $quantity, ')
           ..write('purchaseUnit: $purchaseUnit, ')
@@ -4571,6 +4603,7 @@ class MenuItemVariation extends DataClass
     updatedBy,
     id,
     hashId,
+    name,
     menuItemId,
     quantity,
     purchaseUnit,
@@ -4590,6 +4623,7 @@ class MenuItemVariation extends DataClass
           other.updatedBy == this.updatedBy &&
           other.id == this.id &&
           other.hashId == this.hashId &&
+          other.name == this.name &&
           other.menuItemId == this.menuItemId &&
           other.quantity == this.quantity &&
           other.purchaseUnit == this.purchaseUnit &&
@@ -4608,6 +4642,7 @@ class MenuItemVariationsTableCompanion
   final Value<int?> updatedBy;
   final Value<int> id;
   final Value<String> hashId;
+  final Value<String?> name;
   final Value<int?> menuItemId;
   final Value<int?> quantity;
   final Value<String?> purchaseUnit;
@@ -4623,6 +4658,7 @@ class MenuItemVariationsTableCompanion
     this.updatedBy = const Value.absent(),
     this.id = const Value.absent(),
     this.hashId = const Value.absent(),
+    this.name = const Value.absent(),
     this.menuItemId = const Value.absent(),
     this.quantity = const Value.absent(),
     this.purchaseUnit = const Value.absent(),
@@ -4639,6 +4675,7 @@ class MenuItemVariationsTableCompanion
     this.updatedBy = const Value.absent(),
     this.id = const Value.absent(),
     this.hashId = const Value.absent(),
+    this.name = const Value.absent(),
     this.menuItemId = const Value.absent(),
     this.quantity = const Value.absent(),
     this.purchaseUnit = const Value.absent(),
@@ -4655,6 +4692,7 @@ class MenuItemVariationsTableCompanion
     Expression<int>? updatedBy,
     Expression<int>? id,
     Expression<String>? hashId,
+    Expression<String>? name,
     Expression<int>? menuItemId,
     Expression<int>? quantity,
     Expression<String>? purchaseUnit,
@@ -4671,6 +4709,7 @@ class MenuItemVariationsTableCompanion
       if (updatedBy != null) 'updated_by': updatedBy,
       if (id != null) 'id': id,
       if (hashId != null) 'hash_id': hashId,
+      if (name != null) 'name': name,
       if (menuItemId != null) 'menu_item_id': menuItemId,
       if (quantity != null) 'quantity': quantity,
       if (purchaseUnit != null) 'purchase_unit': purchaseUnit,
@@ -4689,6 +4728,7 @@ class MenuItemVariationsTableCompanion
     Value<int?>? updatedBy,
     Value<int>? id,
     Value<String>? hashId,
+    Value<String?>? name,
     Value<int?>? menuItemId,
     Value<int?>? quantity,
     Value<String?>? purchaseUnit,
@@ -4705,6 +4745,7 @@ class MenuItemVariationsTableCompanion
       updatedBy: updatedBy ?? this.updatedBy,
       id: id ?? this.id,
       hashId: hashId ?? this.hashId,
+      name: name ?? this.name,
       menuItemId: menuItemId ?? this.menuItemId,
       quantity: quantity ?? this.quantity,
       purchaseUnit: purchaseUnit ?? this.purchaseUnit,
@@ -4732,6 +4773,9 @@ class MenuItemVariationsTableCompanion
     }
     if (hashId.present) {
       map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
     }
     if (menuItemId.present) {
       map['menu_item_id'] = Variable<int>(menuItemId.value);
@@ -4773,6 +4817,7 @@ class MenuItemVariationsTableCompanion
           ..write('updatedBy: $updatedBy, ')
           ..write('id: $id, ')
           ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
           ..write('menuItemId: $menuItemId, ')
           ..write('quantity: $quantity, ')
           ..write('purchaseUnit: $purchaseUnit, ')
@@ -22590,6 +22635,7 @@ typedef $$MenuItemVariationsTableTableCreateCompanionBuilder =
       Value<int?> updatedBy,
       Value<int> id,
       Value<String> hashId,
+      Value<String?> name,
       Value<int?> menuItemId,
       Value<int?> quantity,
       Value<String?> purchaseUnit,
@@ -22607,6 +22653,7 @@ typedef $$MenuItemVariationsTableTableUpdateCompanionBuilder =
       Value<int?> updatedBy,
       Value<int> id,
       Value<String> hashId,
+      Value<String?> name,
       Value<int?> menuItemId,
       Value<int?> quantity,
       Value<String?> purchaseUnit,
@@ -22725,6 +22772,11 @@ class $$MenuItemVariationsTableTableFilterComposer
 
   ColumnFilters<String> get hashId => $composableBuilder(
     column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -22887,6 +22939,11 @@ class $$MenuItemVariationsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get quantity => $composableBuilder(
     column: $table.quantity,
     builder: (column) => ColumnOrderings(column),
@@ -23016,6 +23073,9 @@ class $$MenuItemVariationsTableTableAnnotationComposer
 
   GeneratedColumn<String> get hashId =>
       $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
 
   GeneratedColumn<int> get quantity =>
       $composableBuilder(column: $table.quantity, builder: (column) => column);
@@ -23201,6 +23261,7 @@ class $$MenuItemVariationsTableTableTableManager
                 Value<int?> updatedBy = const Value.absent(),
                 Value<int> id = const Value.absent(),
                 Value<String> hashId = const Value.absent(),
+                Value<String?> name = const Value.absent(),
                 Value<int?> menuItemId = const Value.absent(),
                 Value<int?> quantity = const Value.absent(),
                 Value<String?> purchaseUnit = const Value.absent(),
@@ -23216,6 +23277,7 @@ class $$MenuItemVariationsTableTableTableManager
                 updatedBy: updatedBy,
                 id: id,
                 hashId: hashId,
+                name: name,
                 menuItemId: menuItemId,
                 quantity: quantity,
                 purchaseUnit: purchaseUnit,
@@ -23233,6 +23295,7 @@ class $$MenuItemVariationsTableTableTableManager
                 Value<int?> updatedBy = const Value.absent(),
                 Value<int> id = const Value.absent(),
                 Value<String> hashId = const Value.absent(),
+                Value<String?> name = const Value.absent(),
                 Value<int?> menuItemId = const Value.absent(),
                 Value<int?> quantity = const Value.absent(),
                 Value<String?> purchaseUnit = const Value.absent(),
@@ -23248,6 +23311,7 @@ class $$MenuItemVariationsTableTableTableManager
                 updatedBy: updatedBy,
                 id: id,
                 hashId: hashId,
+                name: name,
                 menuItemId: menuItemId,
                 quantity: quantity,
                 purchaseUnit: purchaseUnit,

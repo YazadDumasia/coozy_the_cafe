@@ -7,7 +7,9 @@ import '../bloc/customer_bloc.dart';
 import '../bloc/customer_event.dart';
 import '../bloc/customer_state.dart';
 import 'customer_list_screen_actions.dart';
+import '../widgets/customer_empty_view.dart';
 import '../widgets/customer_list_item.dart';
+import '../widgets/customer_search_empty_view.dart';
 
 class CustomerListScreen extends StatefulWidget {
   const CustomerListScreen({super.key});
@@ -54,11 +56,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
         onPressed: () => CustomerListScreenActions.showAddEditForm(context),
         child: Icon(Icons.add),
       ),
-      body: shared.ResponsiveLayout(
-        mobile: _buildBody(),
-        tablet: _buildBody(),
-        desktop: _buildBody(),
-      ),
+      body: _buildBody(),
     );
   }
 
@@ -82,7 +80,6 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               ),
             ),
             onChanged: (query) {
-              setState(() {});
               CustomerListScreenActions.onSearchChanged(context, query);
             },
           ),
@@ -110,14 +107,21 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
               if (state is CustomerLoaded) {
                 if (state.customers.isEmpty) {
-                  return Center(
-                    child: Text(
-                      context.tr(
-                            shared.LocaleKeys.noCustomersFoundMsg,
-                            track: shared.TrackConstants.customerPageTrack,
-                          ) ??
-                          'No customers found.',
-                    ),
+                  final isSearching = _searchController.text.trim().isNotEmpty;
+
+                  if (!isSearching) {
+                    return CustomerEmptyView(
+                      onAddCustomer: () =>
+                          CustomerListScreenActions.showAddEditForm(context),
+                    );
+                  }
+
+                  return CustomerSearchEmptyView(
+                    searchQuery: _searchController.text.trim(),
+                    onClearSearch: () {
+                      _searchController.clear();
+                      CustomerListScreenActions.onSearchChanged(context, '');
+                    },
                   );
                 }
 

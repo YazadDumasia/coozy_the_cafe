@@ -6,6 +6,7 @@ class MenuItemVariationModel extends MenuItemVariation {
   const MenuItemVariationModel({
     super.id,
     super.hashId,
+    super.name,
     super.menuItemId,
     super.quantity,
     super.purchaseUnit,
@@ -22,6 +23,7 @@ class MenuItemVariationModel extends MenuItemVariation {
     return MenuItemVariationModel(
       id: entity.id,
       hashId: entity.hashId,
+      name: entity.name,
       menuItemId: entity.menuItemId,
       quantity: entity.quantity,
       purchaseUnit: entity.purchaseUnit,
@@ -39,6 +41,7 @@ class MenuItemVariationModel extends MenuItemVariation {
     return MenuItemVariationModel(
       id: data.id,
       hashId: data.hashId,
+      name: data.name,
       menuItemId: data.menuItemId,
       quantity: data.quantity,
       purchaseUnit: data.purchaseUnit,
@@ -56,6 +59,7 @@ class MenuItemVariationModel extends MenuItemVariation {
     return db.MenuItemVariationsTableCompanion(
       id: id == null ? const Value.absent() : Value(id!),
       hashId: hashId == null ? const Value.absent() : Value(hashId!),
+      name: name == null ? const Value.absent() : Value(name!),
       menuItemId: menuItemId == null
           ? const Value.absent()
           : Value(menuItemId!),

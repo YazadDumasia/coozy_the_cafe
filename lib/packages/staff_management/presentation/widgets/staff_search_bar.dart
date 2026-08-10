@@ -80,7 +80,7 @@ class StaffSearchBar extends StatelessWidget {
                       vertical: 16,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
                 ),

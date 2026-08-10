@@ -396,22 +396,83 @@ class FakeDataHelper {
       'Beverages',
       'Main Course',
       'Desserts',
-      'Starters',
-      'Snacks',
-      'Bakery',
+      'Starters & Appetizers',
+      'Snacks & Quick Bites',
+      'Bakery & Pastries',
       'Breakfast Specials',
+      'Italian & Pasta',
+      'Chinese & Pan-Asian',
+      'Mexican & Tacos',
+      'Indian Thalis & Curries',
+      'Pizzas & Calzones',
+      'Burgers & Sandwiches',
+      'Healthy Bowls & Salads',
+      'Mocktails & Shakes',
+      'Coffee & Artisanal Teas',
+      'Soups & Broths',
+      'Ice Creams & Sundaes',
+      'Seafood & Grill',
+      'Chef Specials & Combos',
     ];
+
+    final subcategoryPrefixes = [
+      'Classic Specials',
+      'Gourmet Choice',
+      'Chef Signature',
+      'Deluxe Collection',
+      'House Specials',
+      'Artisanal Range',
+      'Premium Selection',
+      'Sizzling Delights',
+      'Spicy & Bold',
+      'Sweet & Savory',
+      'Authentic Feast',
+      'Organic Harvest',
+      'Crispy Favorites',
+      'Seasonal Specials',
+      'Masterpiece Combos',
+    ];
+
+    final itemPrefixes = [
+      'Classic',
+      'Deluxe',
+      'Special',
+      'Gourmet',
+      'Chef Special',
+      'Royal',
+      'Crispy',
+      'Grilled',
+      'Loaded',
+      'Supreme',
+      'Signature',
+      'Fresh',
+      'Rich',
+      'Hot & Spicy',
+      'Smokey',
+      'Traditional',
+      'Ultimate',
+      'Golden',
+      'Sizzling',
+      'Double Delight',
+      'Superstar',
+      'Grand',
+      'Fiesta',
+      'Extreme',
+      'Paradise',
+    ];
+
     final menuItemIds = <int>[];
     final menuItemPrices = <int, double>{};
     final menuItemNamesMap = <int, String>{};
 
     for (int c = 0; c < categoryNames.length; c++) {
+      final catName = categoryNames[c];
       final catId = await db
           .into(db.categoriesTable)
           .insert(
             CategoriesTableCompanion.insert(
               hashId: Value('$fakePrefix${uuid.v4()}'),
-              name: Value(categoryNames[c]),
+              name: Value(catName),
               isActive: const Value(true),
               position: Value(c + 1),
               createdDate: Value(startDate.toIso8601String()),
@@ -419,112 +480,140 @@ class FakeDataHelper {
           );
       totalInsertedRecords++;
 
-      final subCatId = await db
-          .into(db.subcategoriesTable)
-          .insert(
-            SubcategoriesTableCompanion.insert(
-              hashId: Value('$fakePrefix${uuid.v4()}'),
-              name: Value('${categoryNames[c]} Specials'),
-              categoryId: Value(catId),
-              isActive: const Value(true),
-              position: const Value(1),
-              createdDate: Value(startDate.toIso8601String()),
-            ),
-          );
-      totalInsertedRecords++;
-
-      final itemNames = [
-        '${categoryNames[c]} Supreme',
-        'Classic ${categoryNames[c]}',
-        'Special ${categoryNames[c]} Combo',
-        'Deluxe ${categoryNames[c]} Treat',
-        'Chef Signature ${categoryNames[c]}',
-      ];
-      for (int m = 0; m < itemNames.length; m++) {
-        final sellingPrice = 90.0 + random.nextInt(350);
-        final costPrice = sellingPrice * 0.55;
-
-        final itemId = await db
-            .into(db.menuItemsTable)
+      for (int s = 0; s < 15; s++) {
+        final subName = '$catName - ${subcategoryPrefixes[s]}';
+        final subCatId = await db
+            .into(db.subcategoriesTable)
             .insert(
-              MenuItemsTableCompanion.insert(
+              SubcategoriesTableCompanion.insert(
                 hashId: Value('$fakePrefix${uuid.v4()}'),
-                name: itemNames[m],
-                description: 'Delicious ${itemNames[m]} prepared fresh.',
-                foodType: Value(m % 2 == 0 ? 'Veg' : 'Non-Veg'),
-                creationDate: Value(startDate.toIso8601String()),
-                duration: const Value(15),
+                name: Value(subName),
                 categoryId: Value(catId),
-                subcategoryId: Value(subCatId),
-                isTodayAvailable: const Value(true),
-                isSimpleVariation: const Value(true),
-                costPrice: Value(costPrice),
-                sellingPrice: Value(sellingPrice),
-                stockQuantity: const Value(150),
-                quantity: const Value('1'),
-                purchaseUnit: const Value('portion'),
-                sortOrderIndex: Value(m + 1),
-              ),
-            );
-        menuItemIds.add(itemId);
-        menuItemPrices[itemId] = sellingPrice;
-        menuItemNamesMap[itemId] = itemNames[m];
-        totalInsertedRecords++;
-
-        // Add 2 variations (Small / Large)
-        await db
-            .into(db.menuItemVariationsTable)
-            .insert(
-              MenuItemVariationsTableCompanion.insert(
-                hashId: Value('$fakePrefix${uuid.v4()}'),
-                menuItemId: Value(itemId),
-                quantity: const Value(1),
-                purchaseUnit: const Value('Small Portion'),
-                isTodayAvailable: const Value(true),
-                costPrice: Value(costPrice * 0.8),
-                sellingPrice: Value(sellingPrice * 0.8),
-                stockQuantity: const Value(100),
-                sortOrderIndex: const Value(1),
-                creationDate: Value(startDate.toIso8601String()),
+                isActive: const Value(true),
+                position: Value(s + 1),
+                createdDate: Value(startDate.toIso8601String()),
               ),
             );
         totalInsertedRecords++;
 
-        await db
-            .into(db.menuItemVariationsTable)
-            .insert(
-              MenuItemVariationsTableCompanion.insert(
-                hashId: Value('$fakePrefix${uuid.v4()}'),
-                menuItemId: Value(itemId),
-                quantity: const Value(1),
-                purchaseUnit: const Value('Large Portion'),
-                isTodayAvailable: const Value(true),
-                costPrice: Value(costPrice * 1.3),
-                sellingPrice: Value(sellingPrice * 1.3),
-                stockQuantity: const Value(100),
-                sortOrderIndex: const Value(2),
-                creationDate: Value(startDate.toIso8601String()),
-              ),
-            );
-        totalInsertedRecords++;
+        for (int m = 0; m < 25; m++) {
+          final itemName = '${itemPrefixes[m]} $catName ${s + 1}-${m + 1}';
+          final sellingPrice = 90.0 + random.nextInt(350);
+          final costPrice = sellingPrice * 0.55;
 
-        // Add a customer review
-        final custId = customerIds[m % customerIds.length];
-        await db
-            .into(db.menuItemReviewsTable)
-            .insert(
-              MenuItemReviewsTableCompanion.insert(
-                id: Value(totalInsertedRecords + 100000),
-                itemId: Value(itemId),
-                customerId: Value(custId),
-                rating: Value(4.0 + (m % 3) * 0.5),
-                reviewText: Value(
-                  'Delicious ${itemNames[m]}! High quality and fast preparation.',
+          final bool isSimple = m % 2 == 0;
+          final itemId = await db
+              .into(db.menuItemsTable)
+              .insert(
+                MenuItemsTableCompanion.insert(
+                  hashId: Value('$fakePrefix${uuid.v4()}'),
+                  name: itemName,
+                  description: 'Delicious $itemName prepared fresh daily.',
+                  foodType: Value(m % 2 == 0 ? 'Veg' : 'Non-Veg'),
+                  creationDate: Value(startDate.toIso8601String()),
+                  duration: const Value(15),
+                  categoryId: Value(catId),
+                  subcategoryId: Value(subCatId),
+                  isTodayAvailable: const Value(true),
+                  isSimpleVariation: Value(isSimple),
+                  costPrice: Value(costPrice),
+                  sellingPrice: Value(sellingPrice),
+                  stockQuantity: const Value(150),
+                  quantity: const Value('1'),
+                  purchaseUnit: const Value('portion'),
+                  sortOrderIndex: Value(m + 1),
                 ),
-                reviewDate: Value(getRandomDate()),
-              ),
-            );
-        totalInsertedRecords++;
+              );
+          menuItemIds.add(itemId);
+          menuItemPrices[itemId] = sellingPrice;
+          menuItemNamesMap[itemId] = itemName;
+          totalInsertedRecords++;
+
+          if (isSimple) {
+            // Single variation for simple item
+            await db
+                .into(db.menuItemVariationsTable)
+                .insert(
+                  MenuItemVariationsTableCompanion.insert(
+                    hashId: Value('$fakePrefix${uuid.v4()}'),
+                    name: const Value(null),
+                    menuItemId: Value(itemId),
+                    quantity: const Value(1),
+                    purchaseUnit: const Value('portion'),
+                    isTodayAvailable: const Value(true),
+                    costPrice: Value(costPrice),
+                    sellingPrice: Value(sellingPrice),
+                    stockQuantity: const Value(150),
+                    sortOrderIndex: const Value(1),
+                    creationDate: Value(startDate.toIso8601String()),
+                  ),
+                );
+            totalInsertedRecords++;
+          } else {
+            // Multiple variations (between 2 and 12 variations per item)
+            final variationNamesPool = [
+              'Small',
+              'Medium',
+              'Large',
+              'Extra Large',
+              'Family Pack',
+              'Combo Pack',
+              'Half Portion',
+              'Full Portion',
+              'Single Shot',
+              'Double Shot',
+              'Triple Shot',
+              'Party Size',
+            ];
+
+            final int varCount = 2 + ((c + s + m) % 11); // Generates between 2 to 12 variations
+
+            for (int v = 0; v < varCount; v++) {
+              final double scale = 0.7 + (v * 0.15);
+              final String varName =
+                  variationNamesPool[v % variationNamesPool.length];
+
+              await db
+                  .into(db.menuItemVariationsTable)
+                  .insert(
+                    MenuItemVariationsTableCompanion.insert(
+                      hashId: Value('$fakePrefix${uuid.v4()}'),
+                      name: Value(varName),
+                      menuItemId: Value(itemId),
+                      quantity: const Value(1),
+                      purchaseUnit: const Value('portion'),
+                      isTodayAvailable: Value(v % 6 != 0),
+                      costPrice: Value(costPrice * scale),
+                      sellingPrice: Value(sellingPrice * scale),
+                      stockQuantity: const Value(100),
+                      sortOrderIndex: Value(v + 1),
+                      creationDate: Value(startDate.toIso8601String()),
+                    ),
+                  );
+              totalInsertedRecords++;
+            }
+          }
+
+          // Customer review for every 5th item
+          if (m % 5 == 0) {
+            final custId = customerIds[(c + s + m) % customerIds.length];
+            await db
+                .into(db.menuItemReviewsTable)
+                .insert(
+                  MenuItemReviewsTableCompanion.insert(
+                    id: Value(totalInsertedRecords + 100000),
+                    itemId: Value(itemId),
+                    customerId: Value(custId),
+                    rating: Value(4.0 + (m % 3) * 0.5),
+                    reviewText: Value(
+                      'Delicious $itemName! High quality and fast preparation.',
+                    ),
+                    reviewDate: Value(getRandomDate()),
+                  ),
+                );
+            totalInsertedRecords++;
+          }
+        }
       }
     }
 

@@ -6,6 +6,7 @@ import '../bloc/employee/employee_bloc.dart';
 import '../bloc/employee/employee_event_state.dart';
 import '../../domain/entities/staff_entities.dart';
 import '../widgets/employee_card.dart';
+import '../widgets/employee_empty_view.dart';
 import '../widgets/employee_form_dialog.dart';
 import '../widgets/staff_search_bar.dart';
 import 'staff_management_screen_actions.dart';
@@ -219,17 +220,7 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is EmployeeLoadedState) {
                     if (state.employees.isEmpty) {
-                      return Center(
-                        child: Text(
-                          context.tr(
-                                shared.LocaleKeys.noEmployeesFound,
-                                track: shared
-                                    .TrackConstants
-                                    .staffManagementPageTrack,
-                              ) ??
-                              'No Employees Found',
-                        ),
-                      );
+                      return const EmployeeEmptyView();
                     }
 
                     final isSearching = _searchController.text

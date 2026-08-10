@@ -41,7 +41,22 @@ class CustomerListItem extends StatelessWidget {
                     'No Phone',
               );
             }
-            final displayPhone = isoCode.isNotEmpty ? '$isoCode $phone' : phone;
+            String phonePrefix = '';
+            if (isoCode.isNotEmpty) {
+              if (isoCode.startsWith('+')) {
+                phonePrefix = isoCode;
+              } else {
+                try {
+                  final country =
+                      shared.CountryPickerUtils.getCountryByIsoCode(isoCode);
+                  phonePrefix = '+${country.phoneCode}';
+                } catch (_) {
+                  phonePrefix = isoCode;
+                }
+              }
+            }
+            final displayPhone =
+                phonePrefix.isNotEmpty ? '$phonePrefix $phone' : phone;
             return Text(displayPhone);
           },
         ),

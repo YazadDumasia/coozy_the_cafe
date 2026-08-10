@@ -102,6 +102,7 @@ class MenuItemVariationsTable extends BaseTable {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get hashId =>
       text().unique().clientDefault(() => const Uuid().v8())();
+  TextColumn get name => text().nullable()();
   IntColumn get menuItemId => integer().nullable().references(
     MenuItemsTable,
     #id,

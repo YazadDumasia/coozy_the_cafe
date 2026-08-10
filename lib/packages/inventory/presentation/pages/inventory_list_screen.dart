@@ -5,6 +5,7 @@ import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bl
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_event.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_state.dart';
 import 'inventory_list_screen_actions.dart';
+import '../widgets/inventory_empty_view.dart';
 import 'widgets/inventory_list_item.dart';
 
 class InventoryListScreen extends StatefulWidget {
@@ -149,32 +150,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                         }).toList();
 
                         if (filteredItems.isEmpty) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Icon(
-                                shared.InventoryIcon.borderInventory,
-                                size: 150,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              Text(
-                                context.tr(
-                                      shared
-                                          .LocaleKeys
-                                          .inventoryListPageNoDataFound,
-                                      track: shared
-                                          .TrackConstants
-                                          .inventoryPageTrack,
-                                    ) ??
-                                    'No inventory items found.',
-                              ),
-                            ],
-                          ).inExpandedRow(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                          );
+                          return const InventoryEmptyView();
                         }
 
                         // Re-sort and re-stamp suspension flags on the

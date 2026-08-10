@@ -4,7 +4,9 @@ import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
 import 'package:coozy_the_cafe/packages/recipes/presentation/bloc/recipes_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/recipes/presentation/pages/recipes_list_screen_actions.dart';
+import 'package:coozy_the_cafe/packages/recipes/presentation/widgets/recipe_empty_view.dart';
 import 'package:coozy_the_cafe/packages/recipes/presentation/widgets/recipe_list_item.dart';
+import 'package:coozy_the_cafe/packages/recipes/presentation/widgets/recipe_search_filter_header.dart';
 
 class RecipesListScreen extends StatefulWidget {
   const RecipesListScreen({super.key});
@@ -164,84 +166,9 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
-                    const SizedBox(height: 5),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 5.0,
-                                right: 10,
-                                top: 5,
-                                bottom: 5,
-                              ),
-                              child: TextField(
-                                controller: _searchController,
-                                decoration: InputDecoration(
-                                  hintText:
-                                      context.tr(
-                                        shared.LocaleKeys.recipesSearchHint,
-                                        track:
-                                            shared.TrackConstants.recipesTrack,
-                                      ) ??
-                                      'Recipe name',
-                                  contentPadding: EdgeInsets.zero,
-                                  prefixIcon: const Icon(Icons.search),
-                                  suffixIcon:
-                                      ValueListenableBuilder<TextEditingValue>(
-                                        valueListenable: _searchController,
-                                        builder: (context, value, child) {
-                                          return value.text.isNotEmpty
-                                              ? IconButton(
-                                                  icon: const Icon(Icons.clear),
-                                                  onPressed: () =>
-                                                      RecipesListScreenActions.onSearchCleared(
-                                                        context,
-                                                        _searchController,
-                                                      ),
-                                                )
-                                              : const SizedBox.shrink();
-                                        },
-                                      ),
-                                ),
-                                onChanged: (value) {},
-                                onSubmitted: (value) =>
-                                    RecipesListScreenActions.onSearchSubmitted(
-                                      context,
-                                      value,
-                                    ),
-                              ),
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: () async =>
-                                RecipesListScreenActions.showFilterView(
-                                  context,
-                                ),
-                            icon: const Icon(Icons.filter_list, size: 24),
-                            label: Text(
-                              context.tr(
-                                    shared.LocaleKeys.commonFilter,
-                                    track: shared.TrackConstants.commonTrack,
-                                  ) ??
-                                  'Filter',
-                            ),
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                        ],
-                      ),
+                    RecipeSearchFilterHeader(
+                      searchController: _searchController,
                     ),
-                    const SizedBox(height: 5),
                     Expanded(
                       child: Visibility(
                         visible:
@@ -261,82 +188,7 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                                   state.totalPages == 0)
                               ? false
                               : true,
-                          replacement: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Icon(
-                                  shared.MenuIcons.recipe,
-                                  size: 120,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                                const SizedBox(height: 20),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Text(
-                                          context.tr(
-                                                shared
-                                                    .LocaleKeys
-                                                    .recipesListScreenNoDataTitleMsg,
-                                                track: shared
-                                                    .TrackConstants
-                                                    .recipesTrack,
-                                              ) ??
-                                              'No data founded',
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.titleLarge,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 5),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Text(
-                                          context.tr(
-                                                shared
-                                                    .LocaleKeys
-                                                    .recipesListScreenNoDataSubTitleMsg,
-                                                track: shared
-                                                    .TrackConstants
-                                                    .recipesTrack,
-                                              ) ??
-                                              'Please try again with different filter choices to pick from.',
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.titleMedium,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          replacement: const RecipeEmptyView(),
                           child: Scrollbar(
                             controller: _scrollController,
                             thumbVisibility: true,

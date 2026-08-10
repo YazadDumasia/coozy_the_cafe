@@ -131,6 +131,7 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                       child: Scrollbar(
                         interactive: true,
                         child: CustomScrollView(
+                          primary: true,
                           physics: const ClampingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics(),
                           ),
@@ -490,6 +491,7 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                     interactive: true,
                     trackVisibility: true,
                     child: CustomScrollView(
+                      primary: true,
                       physics: const ClampingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(),
                       ),
@@ -676,6 +678,7 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                     interactive: true,
                     trackVisibility: true,
                     child: CustomScrollView(
+                      primary: true,
                       physics: const ClampingScrollPhysics(
                         parent: AlwaysScrollableScrollPhysics(),
                       ),

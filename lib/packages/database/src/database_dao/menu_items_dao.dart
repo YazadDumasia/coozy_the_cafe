@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 import '../database.dart';
 import '../tables.dart';
 
@@ -29,7 +30,12 @@ class MenuItemsDao extends DatabaseAccessor<CoozyDatabase>
 
       if (variations != null && variations.isNotEmpty) {
         for (int i = 0; i < variations.length; i++) {
-          final v = variations[i].copyWith(
+          final varCompanion = variations[i];
+          final v = varCompanion.copyWith(
+            id: const Value.absent(),
+            hashId: varCompanion.hashId.present
+                ? varCompanion.hashId
+                : Value(const Uuid().v4()),
             menuItemId: Value(itemId),
             sortOrderIndex: Value(i),
           );
@@ -57,11 +63,18 @@ class MenuItemsDao extends DatabaseAccessor<CoozyDatabase>
           menuItemVariationsTable,
         )..where((t) => t.menuItemId.equals(id))).go();
         for (int i = 0; i < variations.length; i++) {
-          final v = variations[i].copyWith(
+          final varCompanion = variations[i];
+          final v = varCompanion.copyWith(
+            id: const Value.absent(),
+            hashId: varCompanion.hashId.present
+                ? varCompanion.hashId
+                : Value(const Uuid().v4()),
             menuItemId: Value(id),
             sortOrderIndex: Value(i),
           );
-          await into(menuItemVariationsTable).insert(v);
+          await into(
+            menuItemVariationsTable,
+          ).insert(v, mode: InsertMode.replace);
         }
       }
       return updated > 0;

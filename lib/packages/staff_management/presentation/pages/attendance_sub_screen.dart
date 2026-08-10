@@ -6,6 +6,7 @@ import '../bloc/attendance/attendance_bloc.dart';
 import '../bloc/attendance/attendance_event_state.dart';
 import '../../domain/entities/staff_entities.dart';
 import '../widgets/attendance_card.dart';
+import '../widgets/attendance_empty_view.dart';
 import '../widgets/attendance_form_dialog.dart';
 import '../widgets/staff_search_bar.dart';
 import 'staff_management_screen_actions.dart';
@@ -255,17 +256,7 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is AttendanceLoadedState) {
                     if (state.attendanceList.isEmpty) {
-                      return Center(
-                        child: Text(
-                          context.tr(
-                                shared.LocaleKeys.noAttendanceRecords,
-                                track: shared
-                                    .TrackConstants
-                                    .staffManagementPageTrack,
-                              ) ??
-                              'No Attendance Records',
-                        ),
-                      );
+                      return const AttendanceEmptyView();
                     }
                     return ValueListenableBuilder<DateTime>(
                       valueListenable: _selectedDateNotifier,
@@ -309,18 +300,17 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
                             }).toList();
 
                             if (filteredList.isEmpty) {
-                              return Center(
-                                child: Text(
-                                  context.tr(
-                                        shared
-                                            .LocaleKeys
-                                            .noMatchingAttendanceRecords,
-                                        track: shared
-                                            .TrackConstants
-                                            .staffManagementPageTrack,
-                                      ) ??
-                                      'No Attendance Records',
-                                ),
+                              return AttendanceEmptyView(
+                                message:
+                                    context.tr(
+                                      shared
+                                          .LocaleKeys
+                                          .noMatchingAttendanceRecords,
+                                      track: shared
+                                          .TrackConstants
+                                          .staffManagementPageTrack,
+                                    ) ??
+                                    'No Attendance Records',
                               );
                             }
 

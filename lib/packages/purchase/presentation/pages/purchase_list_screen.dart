@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'purchase_list_screen_actions.dart';
+import '../widgets/purchase_empty_view.dart';
 import 'widgets/purchase_list_item.dart';
 
 import 'dart:async';
@@ -303,33 +304,7 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
                             ),
                           );
                         }
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Icon(
-                              shared.InventoryIcon.borderPurchaseList,
-                              color: Theme.of(context).primaryColor,
-                              size: 110,
-                            ),
-                            Text(
-                              context.tr(
-                                    shared
-                                        .LocaleKeys
-                                        .purchaseNoPurchaseRecordsFound,
-                                    track:
-                                        shared.TrackConstants.purchasePageTrack,
-                                  ) ??
-                                  'No purchase records found.',
-                              style: Theme.of(context).textTheme.titleLarge,
-                              textAlign: TextAlign.center,
-                            ).inExpandedRow(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                            ),
-                          ],
-                        );
+                        return const PurchaseEmptyView();
                       }
 
                       final showPaginationLoader =

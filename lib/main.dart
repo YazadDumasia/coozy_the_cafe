@@ -100,11 +100,22 @@ class _MyAppState extends State<MyApp> {
                             ),
                           ),
                         ),
+                        outlinedButtonTheme: OutlinedButtonThemeData(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+
                         textButtonTheme: TextButtonThemeData(
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 10.0,
                               vertical: 10.0,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,

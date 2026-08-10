@@ -338,8 +338,6 @@ abstract class LocaleKeys {
       'menu_item_page_add_edit_menu_item_food_type';
   static String menuItemPageAddEditMenuItemSimpleVariation =
       'menu_item_page_add_edit_menu_item_simple_variation';
-  static String menuItemPageAddEditHasNoComplexSizesLikeRegularLarge =
-      'menu_item_page_add_edit_has_no_complex_sizes_like_regular_large';
   static String menuItemPageAddEditMenuItemTodayAvailable =
       'menu_item_page_add_edit_menu_item_today_available';
   static String menuItemPageAddEditMenuItemSellingUnit =

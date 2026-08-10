@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 import 'add_edit_menu_item_screen_actions.dart';
 
 import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item.dart';
+import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item_variation.dart';
 import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
@@ -49,9 +51,15 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
   final ValueNotifier<bool> _isTodayAvailableNotifier = ValueNotifier(false);
   final ValueNotifier<String?> _measuringUnitNotifier = ValueNotifier(null);
   final ValueNotifier<double> _profitMarginNotifier = ValueNotifier(0.0);
+  final ValueNotifier<bool> _isSimpleVariationNotifier = ValueNotifier<bool>(
+    true,
+  );
 
   // ── Duration ─────────────────────────────────────────────────────────────
   Duration _selectedDuration = Duration.zero;
+
+  // ── Variations ───────────────────────────────────────────────────────────
+  final List<_VariationFormModel> _variations = <_VariationFormModel>[];
 
   // ── Static data ── key: locale key, value: English fallback (stored in DB) ──
   static const Map<String, String> _foodTypes = <String, String>{
@@ -116,11 +124,16 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
     _descriptionController = TextEditingController(
       text: item?.description ?? '',
     );
+    String formatDoubleText(double? val) {
+      if (val == null) return '';
+      return val.toStringAsFixed(2);
+    }
+
     _costPriceController = TextEditingController(
-      text: item?.costPrice?.toString() ?? '',
+      text: formatDoubleText(item?.costPrice),
     );
     _sellingPriceController = TextEditingController(
-      text: item?.sellingPrice?.toString() ?? '',
+      text: formatDoubleText(item?.sellingPrice),
     );
 
     // Duration
@@ -159,17 +172,44 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
       _subcategoryIdNotifier.value = item.subcategoryId;
       _isTodayAvailableNotifier.value = item.isTodayAvailable ?? false;
       _measuringUnitNotifier.value = item.purchaseUnit;
+      if (item.isSimpleVariation != null) {
+        _isSimpleVariationNotifier.value = item.isSimpleVariation!;
+      } else {
+        _isSimpleVariationNotifier.value = item.variations.length <= 1;
+      }
+    }
+
+    // Variations initialization
+    if (item != null && item.variations.isNotEmpty) {
+      for (final v in item.variations) {
+        _variations.add(_VariationFormModel.fromEntity(v));
+      }
+    } else {
+      _variations.add(
+        _VariationFormModel(
+          unit: item?.purchaseUnit ?? 'Unit',
+          quantity: item?.quantity ?? '1',
+          costPrice: formatDoubleText(item?.costPrice),
+          sellingPrice: formatDoubleText(item?.sellingPrice),
+          isTodayAvailable: item?.isTodayAvailable ?? true,
+        ),
+      );
     }
 
     // Live profit margin listener
     _costPriceController.addListener(_updateProfitMargin);
     _sellingPriceController.addListener(_updateProfitMargin);
+    _updateProfitMargin();
   }
 
   @override
   void dispose() {
     _costPriceController.removeListener(_updateProfitMargin);
     _sellingPriceController.removeListener(_updateProfitMargin);
+
+    for (final v in _variations) {
+      v.dispose();
+    }
 
     _nameController.dispose();
     _descriptionController.dispose();
@@ -193,6 +233,7 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
     _isTodayAvailableNotifier.dispose();
     _measuringUnitNotifier.dispose();
     _profitMarginNotifier.dispose();
+    _isSimpleVariationNotifier.dispose();
 
     super.dispose();
   }
@@ -221,36 +262,42 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
           height: MediaQuery.of(context).size.height * 0.35,
           child: Column(
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () => Navigator.of(sheetContext).pop(),
-                    child: Text(
-                      context.tr(
-                            shared.LocaleKeys.commonCancel,
-                            track: shared.TrackConstants.commonTrack,
-                          ) ??
-                          'Cancel',
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 10,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(sheetContext).pop(),
+                      child: Text(
+                        context.tr(
+                              shared.LocaleKeys.commonCancel,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Cancel',
+                      ),
                     ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      _selectedDuration = picked;
-                      _durationController.text = _formatDuration(
-                        _selectedDuration,
-                      );
-                      Navigator.of(sheetContext).pop();
-                    },
-                    child: Text(
-                      context.tr(
-                            shared.LocaleKeys.commonDone,
-                            track: shared.TrackConstants.commonTrack,
-                          ) ??
-                          'Done',
+                    TextButton(
+                      onPressed: () {
+                        _selectedDuration = picked;
+                        _durationController.text = _formatDuration(
+                          _selectedDuration,
+                        );
+                        Navigator.of(sheetContext).pop();
+                      },
+                      child: Text(
+                        context.tr(
+                              shared.LocaleKeys.commonDone,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Done',
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Expanded(
                 child: CupertinoTimerPicker(
@@ -279,6 +326,30 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
 
   // ── Save ──────────────────────────────────────────────────────────────────
   void _saveItem() {
+    final bool isSimple = _isSimpleVariationNotifier.value;
+    final List<MenuItemVariation> variationEntities = isSimple
+        ? (_variations.isNotEmpty
+              ? <MenuItemVariation>[_variations.first.toEntity()]
+              : <MenuItemVariation>[])
+        : _variations.map((v) => v.toEntity()).toList();
+
+    final firstVar = _variations.isNotEmpty ? _variations.first : null;
+    final costPriceText = firstVar != null
+        ? firstVar.costPriceController.text
+        : _costPriceController.text;
+    final sellingPriceText = firstVar != null
+        ? firstVar.sellingPriceController.text
+        : _sellingPriceController.text;
+    final purchaseUnit = firstVar != null
+        ? firstVar.unitNotifier.value
+        : _measuringUnitNotifier.value;
+    final quantityText = firstVar != null
+        ? firstVar.qtyController.text
+        : _sellingUnitQtyController.text;
+    final isTodayAvailable = firstVar != null
+        ? firstVar.isAvailableNotifier.value
+        : _isTodayAvailableNotifier.value;
+
     AddEditMenuItemScreenActions.handleSaveItem(
       context: context,
       formKey: _formKey,
@@ -288,12 +359,13 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
       foodType: _foodTypeNotifier.value,
       categoryId: _categoryIdNotifier.value,
       subcategoryId: _subcategoryIdNotifier.value,
-      isTodayAvailable: _isTodayAvailableNotifier.value,
-      costPriceText: _costPriceController.text,
-      sellingPriceText: _sellingPriceController.text,
-      purchaseUnit: _measuringUnitNotifier.value,
-      quantityText: _sellingUnitQtyController.text,
+      isTodayAvailable: isTodayAvailable,
+      costPriceText: costPriceText,
+      sellingPriceText: sellingPriceText,
+      purchaseUnit: purchaseUnit,
+      quantityText: quantityText,
       selectedDuration: _selectedDuration,
+      variations: variationEntities,
     );
   }
 
@@ -404,7 +476,7 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: _descriptionController,
                 focusNode: _descriptionFocusNode,
-                keyboardType: TextInputType.text,
+                keyboardType: TextInputType.multiline,
                 textInputAction: TextInputAction.newline,
                 minLines: 3,
                 maxLines: null,
@@ -426,6 +498,7 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                       ) ??
                       'Enter dish description',
                   errorMaxLines: 3,
+                  contentPadding: EdgeInsets.all(20),
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
@@ -478,10 +551,8 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
               _buildCategoryDropdown().inExpandedRow(),
               const SizedBox(height: 12),
               _buildSubcategoryDropdown().inExpandedRow(),
-              const SizedBox(height: 12),
-              _buildTodayAvailableSwitch().inExpandedRow(),
-              const SizedBox(height: 12),
-              _buildPricingSection().inExpandedRow(),
+              const SizedBox(height: 16),
+              _buildVariationsFormSection().inExpandedRow(),
             ],
           ),
         ),
@@ -489,11 +560,62 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
     );
   }
 
+  String? _normalizeFoodType(String? input) {
+    if (input == null || input.isEmpty) return null;
+    if (_foodTypes.values.contains(input)) return input;
+    final lower = input.toLowerCase().trim();
+    if (lower == 'non-veg' || lower == 'non_veg' || lower == 'non_vegetarian') {
+      return 'Non-Vegetarian';
+    }
+    if (lower == 'veg' || lower == 'vegetarian') {
+      return 'Vegetarian';
+    }
+    if (lower == 'egg' || lower == 'ovo-vegetarian') {
+      return 'Ovo-Vegetarian';
+    }
+    if (lower == 'vegan') return 'Vegan';
+
+    for (final v in _foodTypes.values) {
+      if (v.toLowerCase() == lower) return v;
+    }
+    return input;
+  }
+
+  String? _normalizeMeasuringUnit(String? input) {
+    if (input == null || input.isEmpty) return null;
+    if (_measuringUnits.values.contains(input)) return input;
+    final lower = input.toLowerCase().trim();
+    for (final v in _measuringUnits.values) {
+      if (v.toLowerCase() == lower) return v;
+    }
+    return input;
+  }
+
   // ── Food Type Dropdown ─────────────────────────────────────────────────────
   Widget _buildFoodTypeDropdown() {
     return ValueListenableBuilder<String?>(
       valueListenable: _foodTypeNotifier,
-      builder: (BuildContext context, String? value, _) {
+      builder: (BuildContext context, String? rawValue, _) {
+        final String? value = _normalizeFoodType(rawValue);
+        final List<DropdownMenuItem<String>> items = _foodTypes.entries.map((
+          MapEntry<String, String> e,
+        ) {
+          return DropdownMenuItem<String>(
+            value: e.value,
+            child: Text(
+              context.tr(
+                    e.key,
+                    track: shared.TrackConstants.menuItemPageTrack,
+                  ) ??
+                  e.value,
+            ),
+          );
+        }).toList();
+
+        if (value != null && !items.any((item) => item.value == value)) {
+          items.add(DropdownMenuItem<String>(value: value, child: Text(value)));
+        }
+
         return DropdownButtonFormField<String>(
           menuMaxHeight: MediaQuery.of(context).size.height * 0.35,
           focusNode: _foodTypeFocusNode,
@@ -525,18 +647,7 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
             }
             return null;
           },
-          items: _foodTypes.entries.map((MapEntry<String, String> e) {
-            return DropdownMenuItem<String>(
-              value: e.value,
-              child: Text(
-                context.tr(
-                      e.key,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    e.value,
-              ),
-            );
-          }).toList(),
+          items: items,
         );
       },
     );
@@ -554,61 +665,96 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
         }
 
         if (cats.isEmpty) {
-          return ElevatedButton(
-            onPressed: () => AddEditMenuItemScreenActions.handleAddCategory(
-              context,
-              mounted,
-            ),
-            child: Text(
-              context.tr(
-                    shared.LocaleKeys.menuItemPageAddNewCategory,
-                    track: shared.TrackConstants.menuItemPageTrack,
-                  ) ??
-                  'Add new category',
-            ),
+          return Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () =>
+                      AddEditMenuItemScreenActions.handleAddCategory(
+                        context,
+                        mounted,
+                      ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  icon: const Icon(Icons.add, size: 18),
+                  label: Text(
+                    context.tr(
+                          shared.LocaleKeys.menuItemPageAddNewCategory,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Add new category',
+                  ),
+                ),
+              ),
+            ],
           );
         }
 
         return ValueListenableBuilder<int?>(
           valueListenable: _categoryIdNotifier,
           builder: (BuildContext context, int? catId, _) {
-            return DropdownButtonFormField<int>(
-              menuMaxHeight: MediaQuery.of(context).size.height * 0.35,
-              isDense: true,
-              isExpanded: true,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: InputDecoration(
-                labelText:
-                    context.tr(
-                      shared.LocaleKeys.menuItemPageAddEditMenuItemCategory,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Select Category',
-                errorMaxLines: 3,
-              ),
-              initialValue: cats.any((c) => c.id == catId) ? catId : null,
-              onChanged: (int? newValue) {
-                _categoryIdNotifier.value = newValue;
-                _subcategoryIdNotifier.value = null;
-              },
-              validator: (int? v) {
-                if (v == null) {
-                  return context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemPleaseSelectCategory,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Please select a category';
-                }
-                return null;
-              },
-              items: cats.map((MenuCategory c) {
-                return DropdownMenuItem<int>(
-                  value: c.id,
-                  child: Text(c.name ?? ''),
-                );
-              }).toList(),
+            return Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField<int>(
+                    menuMaxHeight: MediaQuery.of(context).size.height * 0.35,
+                    isDense: true,
+                    isExpanded: true,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    decoration: InputDecoration(
+                      labelText:
+                          context.tr(
+                            shared
+                                .LocaleKeys
+                                .menuItemPageAddEditMenuItemCategory,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Select Category',
+                      errorMaxLines: 3,
+                    ),
+                    initialValue: cats.any((c) => c.id == catId) ? catId : null,
+                    onChanged: (int? newValue) {
+                      _categoryIdNotifier.value = newValue;
+                      _subcategoryIdNotifier.value = null;
+                    },
+                    validator: (int? v) {
+                      if (v == null) {
+                        return context.tr(
+                              shared
+                                  .LocaleKeys
+                                  .menuItemPageAddEditMenuItemPleaseSelectCategory,
+                              track: shared.TrackConstants.menuItemPageTrack,
+                            ) ??
+                            'Please select a category';
+                      }
+                      return null;
+                    },
+                    items: cats.map((MenuCategory c) {
+                      return DropdownMenuItem<int>(
+                        value: c.id,
+                        child: Text(c.name ?? ''),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                IconButton(
+                  tooltip: 'Add new category',
+                  icon: const Icon(Icons.add_circle_outline),
+                  onPressed: () =>
+                      AddEditMenuItemScreenActions.handleAddCategory(
+                        context,
+                        mounted,
+                      ),
+                ),
+              ],
             );
           },
         );
@@ -623,46 +769,94 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
         return ValueListenableBuilder<int?>(
           valueListenable: _categoryIdNotifier,
           builder: (BuildContext context, int? catId, _) {
+            if (catId == null) {
+              return const SizedBox.shrink();
+            }
+
             List<MenuSubcategory> subs = <MenuSubcategory>[];
-            if (state is MenuSubcategoryLoaded && catId != null) {
+            if (state is MenuSubcategoryLoaded) {
               subs = state.subcategories
                   .where((MenuSubcategory s) => s.categoryId == catId)
                   .toList();
             }
 
-            if (catId == null || subs.isEmpty) {
-              return const SizedBox.shrink();
+            if (subs.isEmpty) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 20,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                      onPressed: () =>
+                          AddEditMenuItemScreenActions.handleAddSubcategory(
+                            context,
+                            catId,
+                            mounted,
+                          ),
+                      icon: const Icon(Icons.add, size: 18),
+                      label: const Text('Add subcategory'),
+                    ),
+                  ),
+                ],
+              );
             }
 
             return ValueListenableBuilder<int?>(
               valueListenable: _subcategoryIdNotifier,
               builder: (BuildContext context, int? subId, _) {
-                return DropdownButtonFormField<int>(
-                  menuMaxHeight: MediaQuery.of(context).size.height * 0.35,
-                  isDense: true,
-                  isExpanded: true,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  decoration: InputDecoration(
-                    labelText:
-                        context.tr(
-                          shared
-                              .LocaleKeys
-                              .menuItemPageAddEditMenuItemSubCategory,
-                          track: shared.TrackConstants.menuItemPageTrack,
-                        ) ??
-                        'Select Subcategory',
-                    errorMaxLines: 3,
-                  ),
-                  initialValue: subs.any((s) => s.id == subId) ? subId : null,
-                  onChanged: (int? newValue) {
-                    _subcategoryIdNotifier.value = newValue;
-                  },
-                  items: subs.map((MenuSubcategory s) {
-                    return DropdownMenuItem<int>(
-                      value: s.id,
-                      child: Text(s.name ?? ''),
-                    );
-                  }).toList(),
+                return Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<int>(
+                        menuMaxHeight:
+                            MediaQuery.of(context).size.height * 0.35,
+                        isDense: true,
+                        isExpanded: true,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        decoration: InputDecoration(
+                          labelText:
+                              context.tr(
+                                shared
+                                    .LocaleKeys
+                                    .menuItemPageAddEditMenuItemSubCategory,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Select Subcategory',
+                          errorMaxLines: 3,
+                        ),
+                        initialValue: subs.any((s) => s.id == subId)
+                            ? subId
+                            : null,
+                        onChanged: (int? newValue) {
+                          _subcategoryIdNotifier.value = newValue;
+                        },
+                        items: subs.map((MenuSubcategory s) {
+                          return DropdownMenuItem<int>(
+                            value: s.id,
+                            child: Text(s.name ?? ''),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      tooltip: 'Add new subcategory',
+                      icon: const Icon(Icons.add_circle_outline),
+                      onPressed: () =>
+                          AddEditMenuItemScreenActions.handleAddSubcategory(
+                            context,
+                            catId,
+                            mounted,
+                          ),
+                    ),
+                  ],
                 );
               },
             );
@@ -672,308 +866,486 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
     );
   }
 
-  // ── Today Available Switch ─────────────────────────────────────────────────
-  Widget _buildTodayAvailableSwitch() {
+  // ── Variations Section Widget ──────────────────────────────────────────────
+  Widget _buildVariationsFormSection() {
+    final theme = Theme.of(context);
     return ValueListenableBuilder<bool>(
-      valueListenable: _isTodayAvailableNotifier,
-      builder: (BuildContext context, bool value, _) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            border: Border.all(color: Theme.of(context).colorScheme.primary),
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(5.0),
-            child: SwitchListTile.adaptive(
-              contentPadding: const EdgeInsets.only(left: 10, right: 5),
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-              title: Text(
-                context.tr(
-                      shared
-                          .LocaleKeys
-                          .menuItemPageAddEditMenuItemTodayAvailable,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Today Available',
-                style: Theme.of(context).textTheme.bodyLarge,
+      valueListenable: _isSimpleVariationNotifier,
+      builder: (context, isSimple, _) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Pricing & Variations',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary,
               ),
-              thumbIcon: WidgetStateProperty.resolveWith<Icon>((
-                Set<WidgetState> states,
-              ) {
-                if (states.containsAll(<WidgetState>[
-                  WidgetState.disabled,
-                  WidgetState.selected,
-                ])) {
-                  return const Icon(Icons.check, color: Colors.red);
-                }
-                if (states.contains(WidgetState.disabled)) {
-                  return const Icon(Icons.close);
-                }
-                if (states.contains(WidgetState.selected)) {
-                  return const Icon(Icons.check, color: Colors.green);
-                }
-                return const Icon(Icons.close);
-              }),
-              value: value,
-              onChanged: (bool newValue) {
-                _isTodayAvailableNotifier.value = newValue;
-              },
             ),
-          ),
+            const SizedBox(height: 10),
+            // Segmented Button
+            SizedBox(
+              width: double.infinity,
+              child: SegmentedButton<bool>(
+                segments: const <ButtonSegment<bool>>[
+                  ButtonSegment<bool>(
+                    value: true,
+                    label: Text('Simple Variation'),
+                    icon: Icon(Icons.sell_outlined, size: 16),
+                  ),
+                  ButtonSegment<bool>(
+                    value: false,
+                    label: Text('Multiple Variations'),
+                    icon: Icon(Icons.layers_outlined, size: 16),
+                  ),
+                ],
+                selected: <bool>{isSimple},
+                onSelectionChanged: (Set<bool> newSelection) {
+                  setState(() {
+                    _isSimpleVariationNotifier.value = newSelection.first;
+                  });
+                },
+                style: SegmentedButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            if (isSimple) ...[
+              _buildSingleVariationCard(
+                v: _variations.isNotEmpty
+                    ? _variations.first
+                    : _VariationFormModel(unit: 'Unit', quantity: '1'),
+              ),
+            ] else ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Variations (${_variations.length})',
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      setState(() {
+                        _variations.add(
+                          _VariationFormModel(unit: 'Unit', quantity: '1'),
+                        );
+                      });
+                    },
+                    icon: const Icon(Icons.add, size: 16),
+                    label: const Text('Add Variation'),
+                    style: OutlinedButton.styleFrom(
+                      visualDensity: VisualDensity.compact,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              ..._variations.asMap().entries.map((entry) {
+                final int idx = entry.key;
+                final _VariationFormModel v = entry.value;
+
+                return _buildSingleVariationCard(
+                  v: v,
+                  title: 'Variation #${idx + 1}',
+                  showDelete: _variations.length > 1,
+                  onDelete: () {
+                    setState(() {
+                      final removed = _variations.removeAt(idx);
+                      removed.dispose();
+                    });
+                  },
+                );
+              }),
+            ],
+          ],
         );
       },
     );
   }
 
-  // ── Pricing Section ────────────────────────────────────────────────────────
-  Widget _buildPricingSection() {
-    return ValueListenableBuilder<String?>(
-      valueListenable: _measuringUnitNotifier,
-      builder: (BuildContext context, String? unit, _) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
+  Widget _buildSingleVariationCard({
+    required _VariationFormModel v,
+    String? title,
+    bool showDelete = false,
+    VoidCallback? onDelete,
+  }) {
+    final theme = Theme.of(context);
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+        side: BorderSide(
+          color: theme.colorScheme.outlineVariant.withAlpha(120),
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // Selling Unit dropdown
-            DropdownButtonFormField<String>(
-              menuMaxHeight: MediaQuery.of(context).size.height * 0.35,
-              focusNode: _measuringUnitFocusNode,
-              isDense: true,
-              isExpanded: true,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              decoration: InputDecoration(
-                labelText:
-                    context.tr(
-                      shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Selling Unit',
-                hintText:
-                    context.tr(
-                      shared
-                          .LocaleKeys
-                          .menuItemPageAddEditMenuItemSellingUnitHint,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Select measuring units type',
-                errorMaxLines: 3,
-              ),
-              initialValue: unit,
-              onChanged: (String? newValue) {
-                _measuringUnitNotifier.value = newValue;
-                _sellingUnitQtyController.clear();
-              },
-              validator: (String? v) {
-                if (v == null || v.isEmpty) {
-                  return context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemPleaseSelectMeasuringUnit,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Please select a measuring units type';
-                }
-                return null;
-              },
-              items: _measuringUnits.entries.map((MapEntry<String, String> e) {
-                return DropdownMenuItem<String>(
-                  value: e.value,
-                  child: Text(
-                    context.tr(
-                          e.key,
-                          track: shared.TrackConstants.menuItemPageTrack,
-                        ) ??
-                        e.value,
-                  ),
-                );
-              }).toList(),
-            ),
-
-            // Selling unit quantity – hidden when 'Unit'
-            if (unit != null && unit != 'Unit') ...<Widget>[
-              const SizedBox(height: 12),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _sellingUnitQtyController,
-                focusNode: _sellingUnitQtyFocusNode,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,3}')),
+          children: [
+            if (title != null || showDelete) ...[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  if (title != null)
+                    Text(
+                      title,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  else
+                    const SizedBox.shrink(),
+                  if (showDelete)
+                    IconButton(
+                      icon: const Icon(
+                        Icons.delete_outline,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      tooltip: 'Remove Variation',
+                      onPressed: onDelete,
+                    ),
                 ],
-                decoration: InputDecoration(
-                  labelText:
-                      context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemSellingUnitQuantity,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Selling Unit Quantity',
-                  hintText:
-                      context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemSellingUnitQuantityHint,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Enter value of selling quantity',
-                  errorMaxLines: 3,
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return context.tr(
-                          shared
-                              .LocaleKeys
-                              .menuItemPageAddEditMenuItemPleaseEnterSellingUnitValue,
-                          track: shared.TrackConstants.menuItemPageTrack,
-                        ) ??
-                        'Please enter selling unit value';
-                  }
-                  return null;
-                },
-                onFieldSubmitted: (_) {
-                  Future.microtask(() {
-                    if (!mounted) return;
-                    _costPriceFocusNode.requestFocus();
-                  });
-                },
               ),
+              const SizedBox(height: 8),
             ],
-
-            const SizedBox(height: 12),
-
-            // Cost Price
+            // Variation Name (Optional)
             TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              controller: _costPriceController,
-              focusNode: _costPriceFocusNode,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,3}')),
-              ],
-              decoration: InputDecoration(
+              controller: v.nameController,
+              focusNode: v.nameFocusNode,
+              decoration: const InputDecoration(
                 labelText:
-                    context.tr(
-                      shared.LocaleKeys.menuItemPageAddEditMenuItemCostPrice,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Cost Price',
-                hintText:
-                    context.tr(
-                      shared
-                          .LocaleKeys
-                          .menuItemPageAddEditMenuItemCostPriceHint,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Enter value of costing amount',
-                errorMaxLines: 3,
+                    'Variation Name (e.g. Small, Medium, Large, Half, Full)',
+                hintText: 'Enter variation name (optional)',
               ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemPleaseEnterCostAmount,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Please enter costing amount';
-                }
-                return null;
-              },
-              onFieldSubmitted: (_) {
-                FocusScope.of(context).requestFocus(_sellingPriceFocusNode);
-              },
             ),
-
             const SizedBox(height: 12),
+            // Selling Unit
+            ValueListenableBuilder<String?>(
+              valueListenable: v.unitNotifier,
+              builder: (context, unit, _) {
+                final normalizedUnit = _normalizeMeasuringUnit(unit);
+                final items = _measuringUnits.entries.map((e) {
+                  return DropdownMenuItem<String>(
+                    value: e.value,
+                    child: Text(
+                      context.tr(
+                            e.key,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          e.value,
+                    ),
+                  );
+                }).toList();
 
-            // Selling Price
-            TextFormField(
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              controller: _sellingPriceController,
-              focusNode: _sellingPriceFocusNode,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,3}')),
-              ],
-              decoration: InputDecoration(
-                labelText:
-                    context.tr(
-                      shared.LocaleKeys.menuItemPageAddEditMenuItemSellingPrice,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Selling Price',
-                hintText:
-                    context.tr(
-                      shared
-                          .LocaleKeys
-                          .menuItemPageAddEditMenuItemSellingPriceHint,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Enter value of selling amount',
-                errorMaxLines: 3,
-              ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemPleaseEnterSellingAmount,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Please enter selling amount';
+                if (normalizedUnit != null &&
+                    !items.any((i) => i.value == normalizedUnit)) {
+                  items.add(
+                    DropdownMenuItem<String>(
+                      value: normalizedUnit,
+                      child: Text(normalizedUnit),
+                    ),
+                  );
                 }
-                return null;
-              },
-              onFieldSubmitted: (_) {
-                FocusManager.instance.primaryFocus?.unfocus();
-              },
-            ),
 
-            const SizedBox(height: 10),
-
-            // Profit Margin display
-            ValueListenableBuilder<double>(
-              valueListenable: _profitMarginNotifier,
-              builder: (BuildContext context, double margin, _) {
-                final Color marginColor = margin < 0
-                    ? Colors.red
-                    : margin == 0
-                    ? Theme.of(context).textTheme.bodyMedium!.color!
-                    : Colors.green;
-                return RichText(
-                  text: TextSpan(
-                    text:
-                        context.tr(
-                          shared
-                              .LocaleKeys
-                              .menuItemPageAddEditMenuItemProfitMargin,
-                          track: shared.TrackConstants.menuItemPageTrack,
-                        ) ??
-                        'Profit Margin: ',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: '${margin.toStringAsFixed(2)}%',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          color: marginColor,
-                          fontWeight: FontWeight.bold,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownButtonFormField<String>(
+                      menuMaxHeight: MediaQuery.of(context).size.height * 0.35,
+                      isDense: true,
+                      isExpanded: true,
+                      decoration: const InputDecoration(
+                        labelText: 'Selling Unit',
+                        hintText: 'Select measuring unit',
+                      ),
+                      initialValue: normalizedUnit,
+                      onChanged: (val) {
+                        v.unitNotifier.value = val;
+                        v.qtyController.clear();
+                      },
+                      items: items,
+                    ),
+                    if (unit != null && unit != 'Unit') ...[
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: v.qtyController,
+                        focusNode: v.qtyFocusNode,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
                         ),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,3}'),
+                          ),
+                        ],
+                        decoration: const InputDecoration(
+                          labelText: 'Selling Unit Quantity',
+                          hintText: 'Enter quantity',
+                        ),
+                        validator: (val) {
+                          if (unit != 'Unit') {
+                            if (val == null || val.trim().isEmpty) {
+                              return 'Enter quantity';
+                            }
+                            final d = double.tryParse(val.trim());
+                            if (d == null || d <= 0) {
+                              return 'Quantity must be greater than 0';
+                            }
+                          }
+                          return null;
+                        },
                       ),
                     ],
-                  ),
+                  ],
                 );
               },
             ),
+            const SizedBox(height: 12),
+            // Prices
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: v.costPriceController,
+                    focusNode: v.costFocusNode,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,2}'),
+                      ),
+                    ],
+                    decoration: const InputDecoration(
+                      labelText: 'Cost Price',
+                      hintText: '0.00',
+                    ),
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return 'Enter cost price';
+                      }
+                      final parsed = double.tryParse(val.trim());
+                      if (parsed == null || parsed < 0) {
+                        return 'Enter valid cost price';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: TextFormField(
+                    controller: v.sellingPriceController,
+                    focusNode: v.sellingFocusNode,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                        RegExp(r'^\d+\.?\d{0,2}'),
+                      ),
+                    ],
+                    decoration: const InputDecoration(
+                      labelText: 'Selling Price',
+                      hintText: '0.00',
+                    ),
+                    validator: (val) {
+                      if (val == null || val.trim().isEmpty) {
+                        return 'Enter selling price';
+                      }
+                      final parsed = double.tryParse(val.trim());
+                      if (parsed == null || parsed <= 0) {
+                        return 'Selling price must be greater than 0';
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            // Margin & Availability
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ValueListenableBuilder<double>(
+                  valueListenable: v.profitMarginNotifier,
+                  builder: (context, margin, _) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer.withAlpha(
+                          120,
+                        ),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        'Margin: ${margin.toStringAsFixed(2)}%',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onPrimaryContainer,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                ValueListenableBuilder<bool>(
+                  valueListenable: v.isAvailableNotifier,
+                  builder: (context, avail, _) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Available', style: theme.textTheme.bodySmall),
+                        Switch.adaptive(
+                          value: avail,
+                          onChanged: (val) {
+                            v.isAvailableNotifier.value = val;
+                          },
+                          thumbIcon: WidgetStateProperty.resolveWith<Icon>((
+                            Set<WidgetState> states,
+                          ) {
+                            if (states.containsAll(<WidgetState>[
+                              WidgetState.disabled,
+                              WidgetState.selected,
+                            ])) {
+                              return const Icon(Icons.check, color: Colors.red);
+                            }
+                            if (states.contains(WidgetState.disabled)) {
+                              return const Icon(Icons.close);
+                            }
+                            if (states.contains(WidgetState.selected)) {
+                              return const Icon(
+                                Icons.check,
+                                color: Colors.green,
+                              );
+                            }
+                            return const Icon(Icons.close);
+                          }),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ],
+            ),
           ],
-        );
-      },
+        ),
+      ),
     );
+  }
+}
+
+class _VariationFormModel {
+  final int? id;
+  final String hashId;
+  final TextEditingController nameController;
+  final TextEditingController qtyController;
+  final TextEditingController costPriceController;
+  final TextEditingController sellingPriceController;
+  final ValueNotifier<String?> unitNotifier;
+  final ValueNotifier<bool> isAvailableNotifier;
+  final ValueNotifier<double> profitMarginNotifier;
+  final FocusNode nameFocusNode = FocusNode();
+  final FocusNode qtyFocusNode = FocusNode();
+  final FocusNode costFocusNode = FocusNode();
+  final FocusNode sellingFocusNode = FocusNode();
+
+  _VariationFormModel({
+    this.id,
+    String? hashId,
+    String? name,
+    String? unit,
+    String? quantity,
+    String? costPrice,
+    String? sellingPrice,
+    bool isTodayAvailable = true,
+  }) : hashId = hashId ?? const Uuid().v4(),
+       nameController = TextEditingController(text: name ?? ''),
+       unitNotifier = ValueNotifier(unit ?? 'Unit'),
+       qtyController = TextEditingController(text: quantity ?? '1'),
+       costPriceController = TextEditingController(text: costPrice ?? ''),
+       sellingPriceController = TextEditingController(text: sellingPrice ?? ''),
+       isAvailableNotifier = ValueNotifier(isTodayAvailable),
+       profitMarginNotifier = ValueNotifier(0.0) {
+    costPriceController.addListener(_updateMargin);
+    sellingPriceController.addListener(_updateMargin);
+    _updateMargin();
+  }
+
+  factory _VariationFormModel.fromEntity(MenuItemVariation v) {
+    String formatDouble(double? d) {
+      if (d == null) return '';
+      return d.toStringAsFixed(2);
+    }
+
+    return _VariationFormModel(
+      id: v.id,
+      hashId: v.hashId,
+      name: v.name,
+      unit: v.purchaseUnit ?? 'Unit',
+      quantity: v.quantity != null ? '${v.quantity}' : '1',
+      costPrice: formatDouble(v.costPrice),
+      sellingPrice: formatDouble(v.sellingPrice),
+      isTodayAvailable: v.isTodayAvailable ?? true,
+    );
+  }
+
+  void _updateMargin() {
+    final c = double.tryParse(costPriceController.text) ?? 0.0;
+    final s = double.tryParse(sellingPriceController.text) ?? 0.0;
+    if (c == 0.0 || s == 0.0) {
+      profitMarginNotifier.value = 0.0;
+    } else {
+      profitMarginNotifier.value = ((s - c) / c) * 100;
+    }
+  }
+
+  MenuItemVariation toEntity() {
+    final rawName = nameController.text.trim();
+    return MenuItemVariation(
+      id: id,
+      hashId: hashId,
+      name: rawName.isEmpty ? null : rawName,
+      quantity: int.tryParse(qtyController.text),
+      purchaseUnit: unitNotifier.value,
+      isTodayAvailable: isAvailableNotifier.value,
+      costPrice: double.tryParse(costPriceController.text),
+      sellingPrice: double.tryParse(sellingPriceController.text),
+    );
+  }
+
+  void dispose() {
+    costPriceController.removeListener(_updateMargin);
+    sellingPriceController.removeListener(_updateMargin);
+    nameController.dispose();
+    qtyController.dispose();
+    costPriceController.dispose();
+    sellingPriceController.dispose();
+    unitNotifier.dispose();
+    isAvailableNotifier.dispose();
+    profitMarginNotifier.dispose();
+    nameFocusNode.dispose();
+    qtyFocusNode.dispose();
+    costFocusNode.dispose();
+    sellingFocusNode.dispose();
   }
 }

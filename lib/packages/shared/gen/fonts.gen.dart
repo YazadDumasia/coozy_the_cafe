@@ -15,6 +15,9 @@ abstract final class FontFamily {
   /// Font family: CustomIcon
   static const String customIcon = 'CustomIcon';
 
+  /// Font family: EmplyeeIcons
+  static const String emplyeeIcons = 'EmplyeeIcons';
+
   /// Font family: InventoryIcon
   static const String inventoryIcon = 'InventoryIcon';
 

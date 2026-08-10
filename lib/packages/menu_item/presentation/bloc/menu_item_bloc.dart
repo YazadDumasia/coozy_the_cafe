@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/menu_item.dart';
 import '../../domain/usecases/menu_item_usecases.dart';
 import 'menu_item_event.dart';
 import 'menu_item_state.dart';
@@ -76,8 +78,9 @@ class MenuItemBloc extends Bloc<MenuItemEvent, MenuItemState> {
     try {
       await addMenuItemUseCase(event.item);
       event.onSuccess?.call();
-      _reload(emit);
-    } catch (e) {
+      await _reloadSilently(emit);
+    } catch (e, stackTrace) {
+      debugPrint('AddMenuItem Exception: $e\n$stackTrace');
       event.onError?.call(LocaleKeys.crudErrorAdd);
       emit(MenuItemError(e.toString()));
     }
@@ -90,8 +93,9 @@ class MenuItemBloc extends Bloc<MenuItemEvent, MenuItemState> {
     try {
       await updateMenuItemUseCase(event.item);
       event.onSuccess?.call();
-      _reload(emit);
-    } catch (e) {
+      await _reloadSilently(emit);
+    } catch (e, stackTrace) {
+      debugPrint('UpdateMenuItem Exception: $e\n$stackTrace');
       event.onError?.call(LocaleKeys.crudErrorUpdate);
       emit(MenuItemError(e.toString()));
     }
@@ -104,25 +108,41 @@ class MenuItemBloc extends Bloc<MenuItemEvent, MenuItemState> {
     try {
       await deleteMenuItemUseCase(event.id);
       event.onSuccess?.call();
-      _reload(emit);
-    } catch (e) {
+      await _reloadSilently(emit);
+    } catch (e, stackTrace) {
+      debugPrint('DeleteMenuItem Exception: $e\n$stackTrace');
       event.onError?.call(LocaleKeys.crudErrorDelete);
       emit(MenuItemError(e.toString()));
     }
   }
 
-  void _reload(Emitter<MenuItemState> emit) {
-    if (state is MenuItemLoaded) {
-      final s = state as MenuItemLoaded;
-      if (s.subcategoryIdFilter != null) {
-        add(LoadMenuItemsBySubcategory(s.subcategoryIdFilter!));
-        return;
+  Future<void> _reloadSilently(Emitter<MenuItemState> emit) async {
+    try {
+      int? catId;
+      int? subcatId;
+      if (state is MenuItemLoaded) {
+        final s = state as MenuItemLoaded;
+        catId = s.categoryIdFilter;
+        subcatId = s.subcategoryIdFilter;
       }
-      if (s.categoryIdFilter != null) {
-        add(LoadMenuItemsByCategory(s.categoryIdFilter!));
-        return;
+
+      List<MenuItem> items;
+      if (subcatId != null) {
+        items = await getMenuItemsBySubcategoryUseCase(subcatId);
+      } else if (catId != null) {
+        items = await getMenuItemsByCategoryUseCase(catId);
+      } else {
+        items = await getMenuItemsUseCase();
       }
+      emit(
+        MenuItemLoaded(
+          items: items,
+          categoryIdFilter: catId,
+          subcategoryIdFilter: subcatId,
+        ),
+      );
+    } catch (e) {
+      emit(MenuItemError(e.toString()));
     }
-    add(LoadMenuItems());
   }
 }

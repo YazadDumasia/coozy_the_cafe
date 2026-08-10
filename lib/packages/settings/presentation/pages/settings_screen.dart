@@ -778,6 +778,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             _buildDataSetTile(
+              icon: Icons.restaurant_menu_outlined,
+              stageKeys: ['tables_menu'],
+              title: _tr(
+                context,
+                shared.LocaleKeys.homeDrawerMenuItemLabel,
+                'Menu Items, Categories & Variations',
+              ),
+              subtitle: _tr(
+                context,
+                shared.LocaleKeys.menuItemPageAddMenuItemAppbarTitle,
+                '20 Categories, 300 Subcategories & 7,500 Menu Items with 15,000 Variations',
+              ),
+            ),
+            _buildDataSetTile(
               icon: Icons.badge_outlined,
               stageKeys: ['employees', 'attendance_leaves'],
               title: _tr(
@@ -821,16 +835,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             _buildDataSetTile(
               icon: Icons.event_seat_outlined,
-              stageKeys: ['reservations', 'tables_menu'],
+              stageKeys: ['reservations'],
               title: _tr(
                 context,
                 shared.LocaleKeys.settingsReservationsSetTitle,
-                'Table Reservations',
+                'Table Reservations & Dining Tables',
               ),
               subtitle: _tr(
                 context,
                 shared.LocaleKeys.settingsReservationsSetSubtitle,
-                '80+ Booked Table Reservations',
+                '12 Dining Tables & 80+ Booked Table Reservations',
               ),
             ),
           ],
@@ -1116,7 +1130,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   horizontal: 12,
                                 ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
                               onPressed: () {
@@ -1161,9 +1175,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       return 'Generates 250+ Orders (Dine-In, Takeaway, Delivery), 20 Live Active Kitchen Orders ready for testing, 250+ Invoices with 5% GST calculation, itemized sales breakdown, and Payment Transactions.';
     } else if (stageKeys.contains('inventory_purchases')) {
       return 'Generates 20 Kitchen Inventory items (Espresso Beans, Milk, Flour, Soda, Cheese) with live stock levels and 150+ Stock Purchase logs.';
-    } else if (stageKeys.contains('reservations') ||
-        stageKeys.contains('tables_menu')) {
-      return 'Generates 80+ Booked Table Reservations linked to active customers and tables with party sizes (2-8 guests) and reservation notes.';
+    } else if (stageKeys.contains('tables_menu')) {
+      return 'Generates 20 Categories, 300 Subcategories (15 per category), and 7,500 Menu Items (25 per subcategory) with 15,000 Small & Large Portion Variations.';
+    } else if (stageKeys.contains('reservations')) {
+      return 'Generates 12 Dining Tables and 80+ Booked Table Reservations linked to active customers with party sizes (2-8 guests) and reservation notes.';
     }
     return 'Generates realistic demo records spanning 1.5 years back.';
   }

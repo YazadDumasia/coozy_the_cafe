@@ -5,6 +5,8 @@ version: 1.0.0+1
 
 #  Android Studio Quail 2 | 2026.1.2 Patch 1
 #  Flutter stable channel,  3.44.8v,
+#  flutter build apk --release --tree-shake-icons
+
 environment:
   sdk: ^3.12.2
 
@@ -193,3 +195,6 @@ flutter:
     - family: Menu_search
       fonts:
         - asset: assets/icons/Menu_search.ttf
+    - family: EmplyeeIcons
+      fonts:
+        - asset: assets/icons/EmplyeeIcons.ttf

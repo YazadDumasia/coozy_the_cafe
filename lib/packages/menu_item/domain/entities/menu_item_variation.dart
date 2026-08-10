@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 class MenuItemVariation extends Equatable {
   final int? id;
   final String? hashId;
+  final String? name;
   final int? menuItemId;
   final int? quantity;
   final String? purchaseUnit;
@@ -17,6 +18,7 @@ class MenuItemVariation extends Equatable {
   const MenuItemVariation({
     this.id,
     this.hashId,
+    this.name,
     this.menuItemId,
     this.quantity,
     this.purchaseUnit,
@@ -32,6 +34,7 @@ class MenuItemVariation extends Equatable {
   MenuItemVariation copyWith({
     int? id,
     String? hashId,
+    String? name,
     int? menuItemId,
     int? quantity,
     String? purchaseUnit,
@@ -46,6 +49,7 @@ class MenuItemVariation extends Equatable {
     return MenuItemVariation(
       id: id ?? this.id,
       hashId: hashId ?? this.hashId,
+      name: name ?? this.name,
       menuItemId: menuItemId ?? this.menuItemId,
       quantity: quantity ?? this.quantity,
       purchaseUnit: purchaseUnit ?? this.purchaseUnit,
@@ -63,6 +67,7 @@ class MenuItemVariation extends Equatable {
   List<Object?> get props => [
     id,
     hashId,
+    name,
     menuItemId,
     quantity,
     purchaseUnit,
