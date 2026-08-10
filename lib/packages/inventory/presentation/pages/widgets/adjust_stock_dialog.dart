@@ -1,6 +1,9 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import '../../../../inventory/domain/entities/inventory_item.dart';
 import '../../bloc/inventory_bloc.dart';
 import '../../bloc/inventory_event.dart';
@@ -223,15 +226,21 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                                   track: shared.TrackConstants.commonTrack,
                                 ) ??
                                 'Record updated successfully.',
-                            titleIcon: const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                              size: 50,
+                            titleIcon: Lottie.asset(
+                              MediaQuery.of(rootContext).platformBrightness ==
+                                      Brightness.light
+                                  ? Assets.lottie.doneLightBrownColor
+                                  : Assets.lottie.doneBrownColor,
+                              repeat: false,
                             ),
                           );
                         }
                       },
                       onError: (error) {
+                        core.PlatformUtils.debugLog(
+                          AdjustStockDialog,
+                          'AdjustStockDialog:onError: $error',
+                        );
                         if (rootContext.mounted) {
                           shared.DialogUtils.showAutoDismissDialog(
                             context: rootContext,
@@ -249,10 +258,12 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                                             shared.TrackConstants.commonTrack,
                                       ) ??
                                       'An error occurred.'),
-                            titleIcon: const Icon(
-                              Icons.error,
-                              color: Colors.red,
-                              size: 50,
+                            titleIcon: Lottie.asset(
+                              MediaQuery.of(rootContext).platformBrightness ==
+                                      Brightness.light
+                                  ? Assets.lottie.errorLightLoaderIcon
+                                  : Assets.lottie.errorDarkLoaderIcon,
+                              repeat: false,
                             ),
                           );
                         }

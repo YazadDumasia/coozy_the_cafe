@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
@@ -56,15 +58,21 @@ class PurchaseListScreenActions {
                         track: shared.TrackConstants.purchasePageTrack,
                       ) ??
                       'Purchase record added successfully.',
-                  titleIcon: const Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                    size: 50,
+                  titleIcon: Lottie.asset(
+                    MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
+                        ? Assets.lottie.doneLightBrownColor
+                        : Assets.lottie.doneBrownColor,
+                    repeat: false,
                   ),
                 );
               }
             },
             onError: (error) {
+              core.PlatformUtils.debugLog(
+                PurchaseListScreenActions,
+                'AddPurchaseRecord:onError: $error',
+              );
               if (context.mounted) {
                 Navigator.pop(context); // Pop loading dialog
                 shared.DialogUtils.showAutoDismissDialog(
@@ -82,10 +90,12 @@ class PurchaseListScreenActions {
                               track: shared.TrackConstants.commonTrack,
                             ) ??
                             'An error occurred.'),
-                  titleIcon: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                    size: 50,
+                  titleIcon: Lottie.asset(
+                    MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
+                        ? Assets.lottie.errorLightLoaderIcon
+                        : Assets.lottie.errorDarkLoaderIcon,
+                    repeat: false,
                   ),
                 );
               }
@@ -113,15 +123,21 @@ class PurchaseListScreenActions {
                         track: shared.TrackConstants.purchasePageTrack,
                       ) ??
                       'Purchase record updated successfully.',
-                  titleIcon: const Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                    size: 50,
+                  titleIcon: Lottie.asset(
+                    MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
+                        ? Assets.lottie.doneLightBrownColor
+                        : Assets.lottie.doneBrownColor,
+                    repeat: false,
                   ),
                 );
               }
             },
             onError: (error) {
+              core.PlatformUtils.debugLog(
+                PurchaseListScreenActions,
+                'UpdatePurchaseRecord:onError: $error',
+              );
               if (context.mounted) {
                 Navigator.pop(context); // Pop loading dialog
                 shared.DialogUtils.showAutoDismissDialog(
@@ -139,10 +155,12 @@ class PurchaseListScreenActions {
                               track: shared.TrackConstants.commonTrack,
                             ) ??
                             'An error occurred.'),
-                  titleIcon: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                    size: 50,
+                  titleIcon: Lottie.asset(
+                    MediaQuery.of(context).platformBrightness ==
+                            Brightness.light
+                        ? Assets.lottie.errorLightLoaderIcon
+                        : Assets.lottie.errorDarkLoaderIcon,
+                    repeat: false,
                   ),
                 );
               }
@@ -222,15 +240,21 @@ class PurchaseListScreenActions {
                           track: shared.TrackConstants.purchasePageTrack,
                         ) ??
                         'Purchase record deleted successfully.',
-                    titleIcon: const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: 50,
+                    titleIcon: Lottie.asset(
+                      MediaQuery.of(context).platformBrightness ==
+                              Brightness.light
+                          ? Assets.lottie.doneLightBrownColor
+                          : Assets.lottie.doneBrownColor,
+                      repeat: false,
                     ),
                   );
                 }
               },
               onError: (error) {
+                core.PlatformUtils.debugLog(
+                  PurchaseListScreenActions,
+                  'DeletePurchaseRecord:onError: $error',
+                );
                 if (context.mounted) {
                   Navigator.pop(context);
                   shared.DialogUtils.showAutoDismissDialog(
@@ -248,10 +272,12 @@ class PurchaseListScreenActions {
                                 track: shared.TrackConstants.commonTrack,
                               ) ??
                               'An error occurred.'),
-                    titleIcon: const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                      size: 50,
+                    titleIcon: Lottie.asset(
+                      MediaQuery.of(context).platformBrightness ==
+                              Brightness.light
+                          ? Assets.lottie.errorLightLoaderIcon
+                          : Assets.lottie.errorDarkLoaderIcon,
+                      repeat: false,
                     ),
                   );
                 }

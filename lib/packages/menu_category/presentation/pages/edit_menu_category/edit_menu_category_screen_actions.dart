@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/edit_menu_category_bloc/edit_menu_category_bloc.dart';
 
@@ -30,15 +33,20 @@ class EditMenuCategoryScreenActions {
                       track: shared.TrackConstants.commonTrack,
                     ) ??
                     'Record updated successfully.',
-                titleIcon: const Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 50,
+                titleIcon: Lottie.asset(
+                  MediaQuery.of(context).platformBrightness == Brightness.light
+                      ? Assets.lottie.doneLightBrownColor
+                      : Assets.lottie.doneBrownColor,
+                  repeat: false,
                 ),
               );
             }
           },
           onError: (error) {
+            core.PlatformUtils.debugLog(
+              EditMenuCategoryScreenActions,
+              'handleSaveCategory:onError: $error',
+            );
             if (context.mounted) {
               shared.DialogUtils.showAutoDismissDialog(
                 context: context,
@@ -55,7 +63,12 @@ class EditMenuCategoryScreenActions {
                             track: shared.TrackConstants.commonTrack,
                           ) ??
                           'An error occurred.'),
-                titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
+                titleIcon: Lottie.asset(
+                  MediaQuery.of(context).platformBrightness == Brightness.light
+                      ? Assets.lottie.errorLightLoaderIcon
+                      : Assets.lottie.errorDarkLoaderIcon,
+                  repeat: false,
+                ),
               );
             }
           },

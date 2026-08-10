@@ -12,7 +12,7 @@ class TableGridItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      key: ValueKey(model.id ?? index),
+      // key: ValueKey(model.id ?? index),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
       elevation: 3,
       child: Stack(

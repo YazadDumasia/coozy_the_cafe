@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get_it/get_it.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
 import 'package:coozy_the_cafe/packages/recipes/domain/usecases/recipes_usecases.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
@@ -84,10 +87,11 @@ class AddEditRecipeScreenActions {
                   track: shared.TrackConstants.recipesTrack,
                 ) ??
                 'Recipe updated successfully.',
-            titleIcon: const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 50,
+            titleIcon: Lottie.asset(
+              MediaQuery.of(context).platformBrightness == Brightness.light
+                  ? Assets.lottie.doneLightBrownColor
+                  : Assets.lottie.doneBrownColor,
+              repeat: false,
             ),
           );
           Navigator.pop(context, true);
@@ -109,16 +113,21 @@ class AddEditRecipeScreenActions {
                   track: shared.TrackConstants.recipesTrack,
                 ) ??
                 'Recipe added successfully.',
-            titleIcon: const Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 50,
+            titleIcon: Lottie.asset(
+              MediaQuery.of(context).platformBrightness == Brightness.light
+                  ? Assets.lottie.doneLightBrownColor
+                  : Assets.lottie.doneBrownColor,
+              repeat: false,
             ),
           );
           Navigator.pop(context, true);
         }
       }
     } catch (e) {
+      core.PlatformUtils.debugLog(
+        AddEditRecipeScreenActions,
+        'saveRecipe:onError: $e',
+      );
       if (context.mounted) {
         shared.DialogUtils.showAutoDismissDialog(
           context: context,
@@ -135,7 +144,12 @@ class AddEditRecipeScreenActions {
                 track: shared.TrackConstants.recipesTrack,
               ) ??
               'Failed to save recipe: $e',
-          titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
+          titleIcon: Lottie.asset(
+            MediaQuery.of(context).platformBrightness == Brightness.light
+                ? Assets.lottie.errorLightLoaderIcon
+                : Assets.lottie.errorDarkLoaderIcon,
+            repeat: false,
+          ),
         );
       }
     }

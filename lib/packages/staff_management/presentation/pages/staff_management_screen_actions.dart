@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class StaffManagementActions {
@@ -13,16 +16,21 @@ class StaffManagementActions {
             ) ??
             'Success',
         descriptions: message,
-        titleIcon: const Icon(
-          Icons.check_circle,
-          color: Colors.green,
-          size: 50,
+        titleIcon: Lottie.asset(
+          MediaQuery.of(context).platformBrightness == Brightness.light
+              ? Assets.lottie.doneLightBrownColor
+              : Assets.lottie.doneBrownColor,
+          repeat: false,
         ),
       );
     }
   }
 
   static void showErrorDialog(BuildContext context, String errorMessage) {
+    core.PlatformUtils.debugLog(
+      StaffManagementActions,
+      'showErrorDialog:onError: $errorMessage',
+    );
     if (context.mounted) {
       final defaultError =
           context.tr(
@@ -39,7 +47,12 @@ class StaffManagementActions {
             ) ??
             'Error',
         descriptions: errorMessage.isNotEmpty ? errorMessage : defaultError,
-        titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
+        titleIcon: Lottie.asset(
+          MediaQuery.of(context).platformBrightness == Brightness.light
+              ? Assets.lottie.errorLightLoaderIcon
+              : Assets.lottie.errorDarkLoaderIcon,
+          repeat: false,
+        ),
       );
     }
   }

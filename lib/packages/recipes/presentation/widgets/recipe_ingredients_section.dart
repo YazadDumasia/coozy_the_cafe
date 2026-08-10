@@ -1,5 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:translator/translator.dart';
 import 'package:coozy_the_cafe/packages/recipes/data/models/translator_language_model.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
@@ -367,7 +370,11 @@ class _RecipeIngredientsSectionState extends State<RecipeIngredientsSection> {
             Navigator.pop(context);
             widget.stateHolder.updateIngredientsText(value.text);
           });
-    } on SocketException {
+    } on SocketException catch (e) {
+      core.PlatformUtils.debugLog(
+        RecipeIngredientsSection,
+        'translateIngredients:SocketException: $e',
+      );
       if (!mounted) return;
       Navigator.pop(context);
       shared.DialogUtils.showAutoDismissDialog(
@@ -384,9 +391,18 @@ class _RecipeIngredientsSectionState extends State<RecipeIngredientsSection> {
               track: shared.TrackConstants.recipesTrack,
             ) ??
             'Internet not Connected',
-        titleIcon: const Icon(Icons.wifi_off, color: Colors.red, size: 50),
+        titleIcon: Lottie.asset(
+          MediaQuery.of(context).platformBrightness == Brightness.light
+              ? Assets.lottie.errorLightLoaderIcon
+              : Assets.lottie.errorDarkLoaderIcon,
+          repeat: false,
+        ),
       );
     } catch (e) {
+      core.PlatformUtils.debugLog(
+        RecipeIngredientsSection,
+        'translateIngredients:onError: $e',
+      );
       if (!mounted) return;
       Navigator.pop(context);
       shared.DialogUtils.showAutoDismissDialog(
@@ -403,7 +419,12 @@ class _RecipeIngredientsSectionState extends State<RecipeIngredientsSection> {
               track: shared.TrackConstants.recipesTrack,
             ) ??
             'Failed to translate content. Please try again',
-        titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
+        titleIcon: Lottie.asset(
+          MediaQuery.of(context).platformBrightness == Brightness.light
+              ? Assets.lottie.errorLightLoaderIcon
+              : Assets.lottie.errorDarkLoaderIcon,
+          repeat: false,
+        ),
       );
     }
   }

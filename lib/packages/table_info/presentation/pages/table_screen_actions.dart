@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/table_info/domain/entities/table_info.dart';
@@ -103,7 +104,6 @@ class TableScreenActions {
             if (context.mounted) {
               Navigator.pop(context); // Pop loading dialog
               shared.DialogUtils.showAutoDismissDialog(
-                showDuration: const Duration(minutes: 3),
                 context: context,
                 descriptions:
                     context.tr(
@@ -122,6 +122,10 @@ class TableScreenActions {
             }
           },
           onError: (error) {
+            core.PlatformUtils.debugLog(
+              TableScreenActions,
+              'onDeleteTable:onError: $error',
+            );
             if (context.mounted) {
               Navigator.pop(context); // Pop loading dialog
               shared.DialogUtils.showAutoDismissDialog(
@@ -196,6 +200,10 @@ class TableScreenActions {
                 }
               },
               onError: (error) {
+                core.PlatformUtils.debugLog(
+                  TableScreenActions,
+                  'onUpdateModel:onError: $error',
+                );
                 if (context.mounted) {
                   Navigator.pop(context); // Pop loading dialog
                   shared.DialogUtils.showAutoDismissDialog(
@@ -269,6 +277,10 @@ class TableScreenActions {
                 }
               },
               onError: (error) {
+                core.PlatformUtils.debugLog(
+                  TableScreenActions,
+                  'addNewTableInfo:onError: $error',
+                );
                 if (dialogContext.mounted) {
                   Navigator.pop(dialogContext); // Pop loading dialog
                   shared.DialogUtils.showAutoDismissDialog(

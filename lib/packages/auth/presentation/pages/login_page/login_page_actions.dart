@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter/services.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as share;
@@ -80,6 +82,10 @@ class LoginPageActions {
           }
         },
         onError: (error) {
+          core.PlatformUtils.debugLog(
+            LoginPageActions,
+            'submitLogin:onError: $error',
+          );
           if (context.mounted) {
             share.DialogUtils.showAutoDismissDialog(
               context: context,
@@ -96,7 +102,12 @@ class LoginPageActions {
                           track: share.TrackConstants.commonTrack,
                         ) ??
                         'An error occurred.'),
-              titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
+              titleIcon: Lottie.asset(
+                MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? Assets.lottie.errorLightLoaderIcon
+                    : Assets.lottie.errorDarkLoaderIcon,
+                repeat: false,
+              ),
             );
           }
         },

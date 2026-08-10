@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
@@ -64,15 +66,21 @@ class MenuSubcategoryFullListScreenActions {
                             track: shared.TrackConstants.commonTrack,
                           ) ??
                           'Record updated successfully.',
-                      titleIcon: const Icon(
-                        Icons.check_circle,
-                        color: Colors.green,
-                        size: 50,
+                      titleIcon: Lottie.asset(
+                        MediaQuery.of(context).platformBrightness ==
+                                Brightness.light
+                            ? Assets.lottie.doneLightBrownColor
+                            : Assets.lottie.doneBrownColor,
+                        repeat: false,
                       ),
                     );
                   }
                 },
                 onError: (error) {
+                  core.PlatformUtils.debugLog(
+                    MenuSubcategoryFullListScreenActions,
+                    'MenuSubcategoryUpdateDialog:onError: $error',
+                  );
                   if (context.mounted) {
                     Navigator.pop(context); // Pop loading dialog
                     shared.DialogUtils.showAutoDismissDialog(
@@ -89,10 +97,12 @@ class MenuSubcategoryFullListScreenActions {
                             track: shared.TrackConstants.commonTrack,
                           ) ??
                           'Failed to update the record.',
-                      titleIcon: const Icon(
-                        Icons.error,
-                        color: Colors.red,
-                        size: 50,
+                      titleIcon: Lottie.asset(
+                        MediaQuery.of(context).platformBrightness ==
+                                Brightness.light
+                            ? Assets.lottie.errorLightLoaderIcon
+                            : Assets.lottie.errorDarkLoaderIcon,
+                        repeat: false,
                       ),
                     );
                   }
@@ -127,15 +137,20 @@ class MenuSubcategoryFullListScreenActions {
               descriptions: isEnable
                   ? 'Your selected sub-category has been activated.'
                   : 'Your selected sub-category has been deactivated.',
-              titleIcon: const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 50,
+              titleIcon: Lottie.asset(
+                MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? Assets.lottie.doneLightBrownColor
+                    : Assets.lottie.doneBrownColor,
+                repeat: false,
               ),
             );
           }
         },
         onError: (error) {
+          core.PlatformUtils.debugLog(
+            MenuSubcategoryFullListScreenActions,
+            'handleToggleSubcategory:onError: $error',
+          );
           if (context.mounted) {
             shared.DialogUtils.showAutoDismissDialog(
               context: context,
@@ -151,7 +166,12 @@ class MenuSubcategoryFullListScreenActions {
                     track: shared.TrackConstants.commonTrack,
                   ) ??
                   'Failed to update sub-category status.',
-              titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
+              titleIcon: Lottie.asset(
+                MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? Assets.lottie.errorLightLoaderIcon
+                    : Assets.lottie.errorDarkLoaderIcon,
+                repeat: false,
+              ),
             );
           }
         },
@@ -211,15 +231,22 @@ class MenuSubcategoryFullListScreenActions {
                               track: shared.TrackConstants.commonTrack,
                             ) ??
                             'Record deleted successfully.',
-                        titleIcon: const Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                          size: 50,
+                        showDuration: const Duration(seconds: 3),
+                        titleIcon: Lottie.asset(
+                          MediaQuery.of(context).platformBrightness ==
+                                  Brightness.light
+                              ? Assets.lottie.doneLightBrownColor
+                              : Assets.lottie.doneBrownColor,
+                          repeat: false,
                         ),
                       );
                     }
                   },
                   onError: (error) {
+                    core.PlatformUtils.debugLog(
+                      MenuSubcategoryFullListScreenActions,
+                      'handleDeleteSubcategory:onError: $error',
+                    );
                     if (context.mounted) {
                       shared.DialogUtils.showAutoDismissDialog(
                         context: context,
@@ -236,10 +263,12 @@ class MenuSubcategoryFullListScreenActions {
                                     track: shared.TrackConstants.commonTrack,
                                   ) ??
                                   'An error occurred.'),
-                        titleIcon: const Icon(
-                          Icons.error,
-                          color: Colors.red,
-                          size: 50,
+                        titleIcon: Lottie.asset(
+                          MediaQuery.of(context).platformBrightness ==
+                                  Brightness.light
+                              ? Assets.lottie.errorLightLoaderIcon
+                              : Assets.lottie.errorDarkLoaderIcon,
+                          repeat: false,
                         ),
                       );
                     }

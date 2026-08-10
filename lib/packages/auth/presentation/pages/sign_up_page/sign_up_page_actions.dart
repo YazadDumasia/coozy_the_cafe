@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as share;
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/sign_up_page/cubit/sign_up_cubit.dart';
@@ -122,15 +124,20 @@ class SignUpPageActions {
                     track: share.TrackConstants.signUpTrack,
                   ) ??
                   'Registration completed successfully!',
-              titleIcon: const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 50,
+              titleIcon: Lottie.asset(
+                MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? Assets.lottie.doneLightBrownColor
+                    : Assets.lottie.doneBrownColor,
+                repeat: false,
               ),
             );
           }
         },
         onError: (error) {
+          core.PlatformUtils.debugLog(
+            SignUpPageActions,
+            'submitSignUp:onError: $error',
+          );
           if (context.mounted) {
             share.DialogUtils.showAutoDismissDialog(
               context: context,
@@ -147,7 +154,12 @@ class SignUpPageActions {
                           track: share.TrackConstants.commonTrack,
                         ) ??
                         'An error occurred.'),
-              titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
+              titleIcon: Lottie.asset(
+                MediaQuery.of(context).platformBrightness == Brightness.light
+                    ? Assets.lottie.errorLightLoaderIcon
+                    : Assets.lottie.errorDarkLoaderIcon,
+                repeat: false,
+              ),
             );
           }
         },
