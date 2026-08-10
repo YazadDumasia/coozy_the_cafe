@@ -64,7 +64,7 @@ class PurchaseLocalDataSourceImpl implements PurchaseLocalDataSource {
           .toList();
     }
     final paged = filtered.skip(offset).take(limit).toList();
-    
+
     final List<PurchaseRecordModel> result = [];
     for (final record in paged) {
       double currentStock = 0.0;
@@ -72,9 +72,11 @@ class PurchaseLocalDataSourceImpl implements PurchaseLocalDataSource {
         final item = await _inventoryDao.getInventoryById(record.inventoryId!);
         currentStock = item?.currentStock ?? 0.0;
       }
-      result.add(PurchaseRecordModel.fromData(record, currentStock: currentStock));
+      result.add(
+        PurchaseRecordModel.fromData(record, currentStock: currentStock),
+      );
     }
-    
+
     return result;
   }
 

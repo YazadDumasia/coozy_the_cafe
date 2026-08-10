@@ -133,7 +133,10 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
             widget.existingRecord?.createdDate ??
             DateTime.now().toIso8601String(),
         modifiedDate: DateTime.now().toIso8601String(),
-        currentStock: _calculateFinalQty(_qtyController.text, _isIncrementNotifier.value),
+        currentStock: _calculateFinalQty(
+          _qtyController.text,
+          _isIncrementNotifier.value,
+        ),
       );
 
       Navigator.pop(context, record);
