@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/usecases/inventory_usecases.dart';
+import '../../../domain/usecases/inventory_usecases.dart';
 import 'inventory_event.dart';
 import 'inventory_state.dart';
-import '../../../shared/l10n/locale_keys.dart';
-import '../../../shared/coozy_shared.dart' as shared;
+import '../../../../shared/l10n/locale_keys.dart';
+import '../../../../shared/coozy_shared.dart' as shared;
 
 class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
   final GetInventoryItemsUseCase getInventoryItemsUseCase;
@@ -59,7 +59,17 @@ class InventoryBloc extends Bloc<InventoryEvent, InventoryState> {
     try {
       await updateInventoryItemUseCase(event.item);
       event.onSuccess?.call();
-      add(LoadInventoryItems());
+      if (state is InventoryLoaded) {
+        final currentItems = (state as InventoryLoaded).items;
+        final updatedList = currentItems.map((item) {
+          return item.id == event.item.id ? event.item : item;
+        }).toList();
+        shared.SuspensionUtil.sortListBySuspensionTag(updatedList);
+        shared.SuspensionUtil.setShowSuspensionStatus(updatedList);
+        emit(InventoryLoaded(updatedList));
+      } else {
+        add(LoadInventoryItems());
+      }
     } catch (e) {
       event.onError?.call(LocaleKeys.crudErrorUpdate);
       emit(InventoryError(e.toString()));

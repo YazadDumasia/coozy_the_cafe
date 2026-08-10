@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
 import 'package:coozy_the_cafe/packages/purchase/domain/entities/purchase_record.dart';
@@ -69,8 +70,42 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
       lastDate: DateTime.now(),
     );
     if (date != null) {
-      _selectedDateNotifier.value = date;
+      if (!mounted) return;
+      final time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_selectedDateNotifier.value),
+      );
+      if (time != null) {
+        _selectedDateNotifier.value = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          time.hour,
+          time.minute,
+        );
+      } else {
+        _selectedDateNotifier.value = DateTime(
+          date.year,
+          date.month,
+          date.day,
+          _selectedDateNotifier.value.hour,
+          _selectedDateNotifier.value.minute,
+        );
+      }
     }
+  }
+
+  double _calculateFinalQty(String input, bool isIncrement) {
+    final currentStock = widget.item.currentStock ?? 0.0;
+    final enteredQty = double.tryParse(input.trim()) ?? 0.0;
+    final qtyChange = isIncrement ? enteredQty : -enteredQty;
+
+    if (widget.existingRecord != null) {
+      final oldQty = widget.existingRecord!.purchaseQty ?? 0.0;
+      return currentStock - oldQty + qtyChange;
+    }
+
+    return currentStock + qtyChange;
   }
 
   void _submit() {
@@ -98,6 +133,7 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
             widget.existingRecord?.createdDate ??
             DateTime.now().toIso8601String(),
         modifiedDate: DateTime.now().toIso8601String(),
+        currentStock: _calculateFinalQty(_qtyController.text, _isIncrementNotifier.value),
       );
 
       Navigator.pop(context, record);
@@ -115,163 +151,235 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
       ),
       child: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              widget.existingRecord == null
-                  ? context.tr(
-                          shared.LocaleKeys.purchaseAddStock,
-                          track: shared.TrackConstants.purchasePageTrack,
-                          params: {"item_name": widget.item.name ?? ""},
-                        ) ??
-                        'Add Stock: ${widget.item.name}'
-                  : context.tr(
-                          shared.LocaleKeys.purchaseEditStock,
-                          track: shared.TrackConstants.purchasePageTrack,
-                          params: {"item_name": widget.item.name ?? ""},
-                        ) ??
-                        'Edit Stock: ${widget.item.name}',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            ValueListenableBuilder<bool>(
-              valueListenable: _isIncrementNotifier,
-              builder: (context, isIncrement, child) {
-                return SegmentedButton<bool>(
-                  segments: [
-                    ButtonSegment<bool>(
-                      value: true,
-                      label: Text(
-                        context.tr(
-                              shared.LocaleKeys.purchaseIncrement,
-                              track: shared.TrackConstants.purchasePageTrack,
-                            ) ??
-                            'Increment',
-                      ),
-                      icon: Icon(Icons.add),
-                    ),
-                    ButtonSegment<bool>(
-                      value: false,
-                      label: Text(
-                        context.tr(
-                              shared.LocaleKeys.purchaseDecrement,
-                              track: shared.TrackConstants.purchasePageTrack,
-                            ) ??
-                            'Decrement',
-                      ),
-                      icon: Icon(Icons.remove),
-                    ),
-                  ],
-                  selected: {isIncrement},
-                  onSelectionChanged: (Set<bool> newSelection) {
-                    _isIncrementNotifier.value = newSelection.first;
-                  },
-                );
-              },
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _qtyController,
-              decoration: InputDecoration(
-                labelText:
-                    context.tr(
-                      shared.LocaleKeys.purchaseQuantityLabelText,
-                      track: shared.TrackConstants.purchasePageTrack,
-                    ) ??
-                    'Quantity',
-                hintText:
-                    context.tr(
-                      shared.LocaleKeys.purchaseQuantityHintText,
-                      track: shared.TrackConstants.purchasePageTrack,
-                      params: {
-                        "purchase_unit": widget.item.purchaseUnit ?? 'units',
-                      },
-                    ) ??
-                    'Quantity (${widget.item.purchaseUnit ?? 'units'})',
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                widget.existingRecord == null
+                    ? context.tr(
+                            shared.LocaleKeys.purchaseAddStock,
+                            track: shared.TrackConstants.purchasePageTrack,
+                            params: {"item_name": widget.item.name ?? ""},
+                          ) ??
+                          'Add Stock: ${widget.item.name}'
+                    : context.tr(
+                            shared.LocaleKeys.purchaseEditStock,
+                            track: shared.TrackConstants.purchasePageTrack,
+                            params: {"item_name": widget.item.name ?? ""},
+                          ) ??
+                          'Edit Stock: ${widget.item.name}',
+                style: Theme.of(context).textTheme.titleLarge,
               ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
+              const SizedBox(height: 16),
+              ValueListenableBuilder<bool>(
+                valueListenable: _isIncrementNotifier,
+                builder: (context, isIncrement, child) {
+                  return SegmentedButton<bool>(
+                    segments: [
+                      ButtonSegment<bool>(
+                        value: true,
+                        label: Text(
+                          context.tr(
+                                shared.LocaleKeys.purchaseIncrement,
+                                track: shared.TrackConstants.purchasePageTrack,
+                              ) ??
+                              'Increment',
+                        ),
+                        icon: Icon(Icons.add),
+                      ),
+                      ButtonSegment<bool>(
+                        value: false,
+                        label: Text(
+                          context.tr(
+                                shared.LocaleKeys.purchaseDecrement,
+                                track: shared.TrackConstants.purchasePageTrack,
+                              ) ??
+                              'Decrement',
+                        ),
+                        icon: Icon(Icons.remove),
+                      ),
+                    ],
+                    selected: {isIncrement},
+                    onSelectionChanged: (Set<bool> newSelection) {
+                      _isIncrementNotifier.value = newSelection.first;
+                    },
+                  );
+                },
               ),
-              validator: (val) {
-                if (val == null || val.isEmpty) {
-                  return context.tr(
-                        shared.LocaleKeys.commonRequired,
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _qtyController,
+                decoration: InputDecoration(
+                  labelText:
+                      context.tr(
+                        shared.LocaleKeys.purchaseQuantityLabelText,
+                        track: shared.TrackConstants.purchasePageTrack,
+                      ) ??
+                      'Quantity',
+                  hintText:
+                      context.tr(
+                        shared.LocaleKeys.purchaseQuantityHintText,
+                        track: shared.TrackConstants.purchasePageTrack,
+                        params: {
+                          "purchaseUnit": widget.item.purchaseUnit ?? 'units',
+                        },
+                      ) ??
+                      'Quantity (${widget.item.purchaseUnit ?? 'units'})',
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                ],
+                validator: (val) {
+                  if (val == null || val.trim().isEmpty) {
+                    return context.tr(
+                          shared.LocaleKeys.commonRequired,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Required';
+                  }
+                  final parsed = double.tryParse(val.trim());
+                  if (parsed == null) {
+                    return context.tr(
+                          shared.LocaleKeys.inventoryAddEditDailogMustBeNumber,
+                          track: shared.TrackConstants.inventoryPageTrack,
+                        ) ??
+                        'Must be a valid number';
+                  }
+                  if (parsed <= 0) {
+                    return context.tr(
+                          shared.LocaleKeys.commonErrorMsg,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Must be greater than 0';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              TextFormField(
+                controller: _priceController,
+                decoration: InputDecoration(
+                  labelText:
+                      context.tr(
+                        shared.LocaleKeys.purchaseTotalPrice,
+                        track: shared.TrackConstants.purchasePageTrack,
+                      ) ??
+                      'Total Price',
+                  hintText:
+                      context.tr(
+                        shared.LocaleKeys.purchaseTotalPrice,
+                        track: shared.TrackConstants.purchasePageTrack,
+                      ) ??
+                      'Total Price',
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                ],
+                validator: (val) {
+                  if (val == null || val.trim().isEmpty) {
+                    return context.tr(
+                          shared.LocaleKeys.commonRequired,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Required';
+                  }
+                  final parsed = double.tryParse(val.trim());
+                  if (parsed == null) {
+                    return context.tr(
+                          shared.LocaleKeys.inventoryAddEditDailogMustBeNumber,
+                          track: shared.TrackConstants.inventoryPageTrack,
+                        ) ??
+                        'Must be a valid number';
+                  }
+                  if (parsed < 0) {
+                    return context.tr(
+                          shared.LocaleKeys.commonErrorMsg,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Must be 0 or greater';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 16),
+              ListTile(
+                title: Text(
+                  context.tr(
+                        shared.LocaleKeys.purchaseDate,
+                        track: shared.TrackConstants.purchasePageTrack,
+                      ) ??
+                      'Date',
+                ),
+                subtitle: Text(
+                  core.DateUtil.localFormatDateTime(
+                        _selectedDateNotifier.value,
+                        core.DateUtil.dateFormat16,
+                      ) ??
+                      '',
+                ),
+                trailing: Icon(Icons.calendar_today),
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(color: Colors.grey.shade400),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                onTap: _pickDate,
+              ),
+              SizedBox(height: 16),
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: _qtyController,
+                builder: (context, qtyValue, child) {
+                  return ValueListenableBuilder<bool>(
+                    valueListenable: _isIncrementNotifier,
+                    builder: (context, isIncrement, child) {
+                      final currentStock = widget.item.currentStock ?? 0.0;
+                      final finalQty = _calculateFinalQty(
+                        qtyValue.text,
+                        isIncrement,
+                      );
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Current Stock: ${currentStock.toStringAsFixed(2)} ${widget.item.purchaseUnit ?? ""}',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ).inExpandedRow(),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Final Quantity: ${finalQty.toStringAsFixed(2)} ${widget.item.purchaseUnit ?? ""}',
+                            style: Theme.of(context).textTheme.titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: finalQty < 0 ? Colors.red : null,
+                                ),
+                          ).inExpandedRow(),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
+              SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: _submit,
+                child: Text(
+                  context.tr(
+                        shared.LocaleKeys.commonSave,
                         track: shared.TrackConstants.commonTrack,
                       ) ??
-                      'Required';
-                }
-
-                return null;
-              },
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              controller: _priceController,
-              decoration: InputDecoration(
-                labelText:
-                    context.tr(
-                      shared.LocaleKeys.purchaseTotalPrice,
-                      track: shared.TrackConstants.purchasePageTrack,
-                    ) ??
-                    'Total Price',
-                hintText:
-                    context.tr(
-                      shared.LocaleKeys.purchaseTotalPrice,
-                      track: shared.TrackConstants.purchasePageTrack,
-                    ) ??
-                    'Total Price',
+                      'Save',
+                ),
               ),
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
-              ),
-              validator: (val) {
-                if (val == null || val.isEmpty) {
-                  return context.tr(
-                        shared.LocaleKeys.commonRequired,
-                        track: shared.TrackConstants.commonTrack,
-                      ) ??
-                      'Required';
-                }
-                return null;
-              },
-            ),
-            SizedBox(height: 16),
-            ListTile(
-              title: Text(
-                context.tr(
-                      shared.LocaleKeys.purchaseDate,
-                      track: shared.TrackConstants.purchasePageTrack,
-                    ) ??
-                    'Date',
-              ),
-              subtitle: Text(
-                core.DateUtil.localFormatDateTime(
-                      _selectedDateNotifier.value,
-                      core.DateUtil.dateFormat9,
-                    ) ??
-                    '',
-              ),
-              trailing: Icon(Icons.calendar_today),
-              shape: RoundedRectangleBorder(
-                side: BorderSide(color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              onTap: _pickDate,
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: _submit,
-              child: Text(
-                context.tr(
-                      shared.LocaleKeys.commonSave,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    'Save',
-              ),
-            ),
-            SizedBox(height: 16),
-          ],
+              SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );

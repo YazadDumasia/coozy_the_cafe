@@ -4,8 +4,8 @@ import 'data/datasources/inventory_local_data_source.dart';
 import 'data/repositories/inventory_repository_impl.dart';
 import 'domain/repositories/inventory_repository.dart';
 import 'domain/usecases/inventory_usecases.dart';
-import 'presentation/bloc/inventory_bloc.dart';
-import 'presentation/bloc/inventory_picker_bloc.dart';
+import 'presentation/bloc/inventroy_bloc/inventory_bloc.dart';
+import 'presentation/bloc/inventory_picker_bloc/inventory_picker_bloc.dart';
 
 void registerInventoryDependencies(GetIt sl) {
   // Data sources

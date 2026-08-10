@@ -429,7 +429,15 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                   ],
                 );
               } else if (state is MenuItemError) {
-                return Center(child: Text('Error: ${state.message}'));
+                return Center(
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.commonErrorMsg,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Error: ${state.message}',
+                  ),
+                );
               }
               return const SizedBox.shrink();
             },

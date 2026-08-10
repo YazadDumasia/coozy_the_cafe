@@ -23,21 +23,35 @@ class PurchaseListItem extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
-        title: Text(
-          '${record.name} - ${qty > 0 ? (context.tr(shared.LocaleKeys.purchaseIncrement, track: shared.TrackConstants.purchasePageTrack) ?? "Increment") : (context.tr(shared.LocaleKeys.purchaseDecrement, track: shared.TrackConstants.purchasePageTrack) ?? "Decrement")}',
+        leading: CircleAvatar(
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.primary.withValues(alpha: 0.2),
+          child: Icon(
+            qty > 0
+                ? Icons.arrow_circle_up_outlined
+                : Icons.arrow_circle_down_outlined,
+            color: qty > 0 ? Colors.green : Colors.red,
+            size: 30,
+          ),
         ),
+        title: Text(record.name ?? '').inExpandedRow(),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '${context.tr(shared.LocaleKeys.purchaseQuantityLabelText, track: shared.TrackConstants.purchasePageTrack) ?? "Quantity"}: ${qty.abs()} ${record.purchaseUnit ?? ""}',
-            ),
+            ).inExpandedRow(),
             Text(
               '${context.tr(shared.LocaleKeys.purchaseTotalPrice, track: shared.TrackConstants.purchasePageTrack) ?? "Total Price"}: \$${record.purchasePrice?.toStringAsFixed(2) ?? "0.00"}',
-            ),
+            ).inExpandedRow(),
             Text(
               '${context.tr(shared.LocaleKeys.purchaseDate, track: shared.TrackConstants.purchasePageTrack) ?? "Date"}: $dateStr',
-            ),
+            ).inExpandedRow(),
+            if (record.inventoryId != null)
+              Text(
+                'Current Stock: ${record.currentStock ?? 0.0} ${record.purchaseUnit ?? ""}',
+              ).inExpandedRow(),
           ],
         ),
         isThreeLine: true,

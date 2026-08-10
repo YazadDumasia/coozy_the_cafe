@@ -1,5 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/usecases/inventory_usecases.dart';
+import '../../../domain/usecases/inventory_usecases.dart';
 import 'inventory_picker_event.dart';
 import 'inventory_picker_state.dart';
 

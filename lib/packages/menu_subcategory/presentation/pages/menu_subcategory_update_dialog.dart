@@ -68,17 +68,35 @@ class _MenuSubcategoryUpdateDialogState
                   child: TextFormField(
                     controller: _subCategoryNameController,
                     focusNode: _subCategoryNameFocusNode,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       floatingLabelBehavior: FloatingLabelBehavior.never,
-                      labelText: 'Sub-category Name',
-                      hintText: 'Enter sub-category name',
+                      labelText:
+                          context.tr(
+                            shared.LocaleKeys.addNewMenuSubCategoryLabelText,
+                            track:
+                                shared.TrackConstants.menuSubCategoryPageTrack,
+                          ) ??
+                          'Sub-category Name',
+                      hintText:
+                          context.tr(
+                            shared.LocaleKeys.addNewMenuSubCategoryHintText,
+                            track:
+                                shared.TrackConstants.menuSubCategoryPageTrack,
+                          ) ??
+                          'Enter sub-category name',
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.done,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Sub-category name is required.';
+                        return context.tr(
+                              shared.LocaleKeys.addNewMenuSubCategoryErrorText,
+                              track: shared
+                                  .TrackConstants
+                                  .menuSubCategoryPageTrack,
+                            ) ??
+                            'Sub-category name is required.';
                       } else {
                         return null;
                       }
@@ -133,14 +151,26 @@ class _MenuSubcategoryUpdateDialogState
                         ),
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         borderRadius: BorderRadius.circular(10),
-                        children: const <Widget>[
+                        children: <Widget>[
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Text('Active'),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              context.tr(
+                                    shared.LocaleKeys.commonActive,
+                                    track: shared.TrackConstants.commonTrack,
+                                  ) ??
+                                  'Active',
+                            ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            child: Text('Deactivate'),
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text(
+                              context.tr(
+                                    shared.LocaleKeys.deactivate,
+                                    track: shared.TrackConstants.commonTrack,
+                                  ) ??
+                                  'Deactivate',
+                            ),
                           ),
                         ],
                       );

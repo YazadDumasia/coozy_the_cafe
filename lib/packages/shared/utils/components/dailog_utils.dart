@@ -381,7 +381,14 @@ class DialogUtils {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('Logout', style: TextStyle(color: Colors.grey)),
+            child: Text(
+              context.tr(
+                    LocaleKeys.commonLogout,
+                    track: TrackConstants.commonTrack,
+                  ) ??
+                  'Logout',
+              style: const TextStyle(color: Colors.grey),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -395,7 +402,13 @@ class DialogUtils {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: Text('Stay Connected'),
+            child: Text(
+              context.tr(
+                    LocaleKeys.stayConnected,
+                    track: TrackConstants.commonTrack,
+                  ) ??
+                  'Stay Connected',
+            ),
           ),
         ],
       ),

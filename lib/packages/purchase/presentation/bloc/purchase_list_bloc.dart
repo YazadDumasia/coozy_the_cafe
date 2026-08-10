@@ -29,16 +29,16 @@ class PurchaseListBloc extends Bloc<PurchaseListEvent, PurchaseListState> {
     LoadPurchases event,
     Emitter<PurchaseListState> emit,
   ) async {
+    final effectiveQuery = event.searchQuery ?? '';
     if (state.hasReachedMax &&
         !event.isRefresh &&
-        event.searchQuery == state.searchQuery) {
+        effectiveQuery == state.searchQuery) {
       return;
     }
 
     try {
       if (event.isRefresh ||
-          (event.searchQuery != null &&
-              event.searchQuery != state.searchQuery)) {
+          (effectiveQuery.isNotEmpty && effectiveQuery != state.searchQuery)) {
         emit(
           state.copyWith(
             isLoading: true,
@@ -90,9 +90,16 @@ class PurchaseListBloc extends Bloc<PurchaseListEvent, PurchaseListState> {
     Emitter<PurchaseListState> emit,
   ) async {
     try {
-      await addPurchaseRecordUseCase(event.record);
+      final id = await addPurchaseRecordUseCase(event.record);
       event.onSuccess?.call();
-      add(const LoadPurchases(isRefresh: true));
+
+      final newRecord = event.record.copyWith(id: id);
+      final updatedPurchases = [newRecord, ...state.purchases];
+      final summary = await getPurchaseSummaryUseCase();
+
+      emit(
+        state.copyWith(purchases: updatedPurchases, purchaseSummary: summary),
+      );
     } catch (e) {
       event.onError?.call(e.toString());
       emit(state.copyWith(errorMessage: e.toString()));
@@ -106,7 +113,15 @@ class PurchaseListBloc extends Bloc<PurchaseListEvent, PurchaseListState> {
     try {
       await updatePurchaseRecordUseCase(event.record);
       event.onSuccess?.call();
-      add(const LoadPurchases(isRefresh: true));
+
+      final updatedPurchases = state.purchases.map((e) {
+        return e.id == event.record.id ? event.record : e;
+      }).toList();
+      final summary = await getPurchaseSummaryUseCase();
+
+      emit(
+        state.copyWith(purchases: updatedPurchases, purchaseSummary: summary),
+      );
     } catch (e) {
       event.onError?.call(e.toString());
       emit(state.copyWith(errorMessage: e.toString()));
@@ -120,7 +135,15 @@ class PurchaseListBloc extends Bloc<PurchaseListEvent, PurchaseListState> {
     try {
       await deletePurchaseRecordUseCase(event.id);
       event.onSuccess?.call();
-      add(const LoadPurchases(isRefresh: true));
+
+      final updatedPurchases = state.purchases
+          .where((e) => e.id != event.id)
+          .toList();
+      final summary = await getPurchaseSummaryUseCase();
+
+      emit(
+        state.copyWith(purchases: updatedPurchases, purchaseSummary: summary),
+      );
     } catch (e) {
       event.onError?.call(e.toString());
       emit(state.copyWith(errorMessage: e.toString()));

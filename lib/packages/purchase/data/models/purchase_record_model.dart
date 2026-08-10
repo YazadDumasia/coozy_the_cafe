@@ -14,6 +14,7 @@ class PurchaseRecordModel extends PurchaseRecord {
     super.purchasePrice,
     super.createdDate,
     super.modifiedDate,
+    super.currentStock,
   });
 
   factory PurchaseRecordModel.fromEntity(PurchaseRecord entity) {
@@ -28,10 +29,14 @@ class PurchaseRecordModel extends PurchaseRecord {
       purchasePrice: entity.purchasePrice,
       createdDate: entity.createdDate,
       modifiedDate: entity.modifiedDate,
+      currentStock: entity.currentStock,
     );
   }
 
-  factory PurchaseRecordModel.fromData(db.PurchaseRecord data) {
+  factory PurchaseRecordModel.fromData(
+    db.PurchaseRecord data, {
+    double? currentStock,
+  }) {
     return PurchaseRecordModel(
       id: data.id,
       hashId: data.hashId,
@@ -43,6 +48,7 @@ class PurchaseRecordModel extends PurchaseRecord {
       purchasePrice: data.purchasePrice,
       createdDate: data.createdDate,
       modifiedDate: data.modifiedDate,
+      currentStock: currentStock,
     );
   }
 
@@ -72,6 +78,35 @@ class PurchaseRecordModel extends PurchaseRecord {
       modifiedDate: modifiedDate == null
           ? const Value.absent()
           : Value(modifiedDate!),
+    );
+  }
+
+  @override
+  PurchaseRecordModel copyWith({
+    int? id,
+    String? hashId,
+    int? inventoryId,
+    String? name,
+    String? purchaseUnit,
+    double? purchaseQty,
+    String? purchaseDateTime,
+    double? purchasePrice,
+    String? createdDate,
+    String? modifiedDate,
+    double? currentStock,
+  }) {
+    return PurchaseRecordModel(
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      inventoryId: inventoryId ?? this.inventoryId,
+      name: name ?? this.name,
+      purchaseUnit: purchaseUnit ?? this.purchaseUnit,
+      purchaseQty: purchaseQty ?? this.purchaseQty,
+      purchaseDateTime: purchaseDateTime ?? this.purchaseDateTime,
+      purchasePrice: purchasePrice ?? this.purchasePrice,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+      currentStock: currentStock ?? this.currentStock,
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'az_common.dart';
 import 'az_listview.dart';
 import 'index_bar.dart';
@@ -137,7 +138,16 @@ class _PaginatedAzListViewState extends State<PaginatedAzListView> {
                 style: const TextStyle(color: Colors.red),
               ),
               SizedBox(height: 8),
-              ElevatedButton(onPressed: _loadMore, child: Text('Retry')),
+              ElevatedButton(
+                onPressed: _loadMore,
+                child: Text(
+                  context.tr(
+                        shared.LocaleKeys.commonRetry,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Retry',
+                ),
+              ),
             ],
           ),
         ),

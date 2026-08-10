@@ -1,5 +1,32 @@
 abstract class LocaleKeys {
+  // dialog descriptions
+  static String pleaseSelectOrCreateACategoryMsg =
+      'please_select_or_create_a_category_msg';
+  static String webOtpMsg = 'web_otp_msg';
+  static String fakedRecordsAddedSuccessfullyMsg =
+      'faked_records_added_successfully_msg';
+  static String fakeDataSuccessfullyRemovedMsg =
+      'fake_data_successfully_removed_msg';
+  static String fakeDataActiveInDatabaseMsg =
+      'fake_data_active_in_database_msg';
+  static String fakeDataRemovedFromDatabaseMsg =
+      'fake_data_removed_from_database_msg';
   // common
+  static String commonLogout = 'common_logout';
+  static String stayConnected = 'stay_connected';
+  static String homeTabToday = 'home_tab_today';
+  static String homeTabWaiter = 'home_tab_waiter';
+  static String homeTabKitchen = 'home_tab_kitchen';
+  static String homeTabMore = 'home_tab_more';
+  static String deactivate = 'deactivate';
+  static String noSubcategoriesFound = 'no_subcategories_found';
+  static String selectACategoryHint = 'select_a_category_hint';
+  static String enterNewCategoryNameHint = 'enter_new_category_name_hint';
+  static String cancelNewCategoryTooltip = 'cancel_new_category_tooltip';
+  static String egOnionHint = 'eg_onion_hint';
+  static String images = 'images';
+  static String image = 'image';
+
   static String commonErrorMsg = 'common_error_msg';
   static String commonEdit = 'common_edit';
   static String commonLoadMore = 'common_load_more';
@@ -136,7 +163,7 @@ abstract class LocaleKeys {
   static String commonListViewTooltip = 'common_list_view_tooltip';
   static String commonGridViewTooltip = 'common_grid_view_tooltip';
   static String commonNameIsRequired = 'common_name_is_required';
-
+  static String commonDescription = "common_description";
   // error_msg
   static String crudErrorAdd = 'crud_error_add';
   static String crudErrorUpdate = 'crud_error_update';
@@ -612,12 +639,14 @@ abstract class LocaleKeys {
       'inventory_delete_dialog_title_text';
   static String inventoryDeleteDialogContentText =
       'inventory_delete_dialog_content_text';
-  static String inventoryListPageEnable = 'inventory_list_page_enable';
-  static String inventoryListPageDisable = 'inventory_list_page_disable';
-  static String inventoryListPageEditInfo = 'inventory_list_page_edit_info';
-  static String inventoryListPageAdjustStock =
+  static String inventoryListPagePopupMenuEnable = 'inventory_list_page_enable';
+  static String inventoryListPagePopupMenuDisable =
+      'inventory_list_page_disable';
+  static String inventoryListPagePopupMenuEditInfo =
+      'inventory_list_page_edit_info';
+  static String inventoryListPagePopupMenuAdjustStock =
       'inventory_list_page_adjust_stock';
-  static String inventoryListPageRecordPurchase =
+  static String inventoryListPagePopupMenuRecordPurchase =
       'inventory_list_page_record_purchase';
   static String inventoryListPageNoItem = 'inventory_list_page_no_item';
   static String inventoryPickerPageAppbar = 'inventory_picker_page_appbar';

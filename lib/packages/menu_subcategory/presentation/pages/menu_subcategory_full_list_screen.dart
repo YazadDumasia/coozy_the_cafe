@@ -176,7 +176,14 @@ class _MenuSubcategoryFullListScreenState
                     children: [
                       IconButton(
                         icon: const Icon(Icons.clear),
-                        tooltip: 'Cancel reordering',
+                        tooltip:
+                            context.tr(
+                              shared.LocaleKeys.cancelReorderingTooltip,
+                              track: shared
+                                  .TrackConstants
+                                  .staffManagementPageTrack,
+                            ) ??
+                            'Cancel reordering',
                         onPressed: () {
                           context.read<MenuSubcategoryBloc>().add(
                             const CancelSubcategoryReorder(),
@@ -185,7 +192,14 @@ class _MenuSubcategoryFullListScreenState
                       ),
                       IconButton(
                         icon: const Icon(Icons.done),
-                        tooltip: 'Done reordering',
+                        tooltip:
+                            context.tr(
+                              shared.LocaleKeys.doneReorderingTooltip,
+                              track: shared
+                                  .TrackConstants
+                                  .staffManagementPageTrack,
+                            ) ??
+                            'Done reordering',
                         onPressed: () {
                           context.read<MenuSubcategoryBloc>().add(
                             const SaveSubcategoryReorder(),
@@ -202,7 +216,14 @@ class _MenuSubcategoryFullListScreenState
                     if (canReorder)
                       IconButton(
                         icon: const Icon(Icons.swap_vert),
-                        tooltip: 'Reorder mode',
+                        tooltip:
+                            context.tr(
+                              shared.LocaleKeys.reorderModeTooltip,
+                              track: shared
+                                  .TrackConstants
+                                  .staffManagementPageTrack,
+                            ) ??
+                            'Reorder mode',
                         onPressed: () {
                           context.read<MenuSubcategoryBloc>().add(
                             const ToggleSubcategoryReorderMode(),
@@ -226,7 +247,13 @@ class _MenuSubcategoryFullListScreenState
                             onRefreshCategories: _fetchCategories,
                           ),
                       icon: const Icon(Icons.add),
-                      tooltip: 'Add new subcategory',
+                      tooltip:
+                          context.tr(
+                            shared.LocaleKeys.addNewSubcategoryTooltip,
+                            track:
+                                shared.TrackConstants.staffManagementPageTrack,
+                          ) ??
+                          'Add new subcategory',
                     ),
                   ],
                 );
@@ -344,9 +371,16 @@ class _MenuSubcategoryFullListScreenState
 
               if (filtered.isEmpty) {
                 return [
-                  const Padding(
-                    padding: EdgeInsets.all(16.0),
-                    child: Text('No subcategories found.'),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      context.tr(
+                            shared.LocaleKeys.noSubcategoriesFound,
+                            track:
+                                shared.TrackConstants.menuSubCategoryPageTrack,
+                          ) ??
+                          'No subcategories found.',
+                    ),
                   ),
                 ];
               }
@@ -680,7 +714,13 @@ class _MenuSubcategoryFullListScreenState
                   onRefreshCategories: _fetchCategories,
                 ),
             icon: const Icon(Icons.add),
-            label: const Text('Add Subcategory'),
+            label: Text(
+              context.tr(
+                    shared.LocaleKeys.addMenuSubCategoryBtnText,
+                    track: shared.TrackConstants.menuCategoryPageTrack,
+                  ) ??
+                  'Add Subcategory',
+            ),
           ),
         ],
       ),

@@ -12,6 +12,7 @@ import 'package:coozy_the_cafe/packages/purchase/purchase_injection.dart';
 import 'package:coozy_the_cafe/packages/customer/customer_injection.dart';
 import 'package:coozy_the_cafe/packages/recipes/recipes_injection.dart';
 import 'package:coozy_the_cafe/packages/staff_management/staff_management_injection.dart';
+import 'package:coozy_the_cafe/packages/settings/settings_injection.dart';
 
 Future<void> initDI() async {
   // Auth Package Dependencies
@@ -40,4 +41,7 @@ Future<void> initDI() async {
 
   // Staff Management Package Dependencies
   registerStaffManagementDependencies(sl);
+
+  // Settings Package Dependencies
+  registerSettingsDependencies(sl);
 }

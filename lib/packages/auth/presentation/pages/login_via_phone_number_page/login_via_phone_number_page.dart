@@ -821,8 +821,19 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
         DialogUtils.showAutoDismissDialog(
           showDuration: const Duration(seconds: 5),
           context: context,
-          title: 'Info',
-          descriptions: 'Web OTP: $otpCode',
+          title:
+              context.tr(
+                LocaleKeys.commonInfo,
+                track: TrackConstants.commonTrack,
+              ) ??
+              'Info',
+          descriptions:
+              context.tr(
+                LocaleKeys.webOtpMsg,
+                params: {'otpCode': otpCode},
+                track: TrackConstants.commonTrack,
+              ) ??
+              'Web OTP: $otpCode',
           titleIcon: const Icon(Icons.info, color: Colors.blue, size: 50),
         );
       }

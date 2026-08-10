@@ -148,6 +148,11 @@ class InventoryDao extends DatabaseAccessor<CoozyDatabase>
     return await query.getSingleOrNull();
   }
 
+  Stream<InventoryItem?> watchInventoryById(int id) {
+    final query = select(inventoryTable)..where((t) => t.id.equals(id));
+    return query.watchSingleOrNull();
+  }
+
   Future<List<InventoryItem>> getAllInventory() async {
     final query = select(inventoryTable);
     return await (query..orderBy([

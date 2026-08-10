@@ -22,7 +22,12 @@ class AddNewMenuSubcategoryScreenActions {
                 track: shared.TrackConstants.commonTrack,
               ) ??
               'Error',
-          descriptions: 'Please select or create a category.',
+          descriptions:
+              context.tr(
+                shared.LocaleKeys.pleaseSelectOrCreateACategoryMsg,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Please select or create a category.',
           titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
         );
         return;

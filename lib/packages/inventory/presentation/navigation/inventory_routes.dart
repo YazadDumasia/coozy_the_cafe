@@ -2,13 +2,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/navigation/app_routes.dart';
-import '../bloc/inventory_bloc.dart';
-import '../bloc/inventory_event.dart';
+import '../bloc/inventroy_bloc/inventory_bloc.dart';
+import '../bloc/inventroy_bloc/inventory_event.dart';
 import '../pages/inventory_list_screen.dart';
 import '../pages/add_edit_inventory_screen.dart';
 import '../pages/inventory_picker_page.dart';
-import '../bloc/inventory_picker_bloc.dart';
-import '../bloc/inventory_picker_event.dart';
+import '../bloc/inventory_picker_bloc/inventory_picker_bloc.dart';
+import '../bloc/inventory_picker_bloc/inventory_picker_event.dart';
 import '../../domain/entities/inventory_item.dart';
 
 class InventoryRoutes {

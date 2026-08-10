@@ -30,6 +30,7 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
 
   Future<void> fetchInitialInfo() async {
     final bool isConnected = await networkInfo.isConnected;
+    if (isClosed) return;
     if (!isConnected) {
       emit(LoginScreenNoInternetState());
       return;
@@ -37,6 +38,7 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
     emit(LoginScreenLoadingState());
 
     final deviceInfo = await deviceInfoService.getDeviceInfo();
+    if (isClosed) return;
     _platform = deviceInfo['platform'];
     _buildMode = deviceInfo['buildMode'];
     _ipAddress = deviceInfo['ipAddress'];
@@ -88,11 +90,13 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
   }
 
   void updatePasswordObscureText(bool isObscure) {
+    if (_passwordObscureTextController.isClosed) return;
     _passwordObscureTextController.sink.add(!isObscure);
   }
 
   //validation of UserName
   void updateUserName(String userName) {
+    if (_userNameController.isClosed) return;
     const Pattern emailPattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     final RegExp regexEmail = RegExp(emailPattern.toString());
@@ -109,6 +113,7 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
 
   //validation of Password
   void updatePassword(String password) {
+    if (_passwordController.isClosed) return;
     if (password.isEmpty) {
       _passwordController.sink.addError('Please enter your password');
     } else if (password.length < 5) {
@@ -119,10 +124,12 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
   }
 
   void updateButtonLoading(bool? isLoading) {
+    if (_buttonLoading.isClosed) return;
     _buttonLoading.sink.add(isLoading ?? false);
   }
 
   void updateButtonRefreshing(bool? isRefreshing) {
+    if (_buttonRefreshing.isClosed) return;
     _buttonRefreshing.sink.add(isRefreshing ?? false);
   }
 
@@ -143,6 +150,7 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
         await authLocalDataSource.saveLoginState(true);
         await authLocalDataSource.saveUserRole('superUser');
         await authLocalDataSource.saveSuperUserFlag(true);
+        if (isClosed) return;
         updateButtonLoading(false);
         emit(LoginScreenSuccessState(email: email, role: 'superUser'));
         onSuccess?.call();
@@ -151,6 +159,7 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
 
       // Step 1: Authenticate the user
       final user = await loginUseCase(email: email, password: password);
+      if (isClosed) return;
       if (user == null) {
         updateButtonLoading(false);
         emit(LoginScreenFailureState('Invalid email or password'));
@@ -186,15 +195,23 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
       await authLocalDataSource.saveLoginState(true);
       await authLocalDataSource.saveUserRole(user.role.name);
 
+      if (isClosed) return;
       // Navigate directly to HomeScreen since Business Onboarding is removed
       updateButtonLoading(false);
       emit(LoginScreenSuccessState(email: user.email, role: user.role.name));
       onSuccess?.call();
     } catch (e) {
+      if (isClosed) return;
       updateButtonLoading(false);
       emit(LoginScreenFailureState(e.toString()));
       onError?.call(e.toString());
     }
+  }
+
+  @override
+  void emit(LoginScreenState state) {
+    if (isClosed) return;
+    super.emit(state);
   }
 
   @override

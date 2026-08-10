@@ -224,7 +224,13 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                                   context,
                                 ),
                             icon: const Icon(Icons.filter_list, size: 24),
-                            label: const Text('Filter'),
+                            label: Text(
+                              context.tr(
+                                    shared.LocaleKeys.commonFilter,
+                                    track: shared.TrackConstants.commonTrack,
+                                  ) ??
+                                  'Filter',
+                            ),
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),

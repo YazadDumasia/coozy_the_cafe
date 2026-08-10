@@ -602,11 +602,29 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         TextButton(
-                                          child: const Text('Cancel'),
+                                          child: Text(
+                                            context.tr(
+                                                  shared
+                                                      .LocaleKeys
+                                                      .commonCancel,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Cancel',
+                                          ),
                                           onPressed: () => Navigator.pop(ctx),
                                         ),
                                         TextButton(
-                                          child: const Text('Done'),
+                                          child: Text(
+                                            context.tr(
+                                                  shared.LocaleKeys.commonDone,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Done',
+                                          ),
                                           onPressed: () {
                                             _joiningDateController.text =
                                                 DateFormat(
@@ -803,11 +821,29 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         TextButton(
-                                          child: const Text('Cancel'),
+                                          child: Text(
+                                            context.tr(
+                                                  shared
+                                                      .LocaleKeys
+                                                      .commonCancel,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Cancel',
+                                          ),
                                           onPressed: () => Navigator.pop(ctx),
                                         ),
                                         TextButton(
-                                          child: const Text('Done'),
+                                          child: Text(
+                                            context.tr(
+                                                  shared.LocaleKeys.commonDone,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Done',
+                                          ),
                                           onPressed: () {
                                             final tod = TimeOfDay(
                                               hour: tempPickedDateTime.hour,
@@ -854,7 +890,14 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                         );
                       },
                       decoration: InputDecoration(
-                        labelText: 'Starting Shift Time',
+                        labelText:
+                            context.tr(
+                              shared.LocaleKeys.startingShiftTimeLabel,
+                              track: shared
+                                  .TrackConstants
+                                  .staffManagementPageTrack,
+                            ) ??
+                            'Starting Shift Time',
                         border: const OutlineInputBorder(),
                         suffixIcon: val.text.isNotEmpty
                             ? GestureDetector(
@@ -901,11 +944,29 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         TextButton(
-                                          child: const Text('Cancel'),
+                                          child: Text(
+                                            context.tr(
+                                                  shared
+                                                      .LocaleKeys
+                                                      .commonCancel,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Cancel',
+                                          ),
                                           onPressed: () => Navigator.pop(ctx),
                                         ),
                                         TextButton(
-                                          child: const Text('Done'),
+                                          child: Text(
+                                            context.tr(
+                                                  shared.LocaleKeys.commonDone,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Done',
+                                          ),
                                           onPressed: () {
                                             final tod = TimeOfDay(
                                               hour: tempPickedDateTime.hour,
@@ -952,7 +1013,14 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                         );
                       },
                       decoration: InputDecoration(
-                        labelText: 'Ending Shift Time',
+                        labelText:
+                            context.tr(
+                              shared.LocaleKeys.endingShiftTimeLabel,
+                              track: shared
+                                  .TrackConstants
+                                  .staffManagementPageTrack,
+                            ) ??
+                            'Ending Shift Time',
                         border: const OutlineInputBorder(),
                         suffixIcon: val.text.isNotEmpty
                             ? GestureDetector(

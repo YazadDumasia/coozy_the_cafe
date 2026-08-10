@@ -127,7 +127,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             'Success! $count fake records added across all modules.';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Generated $count fake records spanning 1.5 years!'),
+            content: Text(
+              context.tr(
+                    shared.LocaleKeys.fakedRecordsAddedSuccessfullyMsg,
+                    params: {'count': count.toString()},
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Faked records of $count added successfully.',
+            ),
             backgroundColor: Colors.green,
           ),
         );
@@ -169,8 +176,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           'All fake records cleanly removed.',
         );
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Fake data successfully removed from database.'),
+          SnackBar(
+            content: Text(
+              context.tr(
+                    shared.LocaleKeys.fakeDataSuccessfullyRemovedMsg,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Fake data successfully removed from database.',
+            ),
             backgroundColor: Colors.orange,
           ),
         );
@@ -179,7 +192,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
       _statusMessageNotifier.value = 'Error processing fake data: $e';
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+          SnackBar(
+            content: Text(
+              context.tr(
+                    shared.LocaleKeys.commonErrorMsg,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Error: $e',
+            ),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
@@ -218,7 +240,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('$name fake data active in database!'),
+              content: Text(
+                context.tr(
+                      shared.LocaleKeys.fakeDataActiveInDatabaseMsg,
+                      params: {'name': name},
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    '$name fake data active in database!',
+              ),
               backgroundColor: Colors.green,
             ),
           );
@@ -236,7 +265,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('$name fake data removed from database.'),
+              content: Text(
+                context.tr(
+                      shared.LocaleKeys.fakeDataRemovedFromDatabaseMsg,
+                      params: {'name': name},
+                      track: shared.TrackConstants.commonTrack,
+                    ) ??
+                    '$name fake data removed from database.',
+              ),
               backgroundColor: Colors.orange,
             ),
           );
@@ -1798,7 +1834,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       onPressed: () => Navigator.pop(sheetContext),
-                      child: const Text('Close'),
+                      child: Text(
+                        context.tr(
+                              shared.LocaleKeys.commonClose,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Close',
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),

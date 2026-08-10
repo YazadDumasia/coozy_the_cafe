@@ -356,7 +356,13 @@ class OtpVerificationPageState extends State<OtpVerificationPage>
                 track: TrackConstants.commonTrack,
               ) ??
               'Info',
-          descriptions: 'Web OTP: $_currentOtpNumber',
+          descriptions:
+              context.tr(
+                LocaleKeys.webOtpMsg,
+                params: {'otpCode': _currentOtpNumber ?? ''},
+                track: TrackConstants.commonTrack,
+              ) ??
+              'Web OTP: $_currentOtpNumber',
           titleIcon: const Icon(Icons.info, color: Colors.blue, size: 50),
         );
       }

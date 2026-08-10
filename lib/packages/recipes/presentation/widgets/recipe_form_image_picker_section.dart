@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class RecipeFormImagePickerSection extends StatelessWidget {
   final List<RecipeImageEntity> selectedImages;
@@ -19,7 +20,14 @@ class RecipeFormImagePickerSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Images', style: Theme.of(context).textTheme.labelLarge),
+        Text(
+          context.tr(
+                shared.LocaleKeys.images,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Images',
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
         const SizedBox(height: 8),
         Wrap(
           spacing: 10,
@@ -72,12 +80,19 @@ class RecipeFormImagePickerSection extends StatelessWidget {
                     style: BorderStyle.solid,
                   ),
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.add, size: 40, color: Colors.grey),
-                    SizedBox(height: 5),
-                    Text('Image', style: TextStyle(color: Colors.grey)),
+                    const Icon(Icons.add, size: 40, color: Colors.grey),
+                    const SizedBox(height: 5),
+                    Text(
+                      context.tr(
+                            shared.LocaleKeys.image,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'Image',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
                   ],
                 ),
               ),

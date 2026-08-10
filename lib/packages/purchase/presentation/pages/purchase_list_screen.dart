@@ -60,35 +60,37 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr(
-                shared.LocaleKeys.purchaseHistory,
-                track: shared.TrackConstants.purchasePageTrack,
-              ) ??
-              'Purchases History',
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            tooltip:
-                context.tr(
-                  shared.LocaleKeys.commonFilter,
-                  track: shared.TrackConstants.commonTrack,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            context.tr(
+                  shared.LocaleKeys.purchaseHistory,
+                  track: shared.TrackConstants.purchasePageTrack,
                 ) ??
-                'Filter',
-            onPressed: () {
-              _showFilterBottomSheet(context);
-            },
+                'Purchases History',
           ),
-        ],
+          actions: [
+            IconButton(
+              icon: Icon(Icons.filter_list),
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.commonFilter,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Filter',
+              onPressed: () {
+                _showFilterBottomSheet(context);
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => PurchaseListScreenActions.onAddPurchaseTap(context),
+          child: Icon(Icons.add),
+        ),
+        body: _buildBody(context),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => PurchaseListScreenActions.onAddPurchaseTap(context),
-        child: Icon(Icons.add),
-      ),
-      body: _buildBody(context),
     );
   }
 
@@ -330,23 +332,39 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
                         );
                       }
 
-                      return ListView.builder(
+                      final showPaginationLoader =
+                          !state.hasReachedMax && appliedFilters.isEmpty;
+
+                      return Scrollbar(
+                        interactive: true,
+                        radius: const Radius.circular(10.0),
                         controller: _scrollController,
-                        itemCount: state.hasReachedMax
-                            ? filteredPurchases.length
-                            : filteredPurchases.length + 1,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index >= filteredPurchases.length) {
-                            return Center(
-                              child: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
-                          }
-                          final record = filteredPurchases[index];
-                          return PurchaseListItem(record: record);
-                        },
+                        child: SingleChildScrollView(
+                          controller: _scrollController,
+                          primary: false,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            primary: false,
+                            addAutomaticKeepAlives: false,
+                            addRepaintBoundaries: true,
+                            itemCount: showPaginationLoader
+                                ? filteredPurchases.length + 1
+                                : filteredPurchases.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index >= filteredPurchases.length) {
+                                return Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+                              final record = filteredPurchases[index];
+                              return PurchaseListItem(record: record);
+                            },
+                          ),
+                        ),
                       );
                     },
                   );

@@ -97,7 +97,15 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               }
 
               if (state is CustomerError) {
-                return Center(child: Text('Error: ${state.message}'));
+                return Center(
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.commonErrorMsg,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Error: ${state.message}',
+                  ),
+                );
               }
 
               if (state is CustomerLoaded) {

@@ -46,7 +46,7 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
           context.tr(
                 shared.LocaleKeys.purchaseAddAppbarTitle,
                 track: shared.TrackConstants.purchasePageTrack,
-                params: {"ItemName": " ${widget.item.name}"},
+                params: {"itemName": widget.item.name ?? ''},
               ) ??
               'Purchase: ${widget.item.name}',
         ),

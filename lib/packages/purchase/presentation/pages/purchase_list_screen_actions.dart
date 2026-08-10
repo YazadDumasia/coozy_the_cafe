@@ -25,10 +25,12 @@ class PurchaseListScreenActions {
     required BuildContext context,
     required InventoryItem item,
     PurchaseRecord? existingRecord,
+    VoidCallback? onSuccess,
   }) async {
     final result = await showModalBottomSheet<PurchaseRecord>(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
       builder: (ctx) =>
           PurchaseFormBottomSheet(item: item, existingRecord: existingRecord),
     );
@@ -66,6 +68,7 @@ class PurchaseListScreenActions {
                     repeat: false,
                   ),
                 );
+                onSuccess?.call();
               }
             },
             onError: (error) {
@@ -131,6 +134,7 @@ class PurchaseListScreenActions {
                     repeat: false,
                   ),
                 );
+                onSuccess?.call();
               }
             },
             onError: (error) {

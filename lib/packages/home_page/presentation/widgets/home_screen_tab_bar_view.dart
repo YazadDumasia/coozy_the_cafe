@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class HomeScreenTabBarView extends StatelessWidget {
   final TabController tabController;
@@ -25,19 +26,51 @@ class HomeScreenTabBarView extends StatelessWidget {
       controller: tabController,
       children: <Widget>[
         buildPageTransitionSwitcher(
-          screen: Center(child: Text('Today')),
+          screen: Center(
+            child: Text(
+              context.tr(
+                    shared.LocaleKeys.homeTabToday,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Today',
+            ),
+          ),
           currentIndex: 0,
         ),
         buildPageTransitionSwitcher(
-          screen: Center(child: Text('Waiter')),
+          screen: Center(
+            child: Text(
+              context.tr(
+                    shared.LocaleKeys.homeTabWaiter,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Waiter',
+            ),
+          ),
           currentIndex: 1,
         ),
         buildPageTransitionSwitcher(
-          screen: Center(child: Text('Kitchen')),
+          screen: Center(
+            child: Text(
+              context.tr(
+                    shared.LocaleKeys.homeTabKitchen,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Kitchen',
+            ),
+          ),
           currentIndex: 2,
         ),
         buildPageTransitionSwitcher(
-          screen: Center(child: Text('More')),
+          screen: Center(
+            child: Text(
+              context.tr(
+                    shared.LocaleKeys.homeTabMore,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'More',
+            ),
+          ),
           currentIndex: 3,
         ),
       ],

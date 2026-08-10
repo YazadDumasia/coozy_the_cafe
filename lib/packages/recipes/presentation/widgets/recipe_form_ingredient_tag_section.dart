@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class RecipeFormIngredientTagSection extends StatelessWidget {
   final List<String> ingredientTags;
@@ -62,7 +63,12 @@ class RecipeFormIngredientTagSection extends StatelessWidget {
                 controller: tagInputController,
                 focusNode: tagFocusNode,
                 decoration: InputDecoration(
-                  hintText: 'e.g. Onion',
+                  hintText:
+                      context.tr(
+                        shared.LocaleKeys.egOnionHint,
+                        track: shared.TrackConstants.recipesTrack,
+                      ) ??
+                      'e.g. Onion',
                   isDense: true,
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -80,7 +86,12 @@ class RecipeFormIngredientTagSection extends StatelessWidget {
             IconButton.filled(
               onPressed: onAddTag,
               icon: const Icon(Icons.add),
-              tooltip: 'Add ingredient tag',
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.addIngredientTagTooltip,
+                    track: shared.TrackConstants.staffManagementPageTrack,
+                  ) ??
+                  'Add ingredient tag',
             ),
           ],
         ),

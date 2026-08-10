@@ -64,7 +64,18 @@ class PurchaseLocalDataSourceImpl implements PurchaseLocalDataSource {
           .toList();
     }
     final paged = filtered.skip(offset).take(limit).toList();
-    return paged.map((e) => PurchaseRecordModel.fromData(e)).toList();
+    
+    final List<PurchaseRecordModel> result = [];
+    for (final record in paged) {
+      double currentStock = 0.0;
+      if (record.inventoryId != null) {
+        final item = await _inventoryDao.getInventoryById(record.inventoryId!);
+        currentStock = item?.currentStock ?? 0.0;
+      }
+      result.add(PurchaseRecordModel.fromData(record, currentStock: currentStock));
+    }
+    
+    return result;
   }
 
   @override

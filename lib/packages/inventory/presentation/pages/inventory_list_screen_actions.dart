@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
-import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_bloc.dart';
-import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_event.dart';
+import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_bloc.dart';
+import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_event.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/pages/widgets/adjust_stock_dialog.dart';
 import 'package:coozy_the_cafe/packages/purchase/presentation/pages/purchase_list_screen_actions.dart';
 
@@ -20,10 +20,12 @@ class InventoryListScreenActions {
       await PurchaseListScreenActions.showPurchaseForm(
         context: context,
         item: selectedItem,
+        onSuccess: () {
+          if (context.mounted) {
+            context.read<InventoryBloc>().add(LoadInventoryItems());
+          }
+        },
       );
-      if (context.mounted) {
-        context.read<InventoryBloc>().add(LoadInventoryItems());
-      }
     }
   }
 
@@ -253,15 +255,16 @@ class InventoryListScreenActions {
           context.read<InventoryBloc>().add(LoadInventoryItems());
         }
       });
-    } else if (value == 'update') {
+    } else if (value == 'purchase') {
       PurchaseListScreenActions.showPurchaseForm(
         context: context,
         item: item,
-      ).then((_) {
-        if (context.mounted) {
-          context.read<InventoryBloc>().add(LoadInventoryItems());
-        }
-      });
+        onSuccess: () {
+          if (context.mounted) {
+            context.read<InventoryBloc>().add(LoadInventoryItems());
+          }
+        },
+      );
     } else if (value == 'adjust') {
       showAdjustStockDialog(context, item);
     } else if (value == 'delete') {

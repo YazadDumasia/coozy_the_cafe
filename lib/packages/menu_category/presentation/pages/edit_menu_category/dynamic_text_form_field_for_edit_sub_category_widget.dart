@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class DynamicTextFormFieldForEditSubCategoryWidget extends StatefulWidget {
   const DynamicTextFormFieldForEditSubCategoryWidget({
@@ -49,8 +50,18 @@ class _DynamicTextFormFieldForEditSubCategoryWidgetState
       onChanged: widget.onChanged,
       decoration: InputDecoration(
         floatingLabelBehavior: FloatingLabelBehavior.never,
-        labelText: 'MenuSubcategory Name',
-        hintText: 'Enter your subCategory name',
+        labelText:
+            context.tr(
+              shared.LocaleKeys.addNewMenuSubCategoryLabelText,
+              track: shared.TrackConstants.menuSubCategoryPageTrack,
+            ) ??
+            'Sub-category Name',
+        hintText:
+            context.tr(
+              shared.LocaleKeys.addNewMenuSubCategoryHintText,
+              track: shared.TrackConstants.menuSubCategoryPageTrack,
+            ) ??
+            'Enter your subCategory name',
 
         suffixIcon: IconButton(
           onPressed: widget.onDelete,
@@ -62,7 +73,11 @@ class _DynamicTextFormFieldForEditSubCategoryWidgetState
       },
       validator: (v) {
         if (v == null || v.trim().isEmpty) {
-          return 'Enter your sub-category name';
+          return context.tr(
+                shared.LocaleKeys.addNewMenuSubCategoryErrorText,
+                track: shared.TrackConstants.menuSubCategoryPageTrack,
+              ) ??
+              'Enter your sub-category name';
         }
         return null;
       },

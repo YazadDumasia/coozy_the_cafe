@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_picker_bloc.dart';
-import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_picker_event.dart';
+import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_picker_bloc/inventory_picker_bloc.dart';
+import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventory_picker_bloc/inventory_picker_event.dart';
 
 class InventoryPickerPageActions {
   static void onScroll(

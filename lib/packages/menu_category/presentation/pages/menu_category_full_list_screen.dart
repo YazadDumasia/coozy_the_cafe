@@ -80,14 +80,6 @@ class _MenuCategoryFullListScreenState
             actions: <Widget>[
               IconButton(
                 onPressed: () =>
-                    MenuCategoryFullListScreenActions.handleAddDummyCategories(
-                      context,
-                    ),
-                icon: const Icon(Icons.dataset),
-                tooltip: 'Add 5 Dummy Categories & Subcategories',
-              ),
-              IconButton(
-                onPressed: () =>
                     MenuCategoryFullListScreenActions.handleNewCategory(
                       context,
                     ),

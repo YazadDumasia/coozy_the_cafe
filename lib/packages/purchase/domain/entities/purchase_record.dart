@@ -11,6 +11,7 @@ class PurchaseRecord extends Equatable {
   final double? purchasePrice;
   final String? createdDate;
   final String? modifiedDate;
+  final double? currentStock;
 
   const PurchaseRecord({
     this.id,
@@ -23,6 +24,7 @@ class PurchaseRecord extends Equatable {
     this.purchasePrice,
     this.createdDate,
     this.modifiedDate,
+    this.currentStock,
   });
 
   PurchaseRecord copyWith({
@@ -36,6 +38,7 @@ class PurchaseRecord extends Equatable {
     double? purchasePrice,
     String? createdDate,
     String? modifiedDate,
+    double? currentStock,
   }) {
     return PurchaseRecord(
       id: id ?? this.id,
@@ -48,6 +51,7 @@ class PurchaseRecord extends Equatable {
       purchasePrice: purchasePrice ?? this.purchasePrice,
       createdDate: createdDate ?? this.createdDate,
       modifiedDate: modifiedDate ?? this.modifiedDate,
+      currentStock: currentStock ?? this.currentStock,
     );
   }
 
@@ -63,5 +67,6 @@ class PurchaseRecord extends Equatable {
     purchasePrice,
     createdDate,
     modifiedDate,
+    currentStock,
   ];
 }

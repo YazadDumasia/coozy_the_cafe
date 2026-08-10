@@ -12,6 +12,7 @@ import '../../purchase/presentation/navigation/purchase_routes.dart';
 import '../../customer/presentation/navigation/customer_routes.dart';
 import '../../recipes/presentation/navigation/recipes_routes.dart';
 import '../../staff_management/presentation/navigation/staff_routes.dart';
+import '../../settings/presentation/navigation/settings_routes.dart';
 import 'app_routes.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
@@ -35,6 +36,7 @@ class AppRouter {
       ...CustomerRoutes.routes,
       ...RecipesRoutes.routes,
       ...StaffRoutes.routes,
+      ...SettingsRoutes.routes,
     ],
     errorBuilder: (context, state) => Scaffold(
       appBar: AppBar(

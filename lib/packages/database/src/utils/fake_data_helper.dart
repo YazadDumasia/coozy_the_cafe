@@ -565,9 +565,7 @@ class FakeDataHelper {
             InventoryTableCompanion.insert(
               hashId: Value('$fakePrefix${uuid.v4()}'),
               name: Value(inventoryNames[i]),
-              shortDescription: Value(
-                'Kitchen supply for ${inventoryNames[i]}',
-              ),
+              shortDescription: Value(faker.lorem.sentences(7).join()),
               purchaseUnit: Value(i % 2 == 0 ? 'kg' : 'ltr'),
               currentStock: Value(80.0 + random.nextInt(200)),
               isEnabled: const Value(true),

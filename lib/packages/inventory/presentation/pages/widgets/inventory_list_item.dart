@@ -28,6 +28,21 @@ class InventoryListItem extends StatelessWidget {
             children: [
               TextSpan(
                 text:
+                    "${context.tr(shared.LocaleKeys.commonDescription, track: shared.TrackConstants.commonTrack) ?? 'Description'}: ",
+              ),
+              WidgetSpan(
+                // alignment: PlaceholderAlignment.baseline,
+                // baseline: TextBaseline.alphabetic,
+                child: Text(
+                  item.shortDescription ?? "",
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              const TextSpan(text: '\n'),
+              TextSpan(
+                text:
                     context.tr(
                       shared.LocaleKeys.inventoryListPageCurrentStock,
                       track: shared.TrackConstants.inventoryPageTrack,
@@ -78,7 +93,7 @@ class InventoryListItem extends StatelessWidget {
                 value: 'enable',
                 child: Text(
                   context.tr(
-                        shared.LocaleKeys.inventoryListPageEnable,
+                        shared.LocaleKeys.inventoryListPagePopupMenuEnable,
                         track: shared.TrackConstants.inventoryPageTrack,
                       ) ??
                       'Enable',
@@ -89,7 +104,7 @@ class InventoryListItem extends StatelessWidget {
                 value: 'disable',
                 child: Text(
                   context.tr(
-                        shared.LocaleKeys.inventoryListPageDisable,
+                        shared.LocaleKeys.inventoryListPagePopupMenuDisable,
                         track: shared.TrackConstants.inventoryPageTrack,
                       ) ??
                       'Disable',
@@ -99,7 +114,7 @@ class InventoryListItem extends StatelessWidget {
               value: 'edit',
               child: Text(
                 context.tr(
-                      shared.LocaleKeys.inventoryListPageEditInfo,
+                      shared.LocaleKeys.inventoryListPagePopupMenuEditInfo,
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
                     'Edit Info',
@@ -109,17 +124,19 @@ class InventoryListItem extends StatelessWidget {
               value: 'adjust',
               child: Text(
                 context.tr(
-                      shared.LocaleKeys.inventoryListPageAdjustStock,
+                      shared.LocaleKeys.inventoryListPagePopupMenuAdjustStock,
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
                     'Adjust Stock',
               ),
             ),
             PopupMenuItem(
-              value: 'update',
+              value: 'purchase',
               child: Text(
                 context.tr(
-                      shared.LocaleKeys.inventoryListPageRecordPurchase,
+                      shared
+                          .LocaleKeys
+                          .inventoryListPagePopupMenuRecordPurchase,
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
                     'Record Purchase',

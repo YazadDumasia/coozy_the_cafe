@@ -153,7 +153,14 @@ class _AddNewMenuSubcategoryScreenState
                                               .menuCategoryPageTrack,
                                         ) ??
                                         'Select Category',
-                                    hintText: 'Select a category',
+                                    hintText:
+                                        context.tr(
+                                          shared.LocaleKeys.selectACategoryHint,
+                                          track: shared
+                                              .TrackConstants
+                                              .menuSubCategoryPageTrack,
+                                        ) ??
+                                        'Select a category',
                                   ),
                                   items: [
                                     ..._categories.map((cat) {
@@ -226,10 +233,28 @@ class _AddNewMenuSubcategoryScreenState
                                                 .menuCategoryPageTrack,
                                           ) ??
                                           'Category Name',
-                                      hintText: 'Enter new category name',
+                                      hintText:
+                                          context.tr(
+                                            shared
+                                                .LocaleKeys
+                                                .enterNewCategoryNameHint,
+                                            track: shared
+                                                .TrackConstants
+                                                .menuSubCategoryPageTrack,
+                                          ) ??
+                                          'Enter new category name',
                                       suffixIcon: IconButton(
                                         icon: const Icon(Icons.close),
-                                        tooltip: 'Cancel new category',
+                                        tooltip:
+                                            context.tr(
+                                              shared
+                                                  .LocaleKeys
+                                                  .cancelNewCategoryTooltip,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .menuSubCategoryPageTrack,
+                                            ) ??
+                                            'Cancel new category',
                                         onPressed: () {
                                           _cubit.toggleCreatingNewCategory(
                                             false,
