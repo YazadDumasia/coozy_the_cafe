@@ -162,8 +162,10 @@ class MenuSubcategoryFullListScreenActions {
                   'Error',
               descriptions:
                   context.tr(
-                    shared.LocaleKeys.commonErrorMsg,
-                    track: shared.TrackConstants.commonTrack,
+                    shared
+                        .LocaleKeys
+                        .menuCategoryFullListFailedToUpdateSubCategoryMsg,
+                    track: shared.TrackConstants.menuCategoryPageTrack,
                   ) ??
                   'Failed to update sub-category status.',
               titleIcon: Lottie.asset(
@@ -262,7 +264,7 @@ class MenuSubcategoryFullListScreenActions {
                                     shared.LocaleKeys.commonErrorMsg,
                                     track: shared.TrackConstants.commonTrack,
                                   ) ??
-                                  'An error occurred.'),
+                                  'Something when wrong. Please try again.'),
                         titleIcon: Lottie.asset(
                           MediaQuery.of(context).platformBrightness ==
                                   Brightness.light

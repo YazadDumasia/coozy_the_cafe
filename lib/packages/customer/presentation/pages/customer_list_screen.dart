@@ -97,8 +97,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 return Center(
                   child: Text(
                     context.tr(
-                          shared.LocaleKeys.commonErrorMsg,
+                          shared.LocaleKeys.commonCustomErrorMsg,
                           track: shared.TrackConstants.commonTrack,
+                          params: {"error": state.message},
                         ) ??
                         'Error: ${state.message}',
                   ),

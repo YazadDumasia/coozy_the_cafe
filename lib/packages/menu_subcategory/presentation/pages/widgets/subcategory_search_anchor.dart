@@ -45,7 +45,7 @@ class SubcategorySearchAnchor extends StatelessWidget {
                     shared.LocaleKeys.commonSearchHint,
                     track: shared.TrackConstants.commonTrack,
                   ) ??
-                  'Search subcategories...',
+                  'Search...',
               leading: const Icon(Icons.search),
               onTap: () {
                 controller.openView();

@@ -355,7 +355,7 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                           shared.LocaleKeys.commonCommonPhoneNumberHint,
                           track: shared.TrackConstants.commonTrack,
                         ) ??
-                        'Enter your phone number',
+                        'Enter your phone number.',
                     border: const OutlineInputBorder(),
                   ),
                   onCountryChanged: (shared.Country country) {

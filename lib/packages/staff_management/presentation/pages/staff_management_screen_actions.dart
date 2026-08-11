@@ -37,7 +37,7 @@ class StaffManagementActions {
             shared.LocaleKeys.commonErrorMsg,
             track: shared.TrackConstants.commonTrack,
           ) ??
-          'An error occurred.';
+          'Something when wrong. Please try again.';
       shared.DialogUtils.showAutoDismissDialog(
         context: context,
         title:

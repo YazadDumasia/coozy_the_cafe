@@ -4,7 +4,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 #  Android Studio Quail 2 | 2026.1.2 Patch 1
-#  Flutter stable channel,  3.44.8v,
+#  Flutter stable channel,  3.44.9v,
 #  flutter build apk --release --tree-shake-icons
 
 environment:

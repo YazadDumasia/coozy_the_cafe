@@ -200,7 +200,7 @@ class RecipesListScreenActions {
                     <shared.FilterItemModel>[],
                 title:
                     context.tr(
-                      shared.LocaleKeys.recipesFilterIngredient,
+                      shared.LocaleKeys.recipesFilterIngredients,
                       track: shared.TrackConstants.recipesTrack,
                     ) ??
                     'Ingredients',

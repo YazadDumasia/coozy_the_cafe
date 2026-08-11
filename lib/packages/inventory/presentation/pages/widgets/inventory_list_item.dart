@@ -60,9 +60,9 @@ class InventoryListItem extends StatelessWidget {
                       shared.LocaleKeys.inventoryListPageStatus,
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
-                    'Status:',
+                    'Status',
               ),
-              const TextSpan(text: ' '),
+              const TextSpan(text: ': '),
               TextSpan(
                 text: item.isEnabled == true
                     ? context.tr(

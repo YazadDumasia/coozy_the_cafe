@@ -195,10 +195,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           SnackBar(
             content: Text(
               context.tr(
-                    shared.LocaleKeys.commonErrorMsg,
+                    shared.LocaleKeys.commonCustomErrorMsg,
                     track: shared.TrackConstants.commonTrack,
+                    params: {"error": e.toString()},
                   ) ??
-                  'Error: $e',
+                  'Error: ${e.toString()}',
             ),
             backgroundColor: Colors.red,
           ),

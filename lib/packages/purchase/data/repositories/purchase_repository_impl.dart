@@ -1,4 +1,5 @@
 import '../../domain/entities/purchase_record.dart';
+import '../../domain/entities/purchase_summary.dart';
 import '../../domain/repositories/purchase_repository.dart';
 import '../datasources/purchase_local_data_source.dart';
 import '../models/purchase_record_model.dart';
@@ -33,6 +34,11 @@ class PurchaseRepositoryImpl implements PurchaseRepository {
     String? search,
   ) async {
     return await localDataSource.getAllPurchasesPaged(limit, offset, search);
+  }
+
+  @override
+  Future<PurchaseSummary> getPurchaseSummary() async {
+    return await localDataSource.getPurchaseSummary();
   }
 
   @override

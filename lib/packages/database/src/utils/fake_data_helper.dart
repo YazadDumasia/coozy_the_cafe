@@ -566,7 +566,8 @@ class FakeDataHelper {
               'Party Size',
             ];
 
-            final int varCount = 2 + ((c + s + m) % 11); // Generates between 2 to 12 variations
+            final int varCount =
+                2 + ((c + s + m) % 11); // Generates between 2 to 12 variations
 
             for (int v = 0; v < varCount; v++) {
               final double scale = 0.7 + (v * 0.15);
@@ -668,7 +669,44 @@ class FakeDataHelper {
     for (int p = 0; p < 150; p++) {
       final invIndex = random.nextInt(inventoryIds.length);
       final invId = inventoryIds[invIndex];
-      final pDate = getRandomDate();
+
+      DateTime pDate;
+      if (p < 5) {
+        // Today
+        pDate = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          random.nextInt(12) + 8,
+          random.nextInt(60),
+        );
+      } else if (p < 20) {
+        // Current week (past 1-6 days)
+        final daysAgo = random.nextInt(6) + 1;
+        final d = now.subtract(Duration(days: daysAgo));
+        pDate = DateTime(
+          d.year,
+          d.month,
+          d.day,
+          random.nextInt(12) + 8,
+          random.nextInt(60),
+        );
+      } else if (p < 40) {
+        // Current month (past 7-25 days)
+        final daysAgo = random.nextInt(18) + 7;
+        final d = now.subtract(Duration(days: daysAgo));
+        pDate = DateTime(
+          d.year,
+          d.month,
+          d.day,
+          random.nextInt(12) + 8,
+          random.nextInt(60),
+        );
+      } else {
+        // Historical (past 1.5 years)
+        pDate = getRandomDate();
+      }
+
       final qty = 15.0 + random.nextInt(50);
       final unitPrice = 45.0 + random.nextInt(220);
 

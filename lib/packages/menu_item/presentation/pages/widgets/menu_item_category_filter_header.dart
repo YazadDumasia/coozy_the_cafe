@@ -54,19 +54,19 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color:
-                            isCategorySelected
-                                ? theme.colorScheme.primaryContainer
-                                    .withValues(alpha: 0.35)
-                                : theme.colorScheme.surfaceContainerHighest
-                                    .withValues(alpha: 0.4),
+                        color: isCategorySelected
+                            ? theme.colorScheme.primaryContainer.withValues(
+                                alpha: 0.35,
+                              )
+                            : theme.colorScheme.surfaceContainerHighest
+                                  .withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color:
-                              isCategorySelected
-                                  ? theme.colorScheme.primary
-                                  : theme.colorScheme.outlineVariant
-                                      .withValues(alpha: 0.5),
+                          color: isCategorySelected
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.outlineVariant.withValues(
+                                  alpha: 0.5,
+                                ),
                           width: isCategorySelected ? 1.5 : 1,
                         ),
                       ),
@@ -75,10 +75,9 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                           Icon(
                             Icons.category_outlined,
                             size: 18,
-                            color:
-                                isCategorySelected
-                                    ? theme.colorScheme.primary
-                                    : theme.colorScheme.onSurfaceVariant,
+                            color: isCategorySelected
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.onSurfaceVariant,
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -87,10 +86,9 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                                 isExpanded: true,
                                 icon: Icon(
                                   Icons.keyboard_arrow_down_rounded,
-                                  color:
-                                      isCategorySelected
-                                          ? theme.colorScheme.primary
-                                          : theme.colorScheme.onSurfaceVariant,
+                                  color: isCategorySelected
+                                      ? theme.colorScheme.primary
+                                      : theme.colorScheme.onSurfaceVariant,
                                 ),
                                 hint: Text(
                                   context.tr(
@@ -107,11 +105,11 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                                 ),
                                 value:
                                     (selectedCategoryId != null &&
-                                            categories.any(
-                                              (c) => c.id == selectedCategoryId,
-                                            ))
-                                        ? selectedCategoryId
-                                        : null,
+                                        categories.any(
+                                          (c) => c.id == selectedCategoryId,
+                                        ))
+                                    ? selectedCategoryId
+                                    : null,
                                 items: [
                                   DropdownMenuItem(
                                     value: null,
@@ -119,8 +117,8 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                                       context.tr(
                                             LocaleKeys
                                                 .menuItemPageAllCategories,
-                                            track:
-                                                TrackConstants.menuItemPageTrack,
+                                            track: TrackConstants
+                                                .menuItemPageTrack,
                                           ) ??
                                           'All Categories',
                                       style: const TextStyle(
@@ -174,10 +172,9 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                 List<MenuSubcategory> subs = const [];
                 if (state is MenuSubcategoryLoaded &&
                     selectedCategoryId != null) {
-                  subs =
-                      state.subcategories
-                          .where((s) => s.categoryId == selectedCategoryId)
-                          .toList();
+                  subs = state.subcategories
+                      .where((s) => s.categoryId == selectedCategoryId)
+                      .toList();
                 }
 
                 final bool isSubEnabled = selectedCategoryId != null;
@@ -188,24 +185,22 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color:
-                        isSubcategorySelected
-                            ? theme.colorScheme.primaryContainer.withValues(
-                              alpha: 0.35,
-                            )
-                            : (isSubEnabled
-                                ? theme.colorScheme.surfaceContainerHighest
+                    color: isSubcategorySelected
+                        ? theme.colorScheme.primaryContainer.withValues(
+                            alpha: 0.35,
+                          )
+                        : (isSubEnabled
+                              ? theme.colorScheme.surfaceContainerHighest
                                     .withValues(alpha: 0.4)
-                                : theme.colorScheme.surfaceContainerHighest
+                              : theme.colorScheme.surfaceContainerHighest
                                     .withValues(alpha: 0.15)),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
-                      color:
-                          isSubcategorySelected
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.outlineVariant.withValues(
-                                alpha: 0.5,
-                              ),
+                      color: isSubcategorySelected
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.outlineVariant.withValues(
+                              alpha: 0.5,
+                            ),
                       width: isSubcategorySelected ? 1.5 : 1,
                     ),
                   ),
@@ -214,12 +209,11 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                       Icon(
                         Icons.polyline_outlined,
                         size: 18,
-                        color:
-                            isSubcategorySelected
-                                ? theme.colorScheme.primary
-                                : (isSubEnabled
-                                    ? theme.colorScheme.onSurfaceVariant
-                                    : theme.colorScheme.onSurfaceVariant
+                        color: isSubcategorySelected
+                            ? theme.colorScheme.primary
+                            : (isSubEnabled
+                                  ? theme.colorScheme.onSurfaceVariant
+                                  : theme.colorScheme.onSurfaceVariant
                                         .withValues(alpha: 0.4)),
                       ),
                       const SizedBox(width: 8),
@@ -229,12 +223,11 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                             isExpanded: true,
                             icon: Icon(
                               Icons.keyboard_arrow_down_rounded,
-                              color:
-                                  isSubcategorySelected
-                                      ? theme.colorScheme.primary
-                                      : (isSubEnabled
-                                          ? theme.colorScheme.onSurfaceVariant
-                                          : theme.colorScheme.onSurfaceVariant
+                              color: isSubcategorySelected
+                                  ? theme.colorScheme.primary
+                                  : (isSubEnabled
+                                        ? theme.colorScheme.onSurfaceVariant
+                                        : theme.colorScheme.onSurfaceVariant
                                               .withValues(alpha: 0.4)),
                             ),
                             hint: Text(
@@ -245,22 +238,21 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                                   'All Subcategories',
                               style: TextStyle(
                                 fontSize: 13,
-                                color:
-                                    isSubEnabled
-                                        ? theme.colorScheme.onSurfaceVariant
-                                        : theme.colorScheme.onSurfaceVariant
-                                            .withValues(alpha: 0.4),
+                                color: isSubEnabled
+                                    ? theme.colorScheme.onSurfaceVariant
+                                    : theme.colorScheme.onSurfaceVariant
+                                          .withValues(alpha: 0.4),
                                 fontWeight: FontWeight.w500,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
                             value:
                                 (selectedSubcategoryId != null &&
-                                        subs.any(
-                                          (s) => s.id == selectedSubcategoryId,
-                                        ))
-                                    ? selectedSubcategoryId
-                                    : null,
+                                    subs.any(
+                                      (s) => s.id == selectedSubcategoryId,
+                                    ))
+                                ? selectedSubcategoryId
+                                : null,
                             items: [
                               DropdownMenuItem(
                                 value: null,
@@ -290,8 +282,9 @@ class MenuItemCategoryFilterHeader extends StatelessWidget {
                                 ),
                               ),
                             ],
-                            onChanged:
-                                isSubEnabled ? onSubcategoryChanged : null,
+                            onChanged: isSubEnabled
+                                ? onSubcategoryChanged
+                                : null,
                           ),
                         ),
                       ),

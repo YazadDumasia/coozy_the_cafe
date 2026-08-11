@@ -257,7 +257,7 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                                         track:
                                             shared.TrackConstants.commonTrack,
                                       ) ??
-                                      'An error occurred.'),
+                                      'Something when wrong. Please try again.'),
                             titleIcon: Lottie.asset(
                               MediaQuery.of(rootContext).platformBrightness ==
                                       Brightness.light

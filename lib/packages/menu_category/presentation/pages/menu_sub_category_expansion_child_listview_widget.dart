@@ -211,10 +211,10 @@ class _MenuSubCategoryExpansionChildListViewWidgetState
                                                           context.tr(
                                                             shared
                                                                 .LocaleKeys
-                                                                .commonErrorMsg,
+                                                                .menuCategoryFullListFailedToUpdateSubCategoryMsg,
                                                             track: shared
                                                                 .TrackConstants
-                                                                .commonTrack,
+                                                                .menuCategoryPageTrack,
                                                           ) ??
                                                           'Failed to update sub-category status.',
                                                       backgroundColor:

@@ -1,4 +1,5 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart' as db;
+import 'package:coozy_the_cafe/packages/purchase/domain/entities/purchase_summary.dart';
 import '../models/purchase_record_model.dart';
 
 abstract class PurchaseLocalDataSource {
@@ -14,6 +15,7 @@ abstract class PurchaseLocalDataSource {
     int offset,
     String? search,
   );
+  Future<PurchaseSummary> getPurchaseSummary();
   Future<int> insertPurchaseRecord(PurchaseRecordModel record);
   Future<int> updatePurchaseRecord(PurchaseRecordModel record);
   Future<int> deletePurchaseRecord(int id);
@@ -78,6 +80,40 @@ class PurchaseLocalDataSourceImpl implements PurchaseLocalDataSource {
     }
 
     return result;
+  }
+
+  @override
+  Future<PurchaseSummary> getPurchaseSummary() async {
+    final now = DateTime.now();
+
+    final String currentDateStr =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+    final String currentMonthStr =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}';
+
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final int daysFromMonday = now.weekday - DateTime.monday;
+    final startOfWeek = startOfDay.subtract(Duration(days: daysFromMonday));
+    final endOfWeek = startOfWeek
+        .add(const Duration(days: 7))
+        .subtract(const Duration(milliseconds: 1));
+
+    final dailyTotal = await _inventoryDao.getDailyExpenditureCost(
+      currentDateStr,
+    );
+    final weeklyTotal = await _inventoryDao.getExpenditureBetweenDates(
+      fromDateTime: startOfWeek.toIso8601String(),
+      toDateTime: endOfWeek.toIso8601String(),
+    );
+    final monthlyTotal = await _inventoryDao.getMonthlyExpenditureCost(
+      currentMonthStr,
+    );
+
+    return PurchaseSummary(
+      dailyTotal: dailyTotal,
+      weeklyTotal: weeklyTotal,
+      monthlyTotal: monthlyTotal,
+    );
   }
 
   @override

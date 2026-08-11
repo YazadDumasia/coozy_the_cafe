@@ -104,7 +104,7 @@ class _TableScreenState extends State<TableScreen>
                                   .disableReorderIconTableIconTooltipText,
                               track: shared.TrackConstants.tablePageTrack,
                             ) ??
-                            'Cancel to reorder list view',
+                            'Please switch off reorder list feature',
                       );
                     }
                   }

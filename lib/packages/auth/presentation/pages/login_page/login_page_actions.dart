@@ -101,7 +101,7 @@ class LoginPageActions {
                           share.LocaleKeys.commonErrorMsg,
                           track: share.TrackConstants.commonTrack,
                         ) ??
-                        'An error occurred.'),
+                        'Something when wrong. Please try again.'),
               titleIcon: Lottie.asset(
                 MediaQuery.of(context).platformBrightness == Brightness.light
                     ? Assets.lottie.errorLightLoaderIcon

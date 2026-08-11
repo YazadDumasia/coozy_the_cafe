@@ -706,7 +706,7 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                           LocaleKeys.commonCommonPhoneNumberHint,
                           track: TrackConstants.commonTrack,
                         ) ??
-                        'Enter your phone number',
+                        'Enter your phone number.',
                   ),
                   onCountryChanged: (Country country) =>
                       core.PlatformUtils.debugLog(

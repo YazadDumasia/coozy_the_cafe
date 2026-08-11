@@ -47,16 +47,18 @@ class CustomerListItem extends StatelessWidget {
                 phonePrefix = isoCode;
               } else {
                 try {
-                  final country =
-                      shared.CountryPickerUtils.getCountryByIsoCode(isoCode);
+                  final country = shared.CountryPickerUtils.getCountryByIsoCode(
+                    isoCode,
+                  );
                   phonePrefix = '+${country.phoneCode}';
                 } catch (_) {
                   phonePrefix = isoCode;
                 }
               }
             }
-            final displayPhone =
-                phonePrefix.isNotEmpty ? '$phonePrefix $phone' : phone;
+            final displayPhone = phonePrefix.isNotEmpty
+                ? '$phonePrefix $phone'
+                : phone;
             return Text(displayPhone);
           },
         ),

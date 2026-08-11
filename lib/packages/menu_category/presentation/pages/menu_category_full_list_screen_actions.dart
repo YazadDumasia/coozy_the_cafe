@@ -119,7 +119,7 @@ class MenuCategoryFullListScreenActions {
                                   shared.LocaleKeys.commonErrorMsg,
                                   track: shared.TrackConstants.commonTrack,
                                 ) ??
-                                'An error occurred.'),
+                                'Something when wrong. Please try again.'),
                       titleIcon: Lottie.asset(
                         MediaQuery.of(context).platformBrightness ==
                                 Brightness.light
@@ -190,8 +190,10 @@ class MenuCategoryFullListScreenActions {
           Flushbar(
             message:
                 context.tr(
-                  shared.LocaleKeys.commonErrorMsg,
-                  track: shared.TrackConstants.commonTrack,
+                  shared
+                      .LocaleKeys
+                      .menuCategoryFullListFailedToUpdateCategoryMsg,
+                  track: shared.TrackConstants.menuCategoryPageTrack,
                 ) ??
                 'Failed to update category status.',
             backgroundColor: Colors.red,

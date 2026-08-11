@@ -91,7 +91,7 @@ class _TextFormEmailFieldWidgetState extends State<TextFormEmailFieldWidget> {
                       shared.LocaleKeys.loginEmailValidatorErrorMsg,
                       track: shared.TrackConstants.loginPageTrack,
                     ) ??
-                    'Please enter a valid email';
+                    'Please enter a valid email.';
               }
             } else {
               return context.tr(

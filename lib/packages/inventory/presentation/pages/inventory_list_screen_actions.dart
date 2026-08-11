@@ -170,7 +170,7 @@ class InventoryListScreenActions {
                             shared.LocaleKeys.commonErrorMsg,
                             track: shared.TrackConstants.commonTrack,
                           ) ??
-                          'An error occurred.'),
+                          'Something when wrong. Please try again.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.errorLightLoaderIcon
@@ -234,7 +234,7 @@ class InventoryListScreenActions {
                             shared.LocaleKeys.commonErrorMsg,
                             track: shared.TrackConstants.commonTrack,
                           ) ??
-                          'An error occurred.'),
+                          'Something when wrong. Please try again.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.errorLightLoaderIcon
@@ -353,7 +353,7 @@ class InventoryListScreenActions {
                                           track:
                                               shared.TrackConstants.commonTrack,
                                         ) ??
-                                        'An error occurred.'),
+                                        'Something when wrong. Please try again.'),
                               titleIcon: Lottie.asset(
                                 MediaQuery.of(context).platformBrightness ==
                                         Brightness.light

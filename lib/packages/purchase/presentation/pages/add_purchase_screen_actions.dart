@@ -84,7 +84,7 @@ class AddPurchaseScreenActions {
                             shared.LocaleKeys.commonErrorMsg,
                             track: shared.TrackConstants.commonTrack,
                           ) ??
-                          'An error occurred.'),
+                          'Something when wrong. Please try again.'),
                 titleIcon: const Icon(Icons.error, color: Colors.red, size: 50),
               );
             }

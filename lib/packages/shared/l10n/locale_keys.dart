@@ -28,6 +28,7 @@ abstract class LocaleKeys {
   static String image = 'image';
 
   static String commonErrorMsg = 'common_error_msg';
+  static String commonCustomErrorMsg = 'common_custom_error_msg';
   static String commonEdit = 'common_edit';
   static String commonLoadMore = 'common_load_more';
   static String commonOk = 'common_ok';
@@ -293,6 +294,8 @@ abstract class LocaleKeys {
       'menu_category_full_list_unable_to_update_category_msg';
   static String menuCategoryFullListFailedToUpdateCategoryMsg =
       'menu_category_full_list_failed_to_update_category_msg';
+  static String menuCategoryFullListFailedToReorderCategoryMsg =
+      'menu_category_full_list_failed_to_reorder_category_msg';
   static String menuCategoryFullListEnableToUpdateSubCategoryMsg =
       'menu_category_full_list_enable_to_update_sub_category_msg';
   static String menuCategoryFullListUnableToUpdateSubCategoryMsg =
@@ -571,6 +574,7 @@ abstract class LocaleKeys {
   static String recipesFormRefUrlHint = 'recipes_form_ref_url_hint';
   static String recipesFilterServings = 'recipes_filter_servings';
   static String recipesFilterIngredient = 'recipes_filter_ingredient';
+  static String recipesFilterIngredients = 'recipes_filter_ingredients';
   static String recipesFilterCuisine = 'recipes_filter_cuisine';
   static String recipesFilterCourse = 'recipes_filter_course';
   static String recipesFilterDiet = 'recipes_filter_diet';
@@ -637,21 +641,23 @@ abstract class LocaleKeys {
       'inventory_delete_dialog_title_text';
   static String inventoryDeleteDialogContentText =
       'inventory_delete_dialog_content_text';
-  static String inventoryListPagePopupMenuEnable = 'inventory_list_page_enable';
+  static String inventoryListPagePopupMenuEnable =
+      'inventory_list_popup_menu_enable';
   static String inventoryListPagePopupMenuDisable =
-      'inventory_list_page_disable';
+      'inventory_list_popup_menu_disable';
   static String inventoryListPagePopupMenuEditInfo =
-      'inventory_list_page_edit_info';
+      'inventory_list_popup_menu_edit_info';
   static String inventoryListPagePopupMenuAdjustStock =
-      'inventory_list_page_adjust_stock';
+      'inventory_list_popup_menu_adjust_stock';
   static String inventoryListPagePopupMenuRecordPurchase =
-      'inventory_list_page_record_purchase';
+      'inventory_list_popup_menu_record_purchase';
   static String inventoryListPageNoItem = 'inventory_list_page_no_item';
   static String inventoryPickerPageAppbar = 'inventory_picker_page_appbar';
   static String inventoryPickerPageItemName = 'inventory_picker_page_item_name';
   static String inventoryPickerPageCurrentStock =
       'inventory_picker_page_current_stock';
-
+  static String inventoryAddEditDailogMustBeGreaterThanorZero =
+      'inventory_add_edit_dailog_must_be_greater_than_or_zero';
   // purchase_page
   static String purchasePurchaseAddedSuccessfullyAndStockUp =
       'purchase_purchase_added_successfully_and_stock_up';

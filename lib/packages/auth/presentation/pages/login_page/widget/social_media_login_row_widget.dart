@@ -144,7 +144,7 @@ class SocialMediaLoginRowWidget extends StatelessWidget {
                     shared.LocaleKeys.loginGoogleLoginError,
                     track: shared.TrackConstants.loginPageTrack,
                   ) ??
-                  'Unable to SignIn with google',
+                  'Unable to SignIn with google!',
             ),
             actions: [
               TextButton(

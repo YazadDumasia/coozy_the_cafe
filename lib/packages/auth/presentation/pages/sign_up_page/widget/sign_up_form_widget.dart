@@ -178,18 +178,19 @@ class SignUpFormWidget extends StatelessWidget {
           SignUpTextFormStreamWidget(
             controller: emailController,
             focusNode: emailFocusNode,
-            hintText:
-                context.tr(
-                  shared.LocaleKeys.commonEmailHint,
-                  track: shared.TrackConstants.signUpTrack,
-                ) ??
-                'Email Address',
             labelText:
                 context.tr(
                   shared.LocaleKeys.commonEmailLabel,
                   track: shared.TrackConstants.signUpTrack,
                 ) ??
                 'Email Address',
+            hintText:
+                context.tr(
+                  shared.LocaleKeys.commonEmailHint,
+                  track: shared.TrackConstants.signUpTrack,
+                ) ??
+                'Enter your Email address.',
+
             autofillHints: [AutofillHints.email],
             textInputType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,

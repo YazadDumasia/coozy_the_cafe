@@ -261,10 +261,10 @@ class MenuCategoryListItem extends StatelessWidget {
                                           context.tr(
                                                 shared
                                                     .LocaleKeys
-                                                    .commonErrorMsg,
+                                                    .menuCategoryFullListFailedToReorderCategoryMsg,
                                                 track: shared
                                                     .TrackConstants
-                                                    .commonTrack,
+                                                    .menuCategoryPageTrack,
                                               ) ??
                                               'Failed to reorder categories.',
                                         ),
@@ -300,10 +300,10 @@ class MenuCategoryListItem extends StatelessWidget {
                                             context.tr(
                                                   shared
                                                       .LocaleKeys
-                                                      .commonErrorMsg,
+                                                      .menuCategoryFullListFailedToReorderCategoryMsg,
                                                   track: shared
                                                       .TrackConstants
-                                                      .commonTrack,
+                                                      .menuCategoryPageTrack,
                                                 ) ??
                                                 'Failed to reorder categories.',
                                           ),

@@ -46,7 +46,7 @@ class SignUpPhoneNumberField extends StatelessWidget {
                     shared.LocaleKeys.commonCommonPhoneNumberHint,
                     track: shared.TrackConstants.signUpTrack,
                   ) ??
-                  'Enter your phone number',
+                  'Enter your phone number.',
             ),
             onCountryChanged: (shared.Country country) {
               controller.clear();

@@ -255,8 +255,10 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
                   }
                   if (parsed <= 0) {
                     return context.tr(
-                          shared.LocaleKeys.commonErrorMsg,
-                          track: shared.TrackConstants.commonTrack,
+                          shared
+                              .LocaleKeys
+                              .inventoryAddEditDailogMustBeGreaterThanorZero,
+                          track: shared.TrackConstants.inventoryPageTrack,
                         ) ??
                         'Must be greater than 0';
                   }
@@ -304,8 +306,10 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
                   }
                   if (parsed < 0) {
                     return context.tr(
-                          shared.LocaleKeys.commonErrorMsg,
-                          track: shared.TrackConstants.commonTrack,
+                          shared
+                              .LocaleKeys
+                              .inventoryAddEditDailogMustBeGreaterThanorZero,
+                          track: shared.TrackConstants.inventoryPageTrack,
                         ) ??
                         'Must be 0 or greater';
                   }

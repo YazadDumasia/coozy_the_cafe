@@ -56,53 +56,6 @@ class GetPurchaseSummaryUseCase {
   GetPurchaseSummaryUseCase(this.repository);
 
   Future<PurchaseSummary> call() async {
-    final now = DateTime.now();
-    final startOfMonth = DateTime(now.year, now.month, 1);
-    final nextMonth = now.month == 12 ? 1 : now.month + 1;
-    final nextMonthYear = now.month == 12 ? now.year + 1 : now.year;
-    final endOfMonth = DateTime(
-      nextMonthYear,
-      nextMonth,
-      1,
-    ).subtract(const Duration(milliseconds: 1));
-
-    final records = await repository.getPurchasesByDateRange(
-      startOfMonth,
-      endOfMonth,
-    );
-
-    double monthlyTotal = 0;
-    double weeklyTotal = 0;
-    double dailyTotal = 0;
-
-    final startOfDay = DateTime(now.year, now.month, now.day);
-
-    // Find start of week (Monday)
-    int daysFromMonday = now.weekday - DateTime.monday;
-    final startOfWeek = startOfDay.subtract(Duration(days: daysFromMonday));
-
-    for (var record in records) {
-      if (record.purchaseDateTime == null) continue;
-      final dt = DateTime.tryParse(record.purchaseDateTime!);
-      if (dt == null) continue;
-
-      final price = record.purchasePrice ?? 0.0;
-
-      monthlyTotal += price;
-
-      if (dt.isAfter(startOfWeek) || dt.isAtSameMomentAs(startOfWeek)) {
-        weeklyTotal += price;
-      }
-
-      if (dt.isAfter(startOfDay) || dt.isAtSameMomentAs(startOfDay)) {
-        dailyTotal += price;
-      }
-    }
-
-    return PurchaseSummary(
-      dailyTotal: dailyTotal,
-      weeklyTotal: weeklyTotal,
-      monthlyTotal: monthlyTotal,
-    );
+    return await repository.getPurchaseSummary();
   }
 }

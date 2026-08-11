@@ -227,13 +227,17 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
             controller: _searchController,
             elevation: WidgetStateProperty.all(0),
             backgroundColor: WidgetStateProperty.all(
-              Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+              Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
             ),
             shape: WidgetStateProperty.all(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
                 side: BorderSide(
-                  color: Theme.of(context).colorScheme.outlineVariant.withValues(alpha: 0.5),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.outlineVariant.withValues(alpha: 0.5),
                 ),
               ),
             ),
@@ -250,7 +254,9 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
             hintStyle: WidgetStateProperty.all(
               TextStyle(
                 fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
               ),
             ),
             onChanged: (val) {
@@ -300,7 +306,8 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                         var types = appliedFilter.applied
                             .map((e) => e.filterKey.toLowerCase())
                             .toList();
-                        final itemFoodType = (item.foodType ?? '').toLowerCase();
+                        final itemFoodType = (item.foodType ?? '')
+                            .toLowerCase();
                         bool matches = types.any((t) {
                           if (t == itemFoodType) return true;
                           if (t == 'veg' &&
@@ -364,8 +371,9 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                 return Center(
                   child: Text(
                     context.tr(
-                          shared.LocaleKeys.commonErrorMsg,
+                          shared.LocaleKeys.commonCustomErrorMsg,
                           track: shared.TrackConstants.commonTrack,
+                          params: {"error": state.message},
                         ) ??
                         'Error: ${state.message}',
                   ),
@@ -383,8 +391,7 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
     final bool hasCategory = _selectedCategoryIdNotifier.value != null;
     final bool hasSubcategory = _selectedSubcategoryIdNotifier.value != null;
     final bool hasSearch = _searchQueryNotifier.value.isNotEmpty;
-    final bool hasBottomSheetFilters =
-        _appliedFiltersNotifier.value.isNotEmpty;
+    final bool hasBottomSheetFilters = _appliedFiltersNotifier.value.isNotEmpty;
 
     if (!hasCategory &&
         !hasSubcategory &&
@@ -473,10 +480,7 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
       for (final item in filter.applied) {
         chips.add(
           InputChip(
-            label: Text(
-              item.filterTitle,
-              style: const TextStyle(fontSize: 12),
-            ),
+            label: Text(item.filterTitle, style: const TextStyle(fontSize: 12)),
             selected: true,
             showCheckmark: false,
             avatar: const Icon(Icons.tune, size: 14),
@@ -518,7 +522,14 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        child: Row(children: chips.map((c) => Padding(padding: const EdgeInsets.only(right: 6), child: c)).toList()),
+        child: Row(
+          children: chips
+              .map(
+                (c) =>
+                    Padding(padding: const EdgeInsets.only(right: 6), child: c),
+              )
+              .toList(),
+        ),
       ),
     );
   }
