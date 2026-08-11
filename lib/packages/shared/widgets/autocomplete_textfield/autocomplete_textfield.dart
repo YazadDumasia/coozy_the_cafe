@@ -308,7 +308,7 @@ class AutoCompleteTextFieldState<T> extends State<AutoCompleteTextField<T>> {
       final Offset position = textfieldRenderObject.localToGlobal(Offset.zero);
       listSuggestionsEntry = OverlayEntry(
         builder: (context) {
-          return Positioned(
+          return PositionedDirectional(
             width: width,
             child: CompositedTransformFollower(
               link: _layerLink,
