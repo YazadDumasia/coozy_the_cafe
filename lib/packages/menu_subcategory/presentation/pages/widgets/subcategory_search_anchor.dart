@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
@@ -6,7 +7,11 @@ class SubcategorySearchAnchor extends StatelessWidget {
   final SearchController searchController;
   final FocusNode searchFocusNode;
   final List<MenuSubcategory> subcategories;
-  final void Function(String keyword, List<MenuSubcategory> allSubcategories)
+  final List<MenuCategory> categories;
+  final void Function(
+    MenuSubcategory selectedSubcategory,
+    List<MenuSubcategory> allSubcategories,
+  )
   onResultSelected;
 
   const SubcategorySearchAnchor({
@@ -14,8 +19,34 @@ class SubcategorySearchAnchor extends StatelessWidget {
     required this.searchController,
     required this.searchFocusNode,
     required this.subcategories,
+    required this.categories,
     required this.onResultSelected,
   });
+
+  (String subCatName, String catName) _parseNames(MenuSubcategory sub) {
+    MenuCategory? category;
+    for (final c in categories) {
+      if (c.id == sub.categoryId) {
+        category = c;
+        break;
+      }
+    }
+
+    String catName = category?.name ?? '';
+    String subCatName = sub.name ?? '';
+
+    if (catName.isNotEmpty && subCatName.startsWith('$catName - ')) {
+      subCatName = subCatName.substring(catName.length + 3);
+    } else if (subCatName.contains(' - ')) {
+      final parts = subCatName.split(' - ');
+      if (catName.isEmpty) {
+        catName = parts[0];
+      }
+      subCatName = parts.sublist(1).join(' - ');
+    }
+
+    return (subCatName, catName);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,8 +118,11 @@ class SubcategorySearchAnchor extends StatelessWidget {
               }
 
               final matches = subcategories.where((sub) {
-                final name = sub.name?.toLowerCase() ?? '';
-                return name.contains(keyword);
+                final rawName = sub.name?.toLowerCase() ?? '';
+                final (subCatName, catName) = _parseNames(sub);
+                return rawName.contains(keyword) ||
+                    subCatName.toLowerCase().contains(keyword) ||
+                    catName.toLowerCase().contains(keyword);
               }).toList();
 
               if (matches.isEmpty) {
@@ -108,11 +142,24 @@ class SubcategorySearchAnchor extends StatelessWidget {
               }
 
               return matches.map((sub) {
+                final (subCatName, catName) = _parseNames(sub);
                 return ListTile(
                   leading: const Icon(Icons.subdirectory_arrow_right),
-                  title: Text(sub.name ?? ''),
+                  title: Text(
+                    subCatName,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: catName.isNotEmpty
+                      ? Text(
+                          catName,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).colorScheme.outline,
+                          ),
+                        )
+                      : null,
                   onTap: () {
-                    onResultSelected(sub.name ?? '', subcategories);
+                    onResultSelected(sub, subcategories);
                   },
                 );
               });

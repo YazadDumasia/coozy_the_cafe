@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../database/coozy_database.dart';
+import '../../../core/coozy_core.dart' as core;
 import '../../../shared/coozy_shared.dart' as shared;
 
 class SettingsScreen extends StatefulWidget {
@@ -86,6 +87,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (!mounted) return;
 
     try {
+      await core.NotificationApi.init();
+      await core.NotificationApi.requestNotificationPermission();
+      if (!mounted) return;
+
       if (enable) {
         _statusMessageNotifier.value = _tr(
           context,
@@ -98,6 +103,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final count = await FakeDataHelper.generateFakeData(
           database,
           onProgress: (stageKey, stageDesc, currentStep, totalSteps) {
+            core.NotificationApi.showFakeDataProgressNotification(
+              currentStep: currentStep,
+              totalSteps: totalSteps,
+              statusDesc: stageDesc,
+            );
+
+            if (!mounted) return;
+
             if (lastStageKey != null) {
               _completedStageKeysNotifier.value = {
                 ..._completedStageKeysNotifier.value,
@@ -112,6 +125,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         );
 
+        if (!mounted) return;
+
         if (lastStageKey != null) {
           _completedStageKeysNotifier.value = {
             ..._completedStageKeysNotifier.value,
@@ -125,6 +140,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _isFakeDataEnabledNotifier.value = true;
         _statusMessageNotifier.value =
             'Success! $count fake records added across all modules.';
+
+        core.NotificationApi.showFakeDataCompletedNotification(count: count);
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -150,6 +168,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         await FakeDataHelper.removeFakeData(
           database,
           onProgress: (stageKey, stageDesc, currentStep, totalSteps) {
+            core.NotificationApi.showFakeDataProgressNotification(
+              currentStep: currentStep,
+              totalSteps: totalSteps,
+              statusDesc: stageDesc,
+            );
+
+            if (!mounted) return;
+
             if (lastStageKey != null) {
               _completedStageKeysNotifier.value = {
                 ..._completedStageKeysNotifier.value,
@@ -164,6 +190,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           },
         );
 
+        if (!mounted) return;
+
         _activeStageKeyNotifier.value = null;
         _completedStageKeysNotifier.value = {};
 
@@ -175,6 +203,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           shared.LocaleKeys.settingsFakeDataRemoved,
           'All fake records cleanly removed.',
         );
+
+        core.NotificationApi.showFakeDataRemovedNotification();
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -189,8 +220,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       }
     } catch (e) {
-      _statusMessageNotifier.value = 'Error processing fake data: $e';
       if (mounted) {
+        _statusMessageNotifier.value = 'Error processing fake data: $e';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
@@ -206,7 +237,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       }
     } finally {
-      _isLoadingNotifier.value = false;
+      if (mounted) {
+        _isLoadingNotifier.value = false;
+      }
     }
   }
 
@@ -222,22 +255,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final name = datasetName ?? 'Dataset';
 
     try {
+      await core.NotificationApi.init();
+      await core.NotificationApi.requestNotificationPermission();
+      if (!mounted) return;
+
       if (enable) {
         _statusMessageNotifier.value = 'Generating fake data for $name...';
-        await FakeDataHelper.generateFakeData(
+        final count = await FakeDataHelper.generateFakeData(
           database,
           onProgress: (stageKey, stageDesc, currentStep, totalSteps) {
+            core.NotificationApi.showFakeDataProgressNotification(
+              currentStep: currentStep,
+              totalSteps: totalSteps,
+              statusDesc: stageDesc,
+            );
+
+            if (!mounted) return;
+
             _activeStageKeyNotifier.value = stageKey;
             _currentStepDescNotifier.value = stageDesc;
             _currentStepNotifier.value = currentStep;
             _totalStepsNotifier.value = totalSteps;
           },
         );
+
+        if (!mounted) return;
+
         final newCompleted = Set<String>.from(_completedStageKeysNotifier.value)
           ..addAll(stageKeys);
         _completedStageKeysNotifier.value = newCompleted;
         _isFakeDataEnabledNotifier.value = true;
         _statusMessageNotifier.value = '$name fake data added successfully!';
+
+        core.NotificationApi.showFakeDataCompletedNotification(count: count);
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -256,6 +307,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       } else {
         _statusMessageNotifier.value = 'Removing fake data for $name...';
         await FakeDataHelper.removeDatasetData(database, stageKeys);
+        if (!mounted) return;
+
         final newCompleted = Set<String>.from(_completedStageKeysNotifier.value)
           ..removeAll(stageKeys);
         _completedStageKeysNotifier.value = newCompleted;
@@ -263,6 +316,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
           _isFakeDataEnabledNotifier.value = false;
         }
         _statusMessageNotifier.value = '$name fake data removed.';
+
+        core.NotificationApi.showFakeDataRemovedNotification();
+
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -280,9 +336,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         }
       }
     } catch (e) {
-      _statusMessageNotifier.value = 'Error updating $name fake data: $e';
+      if (mounted) {
+        _statusMessageNotifier.value = 'Error updating $name fake data: $e';
+      }
     } finally {
-      _isLoadingNotifier.value = false;
+      if (mounted) {
+        _isLoadingNotifier.value = false;
+      }
     }
   }
 
@@ -528,122 +588,132 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(height: 8),
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  _showFakeDataBottomSheet(context: context);
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Row(
+            ValueListenableBuilder<bool>(
+              valueListenable: _isLoadingNotifier,
+              builder: (context, isLoading, child) {
+                return Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(12),
+                    onTap: isLoading
+                        ? null
+                        : () {
+                            _showFakeDataBottomSheet(context: context);
+                          },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.amber.withValues(alpha: 0.15),
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.data_array_rounded,
-                              color: Colors.amber,
-                            ),
-                          ),
-                          const SizedBox(width: 14),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  _tr(
-                                    context,
-                                    shared.LocaleKeys.settingsFakeDataModeLabel,
-                                    'Fake / Sample Data Mode',
-                                  ),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: Colors.amber.withValues(alpha: 0.15),
+                                  shape: BoxShape.circle,
                                 ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  _tr(
-                                    context,
-                                    shared
-                                        .LocaleKeys
-                                        .settingsFakeDataModeSubtitle,
-                                    'Generates 1,800+ realistic records spanning 1.5 years back across Customers, Orders, Staff, Inventory, Purchases, & Reservations.',
-                                  ),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey,
-                                  ),
+                                child: const Icon(
+                                  Icons.data_array_rounded,
+                                  color: Colors.amber,
                                 ),
-                              ],
-                            ),
-                          ),
-                          ValueListenableBuilder<bool>(
-                            valueListenable: _isLoadingNotifier,
-                            builder: (context, isLoading, child) {
-                              if (isLoading) {
-                                return const SizedBox(
+                              ),
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _tr(
+                                        context,
+                                        shared
+                                            .LocaleKeys
+                                            .settingsFakeDataModeLabel,
+                                        'Fake / Sample Data Mode',
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      _tr(
+                                        context,
+                                        shared
+                                            .LocaleKeys
+                                            .settingsFakeDataModeSubtitle,
+                                        'Generates 1,800+ realistic records spanning 1.5 years back across Customers, Orders, Staff, Inventory, Purchases, & Reservations.',
+                                      ),
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              if (isLoading)
+                                const SizedBox(
                                   width: 24,
                                   height: 24,
                                   child: CircularProgressIndicator(
                                     strokeWidth: 2.5,
                                   ),
-                                );
+                                )
+                              else
+                                ValueListenableBuilder<bool>(
+                                  valueListenable: _isFakeDataEnabledNotifier,
+                                  builder: (context, isEnabled, child) {
+                                    return Switch.adaptive(
+                                      value: isEnabled,
+                                      activeThumbColor: Colors.amber,
+                                      onChanged: isLoading
+                                          ? null
+                                          : _onToggleFakeData,
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          ValueListenableBuilder<String>(
+                            valueListenable: _statusMessageNotifier,
+                            builder: (context, statusMsg, child) {
+                              if (statusMsg.isEmpty) {
+                                return const SizedBox.shrink();
                               }
-                              return ValueListenableBuilder<bool>(
-                                valueListenable: _isFakeDataEnabledNotifier,
-                                builder: (context, isEnabled, child) {
-                                  return Switch.adaptive(
-                                    value: isEnabled,
-                                    activeThumbColor: Colors.amber,
-                                    onChanged: _onToggleFakeData,
-                                  );
-                                },
+                              return Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 8,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: theme.primaryColor.withValues(
+                                    alpha: 0.08,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  statusMsg,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: theme.primaryColor,
+                                  ),
+                                ),
                               );
                             },
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      ValueListenableBuilder<String>(
-                        valueListenable: _statusMessageNotifier,
-                        builder: (context, statusMsg, child) {
-                          if (statusMsg.isEmpty) return const SizedBox.shrink();
-                          return Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            decoration: BoxDecoration(
-                              color: theme.primaryColor.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              statusMsg,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: theme.primaryColor,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
 
             const SizedBox(height: 16),

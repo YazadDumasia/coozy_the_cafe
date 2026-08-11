@@ -54,13 +54,19 @@ class MenuItemListItem extends StatelessWidget {
     final bool isMasterAvailable = item.isTodayAvailable ?? true;
     final bool isSimple = item.isSimpleVariation ?? true;
 
+    final bool isTabletOrDesktop =
+        shared.ResponsiveLayout.isTablet(context) ||
+        shared.ResponsiveLayout.isDesktop(context);
+
     return Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        top: index == 0 ? 8 : 4,
-        bottom: index == totalLength - 1 ? 16 : 4,
-      ),
+      padding: isTabletOrDesktop
+          ? EdgeInsets.zero
+          : EdgeInsets.only(
+              left: 16,
+              right: 16,
+              top: index == 0 ? 8 : 4,
+              bottom: index == totalLength - 1 ? 16 : 4,
+            ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Slidable(
@@ -304,15 +310,21 @@ class MenuItemListItem extends StatelessWidget {
             color: theme.colorScheme.onPrimaryContainer,
           ),
           const SizedBox(width: 4),
-          Text(
-            categoryName,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: theme.colorScheme.onPrimaryContainer,
+          Flexible(
+            child: Text(
+              categoryName,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onPrimaryContainer,
+              ),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
             ),
           ),
-          if (subcategoryName != null && subcategoryName.isNotEmpty) ...[
+          if (!shared.ResponsiveLayout.isMobile(context) &&
+              subcategoryName != null &&
+              subcategoryName.isNotEmpty) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Text(
@@ -324,12 +336,16 @@ class MenuItemListItem extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              subcategoryName,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: theme.colorScheme.onPrimaryContainer.withAlpha(220),
+            Flexible(
+              child: Text(
+                subcategoryName,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  color: theme.colorScheme.onPrimaryContainer.withAlpha(220),
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ],

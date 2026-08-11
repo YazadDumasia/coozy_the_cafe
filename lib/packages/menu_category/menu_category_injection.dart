@@ -27,7 +27,7 @@ void registerMenuCategoryDependencies(GetIt sl) {
   sl.registerLazySingleton(() => UpdateMenuCategoryPositionsUseCase(sl()));
 
   // Blocs / Cubits
-  sl.registerLazySingleton(
+  sl.registerFactory(
     () => MenuCategoryFullListCubit(
       getCategoriesUseCase: sl(),
       getSubcategoriesUseCase: sl(),

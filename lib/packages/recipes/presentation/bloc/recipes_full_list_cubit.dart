@@ -1,4 +1,3 @@
-import 'dart:isolate';
 import 'package:collection/collection.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:equatable/equatable.dart';
@@ -115,9 +114,7 @@ class RecipesFullListCubit extends Cubit<RecipesFullListState> {
           ),
         );
       } else {
-        final extractedOptions = kIsWeb
-            ? await compute(_extractFilterOptionsTask, data)
-            : await Isolate.run(() => _extractFilterOptionsTask(data));
+        final extractedOptions = await compute(_extractFilterOptionsTask, data);
 
         uniqueServings = extractedOptions.uniqueServings;
         servingsFilterOptionsList = extractedOptions.servingsFilterOptionsList;
@@ -333,13 +330,10 @@ class RecipesFullListCubit extends Cubit<RecipesFullListState> {
     List<AppliedFilterModel> filters,
     List<Recipe> recipes,
   ) async {
-    if (kIsWeb) {
-      return await compute(
-        _computeFilterTask,
-        _FilterTaskParams(filters: filters, recipes: recipes),
-      );
-    }
-    return await Isolate.run(() => _executeFilterLogic(filters, recipes));
+    return await compute(
+      _computeFilterTask,
+      _FilterTaskParams(filters: filters, recipes: recipes),
+    );
   }
 
   static List<Recipe> _computeFilterTask(_FilterTaskParams params) {

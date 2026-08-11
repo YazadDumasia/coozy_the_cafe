@@ -273,34 +273,79 @@ class InventoryDao extends DatabaseAccessor<CoozyDatabase>
   Future<int> updatePurchase(PurchaseTableCompanion purchase) async {
     return await transaction(() async {
       if (purchase.id.present) {
+        final targetId = purchase.id.value;
         final oldRecord = await (select(
           purchaseTable,
-        )..where((t) => t.id.equals(purchase.id.value))).getSingleOrNull();
+        )..where((t) => t.id.equals(targetId))).getSingleOrNull();
+
         if (oldRecord != null) {
           final oldQty = oldRecord.purchaseQty ?? 0.0;
-          final newQty = purchase.purchaseQty.value ?? oldQty;
-          final qtyDelta = newQty - oldQty;
-          final invId = purchase.inventoryId.value ?? oldRecord.inventoryId;
-          if (invId != null && qtyDelta != 0.0) {
-            final item = await (select(
-              inventoryTable,
-            )..where((t) => t.id.equals(invId))).getSingleOrNull();
-            if (item != null) {
-              final currentStock = item.currentStock ?? 0.0;
-              await (update(
+          final oldInvId = oldRecord.inventoryId;
+
+          final newQty = purchase.purchaseQty.present
+              ? (purchase.purchaseQty.value ?? oldQty)
+              : oldQty;
+          final newInvId = purchase.inventoryId.present
+              ? (purchase.inventoryId.value ?? oldInvId)
+              : oldInvId;
+
+          if (oldInvId == newInvId) {
+            final qtyDelta = newQty - oldQty;
+            if (newInvId != null && qtyDelta != 0.0) {
+              final item = await (select(
                 inventoryTable,
-              )..where((t) => t.id.equals(invId))).write(
-                InventoryTableCompanion(
-                  currentStock: Value(currentStock + qtyDelta),
-                  modifiedDate: Value(DateTime.now().toIso8601String()),
-                ),
-              );
+              )..where((t) => t.id.equals(newInvId))).getSingleOrNull();
+              if (item != null) {
+                final currentStock = item.currentStock ?? 0.0;
+                await (update(
+                  inventoryTable,
+                )..where((t) => t.id.equals(newInvId))).write(
+                  InventoryTableCompanion(
+                    currentStock: Value(currentStock + qtyDelta),
+                    modifiedDate: Value(DateTime.now().toIso8601String()),
+                  ),
+                );
+              }
+            }
+          } else {
+            if (oldInvId != null && oldQty != 0.0) {
+              final oldItem = await (select(
+                inventoryTable,
+              )..where((t) => t.id.equals(oldInvId))).getSingleOrNull();
+              if (oldItem != null) {
+                final currentStock = oldItem.currentStock ?? 0.0;
+                await (update(
+                  inventoryTable,
+                )..where((t) => t.id.equals(oldInvId))).write(
+                  InventoryTableCompanion(
+                    currentStock: Value(currentStock - oldQty),
+                    modifiedDate: Value(DateTime.now().toIso8601String()),
+                  ),
+                );
+              }
+            }
+            if (newInvId != null && newQty != 0.0) {
+              final newItem = await (select(
+                inventoryTable,
+              )..where((t) => t.id.equals(newInvId))).getSingleOrNull();
+              if (newItem != null) {
+                final currentStock = newItem.currentStock ?? 0.0;
+                await (update(
+                  inventoryTable,
+                )..where((t) => t.id.equals(newInvId))).write(
+                  InventoryTableCompanion(
+                    currentStock: Value(currentStock + newQty),
+                    modifiedDate: Value(DateTime.now().toIso8601String()),
+                  ),
+                );
+              }
             }
           }
         }
+        await update(purchaseTable).replace(purchase);
+        return targetId;
       }
-      await update(purchaseTable).replace(purchase);
-      return purchase.id.value;
+      return 0;
     });
   }
 

@@ -12,6 +12,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await shared.LocalManager.preferencesInit();
   await initDI();
+  await core.NotificationApi.init(initScheduled: true);
   core.NotificationApi.onNotification.stream.listen((payload) async {
     if (payload != null) {
       switch (payload) {

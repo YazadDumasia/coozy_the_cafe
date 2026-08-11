@@ -199,7 +199,7 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                               physics: const ClampingScrollPhysics(
                                 parent: AlwaysScrollableScrollPhysics(),
                               ),
-                              shrinkWrap: true,
+                              shrinkWrap: false,
                               slivers: <Widget>[
                                 SliverList(
                                   delegate: SliverChildBuilderDelegate(

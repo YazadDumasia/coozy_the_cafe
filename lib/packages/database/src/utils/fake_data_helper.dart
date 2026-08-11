@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:drift/drift.dart';
 import 'package:faker/faker.dart';
@@ -11,6 +12,10 @@ typedef FakeDataProgressCallback =
       int currentStep,
       int totalSteps,
     );
+
+Future<T> _runInIsolate<T>(FutureOr<T> Function() computation) async {
+  return await computation();
+}
 
 class FakeDataHelper {
   static const String fakePrefix = 'FAKE_';
@@ -36,40 +41,58 @@ class FakeDataHelper {
       return startDate.add(Duration(days: randomDays, minutes: randomMinutes));
     }
 
-    // 1. Customers (200 entries)
+    // 1. Customers (250 entries)
     onProgress?.call(
       'customers',
-      'Generating Customers & Contact Info...',
+      'Generating Customers & Contact Info in Background Isolate...',
       1,
       totalSteps,
     );
+    final customerCompanions = await _runInIsolate(() {
+      final fakerLoc = Faker();
+      final randomLoc = Random();
+      final uuidLoc = const Uuid();
+      final list = <CustomersTableCompanion>[];
+      for (int i = 0; i < 250; i++) {
+        final custName = fakerLoc.person.name();
+        final phone = '+91 ${randomLoc.nextInt(899999999) + 100000000}';
+        final diffDays = now.difference(startDate).inDays;
+        final randomDays = randomLoc.nextInt(diffDays > 0 ? diffDays : 1);
+        final created = startDate.add(
+          Duration(days: randomDays, minutes: randomLoc.nextInt(1440)),
+        );
+        list.add(
+          CustomersTableCompanion.insert(
+            hashId: Value('$fakePrefix${uuidLoc.v4()}'),
+            name: Value(custName),
+            phoneNumber: Value(phone),
+            isoCode: const Value('IN'),
+            createdDate: Value(created.toIso8601String()),
+          ),
+        );
+      }
+      return list;
+    });
+
+    await db.batch((b) {
+      b.insertAll(db.customersTable, customerCompanions);
+    });
     final customerIds = <int>[];
     final customerNames = <int, String>{};
-    for (int i = 0; i < 200; i++) {
-      final custName = faker.person.name();
-      final phone =
-          '+91 ${faker.randomGenerator.integer(999999999, min: 600000000)}';
-      final created = getRandomDate();
-      final id = await db
-          .into(db.customersTable)
-          .insert(
-            CustomersTableCompanion.insert(
-              hashId: Value('$fakePrefix${uuid.v4()}'),
-              name: Value(custName),
-              phoneNumber: Value(phone),
-              isoCode: const Value('IN'),
-              createdDate: Value(created.toIso8601String()),
-            ),
-          );
-      customerIds.add(id);
-      customerNames[id] = custName;
-      totalInsertedRecords++;
+    final custRows = await (db.select(
+      db.customersTable,
+    )..where((tbl) => tbl.hashId.like('$fakePrefix%'))).get();
+    for (final row in custRows) {
+      customerIds.add(row.id);
+      customerNames[row.id] = row.name ?? 'Customer';
     }
+    totalInsertedRecords += customerCompanions.length;
+    await Future.delayed(const Duration(milliseconds: 1));
 
-    // 2. Employees (200 entries)
+    // 2. Employees (100 entries)
     onProgress?.call(
       'employees',
-      'Generating Staff & Employee Profiles...',
+      'Generating Staff & Employee Profiles in Background Isolate...',
       2,
       totalSteps,
     );
@@ -92,45 +115,62 @@ class FakeDataHelper {
       'Cleaner',
     ];
 
-    for (int i = 0; i < 200; i++) {
-      final empName = faker.person.name();
-      final phone =
-          '+91 ${faker.randomGenerator.integer(999999999, min: 600000000)}';
-      final pos = positions[i % positions.length];
-      final joining = getRandomDate();
-      final email = faker.internet.email();
-      final salary = 18000.0 + random.nextInt(40000);
+    final employeeCompanions = await _runInIsolate(() {
+      final fakerLoc = Faker();
+      final randomLoc = Random();
+      final uuidLoc = const Uuid();
+      final list = <EmployeesTableCompanion>[];
+      for (int i = 0; i < 100; i++) {
+        final empName = fakerLoc.person.name();
+        final phone = '+91 ${randomLoc.nextInt(899999999) + 100000000}';
+        final pos = positions[i % positions.length];
+        final diffDays = now.difference(startDate).inDays;
+        final randomDays = randomLoc.nextInt(diffDays > 0 ? diffDays : 1);
+        final joining = startDate.add(
+          Duration(days: randomDays, minutes: randomLoc.nextInt(1440)),
+        );
+        final email = fakerLoc.internet.email();
+        final salary = 18000.0 + randomLoc.nextInt(40000);
 
-      final id = await db
-          .into(db.employeesTable)
-          .insert(
-            EmployeesTableCompanion.insert(
-              hashId: Value('$fakePrefix${uuid.v4()}'),
-              name: Value(empName),
-              phoneNumber: Value(phone),
-              isoCode: const Value('IN'),
-              position: Value(pos),
-              joiningDate: Value(joining.toIso8601String()),
-              startWorkingTime: const Value('09:00 AM'),
-              endWorkingTime: const Value('06:00 PM'),
-              workingHours: const Value('9 hours'),
-              email: Value(email),
-              salary: Value(salary),
-              addressLine1: Value('${10 + i} Main Cafe Avenue'),
-              addressLine2: const Value('Downtown Sector 12'),
-              idProof: const Value('Aadhaar Card'),
-              idProofNumber: Value('99${100000000 + i}'),
-              totalLeaves: const Value(12),
-              isDeleted: const Value(false),
-              creationDate: Value(joining.toIso8601String()),
-            ),
-          );
+        list.add(
+          EmployeesTableCompanion.insert(
+            hashId: Value('$fakePrefix${uuidLoc.v4()}'),
+            name: Value(empName),
+            phoneNumber: Value(phone),
+            isoCode: const Value('IN'),
+            position: Value(pos),
+            joiningDate: Value(joining.toIso8601String()),
+            startWorkingTime: const Value('09:00 AM'),
+            endWorkingTime: const Value('06:00 PM'),
+            workingHours: const Value('9 hours'),
+            email: Value(email),
+            salary: Value(salary),
+            addressLine1: Value('${10 + i} Main Cafe Avenue'),
+            addressLine2: const Value('Downtown Sector 12'),
+            idProof: const Value('Aadhaar Card'),
+            idProofNumber: Value('99${100000000 + i}'),
+            totalLeaves: const Value(12),
+            isDeleted: const Value(false),
+            creationDate: Value(joining.toIso8601String()),
+          ),
+        );
+      }
+      return list;
+    });
 
-      employeeIds.add(id);
-      employeeNamesMap[id] = empName;
-      employeePositionsMap[id] = pos;
-      totalInsertedRecords++;
+    await db.batch((b) {
+      b.insertAll(db.employeesTable, employeeCompanions);
+    });
+    final empRows = await (db.select(
+      db.employeesTable,
+    )..where((tbl) => tbl.hashId.like('$fakePrefix%'))).get();
+    for (final row in empRows) {
+      employeeIds.add(row.id);
+      employeeNamesMap[row.id] = row.name ?? 'Staff';
+      employeePositionsMap[row.id] = row.position ?? 'Staff';
     }
+    totalInsertedRecords += employeeCompanions.length;
+    await Future.delayed(const Duration(milliseconds: 1));
 
     // 3. Attendance & Leaves (Full-time & Half-time realistic demo logs)
     onProgress?.call(
@@ -156,6 +196,9 @@ class FakeDataHelper {
       'Half Day Leave - Afternoon Shift (Vehicle Repair & Maintenance)',
       'Half Day Leave - Morning Shift (Government Office Work)',
     ];
+
+    final leaveCompanions = <LeavesTableCompanion>[];
+    final attendanceCompanions = <AttendanceTableCompanion>[];
 
     // Generate 300 realistic Leave Records (Full-time & Half-time)
     for (int i = 0; i < 300; i++) {
@@ -183,22 +226,19 @@ class FakeDataHelper {
       final rVal = random.nextDouble();
       final status = rVal < 0.75 ? 1 : (rVal < 0.95 ? 2 : 3);
 
-      await db
-          .into(db.leavesTable)
-          .insert(
-            LeavesTableCompanion.insert(
-              employeeId: Value(empId),
-              employeeName: Value(empName),
-              employeePosition: Value(empPos),
-              currentStatus: Value(status),
-              startDate: Value(leaveDate.toIso8601String()),
-              endDate: Value(endDate.toIso8601String()),
-              reason: Value(reason),
-              creationDate: Value(leaveDate.toIso8601String()),
-              isDeleted: const Value(false),
-            ),
-          );
-      totalInsertedRecords++;
+      leaveCompanions.add(
+        LeavesTableCompanion.insert(
+          employeeId: Value(empId),
+          employeeName: Value(empName),
+          employeePosition: Value(empPos),
+          currentStatus: Value(status),
+          startDate: Value(leaveDate.toIso8601String()),
+          endDate: Value(endDate.toIso8601String()),
+          reason: Value(reason),
+          creationDate: Value(leaveDate.toIso8601String()),
+          isDeleted: const Value(false),
+        ),
+      );
 
       // If approved leave, insert correlating Attendance entry on leaveDate
       if (status == 1) {
@@ -208,39 +248,33 @@ class FakeDataHelper {
           final checkOutStr = isMorningShift ? '06:00 PM' : '01:00 PM';
           final durationStr = '4 hours (Half Day)';
 
-          await db
-              .into(db.attendanceTable)
-              .insert(
-                AttendanceTableCompanion.insert(
-                  employeeId: Value(empId),
-                  employeeName: Value(empName),
-                  employeePosition: Value(empPos),
-                  currentStatus: const Value(2), // 2 = Half Day
-                  checkIn: Value(checkInStr),
-                  checkOut: Value(checkOutStr),
-                  employeeWorkingDurations: Value(durationStr),
-                  creationDate: Value(leaveDate.toIso8601String()),
-                  isDeleted: const Value(false),
-                ),
-              );
-          totalInsertedRecords++;
+          attendanceCompanions.add(
+            AttendanceTableCompanion.insert(
+              employeeId: Value(empId),
+              employeeName: Value(empName),
+              employeePosition: Value(empPos),
+              currentStatus: const Value(2), // 2 = Half Day
+              checkIn: Value(checkInStr),
+              checkOut: Value(checkOutStr),
+              employeeWorkingDurations: Value(durationStr),
+              creationDate: Value(leaveDate.toIso8601String()),
+              isDeleted: const Value(false),
+            ),
+          );
         } else {
-          await db
-              .into(db.attendanceTable)
-              .insert(
-                AttendanceTableCompanion.insert(
-                  employeeId: Value(empId),
-                  employeeName: Value(empName),
-                  employeePosition: Value(empPos),
-                  currentStatus: const Value(3), // 3 = Absent / On Leave
-                  checkIn: const Value('N/A'),
-                  checkOut: const Value('N/A'),
-                  employeeWorkingDurations: const Value('Full Day Leave'),
-                  creationDate: Value(leaveDate.toIso8601String()),
-                  isDeleted: const Value(false),
-                ),
-              );
-          totalInsertedRecords++;
+          attendanceCompanions.add(
+            AttendanceTableCompanion.insert(
+              employeeId: Value(empId),
+              employeeName: Value(empName),
+              employeePosition: Value(empPos),
+              currentStatus: const Value(3), // 3 = Absent / On Leave
+              checkIn: const Value('N/A'),
+              checkOut: const Value('N/A'),
+              employeeWorkingDurations: const Value('Full Day Leave'),
+              creationDate: Value(leaveDate.toIso8601String()),
+              isDeleted: const Value(false),
+            ),
+          );
         }
       }
     }
@@ -293,22 +327,19 @@ class FakeDataHelper {
           durationStr = 'Absent / On Leave';
         }
 
-        await db
-            .into(db.attendanceTable)
-            .insert(
-              AttendanceTableCompanion.insert(
-                employeeId: Value(empId),
-                employeeName: Value(empName),
-                employeePosition: Value(empPos),
-                currentStatus: Value(status),
-                checkIn: Value(checkInStr),
-                checkOut: Value(checkOutStr),
-                employeeWorkingDurations: Value(durationStr),
-                creationDate: Value(dayDate.toIso8601String()),
-                isDeleted: const Value(false),
-              ),
-            );
-        totalInsertedRecords++;
+        attendanceCompanions.add(
+          AttendanceTableCompanion.insert(
+            employeeId: Value(empId),
+            employeeName: Value(empName),
+            employeePosition: Value(empPos),
+            currentStatus: Value(status),
+            checkIn: Value(checkInStr),
+            checkOut: Value(checkOutStr),
+            employeeWorkingDurations: Value(durationStr),
+            creationDate: Value(dayDate.toIso8601String()),
+            isDeleted: const Value(false),
+          ),
+        );
       }
     }
 
@@ -350,25 +381,30 @@ class FakeDataHelper {
         durationStr = 'Absent / Unexcused';
       }
 
-      await db
-          .into(db.attendanceTable)
-          .insert(
-            AttendanceTableCompanion.insert(
-              employeeId: Value(empId),
-              employeeName: Value(empName),
-              employeePosition: Value(empPos),
-              currentStatus: Value(status),
-              checkIn: Value(checkInStr),
-              checkOut: Value(checkOutStr),
-              employeeWorkingDurations: Value(durationStr),
-              creationDate: Value(attDate.toIso8601String()),
-              isDeleted: const Value(false),
-            ),
-          );
-      totalInsertedRecords++;
+      attendanceCompanions.add(
+        AttendanceTableCompanion.insert(
+          employeeId: Value(empId),
+          employeeName: Value(empName),
+          employeePosition: Value(empPos),
+          currentStatus: Value(status),
+          checkIn: Value(checkInStr),
+          checkOut: Value(checkOutStr),
+          employeeWorkingDurations: Value(durationStr),
+          creationDate: Value(attDate.toIso8601String()),
+          isDeleted: const Value(false),
+        ),
+      );
     }
 
-    // 4. Tables & Menu (12 Tables, 7 Categories, 35 Menu Items)
+    await db.batch((b) {
+      b.insertAll(db.leavesTable, leaveCompanions);
+      b.insertAll(db.attendanceTable, attendanceCompanions);
+    });
+    totalInsertedRecords +=
+        leaveCompanions.length + attendanceCompanions.length;
+    await Future.delayed(const Duration(milliseconds: 1));
+
+    // 4. Tables & Menu (12 Tables, 7 Categories, 28 Menu Items)
     onProgress?.call(
       'tables_menu',
       'Generating Dining Tables & Menu Items...',
@@ -400,66 +436,15 @@ class FakeDataHelper {
       'Snacks & Quick Bites',
       'Bakery & Pastries',
       'Breakfast Specials',
-      'Italian & Pasta',
-      'Chinese & Pan-Asian',
-      'Mexican & Tacos',
-      'Indian Thalis & Curries',
-      'Pizzas & Calzones',
-      'Burgers & Sandwiches',
-      'Healthy Bowls & Salads',
-      'Mocktails & Shakes',
-      'Coffee & Artisanal Teas',
-      'Soups & Broths',
-      'Ice Creams & Sundaes',
-      'Seafood & Grill',
-      'Chef Specials & Combos',
     ];
 
     final subcategoryPrefixes = [
       'Classic Specials',
       'Gourmet Choice',
       'Chef Signature',
-      'Deluxe Collection',
-      'House Specials',
-      'Artisanal Range',
-      'Premium Selection',
-      'Sizzling Delights',
-      'Spicy & Bold',
-      'Sweet & Savory',
-      'Authentic Feast',
-      'Organic Harvest',
-      'Crispy Favorites',
-      'Seasonal Specials',
-      'Masterpiece Combos',
     ];
 
-    final itemPrefixes = [
-      'Classic',
-      'Deluxe',
-      'Special',
-      'Gourmet',
-      'Chef Special',
-      'Royal',
-      'Crispy',
-      'Grilled',
-      'Loaded',
-      'Supreme',
-      'Signature',
-      'Fresh',
-      'Rich',
-      'Hot & Spicy',
-      'Smokey',
-      'Traditional',
-      'Ultimate',
-      'Golden',
-      'Sizzling',
-      'Double Delight',
-      'Superstar',
-      'Grand',
-      'Fiesta',
-      'Extreme',
-      'Paradise',
-    ];
+    final itemPrefixes = ['Classic', 'Deluxe', 'Special', 'Gourmet'];
 
     final menuItemIds = <int>[];
     final menuItemPrices = <int, double>{};
@@ -480,7 +465,7 @@ class FakeDataHelper {
           );
       totalInsertedRecords++;
 
-      for (int s = 0; s < 15; s++) {
+      for (int s = 0; s < subcategoryPrefixes.length; s++) {
         final subName = '$catName - ${subcategoryPrefixes[s]}';
         final subCatId = await db
             .into(db.subcategoriesTable)
@@ -496,7 +481,7 @@ class FakeDataHelper {
             );
         totalInsertedRecords++;
 
-        for (int m = 0; m < 25; m++) {
+        for (int m = 0; m < itemPrefixes.length; m++) {
           final itemName = '${itemPrefixes[m]} $catName ${s + 1}-${m + 1}';
           final sellingPrice = 90.0 + random.nextInt(350);
           final costPrice = sellingPrice * 0.55;
@@ -530,7 +515,6 @@ class FakeDataHelper {
           totalInsertedRecords++;
 
           if (isSimple) {
-            // Single variation for simple item
             await db
                 .into(db.menuItemVariationsTable)
                 .insert(
@@ -550,29 +534,15 @@ class FakeDataHelper {
                 );
             totalInsertedRecords++;
           } else {
-            // Multiple variations (between 2 and 12 variations per item)
             final variationNamesPool = [
               'Small',
               'Medium',
               'Large',
-              'Extra Large',
               'Family Pack',
-              'Combo Pack',
-              'Half Portion',
-              'Full Portion',
-              'Single Shot',
-              'Double Shot',
-              'Triple Shot',
-              'Party Size',
             ];
-
-            final int varCount =
-                2 + ((c + s + m) % 11); // Generates between 2 to 12 variations
-
-            for (int v = 0; v < varCount; v++) {
+            for (int v = 0; v < variationNamesPool.length; v++) {
               final double scale = 0.7 + (v * 0.15);
-              final String varName =
-                  variationNamesPool[v % variationNamesPool.length];
+              final String varName = variationNamesPool[v];
 
               await db
                   .into(db.menuItemVariationsTable)
@@ -595,14 +565,12 @@ class FakeDataHelper {
             }
           }
 
-          // Customer review for every 5th item
-          if (m % 5 == 0) {
+          if (m % 2 == 0 && customerIds.isNotEmpty) {
             final custId = customerIds[(c + s + m) % customerIds.length];
             await db
                 .into(db.menuItemReviewsTable)
                 .insert(
                   MenuItemReviewsTableCompanion.insert(
-                    id: Value(totalInsertedRecords + 100000),
                     itemId: Value(itemId),
                     customerId: Value(custId),
                     rating: Value(4.0 + (m % 3) * 0.5),
@@ -615,6 +583,7 @@ class FakeDataHelper {
             totalInsertedRecords++;
           }
         }
+        await Future.delayed(const Duration(milliseconds: 1));
       }
     }
 
@@ -672,7 +641,6 @@ class FakeDataHelper {
 
       DateTime pDate;
       if (p < 5) {
-        // Today
         pDate = DateTime(
           now.year,
           now.month,
@@ -681,7 +649,6 @@ class FakeDataHelper {
           random.nextInt(60),
         );
       } else if (p < 20) {
-        // Current week (past 1-6 days)
         final daysAgo = random.nextInt(6) + 1;
         final d = now.subtract(Duration(days: daysAgo));
         pDate = DateTime(
@@ -692,7 +659,6 @@ class FakeDataHelper {
           random.nextInt(60),
         );
       } else if (p < 40) {
-        // Current month (past 7-25 days)
         final daysAgo = random.nextInt(18) + 7;
         final d = now.subtract(Duration(days: daysAgo));
         pDate = DateTime(
@@ -703,7 +669,6 @@ class FakeDataHelper {
           random.nextInt(60),
         );
       } else {
-        // Historical (past 1.5 years)
         pDate = getRandomDate();
       }
 
@@ -725,6 +690,9 @@ class FakeDataHelper {
             ),
           );
       totalInsertedRecords++;
+      if (p % 20 == 0) {
+        await Future.delayed(const Duration(milliseconds: 1));
+      }
     }
 
     // 6. Reservations (80 entries)
@@ -756,14 +724,15 @@ class FakeDataHelper {
               tableReservedName: Value('Table ${(r % 12) + 1}'),
               reservationDateTime: Value(rDate.toIso8601String()),
               numberOfPeople: Value(2 + random.nextInt(6)),
-              status: Value(
-                1 + random.nextInt(2),
-              ), // 1: Confirmed, 2: Completed
+              status: Value(1 + random.nextInt(2)),
               notes: Value(faker.lorem.sentence()),
               creationDate: Value(rDate.toIso8601String()),
             ),
           );
       totalInsertedRecords++;
+      if (r % 20 == 0) {
+        await Future.delayed(const Duration(milliseconds: 1));
+      }
     }
 
     // 7. Orders, Invoices, Kitchen Orders & Payments
@@ -777,7 +746,7 @@ class FakeDataHelper {
     final paymentMethods = ['Cash', 'UPI', 'Credit Card'];
 
     for (int o = 0; o < 250; o++) {
-      final bool isActiveKitchenOrder = o < 20; // 20 active kitchen orders!
+      final bool isActiveKitchenOrder = o < 20;
       final DateTime oDate = isActiveKitchenOrder
           ? now.subtract(Duration(minutes: 5 + (o * 4)))
           : getRandomDate();
@@ -859,7 +828,7 @@ class FakeDataHelper {
         totalInsertedRecords++;
       }
 
-      final taxCost = subtotal * 0.05; // 5% GST
+      final taxCost = subtotal * 0.05;
       final grandTotal = subtotal + taxCost;
 
       final invoiceId = await db
@@ -916,6 +885,10 @@ class FakeDataHelper {
             ),
           );
       totalInsertedRecords++;
+
+      if (o % 10 == 0) {
+        await Future.delayed(const Duration(milliseconds: 1));
+      }
     }
 
     return totalInsertedRecords;
@@ -957,6 +930,8 @@ class FakeDataHelper {
       "DELETE FROM menu_subcategories WHERE hash_id LIKE '$fakePrefix%' OR category_id IN (SELECT id FROM menu_categories WHERE hash_id LIKE '$fakePrefix%');",
     );
 
+    await Future.delayed(const Duration(milliseconds: 1));
+
     onProgress?.call(
       'cleaning_parent_tables',
       'Cleaning primary module records (Customers, Staff, Orders, Inventory, Reservations)...',
@@ -993,6 +968,8 @@ class FakeDataHelper {
     await db.customStatement(
       "DELETE FROM employees WHERE hash_id LIKE '$fakePrefix%';",
     );
+
+    await Future.delayed(const Duration(milliseconds: 1));
   }
 
   /// Removes specific fake records associated with stage keys.

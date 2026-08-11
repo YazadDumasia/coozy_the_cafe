@@ -389,81 +389,79 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                           ),
                         ],
                       ),
-                      Flexible(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            BlocBuilder<EmployeeBloc, EmployeeState>(
-                              builder: (context, state) {
-                                final employees = state is EmployeeLoadedState
-                                    ? state.employees
-                                    : <EmployeeEntity>[];
-                                final allEmployeesText =
-                                    context.tr(
-                                      shared.LocaleKeys.allEmployeesDropdown,
-                                      track: shared
-                                          .TrackConstants
-                                          .staffManagementPageTrack,
-                                    ) ??
-                                    'All Employees';
-                                return DropdownButtonHideUnderline(
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: theme
-                                          .colorScheme
-                                          .surfaceContainerHighest
-                                          .withValues(alpha: 0.5),
-                                      borderRadius: BorderRadius.circular(8),
-                                      border: Border.all(
-                                        color: theme.dividerColor.withValues(
-                                          alpha: 0.3,
-                                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          BlocBuilder<EmployeeBloc, EmployeeState>(
+                            builder: (context, state) {
+                              final employees = state is EmployeeLoadedState
+                                  ? state.employees
+                                  : <EmployeeEntity>[];
+                              final allEmployeesText =
+                                  context.tr(
+                                    shared.LocaleKeys.allEmployeesDropdown,
+                                    track: shared
+                                        .TrackConstants
+                                        .staffManagementPageTrack,
+                                  ) ??
+                                  'All Employees';
+                              return DropdownButtonHideUnderline(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: theme
+                                        .colorScheme
+                                        .surfaceContainerHighest
+                                        .withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: theme.dividerColor.withValues(
+                                        alpha: 0.3,
                                       ),
                                     ),
-                                    child: DropdownButton<int?>(
-                                      value: _selectedEmployeeIdNotifier.value,
-                                      hint: Text(allEmployeesText),
-                                      isDense: true,
-                                      items: [
-                                        DropdownMenuItem<int?>(
-                                          value: null,
-                                          child: Text(allEmployeesText),
-                                        ),
-                                        ...employees.map(
-                                          (e) => DropdownMenuItem<int?>(
-                                            value: e.id,
-                                            child: Text(
-                                              e.name ??
-                                                  context.tr(
-                                                    shared
-                                                        .LocaleKeys
-                                                        .staffIdFallback,
-                                                    track: shared
-                                                        .TrackConstants
-                                                        .staffManagementPageTrack,
-                                                    params: {'id': '${e.id}'},
-                                                  ) ??
-                                                  'Staff #${e.id}',
-                                            ),
+                                  ),
+                                  child: DropdownButton<int?>(
+                                    value: _selectedEmployeeIdNotifier.value,
+                                    hint: Text(allEmployeesText),
+                                    isDense: true,
+                                    items: [
+                                      DropdownMenuItem<int?>(
+                                        value: null,
+                                        child: Text(allEmployeesText),
+                                      ),
+                                      ...employees.map(
+                                        (e) => DropdownMenuItem<int?>(
+                                          value: e.id,
+                                          child: Text(
+                                            e.name ??
+                                                context.tr(
+                                                  shared
+                                                      .LocaleKeys
+                                                      .staffIdFallback,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .staffManagementPageTrack,
+                                                  params: {'id': '${e.id}'},
+                                                ) ??
+                                                'Staff #${e.id}',
                                           ),
                                         ),
-                                      ],
-                                      onChanged: (val) {
-                                        _selectedEmployeeIdNotifier.value = val;
-                                      },
-                                    ),
+                                      ),
+                                    ],
+                                    onChanged: (val) {
+                                      _selectedEmployeeIdNotifier.value = val;
+                                    },
                                   ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -544,10 +542,14 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 8,
+              runSpacing: 8,
               children: [
                 Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       Icons.tune_rounded,
@@ -844,18 +846,70 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
 
   // --- Helpers for Filtering & Chart Data generation ---
 
+  DateTimeRange _getActiveDateRange() {
+    final now = DateTime.now();
+    final fullRange = _selectedDurationNotifier.value.getDateRange(now);
+    final rangeDays = fullRange.end.difference(fullRange.start).inDays;
+
+    final activeStartDays =
+        (rangeDays * (_sliderRangeValuesNotifier.value.start / 100)).round();
+    final activeEndDays =
+        (rangeDays * (_sliderRangeValuesNotifier.value.end / 100)).round();
+
+    final activeStartDate = DateTime(
+      fullRange.start.year,
+      fullRange.start.month,
+      fullRange.start.day,
+    ).add(Duration(days: activeStartDays));
+
+    final activeEndDate = DateTime(
+      fullRange.start.year,
+      fullRange.start.month,
+      fullRange.start.day,
+      23,
+      59,
+      59,
+    ).add(Duration(days: activeEndDays));
+
+    return DateTimeRange(start: activeStartDate, end: activeEndDate);
+  }
+
   List<AttendanceEntity> _filterAttendance(List<AttendanceEntity> list) {
-    if (_selectedEmployeeIdNotifier.value == null) return list;
-    return list
-        .where((a) => a.employeeId == _selectedEmployeeIdNotifier.value)
-        .toList();
+    final activeRange = _getActiveDateRange();
+    final selectedEmpId = _selectedEmployeeIdNotifier.value;
+
+    return list.where((a) {
+      if (selectedEmpId != null && a.employeeId != selectedEmpId) {
+        return false;
+      }
+      final date = _parseDateTime(a.date);
+      if (date != null) {
+        if (date.isBefore(activeRange.start) || date.isAfter(activeRange.end)) {
+          return false;
+        }
+      }
+      return true;
+    }).toList();
   }
 
   List<LeaveEntity> _filterLeaves(List<LeaveEntity> list) {
-    if (_selectedEmployeeIdNotifier.value == null) return list;
-    return list
-        .where((l) => l.employeeId == _selectedEmployeeIdNotifier.value)
-        .toList();
+    final activeRange = _getActiveDateRange();
+    final selectedEmpId = _selectedEmployeeIdNotifier.value;
+
+    return list.where((l) {
+      if (selectedEmpId != null && l.employeeId != selectedEmpId) {
+        return false;
+      }
+      final date = _parseDateTime(
+        l.startDate ?? l.startDateTime ?? l.appliedDate ?? l.createdDate,
+      );
+      if (date != null) {
+        if (date.isBefore(activeRange.start) || date.isAfter(activeRange.end)) {
+          return false;
+        }
+      }
+      return true;
+    }).toList();
   }
 
   DateTime? _parseDateTime(String? rawDate) {
@@ -995,6 +1049,8 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
       return [];
     }
 
+    final filteredAttendance = _filterAttendance(attendanceList);
+
     return employees.where((e) => e.isDeleted != true).map((e) {
       final name =
           e.name ??
@@ -1004,7 +1060,9 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
             params: {'id': '${e.id}'},
           ) ??
           'Staff #${e.id}';
-      final empAttendance = attendanceList.where((a) => a.employeeId == e.id);
+      final empAttendance = filteredAttendance.where(
+        (a) => a.employeeId == e.id,
+      );
       final total = empAttendance.length;
       final present = empAttendance
           .where((a) => a.status?.toLowerCase() == 'present' || a.status == '1')

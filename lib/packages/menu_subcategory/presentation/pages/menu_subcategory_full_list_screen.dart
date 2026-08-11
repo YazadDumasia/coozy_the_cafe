@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'menu_subcategory_full_list_screen_actions.dart';
 import 'widgets/menu_subcategory_grid_card.dart';
 import 'widgets/menu_subcategory_list_item.dart';
+import 'widgets/subcategory_category_horizontal_bar.dart';
 import 'widgets/subcategory_category_sidebar.dart';
 import 'widgets/subcategory_empty_view.dart';
 import 'widgets/subcategory_search_anchor.dart';
@@ -122,40 +123,34 @@ class _MenuSubcategoryFullListScreenState
   }
 
   void _onSearchResultSelected(
-    String keyword,
+    MenuSubcategory matchedSub,
     List<MenuSubcategory> allSubcategories,
   ) {
     if (_searchController.isOpen) {
-      _searchController.closeView(keyword);
+      _searchController.closeView(matchedSub.name ?? '');
     }
 
-    final matchIndex = allSubcategories.indexWhere(
-      (sub) => sub.name?.toLowerCase().contains(keyword.toLowerCase()) ?? false,
-    );
+    // Select parent category and trigger subcategories load for that category
+    _onCategorySelected(matchedSub.categoryId);
 
-    if (matchIndex != -1) {
-      final matchedSub = allSubcategories[matchIndex];
-
-      // Select parent category and trigger subcategories load for that category
-      _onCategorySelected(matchedSub.categoryId);
-
-      Future.delayed(const Duration(milliseconds: 350), () {
-        if (!mounted) return;
-        final targetKey = _subcategoryKeys[matchedSub.id];
-        if (targetKey?.currentContext != null) {
-          Scrollable.ensureVisible(
-            targetKey!.currentContext!,
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.easeInOut,
-            alignment: 0.1,
-          );
-        }
-      });
-    }
+    Future.delayed(const Duration(milliseconds: 350), () {
+      if (!mounted) return;
+      final targetKey = _subcategoryKeys[matchedSub.id];
+      if (targetKey?.currentContext != null) {
+        Scrollable.ensureVisible(
+          targetKey!.currentContext!,
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeInOut,
+          alignment: 0.1,
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isMobile = shared.ResponsiveLayout.isMobile(context);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -275,64 +270,112 @@ class _MenuSubcategoryFullListScreenState
                     subcategories: context
                         .read<MenuSubcategoryBloc>()
                         .allSubcategories,
+                    categories: _categories,
                     onResultSelected: _onSearchResultSelected,
                   );
                 }
                 return const SizedBox.shrink();
               },
             ),
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SubcategoryCategorySidebar(
-                    categories: _categories,
-                    selectedCategoryId: _selectedCategoryId,
-                    scrollController: _categorySidebarScrollController,
-                    onCategorySelected: _onCategorySelected,
-                  ),
-                  const VerticalDivider(width: 1, thickness: 1),
-                  Expanded(
-                    child:
-                        BlocConsumer<MenuSubcategoryBloc, MenuSubcategoryState>(
-                          listener: (context, state) {
-                            if (state is MenuSubcategoryError) {
-                              core.PlatformUtils.debugLog(
-                                MenuSubcategoryFullListScreen,
-                                'MenuSubcategoryError:${state.message}',
-                              );
-                            }
-                          },
-                          builder: (context, state) {
-                            if (state is MenuSubcategoryLoading ||
-                                state is MenuSubcategoryInitial) {
-                              return const shared.LoadingPage();
-                            } else if (state is MenuSubcategoryLoaded) {
-                              return _buildSubcategoryContent(state);
-                            } else if (state is MenuSubcategoryError) {
-                              return shared.ErrorPage(
-                                onPressedRetryButton: () async {
-                                  context.read<MenuSubcategoryBloc>().add(
-                                    const LoadMenuSubcategories(),
-                                  );
-                                },
-                              );
-                            } else {
-                              return const SizedBox.shrink();
-                            }
-                          },
-                        ),
-                  ),
-                ],
+            if (isMobile) ...[
+              SubcategoryCategoryHorizontalBar(
+                categories: _categories,
+                selectedCategoryId: _selectedCategoryId,
+                onCategorySelected: _onCategorySelected,
               ),
-            ),
+              Expanded(
+                child: BlocConsumer<MenuSubcategoryBloc, MenuSubcategoryState>(
+                  listener: (context, state) {
+                    if (state is MenuSubcategoryError) {
+                      core.PlatformUtils.debugLog(
+                        MenuSubcategoryFullListScreen,
+                        'MenuSubcategoryError:${state.message}',
+                      );
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state is MenuSubcategoryLoading ||
+                        state is MenuSubcategoryInitial) {
+                      return const shared.LoadingPage();
+                    } else if (state is MenuSubcategoryLoaded) {
+                      return _buildSubcategoryContent(state, isMobile: true);
+                    } else if (state is MenuSubcategoryError) {
+                      return shared.ErrorPage(
+                        onPressedRetryButton: () async {
+                          context.read<MenuSubcategoryBloc>().add(
+                            const LoadMenuSubcategories(),
+                          );
+                        },
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
+              ),
+            ] else ...[
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SubcategoryCategorySidebar(
+                      categories: _categories,
+                      selectedCategoryId: _selectedCategoryId,
+                      scrollController: _categorySidebarScrollController,
+                      onCategorySelected: _onCategorySelected,
+                    ),
+                    const VerticalDivider(width: 1, thickness: 1),
+                    Expanded(
+                      child:
+                          BlocConsumer<
+                            MenuSubcategoryBloc,
+                            MenuSubcategoryState
+                          >(
+                            listener: (context, state) {
+                              if (state is MenuSubcategoryError) {
+                                core.PlatformUtils.debugLog(
+                                  MenuSubcategoryFullListScreen,
+                                  'MenuSubcategoryError:${state.message}',
+                                );
+                              }
+                            },
+                            builder: (context, state) {
+                              if (state is MenuSubcategoryLoading ||
+                                  state is MenuSubcategoryInitial) {
+                                return const shared.LoadingPage();
+                              } else if (state is MenuSubcategoryLoaded) {
+                                return _buildSubcategoryContent(
+                                  state,
+                                  isMobile: false,
+                                );
+                              } else if (state is MenuSubcategoryError) {
+                                return shared.ErrorPage(
+                                  onPressedRetryButton: () async {
+                                    context.read<MenuSubcategoryBloc>().add(
+                                      const LoadMenuSubcategories(),
+                                    );
+                                  },
+                                );
+                              } else {
+                                return const SizedBox.shrink();
+                              }
+                            },
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSubcategoryContent(MenuSubcategoryLoaded state) {
+  Widget _buildSubcategoryContent(
+    MenuSubcategoryLoaded state, {
+    bool isMobile = false,
+  }) {
     final displayList = List<MenuSubcategory>.from(state.subcategories);
 
     if (displayList.isEmpty) {
@@ -504,7 +547,7 @@ class _MenuSubcategoryFullListScreenState
             key: ValueKey('list_${item.id}_${item.isActive}'),
             padding: EdgeInsets.only(
               left: 10,
-              right: 10,
+              right: (isMobile && showIndexBar) ? 28 : 10,
               top: 10,
               bottom: isLastItem ? 10 : 0,
             ),

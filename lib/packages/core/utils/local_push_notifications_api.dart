@@ -39,9 +39,7 @@ class NotificationApi {
       onDidReceiveNotificationResponse: (details) async {
         onNotification.add(details.payload);
       },
-      onDidReceiveBackgroundNotificationResponse: (details) async {
-        onNotification.add(details.payload);
-      },
+      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
 
     if (!initScheduled || _timezoneInitialized) {
@@ -110,6 +108,8 @@ class NotificationApi {
     String? payload,
     required int progress,
     required int maxProgress,
+    String channelName = 'App Operation Progress',
+    String channelDescription = 'Shows progress for app background operations',
   }) async {
     await _notifications.show(
       id: id,
@@ -124,11 +124,11 @@ class NotificationApi {
         ),
         android: AndroidNotificationDetails(
           'coozy_the_cafe_app_notification_progress',
-          'Database Backup Progress',
-          channelDescription: 'Shows progress for database backups',
-          priority: Priority.low,
+          channelName,
+          channelDescription: channelDescription,
+          priority: Priority.high,
           category: AndroidNotificationCategory.progress,
-          importance: Importance.low,
+          importance: Importance.high,
           showProgress: true,
           maxProgress: maxProgress,
           progress: progress,
@@ -137,6 +137,65 @@ class NotificationApi {
       ),
       payload: payload,
     );
+  }
+
+  static Future<void> showFakeDataProgressNotification({
+    int id = 0,
+    required int currentStep,
+    required int totalSteps,
+    required String statusDesc,
+  }) async {
+    try {
+      await showProgressNotification(
+        id: id,
+        title: 'Generating Fake Data ($currentStep/$totalSteps)',
+        body: statusDesc,
+        progress: currentStep,
+        maxProgress: totalSteps,
+        channelName: 'Fake Data Generation Progress',
+        channelDescription: 'Shows progress for generating fake sample data',
+      );
+    } catch (e) {
+      PlatformUtils.debugLog(
+        NotificationApi,
+        'Failed to show fake data progress notification: $e',
+      );
+    }
+  }
+
+  static Future<void> showFakeDataCompletedNotification({
+    int id = 0,
+    required int count,
+  }) async {
+    try {
+      await cancel(id);
+      await showNotification(
+        id: id,
+        title: 'Fake Data Created!',
+        body: 'Successfully added $count fake records across all cafe modules.',
+      );
+    } catch (e) {
+      PlatformUtils.debugLog(
+        NotificationApi,
+        'Failed to show fake data completed notification: $e',
+      );
+    }
+  }
+
+  static Future<void> showFakeDataRemovedNotification({int id = 0}) async {
+    try {
+      await cancel(id);
+      await showNotification(
+        id: id,
+        title: 'Fake Data Removed',
+        body: 'All fake records have been cleanly removed from the database.',
+      );
+    } catch (e) {
+      PlatformUtils.debugLog(
+        NotificationApi,
+        'Failed to show fake data removed notification: $e',
+      );
+    }
   }
 
   static Future<void> showScheduledNotification({
@@ -220,4 +279,9 @@ class NotificationApi {
   static Future<void> cancelAll() async {
     await _notifications.cancelAll();
   }
+}
+
+@pragma('vm:entry-point')
+void notificationTapBackground(NotificationResponse details) {
+  NotificationApi.onNotification.add(details.payload);
 }

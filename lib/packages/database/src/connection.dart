@@ -19,6 +19,7 @@ QueryExecutor openConnection(String dbName) {
       },
     ),
     native: DriftNativeOptions(
+      shareAcrossIsolates: true,
       databasePath: () async {
         final dbFolder = await getApplicationDocumentsDirectory();
         return p.join(dbFolder.path, dbName);

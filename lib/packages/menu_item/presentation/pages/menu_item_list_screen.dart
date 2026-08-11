@@ -354,6 +354,37 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                   return const MenuItemEmptyView();
                 }
 
+                final bool isTablet = shared.ResponsiveLayout.isTablet(context);
+                final bool isDesktop = shared.ResponsiveLayout.isDesktop(
+                  context,
+                );
+
+                if (isTablet || isDesktop) {
+                  return SlidableAutoCloseBehavior(
+                    child: GridView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: isDesktop ? 450 : 550,
+                        mainAxisExtent: 175,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                      ),
+                      itemCount: filteredItems.length,
+                      itemBuilder: (context, index) {
+                        final item = filteredItems[index];
+                        return MenuItemListItem(
+                          item: item,
+                          index: index,
+                          totalLength: filteredItems.length,
+                        );
+                      },
+                    ),
+                  );
+                }
+
                 return SlidableAutoCloseBehavior(
                   child: ListView.builder(
                     itemCount: filteredItems.length,

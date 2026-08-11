@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +12,14 @@ import '../../../menu_subcategory/presentation/bloc/menu_subcategory_event.dart'
 import '../pages/menu_item_list_screen.dart';
 import '../pages/add_edit_menu_item_screen.dart';
 import '../../domain/entities/menu_item.dart';
+
+T? _tryRead<T extends StateStreamableSource<Object?>>(BuildContext context) {
+  try {
+    return context.read<T>();
+  } catch (_) {
+    return null;
+  }
+}
 
 class MenuItemRoutes {
   static List<RouteBase> get routes => [
@@ -37,39 +46,92 @@ class MenuItemRoutes {
       routes: [
         GoRoute(
           path: AppRoutePath.addNewMenuItemScreenRoute,
-          builder: (context, state) => MultiBlocProvider(
-            providers: [
-              BlocProvider<MenuItemBloc>.value(
-                value: GetIt.instance<MenuItemBloc>(),
-              ),
-              BlocProvider<MenuCategoryFullListCubit>.value(
-                value: GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
-              ),
-              BlocProvider<MenuSubcategoryBloc>.value(
-                value: GetIt.instance<MenuSubcategoryBloc>()
-                  ..add(LoadMenuSubcategories()),
-              ),
-            ],
-            child: const AddEditMenuItemScreen(),
-          ),
+          builder: (context, state) {
+            final parentMenuItemBloc = _tryRead<MenuItemBloc>(context);
+            final parentCategoryCubit = _tryRead<MenuCategoryFullListCubit>(
+              context,
+            );
+            final parentSubcategoryBloc = _tryRead<MenuSubcategoryBloc>(
+              context,
+            );
+
+            return MultiBlocProvider(
+              providers: [
+                if (parentMenuItemBloc != null)
+                  BlocProvider<MenuItemBloc>.value(value: parentMenuItemBloc)
+                else
+                  BlocProvider<MenuItemBloc>(
+                    create: (_) =>
+                        GetIt.instance<MenuItemBloc>()..add(LoadMenuItems()),
+                  ),
+
+                if (parentCategoryCubit != null)
+                  BlocProvider<MenuCategoryFullListCubit>.value(
+                    value: parentCategoryCubit..loadData(),
+                  )
+                else
+                  BlocProvider<MenuCategoryFullListCubit>(
+                    create: (_) =>
+                        GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
+                  ),
+
+                if (parentSubcategoryBloc != null)
+                  BlocProvider<MenuSubcategoryBloc>.value(
+                    value: parentSubcategoryBloc,
+                  )
+                else
+                  BlocProvider<MenuSubcategoryBloc>(
+                    create: (_) =>
+                        GetIt.instance<MenuSubcategoryBloc>()
+                          ..add(LoadMenuSubcategories()),
+                  ),
+              ],
+              child: const AddEditMenuItemScreen(),
+            );
+          },
         ),
         GoRoute(
           path: AppRoutePath.updateMenuItemScreenRoute,
           builder: (context, state) {
             final item = state.extra as MenuItem?;
+            final parentMenuItemBloc = _tryRead<MenuItemBloc>(context);
+            final parentCategoryCubit = _tryRead<MenuCategoryFullListCubit>(
+              context,
+            );
+            final parentSubcategoryBloc = _tryRead<MenuSubcategoryBloc>(
+              context,
+            );
+
             return MultiBlocProvider(
               providers: [
-                BlocProvider<MenuItemBloc>.value(
-                  value: GetIt.instance<MenuItemBloc>(),
-                ),
-                BlocProvider<MenuCategoryFullListCubit>.value(
-                  value: GetIt.instance<MenuCategoryFullListCubit>()
-                    ..loadData(),
-                ),
-                BlocProvider<MenuSubcategoryBloc>.value(
-                  value: GetIt.instance<MenuSubcategoryBloc>()
-                    ..add(LoadMenuSubcategories()),
-                ),
+                if (parentMenuItemBloc != null)
+                  BlocProvider<MenuItemBloc>.value(value: parentMenuItemBloc)
+                else
+                  BlocProvider<MenuItemBloc>(
+                    create: (_) =>
+                        GetIt.instance<MenuItemBloc>()..add(LoadMenuItems()),
+                  ),
+
+                if (parentCategoryCubit != null)
+                  BlocProvider<MenuCategoryFullListCubit>.value(
+                    value: parentCategoryCubit..loadData(),
+                  )
+                else
+                  BlocProvider<MenuCategoryFullListCubit>(
+                    create: (_) =>
+                        GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
+                  ),
+
+                if (parentSubcategoryBloc != null)
+                  BlocProvider<MenuSubcategoryBloc>.value(
+                    value: parentSubcategoryBloc,
+                  )
+                else
+                  BlocProvider<MenuSubcategoryBloc>(
+                    create: (_) =>
+                        GetIt.instance<MenuSubcategoryBloc>()
+                          ..add(LoadMenuSubcategories()),
+                  ),
               ],
               child: AddEditMenuItemScreen(item: item),
             );

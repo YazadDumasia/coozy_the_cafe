@@ -77,7 +77,7 @@ class _RecipesBookmarkListScreenState extends State<RecipesBookmarkListScreen> {
                           physics: const ClampingScrollPhysics(
                             parent: AlwaysScrollableScrollPhysics(),
                           ),
-                          shrinkWrap: true,
+                          shrinkWrap: false,
                           slivers: <Widget>[
                             SliverList(
                               delegate: SliverChildBuilderDelegate(

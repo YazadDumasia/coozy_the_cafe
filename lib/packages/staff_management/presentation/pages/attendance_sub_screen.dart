@@ -201,7 +201,7 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
                   context,
                 ).colorScheme.onPrimaryContainer,
                 deactivatedColor: Theme.of(context).colorScheme.outline,
-                monthTextStyle: Theme.of(context).textTheme.labelMedium!
+                monthTextStyle: Theme.of(context).textTheme.labelSmall!
                     .copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
@@ -210,10 +210,11 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
                   color: Theme.of(context).colorScheme.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                 ),
-                dateTextStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onSurface,
-                  fontWeight: FontWeight.w700,
-                ),
+                dateTextStyle: Theme.of(context).textTheme.titleMedium!
+                    .copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                      fontWeight: FontWeight.w700,
+                    ),
                 onDateChange: (date) {
                   _selectedDateNotifier.value = date;
                 },

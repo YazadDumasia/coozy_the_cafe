@@ -887,15 +887,34 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
             SizedBox(
               width: double.infinity,
               child: SegmentedButton<bool>(
+                showSelectedIcon: false,
                 segments: const <ButtonSegment<bool>>[
                   ButtonSegment<bool>(
                     value: true,
-                    label: Text('Simple Variation'),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Simple Variation',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                     icon: Icon(Icons.sell_outlined, size: 16),
                   ),
                   ButtonSegment<bool>(
                     value: false,
-                    label: Text('Multiple Variations'),
+                    label: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        'Multiple Variations',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
                     icon: Icon(Icons.layers_outlined, size: 16),
                   ),
                 ],
@@ -906,6 +925,7 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                   });
                 },
                 style: SegmentedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
                   visualDensity: VisualDensity.compact,
                 ),
               ),

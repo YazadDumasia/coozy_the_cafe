@@ -69,7 +69,9 @@ class RecipeListItem extends StatelessWidget {
                         Visibility(
                           visible:
                               model.recipeOriginalName != null &&
-                              model.recipeOriginalName!.isNotEmpty,
+                              model.recipeOriginalName!.isNotEmpty &&
+                              model.recipeOriginalName !=
+                                  model.translatedRecipeName,
                           child: Padding(
                             padding: const EdgeInsets.only(top: 5),
                             child: Row(

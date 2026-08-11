@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:isolate';
 import 'package:flutter/foundation.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:flutter/services.dart';
@@ -45,15 +44,11 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
 
   RecipesLocalDataSourceImpl({required this.database});
 
-  static Future<List<RecipeModel>> _parseJsonInIsolate(
-    String jsonString,
-  ) async {
-    return await Isolate.run(() {
-      final List<dynamic> decoded = jsonDecode(jsonString);
-      return decoded
-          .map((json) => RecipeModel.fromJson(json as Map<String, dynamic>))
-          .toList();
-    });
+  static List<RecipeModel> _parseJsonTask(String jsonString) {
+    final List<dynamic> decoded = jsonDecode(jsonString);
+    return decoded
+        .map((json) => RecipeModel.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   @override
@@ -79,15 +74,10 @@ class RecipesLocalDataSourceImpl implements RecipesLocalDataSource {
       final String jsonString = await rootBundle.loadString(
         Assets.data.recipesDataset,
       );
-      final List<RecipeModel> recipes;
-      if (kIsWeb) {
-        final List<dynamic> decoded = jsonDecode(jsonString);
-        recipes = decoded
-            .map((json) => RecipeModel.fromJson(json as Map<String, dynamic>))
-            .toList();
-      } else {
-        recipes = await _parseJsonInIsolate(jsonString);
-      }
+      final List<RecipeModel> recipes = await compute(
+        _parseJsonTask,
+        jsonString,
+      );
       PlatformUtils.debugLog(
         RecipesLocalDataSource,
         "Parsed ${recipes.length} recipes. Inserting into SQLite database in chunks...",
