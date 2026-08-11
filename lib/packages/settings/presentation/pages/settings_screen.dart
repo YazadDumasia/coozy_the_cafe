@@ -430,10 +430,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         final selectedLanguage = availableLanguages.firstWhere(
                           (lang) =>
                               lang.code == currentLocale.languageCode &&
-                              (lang.countryCode == null ||
-                                  lang.countryCode ==
-                                      currentLocale.countryCode),
-                          orElse: () => availableLanguages.first,
+                              lang.countryCode == currentLocale.countryCode,
+                          orElse: () => availableLanguages.firstWhere(
+                            (lang) => lang.code == currentLocale.languageCode,
+                            orElse: () => availableLanguages.first,
+                          ),
                         );
 
                         return Row(
@@ -482,6 +483,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                             DropdownButton<shared.LanguageModel>(
                               value: selectedLanguage,
+                              menuMaxHeight: 400,
                               underline: const SizedBox.shrink(),
                               icon: const Icon(Icons.arrow_drop_down),
                               items: availableLanguages.map((lang) {

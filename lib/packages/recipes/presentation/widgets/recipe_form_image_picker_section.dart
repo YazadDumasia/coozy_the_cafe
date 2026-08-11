@@ -50,8 +50,8 @@ class RecipeFormImagePickerSection extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Positioned(
-                    right: 0,
+                  PositionedDirectional(
+                    end: 0,
                     top: 0,
                     child: InkWell(
                       onTap: () => onRemoveImage(index),

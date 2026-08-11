@@ -79,11 +79,11 @@ class _SplashScreenDesktopLayoutState extends State<SplashScreenDesktopLayout> {
               hoverRadius: 90,
               connectDots: false, //not recommended
             ),
-            Positioned(
+            PositionedDirectional(
               top: 0,
               bottom: 0,
-              left: 0,
-              right: 0,
+              start: 0,
+              end: 0,
               child: OrientationBuilder(
                 builder: (context, orientation) {
                   if (orientation == Orientation.landscape) {

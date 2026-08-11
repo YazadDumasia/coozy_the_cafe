@@ -134,9 +134,9 @@ class _SuspensionViewState extends State<SuspensionView> {
         } else {
           index = 0;
         }
-        return Positioned(
-          left: left,
-          right: 0,
+        return PositionedDirectional(
+          start: left,
+          end: 0,
           top: top,
           child: widget.susItemBuilder!(ctx, index),
         );

@@ -22,10 +22,10 @@ class DialogUtils {
       backgroundColor: Colors.transparent,
       content: Stack(
         children: <Widget>[
-          Positioned(
-            left: 20,
+          PositionedDirectional(
+            start: 20,
             top: 0,
-            right: 20,
+            end: 20,
             child: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.primary,
               radius: 47,
@@ -73,9 +73,9 @@ class DialogUtils {
               ],
             ),
           ),
-          Positioned(
-            left: 20,
-            right: 20,
+          PositionedDirectional(
+            start: 20,
+            end: 20,
             top: 2,
             child: CircleAvatar(
               radius: 45,
@@ -124,10 +124,10 @@ class DialogUtils {
         constraints: const BoxConstraints(maxWidth: 500),
         child: Stack(
           children: <Widget>[
-            Positioned(
-              left: 20,
+            PositionedDirectional(
+              start: 20,
               top: 0,
-              right: 20,
+              end: 20,
               child: CircleAvatar(
                 backgroundColor: Theme.of(context!).colorScheme.primary,
                 radius: 47,
@@ -226,9 +226,9 @@ class DialogUtils {
                 ],
               ),
             ),
-            Positioned(
-              left: 20,
-              right: 20,
+            PositionedDirectional(
+              start: 20,
+              end: 20,
               top: 2,
               child: CircleAvatar(
                 radius: 45,
@@ -533,10 +533,10 @@ class DialogUtils {
             constraints: const BoxConstraints(maxWidth: 500),
             child: Stack(
               children: <Widget>[
-                Positioned(
-                  left: 20,
+                PositionedDirectional(
+                  start: 20,
                   top: 0,
-                  right: 20,
+                  end: 20,
                   child: CircleAvatar(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     radius: 47,
@@ -653,9 +653,9 @@ class DialogUtils {
                     ],
                   ),
                 ),
-                Positioned(
-                  left: 20,
-                  right: 20,
+                PositionedDirectional(
+                  start: 20,
+                  end: 20,
                   top: 2,
                   child: CircleAvatar(
                     radius: 45,
@@ -705,10 +705,10 @@ class DialogUtils {
             constraints: const BoxConstraints(maxWidth: 500),
             child: Stack(
               children: <Widget>[
-                Positioned(
-                  left: 20,
+                PositionedDirectional(
+                  start: 20,
                   top: 0,
-                  right: 20,
+                  end: 20,
                   child: CircleAvatar(
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     radius: 47,
@@ -768,9 +768,9 @@ class DialogUtils {
                     ],
                   ),
                 ),
-                Positioned(
-                  left: 20,
-                  right: 20,
+                PositionedDirectional(
+                  start: 20,
+                  end: 20,
                   top: 2,
                   child: CircleAvatar(
                     radius: 45,

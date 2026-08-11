@@ -104,9 +104,9 @@ class TableGridItem extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
+          PositionedDirectional(
             top: 5.0,
-            right: 5.0,
+            end: 5.0,
             child: GestureDetector(
               onTap: () async {
                 TableScreenActions.onDeleteTable(context, model);

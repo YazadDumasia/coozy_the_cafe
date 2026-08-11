@@ -56,10 +56,10 @@ class LoginCarouselWidget extends StatelessWidget {
                             child: Image.asset(image, fit: BoxFit.fill),
                           ),
                           if (index == 0)
-                            Positioned(
+                            PositionedDirectional(
                               top: MediaQuery.of(context).size.height * 0.45,
-                              left: 50.0,
-                              right: 50.0,
+                              start: 50.0,
+                              end: 50.0,
                               child: Center(
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(10.0),

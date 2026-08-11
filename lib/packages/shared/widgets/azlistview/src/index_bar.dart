@@ -383,8 +383,8 @@ class _IndexBarState extends State<IndexBar> {
                   widget.options.indexHintOffset.dy;
             }
           }
-          return Positioned(
-            left: left,
+          return PositionedDirectional(
+            start: left,
             top: top,
             child: Material(
               color: Colors.transparent,

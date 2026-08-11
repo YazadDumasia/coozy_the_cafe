@@ -150,10 +150,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                     padding: const EdgeInsets.all(10.0),
                     child: Stack(
                       children: <Widget>[
-                        Positioned(
-                          left: 20,
+                        PositionedDirectional(
+                          start: 20,
                           top: 0,
-                          right: 20,
+                          end: 20,
                           child: CircleAvatar(
                             radius: 55.0,
                             backgroundColor: Theme.of(
@@ -161,10 +161,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                             ).colorScheme.secondaryContainer,
                           ),
                         ),
-                        Positioned(
-                          left: 0,
+                        PositionedDirectional(
+                          start: 0,
                           top: 310 + 30,
-                          right: 0,
+                          end: 0,
                           child: CircleAvatar(
                             radius: 33.0,
                             backgroundColor: Theme.of(
@@ -264,10 +264,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                             ),
                           ),
                         ),
-                        Positioned(
+                        PositionedDirectional(
                           top: 5.0,
-                          left: 5.0,
-                          right: 5.0,
+                          start: 5.0,
+                          end: 5.0,
                           child: Center(
                             child: CircleAvatar(
                               backgroundColor: Colors.grey.shade300,
@@ -280,10 +280,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                             ),
                           ),
                         ),
-                        Positioned(
+                        PositionedDirectional(
                           top: 310 + 30,
-                          left: 5.0,
-                          right: 5.0,
+                          start: 5.0,
+                          end: 5.0,
                           child: Center(
                             child: CircleAvatar(
                               backgroundColor: Colors.grey.shade300,
@@ -392,10 +392,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                       child: Center(
                         child: Stack(
                           children: <Widget>[
-                            Positioned(
-                              left: 20,
+                            PositionedDirectional(
+                              start: 20,
                               top: 0,
-                              right: 20,
+                              end: 20,
                               child: CircleAvatar(
                                 radius: 55.0,
                                 backgroundColor: Theme.of(
@@ -403,10 +403,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                 ).colorScheme.secondaryContainer,
                               ),
                             ),
-                            Positioned(
-                              left: 0,
+                            PositionedDirectional(
+                              start: 0,
                               top: 310 + 30,
-                              right: 0,
+                              end: 0,
                               child: CircleAvatar(
                                 radius: 33.0,
                                 backgroundColor: Theme.of(
@@ -596,10 +596,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                 ),
                               ),
                             ),
-                            Positioned(
+                            PositionedDirectional(
                               top: 5.0,
-                              left: 5.0,
-                              right: 5.0,
+                              start: 5.0,
+                              end: 5.0,
                               child: Center(
                                 child: CircleAvatar(
                                   backgroundColor: Colors.grey.shade300,
@@ -614,10 +614,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                 ),
                               ),
                             ),
-                            Positioned(
+                            PositionedDirectional(
                               top: 310 + 30,
-                              left: 5.0,
-                              right: 5.0,
+                              start: 5.0,
+                              end: 5.0,
                               child: Center(
                                 child: CircleAvatar(
                                   backgroundColor: Colors.grey.shade300,
