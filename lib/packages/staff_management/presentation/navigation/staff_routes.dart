@@ -8,11 +8,11 @@ import '../bloc/attendance/attendance_bloc.dart';
 import '../bloc/attendance/attendance_event_state.dart';
 import '../bloc/leave/leave_bloc.dart';
 import '../bloc/leave/leave_event_state.dart';
-import '../pages/attendance_sub_screen.dart';
-import '../pages/employee_sub_screen.dart';
-import '../pages/leave_sub_screen.dart';
-import '../pages/staff_report_sub_screen.dart';
-import '../pages/staff_management_screen.dart';
+import '../pages/attendance/attendance_sub_screen.dart';
+import '../pages/employee/employee_sub_screen.dart';
+import '../pages/leave/leave_sub_screen.dart';
+import '../pages/staff_report/staff_report_sub_screen.dart';
+import '../pages/staff_management/staff_management_screen.dart';
 
 class StaffRoutes {
   static List<RouteBase> get routes => [

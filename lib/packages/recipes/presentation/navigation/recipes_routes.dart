@@ -5,10 +5,10 @@ import 'package:coozy_the_cafe/packages/core/navigation/app_routes.dart';
 import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
 import '../bloc/recipes_full_list_cubit.dart';
 import '../bloc/recipes_bookmark_list_cubit.dart';
-import '../pages/recipes_list_screen.dart';
-import '../pages/recipes_bookmark_list_screen.dart';
-import '../pages/recipes_info_screen.dart';
-import '../pages/add_edit_recipe_screen.dart';
+import '../pages/recipes_list/recipes_list_screen.dart';
+import '../pages/recipes_bookmark_list/recipes_bookmark_list_screen.dart';
+import '../pages/recipes_info/recipes_info_screen.dart';
+import '../pages/add_edit_recipe/add_edit_recipe_screen.dart';
 
 class RecipesRoutes {
   static List<RouteBase> get routes => [

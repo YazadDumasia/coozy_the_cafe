@@ -9,8 +9,8 @@ import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_cat
 
 import '../../../menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
 import '../../../menu_subcategory/presentation/bloc/menu_subcategory_event.dart';
-import '../pages/menu_item_list_screen.dart';
-import '../pages/add_edit_menu_item_screen.dart';
+import '../pages/menu_item_list/menu_item_list_screen.dart';
+import '../pages/add_edit_menu_item/add_edit_menu_item_screen.dart';
 import '../../domain/entities/menu_item.dart';
 
 T? _tryRead<T extends StateStreamableSource<Object?>>(BuildContext context) {

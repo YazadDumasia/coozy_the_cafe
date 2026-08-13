@@ -7,7 +7,7 @@ import '../bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart
 import '../bloc/add_menu_sub_categories_bloc/add_menu_categories_cubit.dart';
 import '../bloc/edit_menu_category_bloc/edit_menu_category_bloc.dart';
 
-import '../pages/menu_category_full_list_screen.dart';
+import '../pages/menu_category_full_list/menu_category_full_list_screen.dart';
 import '../pages/add_menu_category_screen/add_new_menu_category_screen.dart';
 import '../pages/edit_menu_category/edit_menu_category_screen.dart';
 
