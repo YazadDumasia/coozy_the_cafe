@@ -174,6 +174,8 @@ class _LeaveSubScreenState extends State<LeaveSubScreen>
 
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
         key: const PageStorageKey('leaveSubScreen'),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showLeaveDialog(context),

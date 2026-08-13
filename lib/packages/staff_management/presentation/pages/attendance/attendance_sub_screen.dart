@@ -177,6 +177,8 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
 
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
         key: const PageStorageKey('attendanceSubScreen'),
         floatingActionButton: FloatingActionButton(
           onPressed: () => _showAttendanceDialog(context),

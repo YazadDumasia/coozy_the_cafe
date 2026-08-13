@@ -69,240 +69,248 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
     super.build(context);
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          context.read<EmployeeBloc>().add(LoadEmployeesEvent());
-          context.read<AttendanceBloc>().add(LoadAttendanceEvent());
-          context.read<LeaveBloc>().add(LoadLeavesEvent());
-        },
-        child: AnimatedBuilder(
-          animation: _filterListenable,
-          builder: (context, _) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header Controls Card (Duration & Employee Selector)
-                  _buildHeaderFilterCard(theme),
-                  const SizedBox(height: 16),
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
 
-                  // Syncfusion Interactive Range Slider Component
-                  _buildSyncfusionRangeSliderCard(theme),
-                  const SizedBox(height: 20),
-
-                  // BlocBuilder for combined data summary & charts
-                  BlocBuilder<EmployeeBloc, EmployeeState>(
-                    builder: (context, employeeState) {
-                      return BlocBuilder<AttendanceBloc, AttendanceState>(
-                        builder: (context, attendanceState) {
-                          return BlocBuilder<LeaveBloc, LeaveState>(
-                            builder: (context, leaveState) {
-                              final employees =
-                                  employeeState is EmployeeLoadedState
-                                  ? employeeState.employees
-                                  : <EmployeeEntity>[];
-                              final attendanceList =
-                                  attendanceState is AttendanceLoadedState
-                                  ? attendanceState.attendanceList
-                                  : <AttendanceEntity>[];
-                              final leaves = leaveState is LeaveLoadedState
-                                  ? leaveState.leaves
-                                  : <LeaveEntity>[];
-
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // KPI Cards Summary
-                                  _buildKpiMetricsGrid(
-                                    theme: theme,
-                                    employees: employees,
-                                    attendanceList: attendanceList,
-                                    leaves: leaves,
-                                  ),
-                                  const SizedBox(height: 24),
-
-                                  // Chart 1: Attendance Trend
-                                  _buildChartCard(
-                                    theme: theme,
-                                    title:
-                                        context.tr(
-                                          shared
-                                              .LocaleKeys
-                                              .attendanceLeaveTrendTitle,
-                                          track: shared
-                                              .TrackConstants
-                                              .staffManagementPageTrack,
-                                        ) ??
-                                        'Attendance & Leave Trend',
-                                    subtitle:
-                                        context.tr(
-                                          shared
-                                              .LocaleKeys
-                                              .attendanceLeaveTrendSubtitle,
-                                          track: shared
-                                              .TrackConstants
-                                              .staffManagementPageTrack,
-                                          params: {
-                                            'duration':
-                                                _selectedDurationNotifier.value
-                                                    .getLocalizedName(context),
-                                          },
-                                        ) ??
-                                        '${_selectedDurationNotifier.value.getLocalizedName(context)} overview of Present, Absent, and On Leave days',
-                                    child: SizedBox(
-                                      height: 280,
-                                      child: AttendanceTrendChart(
-                                        data: _generateAttendanceTrendData(
-                                          attendanceList,
-                                          leaves,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Chart 2: Working Hours vs Target
-                                  _buildChartCard(
-                                    theme: theme,
-                                    title:
-                                        context.tr(
-                                          shared
-                                              .LocaleKeys
-                                              .workingHoursVsTargetTitle,
-                                          track: shared
-                                              .TrackConstants
-                                              .staffManagementPageTrack,
-                                        ) ??
-                                        'Working Hours vs Target',
-                                    subtitle:
-                                        context.tr(
-                                          shared
-                                              .LocaleKeys
-                                              .workingHoursVsTargetSubtitle,
-                                          track: shared
-                                              .TrackConstants
-                                              .staffManagementPageTrack,
-                                        ) ??
-                                        'Tracked staff working hours against standard targets',
-                                    child: SizedBox(
-                                      height: 280,
-                                      child: WorkingHoursChart(
-                                        data: _generateWorkingHoursData(
-                                          attendanceList,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-
-                                  // Two Grid Charts: Leave Distribution & Top Attendance
-                                  LayoutBuilder(
-                                    builder: (context, constraints) {
-                                      final isWide = constraints.maxWidth > 700;
-                                      final leaveWidget = _buildChartCard(
-                                        theme: theme,
-                                        title:
-                                            context.tr(
-                                              shared
-                                                  .LocaleKeys
-                                                  .leaveDistributionTitle,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .staffManagementPageTrack,
-                                            ) ??
-                                            'Leave Distribution',
-                                        subtitle:
-                                            context.tr(
-                                              shared
-                                                  .LocaleKeys
-                                                  .leaveDistributionSubtitle,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .staffManagementPageTrack,
-                                            ) ??
-                                            'Breakdown of leaves by category',
-                                        child: SizedBox(
-                                          height: 300,
-                                          child: LeaveDistributionChart(
-                                            data:
-                                                _generateLeaveDistributionData(
-                                                  leaves,
-                                                ),
-                                          ),
-                                        ),
-                                      );
-
-                                      final perfWidget = _buildChartCard(
-                                        theme: theme,
-                                        title:
-                                            context.tr(
-                                              shared
-                                                  .LocaleKeys
-                                                  .employeeAttendanceRateTitle,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .staffManagementPageTrack,
-                                            ) ??
-                                            'Employee Attendance Rate',
-                                        subtitle:
-                                            context.tr(
-                                              shared
-                                                  .LocaleKeys
-                                                  .employeeAttendanceRateSubtitle,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .staffManagementPageTrack,
-                                            ) ??
-                                            'Attendance percentage per staff member',
-                                        child: SizedBox(
-                                          height: 300,
-                                          child: EmployeePerformanceChart(
-                                            data:
-                                                _generateEmployeePerformanceData(
-                                                  employees,
-                                                  attendanceList,
-                                                ),
-                                          ),
-                                        ),
-                                      );
-
-                                      if (isWide) {
-                                        return Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Expanded(child: leaveWidget),
-                                            const SizedBox(width: 16),
-                                            Expanded(child: perfWidget),
-                                          ],
-                                        );
-                                      } else {
-                                        return Column(
-                                          children: [
-                                            leaveWidget,
-                                            const SizedBox(height: 20),
-                                            perfWidget,
-                                          ],
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 32),
-                ],
-              ),
-            );
+        body: RefreshIndicator(
+          onRefresh: () async {
+            context.read<EmployeeBloc>().add(LoadEmployeesEvent());
+            context.read<AttendanceBloc>().add(LoadAttendanceEvent());
+            context.read<LeaveBloc>().add(LoadLeavesEvent());
           },
+          child: AnimatedBuilder(
+            animation: _filterListenable,
+            builder: (context, _) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header Controls Card (Duration & Employee Selector)
+                    _buildHeaderFilterCard(theme),
+                    const SizedBox(height: 16),
+
+                    // Syncfusion Interactive Range Slider Component
+                    _buildSyncfusionRangeSliderCard(theme),
+                    const SizedBox(height: 20),
+
+                    // BlocBuilder for combined data summary & charts
+                    BlocBuilder<EmployeeBloc, EmployeeState>(
+                      builder: (context, employeeState) {
+                        return BlocBuilder<AttendanceBloc, AttendanceState>(
+                          builder: (context, attendanceState) {
+                            return BlocBuilder<LeaveBloc, LeaveState>(
+                              builder: (context, leaveState) {
+                                final employees =
+                                    employeeState is EmployeeLoadedState
+                                    ? employeeState.employees
+                                    : <EmployeeEntity>[];
+                                final attendanceList =
+                                    attendanceState is AttendanceLoadedState
+                                    ? attendanceState.attendanceList
+                                    : <AttendanceEntity>[];
+                                final leaves = leaveState is LeaveLoadedState
+                                    ? leaveState.leaves
+                                    : <LeaveEntity>[];
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // KPI Cards Summary
+                                    _buildKpiMetricsGrid(
+                                      theme: theme,
+                                      employees: employees,
+                                      attendanceList: attendanceList,
+                                      leaves: leaves,
+                                    ),
+                                    const SizedBox(height: 24),
+
+                                    // Chart 1: Attendance Trend
+                                    _buildChartCard(
+                                      theme: theme,
+                                      title:
+                                          context.tr(
+                                            shared
+                                                .LocaleKeys
+                                                .attendanceLeaveTrendTitle,
+                                            track: shared
+                                                .TrackConstants
+                                                .staffManagementPageTrack,
+                                          ) ??
+                                          'Attendance & Leave Trend',
+                                      subtitle:
+                                          context.tr(
+                                            shared
+                                                .LocaleKeys
+                                                .attendanceLeaveTrendSubtitle,
+                                            track: shared
+                                                .TrackConstants
+                                                .staffManagementPageTrack,
+                                            params: {
+                                              'duration':
+                                                  _selectedDurationNotifier
+                                                      .value
+                                                      .getLocalizedName(
+                                                        context,
+                                                      ),
+                                            },
+                                          ) ??
+                                          '${_selectedDurationNotifier.value.getLocalizedName(context)} overview of Present, Absent, and On Leave days',
+                                      child: SizedBox(
+                                        height: 280,
+                                        child: AttendanceTrendChart(
+                                          data: _generateAttendanceTrendData(
+                                            attendanceList,
+                                            leaves,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    // Chart 2: Working Hours vs Target
+                                    _buildChartCard(
+                                      theme: theme,
+                                      title:
+                                          context.tr(
+                                            shared
+                                                .LocaleKeys
+                                                .workingHoursVsTargetTitle,
+                                            track: shared
+                                                .TrackConstants
+                                                .staffManagementPageTrack,
+                                          ) ??
+                                          'Working Hours vs Target',
+                                      subtitle:
+                                          context.tr(
+                                            shared
+                                                .LocaleKeys
+                                                .workingHoursVsTargetSubtitle,
+                                            track: shared
+                                                .TrackConstants
+                                                .staffManagementPageTrack,
+                                          ) ??
+                                          'Tracked staff working hours against standard targets',
+                                      child: SizedBox(
+                                        height: 280,
+                                        child: WorkingHoursChart(
+                                          data: _generateWorkingHoursData(
+                                            attendanceList,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    // Two Grid Charts: Leave Distribution & Top Attendance
+                                    LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        final isWide =
+                                            constraints.maxWidth > 700;
+                                        final leaveWidget = _buildChartCard(
+                                          theme: theme,
+                                          title:
+                                              context.tr(
+                                                shared
+                                                    .LocaleKeys
+                                                    .leaveDistributionTitle,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .staffManagementPageTrack,
+                                              ) ??
+                                              'Leave Distribution',
+                                          subtitle:
+                                              context.tr(
+                                                shared
+                                                    .LocaleKeys
+                                                    .leaveDistributionSubtitle,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .staffManagementPageTrack,
+                                              ) ??
+                                              'Breakdown of leaves by category',
+                                          child: SizedBox(
+                                            height: 300,
+                                            child: LeaveDistributionChart(
+                                              data:
+                                                  _generateLeaveDistributionData(
+                                                    leaves,
+                                                  ),
+                                            ),
+                                          ),
+                                        );
+
+                                        final perfWidget = _buildChartCard(
+                                          theme: theme,
+                                          title:
+                                              context.tr(
+                                                shared
+                                                    .LocaleKeys
+                                                    .employeeAttendanceRateTitle,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .staffManagementPageTrack,
+                                              ) ??
+                                              'Employee Attendance Rate',
+                                          subtitle:
+                                              context.tr(
+                                                shared
+                                                    .LocaleKeys
+                                                    .employeeAttendanceRateSubtitle,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .staffManagementPageTrack,
+                                              ) ??
+                                              'Attendance percentage per staff member',
+                                          child: SizedBox(
+                                            height: 300,
+                                            child: EmployeePerformanceChart(
+                                              data:
+                                                  _generateEmployeePerformanceData(
+                                                    employees,
+                                                    attendanceList,
+                                                  ),
+                                            ),
+                                          ),
+                                        );
+
+                                        if (isWide) {
+                                          return Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Expanded(child: leaveWidget),
+                                              const SizedBox(width: 16),
+                                              Expanded(child: perfWidget),
+                                            ],
+                                          );
+                                        } else {
+                                          return Column(
+                                            children: [
+                                              leaveWidget,
+                                              const SizedBox(height: 20),
+                                              perfWidget,
+                                            ],
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 32),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

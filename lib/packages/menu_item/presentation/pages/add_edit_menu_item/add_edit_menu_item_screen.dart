@@ -373,187 +373,189 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
   @override
   Widget build(BuildContext context) {
     final bool isEdit = widget.item != null;
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: Text(
-          isEdit
-              ? context.tr(
-                      shared.LocaleKeys.menuItemPageEditMenuItemAppbarTitle,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Edit Menu Item'
-              : context.tr(
-                      shared.LocaleKeys.menuItemPageAddMenuItemAppbarTitle,
-                      track: shared.TrackConstants.menuItemPageTrack,
-                    ) ??
-                    'Add Menu Item',
-        ),
-        centerTitle: false,
-        actions: <Widget>[
-          TextButton(
-            onPressed: _saveItem,
-            style: TextButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: Text(
-              isEdit
-                  ? context.tr(
-                          shared.LocaleKeys.menuItemPageAddEditMenuItemUpdate,
-                          track: shared.TrackConstants.menuItemPageTrack,
-                        ) ??
-                        'Update'
-                  : context.tr(
-                          shared.LocaleKeys.menuItemPageAddEditMenuItemAdd,
-                          track: shared.TrackConstants.menuItemPageTrack,
-                        ) ??
-                        'Add',
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).colorScheme.onPrimary,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text(
+            isEdit
+                ? context.tr(
+                        shared.LocaleKeys.menuItemPageEditMenuItemAppbarTitle,
+                        track: shared.TrackConstants.menuItemPageTrack,
+                      ) ??
+                      'Edit Menu Item'
+                : context.tr(
+                        shared.LocaleKeys.menuItemPageAddMenuItemAppbarTitle,
+                        track: shared.TrackConstants.menuItemPageTrack,
+                      ) ??
+                      'Add Menu Item',
           ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        physics: const BouncingScrollPhysics(
-          parent: AlwaysScrollableScrollPhysics(),
+          centerTitle: false,
+          actions: <Widget>[
+            TextButton(
+              onPressed: _saveItem,
+              style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                isEdit
+                    ? context.tr(
+                            shared.LocaleKeys.menuItemPageAddEditMenuItemUpdate,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Update'
+                    : context.tr(
+                            shared.LocaleKeys.menuItemPageAddEditMenuItemAdd,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Add',
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
         ),
-        padding: const EdgeInsets.all(12.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _nameController,
-                focusNode: _nameFocusNode,
-                keyboardType: TextInputType.text,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  labelText:
-                      context.tr(
-                        shared.LocaleKeys.menuItemPageAddEditMenuItemName,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Dish Name',
-                  hintText:
-                      context.tr(
-                        shared.LocaleKeys.menuItemPageAddEditMenuItemNameHint,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Enter dish name',
-                  errorMaxLines: 3,
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return context.tr(
-                          shared
-                              .LocaleKeys
-                              .menuItemPageAddEditMenuItemPleaseEnterDishName,
+        body: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics(),
+          ),
+          padding: const EdgeInsets.all(12.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _nameController,
+                  focusNode: _nameFocusNode,
+                  keyboardType: TextInputType.text,
+                  textInputAction: TextInputAction.next,
+                  decoration: InputDecoration(
+                    labelText:
+                        context.tr(
+                          shared.LocaleKeys.menuItemPageAddEditMenuItemName,
                           track: shared.TrackConstants.menuItemPageTrack,
                         ) ??
-                        'Please enter dish name';
-                  }
-                  return null;
-                },
-                onFieldSubmitted: (_) {
-                  Future.microtask(() {
-                    if (!mounted) return;
-                    _descriptionFocusNode.requestFocus();
-                  });
-                },
-              ).inExpandedRow(),
-              const SizedBox(height: 12),
-              TextFormField(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                controller: _descriptionController,
-                focusNode: _descriptionFocusNode,
-                keyboardType: TextInputType.multiline,
-                textInputAction: TextInputAction.newline,
-                minLines: 3,
-                maxLines: null,
-                decoration: InputDecoration(
-                  labelText:
-                      context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemDescription,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Dish Description',
-                  hintText:
-                      context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemDescriptionHint,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Enter dish description',
-                  errorMaxLines: 3,
-                  contentPadding: EdgeInsets.all(20),
-                ),
-                validator: (String? value) {
-                  if (value == null || value.isEmpty) {
-                    return context.tr(
-                          shared
-                              .LocaleKeys
-                              .menuItemPageAddEditMenuItemPleaseEnterDishDescription,
+                        'Dish Name',
+                    hintText:
+                        context.tr(
+                          shared.LocaleKeys.menuItemPageAddEditMenuItemNameHint,
                           track: shared.TrackConstants.menuItemPageTrack,
                         ) ??
-                        'Please enter dish description';
-                  }
-                  return null;
-                },
-                onFieldSubmitted: (_) {
-                  Future.microtask(() {
-                    if (!mounted) return;
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  });
-                },
-              ).inExpandedRow(),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _durationController,
-                focusNode: _durationFocusNode,
-                readOnly: true,
-                onTap: _showDurationPicker,
-                decoration: InputDecoration(
-                  labelText:
-                      context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemCookingDuration,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Cooking Duration',
-                  hintText:
-                      context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuItemPageAddEditMenuItemCookingDurationHint,
-                        track: shared.TrackConstants.menuItemPageTrack,
-                      ) ??
-                      'Select cooking duration (H:M:S) Approx',
-                  suffixIcon: const Icon(Icons.timer_outlined),
-                ),
-              ).inExpandedRow(),
-              const SizedBox(height: 12),
-              _buildFoodTypeDropdown().inExpandedRow(),
-              const SizedBox(height: 12),
-              _buildCategoryDropdown().inExpandedRow(),
-              const SizedBox(height: 12),
-              _buildSubcategoryDropdown().inExpandedRow(),
-              const SizedBox(height: 16),
-              _buildVariationsFormSection().inExpandedRow(),
-            ],
+                        'Enter dish name',
+                    errorMaxLines: 3,
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return context.tr(
+                            shared
+                                .LocaleKeys
+                                .menuItemPageAddEditMenuItemPleaseEnterDishName,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Please enter dish name';
+                    }
+                    return null;
+                  },
+                  onFieldSubmitted: (_) {
+                    Future.microtask(() {
+                      if (!mounted) return;
+                      _descriptionFocusNode.requestFocus();
+                    });
+                  },
+                ).inExpandedRow(),
+                const SizedBox(height: 12),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  controller: _descriptionController,
+                  focusNode: _descriptionFocusNode,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
+                  minLines: 3,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    labelText:
+                        context.tr(
+                          shared
+                              .LocaleKeys
+                              .menuItemPageAddEditMenuItemDescription,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Dish Description',
+                    hintText:
+                        context.tr(
+                          shared
+                              .LocaleKeys
+                              .menuItemPageAddEditMenuItemDescriptionHint,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Enter dish description',
+                    errorMaxLines: 3,
+                    contentPadding: EdgeInsets.all(20),
+                  ),
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return context.tr(
+                            shared
+                                .LocaleKeys
+                                .menuItemPageAddEditMenuItemPleaseEnterDishDescription,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Please enter dish description';
+                    }
+                    return null;
+                  },
+                  onFieldSubmitted: (_) {
+                    Future.microtask(() {
+                      if (!mounted) return;
+                      FocusManager.instance.primaryFocus?.unfocus();
+                    });
+                  },
+                ).inExpandedRow(),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: _durationController,
+                  focusNode: _durationFocusNode,
+                  readOnly: true,
+                  onTap: _showDurationPicker,
+                  decoration: InputDecoration(
+                    labelText:
+                        context.tr(
+                          shared
+                              .LocaleKeys
+                              .menuItemPageAddEditMenuItemCookingDuration,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Cooking Duration',
+                    hintText:
+                        context.tr(
+                          shared
+                              .LocaleKeys
+                              .menuItemPageAddEditMenuItemCookingDurationHint,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Select cooking duration (H:M:S) Approx',
+                    suffixIcon: const Icon(Icons.timer_outlined),
+                  ),
+                ).inExpandedRow(),
+                const SizedBox(height: 12),
+                _buildFoodTypeDropdown().inExpandedRow(),
+                const SizedBox(height: 12),
+                _buildCategoryDropdown().inExpandedRow(),
+                const SizedBox(height: 12),
+                _buildSubcategoryDropdown().inExpandedRow(),
+                const SizedBox(height: 16),
+                _buildVariationsFormSection().inExpandedRow(),
+              ],
+            ),
           ),
         ),
       ),

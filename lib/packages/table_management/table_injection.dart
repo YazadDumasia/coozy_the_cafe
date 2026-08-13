@@ -9,6 +9,7 @@ import 'domain/usecases/get_tables_usecase.dart';
 import 'domain/usecases/update_table_sort_orders_usecase.dart';
 import 'domain/usecases/update_table_usecase.dart';
 import 'presentation/cubit/table_cubit.dart';
+import 'presentation/cubit/table_picker_cubit.dart';
 
 void registerTableDependencies(GetIt sl) {
   // Data sources
@@ -36,6 +37,11 @@ void registerTableDependencies(GetIt sl) {
       updateTableUseCase: sl(),
       deleteTableUseCase: sl(),
       updateTableSortOrdersUseCase: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => TablePickerCubit(
+      getTablesUseCase: sl(),
     ),
   );
 }

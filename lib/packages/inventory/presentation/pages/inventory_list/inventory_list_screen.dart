@@ -31,54 +31,58 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr(
-                shared.LocaleKeys.inventoryAppbar,
-                track: shared.TrackConstants.inventoryPageTrack,
-              ) ??
-              'Inventory',
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add_shopping_cart),
-            tooltip:
-                context.tr(
-                  shared.LocaleKeys.inventoryListPageAddPurchaseForItem,
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
+        appBar: AppBar(
+          title: Text(
+            context.tr(
+                  shared.LocaleKeys.inventoryAppbar,
                   track: shared.TrackConstants.inventoryPageTrack,
                 ) ??
-                'Add Purchase for Item',
-            onPressed: () =>
-                InventoryListScreenActions.navigateToAddPurchase(context),
+                'Inventory',
           ),
-          IconButton(
-            icon: Icon(Icons.add),
-            tooltip:
-                context.tr(
-                  shared.LocaleKeys.inventoryListPageAddInventoryItem,
-                  track: shared.TrackConstants.inventoryPageTrack,
-                ) ??
-                'Add Inventory Item',
-            onPressed: () =>
-                InventoryListScreenActions.navigateToAddInventory(context),
-          ),
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            tooltip:
-                context.tr(
-                  shared.LocaleKeys.commonFilter,
-                  track: shared.TrackConstants.commonTrack,
-                ) ??
-                'Filter',
-            onPressed: () => InventoryListScreenActions.showFilterBottomSheet(
-              context,
-              _appliedFiltersNotifier,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add_shopping_cart),
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.inventoryListPageAddPurchaseForItem,
+                    track: shared.TrackConstants.inventoryPageTrack,
+                  ) ??
+                  'Add Purchase for Item',
+              onPressed: () =>
+                  InventoryListScreenActions.navigateToAddPurchase(context),
             ),
-          ),
-        ],
+            IconButton(
+              icon: Icon(Icons.add),
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.inventoryListPageAddInventoryItem,
+                    track: shared.TrackConstants.inventoryPageTrack,
+                  ) ??
+                  'Add Inventory Item',
+              onPressed: () =>
+                  InventoryListScreenActions.navigateToAddInventory(context),
+            ),
+            IconButton(
+              icon: Icon(Icons.filter_list),
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.commonFilter,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Filter',
+              onPressed: () => InventoryListScreenActions.showFilterBottomSheet(
+                context,
+                _appliedFiltersNotifier,
+              ),
+            ),
+          ],
+        ),
+        body: _buildBody(context),
       ),
-      body: _buildBody(context),
     );
   }
 

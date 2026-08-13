@@ -102,26 +102,29 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.item == null
-              ? context.tr(
-                      shared.LocaleKeys.inventoryAddEditDailogAddTitle,
-                      track: shared.TrackConstants.inventoryPageTrack,
-                    ) ??
-                    'Add Inventory Item'
-              : context.tr(
-                      shared.LocaleKeys.inventoryAddEditDailogEditTitle,
-                      track: shared.TrackConstants.inventoryPageTrack,
-                    ) ??
-                    'Edit Inventory Item',
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text(
+            widget.item == null
+                ? context.tr(
+                        shared.LocaleKeys.inventoryAddEditDailogAddTitle,
+                        track: shared.TrackConstants.inventoryPageTrack,
+                      ) ??
+                      'Add Inventory Item'
+                : context.tr(
+                        shared.LocaleKeys.inventoryAddEditDailogEditTitle,
+                        track: shared.TrackConstants.inventoryPageTrack,
+                      ) ??
+                      'Edit Inventory Item',
+          ),
+          actions: [
+            IconButton(icon: const Icon(Icons.check), onPressed: _saveItem),
+          ],
         ),
-        actions: [
-          IconButton(icon: const Icon(Icons.check), onPressed: _saveItem),
-        ],
+        body: _buildBody(context),
       ),
-      body: _buildBody(context),
     );
   }
 

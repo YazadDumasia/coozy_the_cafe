@@ -169,6 +169,8 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
     super.build(context);
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
         key: const PageStorageKey('employeeSubScreen'),
         floatingActionButton: FloatingActionButton(
           heroTag: 'addEmployeeFab',

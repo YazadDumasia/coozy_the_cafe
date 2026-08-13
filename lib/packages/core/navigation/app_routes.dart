@@ -20,6 +20,7 @@ class AppRoutePath {
 
   // Drawer Screens / Top-level
   static const String tableInfoScreenRoute = '/table-info';
+  static const String tablePickerScreenRoute = '/table-picker';
   static const String menuItemFullListScreenRoute = '/menu-items';
   static const String menuCategoryFullListRoute = '/menu-categories';
   static const String menuSubCategoryFullListRoute = '/menu-subcategories';
@@ -37,6 +38,8 @@ class AppRoutePath {
   static const String reportScreenRoute = '/reports';
   static const String staffManagementScreenRoute = '/staff';
   static const String settingsScreenRoute = '/settings';
+  static const String waiterOrderPlacementScreenRoute =
+      '/waiter-order-placement';
 
   // Sub-routes for Table Info (Nested under Home -> Table Info)
   static const String addNewTableInfoScreenRoute = 'table-add';
@@ -205,6 +208,7 @@ class AppRouteName {
   static const String purchasePicker = 'purchase-picker';
 
   static const String tableInfoList = 'table-info-list';
+  static const String tablePicker = 'table-picker';
   static const String tableInfoAdd = 'table-info-add';
   static const String tableInfoUpdate = 'table-info-update';
 
@@ -274,6 +278,8 @@ class AppRouteName {
         return 'Purchase Picker';
       case tableInfoList:
         return 'Tables';
+      case tablePicker:
+        return 'Table Picker';
       case tableInfoAdd:
         return 'Add Table';
       case tableInfoUpdate:

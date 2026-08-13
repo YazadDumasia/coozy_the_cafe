@@ -38,6 +38,8 @@ class _SuccessfullyScreenState extends State<SuccessfullyScreen>
 
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
         body: AnimateGradient(
           primaryBegin: Alignment.topLeft,
           primaryEnd: Alignment.bottomLeft,

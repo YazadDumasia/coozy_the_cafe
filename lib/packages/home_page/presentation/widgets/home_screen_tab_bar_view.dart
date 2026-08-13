@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import 'package:coozy_the_cafe/packages/waiter_order_placement/waiter_order_placement.dart';
 
 class HomeScreenTabBarView extends StatelessWidget {
   final TabController tabController;
@@ -38,15 +39,7 @@ class HomeScreenTabBarView extends StatelessWidget {
           currentIndex: 0,
         ),
         buildPageTransitionSwitcher(
-          screen: Center(
-            child: Text(
-              context.tr(
-                    shared.LocaleKeys.homeTabWaiter,
-                    track: shared.TrackConstants.commonTrack,
-                  ) ??
-                  'Waiter',
-            ),
-          ),
+          screen: const WaiterOrderPlacementScreen(),
           currentIndex: 1,
         ),
         buildPageTransitionSwitcher(

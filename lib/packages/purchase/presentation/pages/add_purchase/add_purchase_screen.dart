@@ -40,18 +40,21 @@ class _AddPurchaseScreenState extends State<AddPurchaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr(
-                shared.LocaleKeys.purchaseAddAppbarTitle,
-                track: shared.TrackConstants.purchasePageTrack,
-                params: {"itemName": widget.item.name ?? ''},
-              ) ??
-              'Purchase: ${widget.item.name}',
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text(
+            context.tr(
+                  shared.LocaleKeys.purchaseAddAppbarTitle,
+                  track: shared.TrackConstants.purchasePageTrack,
+                  params: {"itemName": widget.item.name ?? ''},
+                ) ??
+                'Purchase: ${widget.item.name}',
+          ),
         ),
+        body: _buildBody(context),
       ),
-      body: _buildBody(context),
     );
   }
 

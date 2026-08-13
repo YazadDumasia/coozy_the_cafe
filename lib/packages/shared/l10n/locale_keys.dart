@@ -241,6 +241,13 @@ abstract class LocaleKeys {
   static String tableNosOfChairsLabelText = 'table_nos_of_chairs_label_text';
   static String tableNosOfChairsHintText = 'table_nos_of_chairs_hint_text';
   static String tableInfoAppBarTitle = 'table_info_app_bar_title';
+  static String selectTableTitle = 'select_table_title';
+  static String defaultAll = 'default_all';
+  static String emptyStatus = 'empty_status';
+  static String occupiedStatus = 'occupied_status';
+  static String reservedStatus = 'reserved_status';
+  static String tableReservedConfirmationMsg = 'table_reserved_confirmation_msg';
+  static String allowPlaceOrder = 'allow_place_order';
   static String tableAddedSuccessfullyText = 'table_added_successfully_text';
   static String tableFailedToAddedText = 'table_failed_to_added_text';
   static String addTableIconTooltipText = 'add_table_icon_tooltip_text';

@@ -52,6 +52,8 @@ class _StaffManagementScreenState extends State<StaffManagementScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
         drawer: const HomeScreenDrawer(),
         appBar: AppBar(
           title: Text(

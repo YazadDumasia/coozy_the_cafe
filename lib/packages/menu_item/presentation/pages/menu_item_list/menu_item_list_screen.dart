@@ -44,51 +44,53 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr(
-                LocaleKeys.homeDrawerMenuItemLabel,
-                track: TrackConstants.homePageTrack,
-              ) ??
-              'Menu Items',
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            context.tr(
+                  LocaleKeys.homeDrawerMenuItemLabel,
+                  track: TrackConstants.homePageTrack,
+                ) ??
+                'Menu Items',
+          ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.add),
+              tooltip:
+                  context.tr(
+                    LocaleKeys.menuItemPageAddMenuItemAppbarTitle,
+                    track: TrackConstants.menuItemPageTrack,
+                  ) ??
+                  'Add Menu Item',
+              onPressed: () =>
+                  MenuItemListScreenActions.handleAddMenuItem(context),
+            ),
+            IconButton(
+              icon: Icon(Icons.filter_list),
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.commonFilter,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Filter',
+              onPressed: () {
+                _showFilterBottomSheet(context);
+              },
+            ),
+          ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            tooltip:
-                context.tr(
-                  LocaleKeys.menuItemPageAddMenuItemAppbarTitle,
-                  track: TrackConstants.menuItemPageTrack,
-                ) ??
-                'Add Menu Item',
-            onPressed: () =>
-                MenuItemListScreenActions.handleAddMenuItem(context),
-          ),
-          IconButton(
-            icon: Icon(Icons.filter_list),
-            tooltip:
-                context.tr(
-                  shared.LocaleKeys.commonFilter,
-                  track: shared.TrackConstants.commonTrack,
-                ) ??
-                'Filter',
-            onPressed: () {
-              _showFilterBottomSheet(context);
-            },
-          ),
-        ],
-      ),
-      body: ListenableBuilder(
-        listenable: Listenable.merge([
-          _selectedCategoryIdNotifier,
-          _selectedSubcategoryIdNotifier,
-          _searchQueryNotifier,
-          _appliedFiltersNotifier,
-        ]),
-        builder: (context, _) {
-          return _buildBody(context);
-        },
+        body: ListenableBuilder(
+          listenable: Listenable.merge([
+            _selectedCategoryIdNotifier,
+            _selectedSubcategoryIdNotifier,
+            _searchQueryNotifier,
+            _appliedFiltersNotifier,
+          ]),
+          builder: (context, _) {
+            return _buildBody(context);
+          },
+        ),
       ),
     );
   }

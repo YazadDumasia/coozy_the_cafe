@@ -63,6 +63,8 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
         appBar: AppBar(
           title: Text(
             context.tr(

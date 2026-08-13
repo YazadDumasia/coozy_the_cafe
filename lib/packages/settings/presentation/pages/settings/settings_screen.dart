@@ -352,6 +352,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
         appBar: AppBar(
           title: Text(
             _tr(context, shared.LocaleKeys.settingsTitle, 'Settings'),

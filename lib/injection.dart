@@ -44,4 +44,7 @@ Future<void> initDI() async {
 
   // Settings Package Dependencies
   registerSettingsDependencies(sl);
+
+  // Waiter Order Placement Dependencies
+  // registerWaiterOrderPlacementDependencies(sl);
 }

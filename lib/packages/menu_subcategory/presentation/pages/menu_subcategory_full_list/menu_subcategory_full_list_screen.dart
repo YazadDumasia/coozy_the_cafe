@@ -153,6 +153,8 @@ class _MenuSubcategoryFullListScreenState
 
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
         appBar: AppBar(
           title: Text(
             context.tr(

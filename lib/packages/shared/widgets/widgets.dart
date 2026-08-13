@@ -80,5 +80,8 @@ export '../../shared/widgets/revolving_soical_menu/revolving_soical_menu_icon.da
 // scroll_to_hide_widget
 export '../../shared/widgets/scroll_to_hide_widget/scroll_to_hide_widget.dart';
 
+// time_line_picker
+export '../../shared/widgets/time_line_picker/time_line_picker_exports.dart';
+
 // up_down_hover_anim_widget
 export '../../shared/widgets/up_down_hover_anim_widget/up_down_hover_anim_widget.dart';

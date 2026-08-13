@@ -42,21 +42,24 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr(
-                shared.LocaleKeys.customersAppBarTitle,
-                track: shared.TrackConstants.customerPageTrack,
-              ) ??
-              'Customers',
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: Text(
+            context.tr(
+                  shared.LocaleKeys.customersAppBarTitle,
+                  track: shared.TrackConstants.customerPageTrack,
+                ) ??
+                'Customers',
+          ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => CustomerListScreenActions.showAddEditForm(context),
+          child: Icon(Icons.add),
+        ),
+        body: _buildBody(),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => CustomerListScreenActions.showAddEditForm(context),
-        child: Icon(Icons.add),
-      ),
-      body: _buildBody(),
     );
   }
 

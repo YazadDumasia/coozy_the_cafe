@@ -36,17 +36,21 @@ class _InventoryPickerPageState extends State<InventoryPickerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          context.tr(
-                shared.LocaleKeys.inventoryPickerPageAppbar,
-                track: shared.TrackConstants.inventoryPageTrack,
-              ) ??
-              'Inventory Picker',
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+
+        appBar: AppBar(
+          title: Text(
+            context.tr(
+                  shared.LocaleKeys.inventoryPickerPageAppbar,
+                  track: shared.TrackConstants.inventoryPageTrack,
+                ) ??
+                'Inventory Picker',
+          ),
         ),
+        body: _buildBody(context),
       ),
-      body: _buildBody(context),
     );
   }
 
