@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../auth/presentation/navigation/auth_routes.dart';
 import '../../home_page/presentation/navigation/home_routes.dart';
 import '../../shared/coozy_shared.dart' as shared;
-import '../../table_info/presentation/navigation/table_routes.dart';
+import '../../table_management/presentation/navigation/table_routes.dart';
 import '../../menu_category/presentation/navigation/menu_category_routes.dart';
 import '../../menu_subcategory/presentation/navigation/menu_subcategory_routes.dart';
 import '../../menu_item/presentation/navigation/menu_item_routes.dart';

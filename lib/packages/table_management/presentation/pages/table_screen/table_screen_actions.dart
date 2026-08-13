@@ -4,11 +4,11 @@ import 'package:lottie/lottie.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
-import 'package:coozy_the_cafe/packages/table_info/domain/entities/table_info.dart';
-import 'package:coozy_the_cafe/packages/table_info/presentation/cubit/table_cubit.dart';
-import 'package:coozy_the_cafe/packages/table_info/presentation/cubit/table_state.dart';
-import 'package:coozy_the_cafe/packages/table_info/presentation/pages/new_table_info_dialog/new_table_info_dialog.dart';
-import 'package:coozy_the_cafe/packages/table_info/presentation/pages/table_update_dialog/table_update_dialog.dart';
+import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
+import 'package:coozy_the_cafe/packages/table_management/presentation/cubit/table_cubit.dart';
+import 'package:coozy_the_cafe/packages/table_management/presentation/cubit/table_state.dart';
+import 'package:coozy_the_cafe/packages/table_management/presentation/pages/new_table_info_dialog/new_table_info_dialog.dart';
+import 'package:coozy_the_cafe/packages/table_management/presentation/pages/table_update_dialog/table_update_dialog.dart';
 
 class TableScreenActions {
   static Future<void> onReorder(

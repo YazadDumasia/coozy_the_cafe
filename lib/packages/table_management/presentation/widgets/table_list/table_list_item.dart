@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
-import 'package:coozy_the_cafe/packages/table_info/domain/entities/table_info.dart';
+import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
 import '../../pages/table_screen/table_screen_actions.dart';
 
 class TableListItem extends StatelessWidget {

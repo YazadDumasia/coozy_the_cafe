@@ -3,7 +3,7 @@ import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 
 import 'package:coozy_the_cafe/packages/home_page/home_injection.dart';
 
-import 'package:coozy_the_cafe/packages/table_info/table_injection.dart';
+import 'package:coozy_the_cafe/packages/table_management/table_injection.dart';
 import 'package:coozy_the_cafe/packages/menu_category/menu_category_injection.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/menu_subcategory_injection.dart';
 import 'package:coozy_the_cafe/packages/menu_item/menu_item_injection.dart';
