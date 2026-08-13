@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../../auth/presentation/navigation/auth_routes.dart';
 import '../../home_page/presentation/navigation/home_routes.dart';
@@ -19,11 +20,40 @@ final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root',
 );
 
+class AppWebTitleObserver extends NavigatorObserver {
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPush(route, previousRoute);
+    _updateTitle(route);
+  }
+
+  @override
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    if (newRoute != null) _updateTitle(newRoute);
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didPop(route, previousRoute);
+    if (previousRoute != null) _updateTitle(previousRoute);
+  }
+
+  void _updateTitle(Route<dynamic> route) {
+    final routeName = route.settings.name;
+    final title = AppRouteName.getTitleForRouteName(routeName);
+    SystemChrome.setApplicationSwitcherDescription(
+      ApplicationSwitcherDescription(label: title, primaryColor: 0xFF000000),
+    );
+  }
+}
+
 class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: AppRoutePath.splashRoute,
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
+    observers: [AppWebTitleObserver()],
     routes: [
       ...AuthRoutes.routes,
       ...HomeRoutes.routes,

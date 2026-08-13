@@ -9,6 +9,7 @@ class HomeRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.homeRoute,
+      name: AppRouteName.home,
       builder: (context, state) => BlocProvider<HomeCubit>(
         create: (context) => GetIt.instance<HomeCubit>()..fetchHomeData(),
         child: const HomeScreen(),

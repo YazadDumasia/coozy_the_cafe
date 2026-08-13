@@ -16,10 +16,12 @@ class AuthRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.splashRoute,
+      name: AppRouteName.splash,
       builder: (context, state) => const SplashPage(),
     ),
     GoRoute(
       path: AppRoutePath.loginRoute,
+      name: AppRouteName.login,
       builder: (context, state) => BlocProvider<LoginScreenCubit>(
         create: (context) =>
             GetIt.instance<LoginScreenCubit>()..fetchInitialInfo(),
@@ -28,6 +30,7 @@ class AuthRoutes {
     ),
     GoRoute(
       path: AppRoutePath.registrationRoute,
+      name: AppRouteName.registration,
       builder: (context, state) => BlocProvider<SignUpCubit>(
         create: (context) => GetIt.instance<SignUpCubit>()..fetchInitialInfo(),
         child: const SignUpPage(),
@@ -35,6 +38,7 @@ class AuthRoutes {
     ),
     GoRoute(
       path: AppRoutePath.loginViaPhoneNumberRoute,
+      name: AppRouteName.loginViaPhone,
       builder: (context, state) => BlocProvider<LoginWithPhoneCubit>(
         create: (context) => GetIt.instance<LoginWithPhoneCubit>(),
         child: const LoginViaPhoneNumberPage(isUseForLogin: true),
@@ -42,6 +46,7 @@ class AuthRoutes {
     ),
     GoRoute(
       path: AppRoutePath.otpVerificationRoute,
+      name: AppRouteName.otpVerification,
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>? ?? {};
         return OtpVerificationPage(
@@ -55,6 +60,7 @@ class AuthRoutes {
     ),
     GoRoute(
       path: AppRoutePath.successfullyScreenRoute,
+      name: AppRouteName.successfully,
       builder: (context, state) {
         final extra = state.extra as Map<String, dynamic>? ?? {};
         final redirectPath =

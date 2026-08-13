@@ -25,7 +25,7 @@ class RecipesListScreenActions {
 
   static Future<void> onAddRecipePressed(BuildContext context) async {
     final result = await context.push(
-      '${AppRoutePath.recipesListScreenRoute}/edit',
+      '${AppRoutePath.recipesListScreenRoute}/${AppRoutePath.recipesAddOrEditScreenRoute}',
     );
     if (result == true && context.mounted) {
       BlocProvider.of<RecipesFullListCubit>(
@@ -67,7 +67,7 @@ class RecipesListScreenActions {
     Recipe model,
   ) async {
     final result = await context.push(
-      '${AppRoutePath.recipesListScreenRoute}/edit',
+      '${AppRoutePath.recipesListScreenRoute}/${AppRoutePath.recipesAddOrEditScreenRoute}',
       extra: model,
     );
     if (result == true && context.mounted) {

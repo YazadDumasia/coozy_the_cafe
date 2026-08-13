@@ -13,6 +13,7 @@ class MenuSubCategoryRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.menuSubCategoryFullListRoute,
+      name: AppRouteName.menuSubCategoryList,
       builder: (context, state) => BlocProvider<MenuSubcategoryBloc>(
         create: (context) =>
             GetIt.instance<MenuSubcategoryBloc>()..add(LoadMenuSubcategories()),
@@ -21,6 +22,7 @@ class MenuSubCategoryRoutes {
       routes: [
         GoRoute(
           path: AppRoutePath.addNewMenuSubCategoryScreenRoute,
+          name: AppRouteName.menuSubCategoryAdd,
           builder: (context, state) {
             final String? catIdStr = state.uri.queryParameters['categoryId'];
             final int? catId = catIdStr != null

@@ -14,6 +14,7 @@ class RecipesRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.recipesListScreenRoute,
+      name: AppRouteName.recipesList,
       builder: (context, state) => MultiBlocProvider(
         providers: [
           BlocProvider<RecipesFullListCubit>(
@@ -28,6 +29,7 @@ class RecipesRoutes {
       routes: [
         GoRoute(
           path: AppRoutePath.recipesBookmarkListScreenRoute,
+          name: AppRouteName.recipesBookmarkList,
           builder: (context, state) => MultiBlocProvider(
             providers: [
               BlocProvider<RecipesFullListCubit>(
@@ -42,6 +44,7 @@ class RecipesRoutes {
         ),
         GoRoute(
           path: AppRoutePath.recipesInfoScreenRoute,
+          name: AppRouteName.recipesInfo,
           builder: (context, state) {
             final extra = state.extra as Map<String, dynamic>;
             final model = extra['model'] as Recipe;
@@ -62,6 +65,7 @@ class RecipesRoutes {
         ),
         GoRoute(
           path: AppRoutePath.recipesAddOrEditScreenRoute,
+          name: AppRouteName.recipesAddOrEdit,
           builder: (context, state) {
             final model = state.extra as Recipe?;
             return BlocProvider<RecipesFullListCubit>(

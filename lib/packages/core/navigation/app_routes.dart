@@ -216,8 +216,115 @@ class AppRouteName {
   static const String menuCategoryAdd = 'menu-category-add';
   static const String menuCategoryUpdate = 'menu-category-update';
 
+  static const String menuSubCategoryList = 'menu-subcategory-list';
+  static const String menuSubCategoryAdd = 'menu-subcategory-add';
+  static const String menuSubCategoryUpdate = 'menu-subcategory-update';
+
+  static const String recipesList = 'recipes-list';
+  static const String recipesBookmarkList = 'recipes-bookmark-list';
+  static const String recipesInfo = 'recipes-info';
+  static const String recipesAddOrEdit = 'recipes-add-or-edit';
+
+  static const String staffManagement = 'staff-management';
+  static const String employeeList = 'employee-list';
+  static const String employeeAttendance = 'employee-attendance';
+  static const String employeeLeave = 'employee-leave';
+  static const String employeesReports = 'employees-reports';
+
   static const String customerList = 'customer-list';
   static const String customerInfo = 'customer-info';
   static const String customerEdit = 'customer-edit';
   static const String customerPicker = 'customer-picker';
+
+  static const String settings = 'settings';
+
+  static String getTitleForRouteName(String? name) {
+    switch (name) {
+      case home:
+      case mainHome:
+        return 'Home';
+      case splash:
+        return 'Splash';
+      case login:
+        return 'Login';
+      case registration:
+        return 'Registration';
+      case loginViaPhone:
+        return 'Login via Phone';
+      case otp:
+      case otpVerification:
+        return 'OTP Verification';
+      case successfully:
+        return 'Success';
+      case businessOnboarding:
+        return 'Business Onboarding';
+      case inventoryList:
+        return 'Inventory';
+      case inventoryAdd:
+        return 'Add Inventory';
+      case inventoryUpdate:
+        return 'Update Inventory';
+      case inventoryPicker:
+        return 'Inventory Picker';
+      case purchaseList:
+        return 'Purchases';
+      case addPurchase:
+        return 'Add Purchase';
+      case purchasePicker:
+        return 'Purchase Picker';
+      case tableInfoList:
+        return 'Tables';
+      case tableInfoAdd:
+        return 'Add Table';
+      case tableInfoUpdate:
+        return 'Update Table';
+      case menuItemList:
+        return 'Menu Items';
+      case menuItemAdd:
+        return 'Add Menu Item';
+      case menuItemUpdate:
+        return 'Update Menu Item';
+      case menuCategoryList:
+        return 'Menu Categories';
+      case menuCategoryAdd:
+        return 'Add Category';
+      case menuCategoryUpdate:
+        return 'Update Category';
+      case menuSubCategoryList:
+        return 'Menu Subcategories';
+      case menuSubCategoryAdd:
+        return 'Add Subcategory';
+      case menuSubCategoryUpdate:
+        return 'Update Subcategory';
+      case recipesList:
+        return 'Recipes';
+      case recipesBookmarkList:
+        return 'Bookmarked Recipes';
+      case recipesInfo:
+        return 'Recipe Info';
+      case recipesAddOrEdit:
+        return 'Edit Recipe';
+      case staffManagement:
+      case employeeList:
+        return 'Staff Management';
+      case employeeAttendance:
+        return 'Staff Attendance';
+      case employeeLeave:
+        return 'Staff Leave';
+      case employeesReports:
+        return 'Staff Reports';
+      case customerList:
+        return 'Customers';
+      case customerInfo:
+        return 'Customer Info';
+      case customerEdit:
+        return 'Edit Customer';
+      case customerPicker:
+        return 'Customer Picker';
+      case settings:
+        return 'Settings';
+      default:
+        return 'Coozy the Cafe';
+    }
+  }
 }

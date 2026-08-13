@@ -6,6 +6,7 @@ class SettingsRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.settingsScreenRoute,
+      name: AppRouteName.settings,
       builder: (context, state) => const SettingsScreen(),
     ),
   ];

@@ -123,9 +123,11 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
         final recipe = _stateHolder.recipe;
         return SafeArea(
           child: PopScope(
-            onPopInvokedWithResult: (didPop, result) async => () async {
-              Navigator.pop(context);
-              return true;
+            canPop: true,
+            onPopInvokedWithResult: (didPop, result) {
+              if (!didPop && context.mounted) {
+                Navigator.pop(context, result);
+              }
             },
             child: Scaffold(
               resizeToAvoidBottomInset: true,

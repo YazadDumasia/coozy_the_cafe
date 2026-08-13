@@ -9,6 +9,7 @@ class TableRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.tableInfoScreenRoute,
+      name: AppRouteName.tableInfoList,
       builder: (context, state) => BlocProvider<TableCubit>(
         create: (context) => GetIt.instance<TableCubit>()..loadTables(),
         child: const TableScreen(),

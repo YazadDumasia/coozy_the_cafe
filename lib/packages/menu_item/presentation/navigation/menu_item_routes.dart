@@ -25,6 +25,7 @@ class MenuItemRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.menuItemFullListScreenRoute,
+      name: AppRouteName.menuItemList,
       builder: (context, state) => MultiBlocProvider(
         providers: [
           BlocProvider<MenuItemBloc>(
@@ -46,6 +47,7 @@ class MenuItemRoutes {
       routes: [
         GoRoute(
           path: AppRoutePath.addNewMenuItemScreenRoute,
+          name: AppRouteName.menuItemAdd,
           builder: (context, state) {
             final parentMenuItemBloc = _tryRead<MenuItemBloc>(context);
             final parentCategoryCubit = _tryRead<MenuCategoryFullListCubit>(
@@ -92,6 +94,7 @@ class MenuItemRoutes {
         ),
         GoRoute(
           path: AppRoutePath.updateMenuItemScreenRoute,
+          name: AppRouteName.menuItemUpdate,
           builder: (context, state) {
             final item = state.extra as MenuItem?;
             final parentMenuItemBloc = _tryRead<MenuItemBloc>(context);

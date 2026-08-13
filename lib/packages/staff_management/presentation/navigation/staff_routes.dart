@@ -39,10 +39,12 @@ class StaffRoutes {
           routes: [
             GoRoute(
               path: AppRoutePath.staffManagementScreenRoute,
+              name: AppRouteName.staffManagement,
               builder: (context, state) => const EmployeeSubScreen(),
               routes: [
                 GoRoute(
                   path: AppRoutePath.employeeListScreenRoute,
+                  name: AppRouteName.employeeList,
                   builder: (context, state) => const EmployeeSubScreen(),
                 ),
               ],
@@ -54,6 +56,7 @@ class StaffRoutes {
             GoRoute(
               path:
                   '${AppRoutePath.staffManagementScreenRoute}/${AppRoutePath.employeeAttendanceScreenRoute}',
+              name: AppRouteName.employeeAttendance,
               builder: (context, state) => const AttendanceSubScreen(),
             ),
           ],
@@ -63,6 +66,7 @@ class StaffRoutes {
             GoRoute(
               path:
                   '${AppRoutePath.staffManagementScreenRoute}/${AppRoutePath.employeeLeaveScreenRoute}',
+              name: AppRouteName.employeeLeave,
               builder: (context, state) => const LeaveSubScreen(),
             ),
           ],
@@ -72,6 +76,7 @@ class StaffRoutes {
             GoRoute(
               path:
                   '${AppRoutePath.staffManagementScreenRoute}/${AppRoutePath.employeesReportsScreenRoute}',
+              name: AppRouteName.employeesReports,
               builder: (context, state) => const StaffReportSubScreen(),
             ),
           ],

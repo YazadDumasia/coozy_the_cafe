@@ -62,9 +62,11 @@ class _MenuCategoryFullListScreenState
   Widget build(BuildContext context) {
     return SafeArea(
       child: PopScope(
-        onPopInvokedWithResult: (didPop, result) async => () async {
-          Navigator.pop(context);
-          return true;
+        canPop: true,
+        onPopInvokedWithResult: (didPop, result) {
+          if (!didPop && context.mounted) {
+            Navigator.pop(context, result);
+          }
         },
         child: Scaffold(
           resizeToAvoidBottomInset: true,

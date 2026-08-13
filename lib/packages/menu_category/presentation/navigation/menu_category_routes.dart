@@ -17,6 +17,7 @@ class MenuCategoryRoutes {
   static List<RouteBase> get routes => [
     GoRoute(
       path: AppRoutePath.menuCategoryFullListRoute,
+      name: AppRouteName.menuCategoryList,
       builder: (context, state) => BlocProvider<MenuCategoryFullListCubit>(
         create: (context) =>
             GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
@@ -25,6 +26,7 @@ class MenuCategoryRoutes {
       routes: [
         GoRoute(
           path: AppRoutePath.addNewMenuCategoryScreenRoute,
+          name: AppRouteName.menuCategoryAdd,
           builder: (context, state) => BlocProvider<AddMenuCategoryCubit>(
             create: (context) => GetIt.instance<AddMenuCategoryCubit>(),
             child: const AddNewMenuCategoryScreen(),
@@ -32,6 +34,7 @@ class MenuCategoryRoutes {
         ),
         GoRoute(
           path: AppRoutePath.updateMenuCategoryScreenRoute,
+          name: AppRouteName.menuCategoryUpdate,
           builder: (context, state) => BlocProvider<EditMenuCategoryBloc>(
             create: (context) {
               return GetIt.instance<EditMenuCategoryBloc>();

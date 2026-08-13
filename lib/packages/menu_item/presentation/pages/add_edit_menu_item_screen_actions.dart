@@ -16,7 +16,9 @@ import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_
 
 class AddEditMenuItemScreenActions {
   static void handleAddCategory(BuildContext context, bool mounted) async {
-    await context.push('/menu-categories/menu-category-add');
+    await context.push(
+      '${core.AppRoutePath.menuCategoryFullListRoute}/${core.AppRoutePath.addNewMenuCategoryScreenRoute}',
+    );
     if (context.mounted) {
       await context.read<MenuCategoryFullListCubit>().loadData();
     }
@@ -28,7 +30,7 @@ class AddEditMenuItemScreenActions {
     bool mounted,
   ) async {
     await context.push(
-      '/menu-subcategories/add-subcategory',
+      '${core.AppRoutePath.menuSubCategoryFullListRoute}/${core.AppRoutePath.addNewMenuSubCategoryScreenRoute}',
       extra: categoryId,
     );
     if (context.mounted) {
