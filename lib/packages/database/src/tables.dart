@@ -202,6 +202,7 @@ class OrdersTable extends BaseTable {
       text().unique().clientDefault(() => const Uuid().v8())();
   IntColumn get tableInfoId =>
       integer().nullable().references(TableInfoTable, #id)();
+  TextColumn get tableNameText => text().nullable()();
   TextColumn get creationDate => text().nullable()();
   TextColumn get modificationDate => text().nullable()();
   BoolColumn get isCanceled => boolean().nullable()();

@@ -8324,6 +8324,17 @@ class $OrdersTableTable extends OrdersTable
       'REFERENCES table_info (id)',
     ),
   );
+  static const VerificationMeta _tableNameTextMeta = const VerificationMeta(
+    'tableNameText',
+  );
+  @override
+  late final GeneratedColumn<String> tableNameText = GeneratedColumn<String>(
+    'table_name_text',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _creationDateMeta = const VerificationMeta(
     'creationDate',
   );
@@ -8496,6 +8507,7 @@ class $OrdersTableTable extends OrdersTable
     id,
     hashId,
     tableInfoId,
+    tableNameText,
     creationDate,
     modificationDate,
     isCanceled,
@@ -8550,6 +8562,15 @@ class $OrdersTableTable extends OrdersTable
         tableInfoId.isAcceptableOrUnknown(
           data['table_info_id']!,
           _tableInfoIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('table_name_text')) {
+      context.handle(
+        _tableNameTextMeta,
+        tableNameText.isAcceptableOrUnknown(
+          data['table_name_text']!,
+          _tableNameTextMeta,
         ),
       );
     }
@@ -8690,6 +8711,10 @@ class $OrdersTableTable extends OrdersTable
         DriftSqlType.int,
         data['${effectivePrefix}table_info_id'],
       ),
+      tableNameText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}table_name_text'],
+      ),
       creationDate: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}creation_date'],
@@ -8761,6 +8786,7 @@ class Order extends DataClass implements Insertable<Order> {
   final int id;
   final String hashId;
   final int? tableInfoId;
+  final String? tableNameText;
   final String? creationDate;
   final String? modificationDate;
   final bool? isCanceled;
@@ -8781,6 +8807,7 @@ class Order extends DataClass implements Insertable<Order> {
     required this.id,
     required this.hashId,
     this.tableInfoId,
+    this.tableNameText,
     this.creationDate,
     this.modificationDate,
     this.isCanceled,
@@ -8809,6 +8836,9 @@ class Order extends DataClass implements Insertable<Order> {
     map['hash_id'] = Variable<String>(hashId);
     if (!nullToAbsent || tableInfoId != null) {
       map['table_info_id'] = Variable<int>(tableInfoId);
+    }
+    if (!nullToAbsent || tableNameText != null) {
+      map['table_name_text'] = Variable<String>(tableNameText);
     }
     if (!nullToAbsent || creationDate != null) {
       map['creation_date'] = Variable<String>(creationDate);
@@ -8868,6 +8898,9 @@ class Order extends DataClass implements Insertable<Order> {
       tableInfoId: tableInfoId == null && nullToAbsent
           ? const Value.absent()
           : Value(tableInfoId),
+      tableNameText: tableNameText == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tableNameText),
       creationDate: creationDate == null && nullToAbsent
           ? const Value.absent()
           : Value(creationDate),
@@ -8924,6 +8957,7 @@ class Order extends DataClass implements Insertable<Order> {
       id: serializer.fromJson<int>(json['id']),
       hashId: serializer.fromJson<String>(json['hashId']),
       tableInfoId: serializer.fromJson<int?>(json['tableInfoId']),
+      tableNameText: serializer.fromJson<String?>(json['tableNameText']),
       creationDate: serializer.fromJson<String?>(json['creationDate']),
       modificationDate: serializer.fromJson<String?>(json['modificationDate']),
       isCanceled: serializer.fromJson<bool?>(json['isCanceled']),
@@ -8953,6 +8987,7 @@ class Order extends DataClass implements Insertable<Order> {
       'id': serializer.toJson<int>(id),
       'hashId': serializer.toJson<String>(hashId),
       'tableInfoId': serializer.toJson<int?>(tableInfoId),
+      'tableNameText': serializer.toJson<String?>(tableNameText),
       'creationDate': serializer.toJson<String?>(creationDate),
       'modificationDate': serializer.toJson<String?>(modificationDate),
       'isCanceled': serializer.toJson<bool?>(isCanceled),
@@ -8976,6 +9011,7 @@ class Order extends DataClass implements Insertable<Order> {
     int? id,
     String? hashId,
     Value<int?> tableInfoId = const Value.absent(),
+    Value<String?> tableNameText = const Value.absent(),
     Value<String?> creationDate = const Value.absent(),
     Value<String?> modificationDate = const Value.absent(),
     Value<bool?> isCanceled = const Value.absent(),
@@ -8996,6 +9032,9 @@ class Order extends DataClass implements Insertable<Order> {
     id: id ?? this.id,
     hashId: hashId ?? this.hashId,
     tableInfoId: tableInfoId.present ? tableInfoId.value : this.tableInfoId,
+    tableNameText: tableNameText.present
+        ? tableNameText.value
+        : this.tableNameText,
     creationDate: creationDate.present ? creationDate.value : this.creationDate,
     modificationDate: modificationDate.present
         ? modificationDate.value
@@ -9030,6 +9069,9 @@ class Order extends DataClass implements Insertable<Order> {
       tableInfoId: data.tableInfoId.present
           ? data.tableInfoId.value
           : this.tableInfoId,
+      tableNameText: data.tableNameText.present
+          ? data.tableNameText.value
+          : this.tableNameText,
       creationDate: data.creationDate.present
           ? data.creationDate.value
           : this.creationDate,
@@ -9075,6 +9117,7 @@ class Order extends DataClass implements Insertable<Order> {
           ..write('id: $id, ')
           ..write('hashId: $hashId, ')
           ..write('tableInfoId: $tableInfoId, ')
+          ..write('tableNameText: $tableNameText, ')
           ..write('creationDate: $creationDate, ')
           ..write('modificationDate: $modificationDate, ')
           ..write('isCanceled: $isCanceled, ')
@@ -9100,6 +9143,7 @@ class Order extends DataClass implements Insertable<Order> {
     id,
     hashId,
     tableInfoId,
+    tableNameText,
     creationDate,
     modificationDate,
     isCanceled,
@@ -9124,6 +9168,7 @@ class Order extends DataClass implements Insertable<Order> {
           other.id == this.id &&
           other.hashId == this.hashId &&
           other.tableInfoId == this.tableInfoId &&
+          other.tableNameText == this.tableNameText &&
           other.creationDate == this.creationDate &&
           other.modificationDate == this.modificationDate &&
           other.isCanceled == this.isCanceled &&
@@ -9146,6 +9191,7 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
   final Value<int> id;
   final Value<String> hashId;
   final Value<int?> tableInfoId;
+  final Value<String?> tableNameText;
   final Value<String?> creationDate;
   final Value<String?> modificationDate;
   final Value<bool?> isCanceled;
@@ -9166,6 +9212,7 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     this.id = const Value.absent(),
     this.hashId = const Value.absent(),
     this.tableInfoId = const Value.absent(),
+    this.tableNameText = const Value.absent(),
     this.creationDate = const Value.absent(),
     this.modificationDate = const Value.absent(),
     this.isCanceled = const Value.absent(),
@@ -9187,6 +9234,7 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     this.id = const Value.absent(),
     this.hashId = const Value.absent(),
     this.tableInfoId = const Value.absent(),
+    this.tableNameText = const Value.absent(),
     this.creationDate = const Value.absent(),
     this.modificationDate = const Value.absent(),
     this.isCanceled = const Value.absent(),
@@ -9208,6 +9256,7 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     Expression<int>? id,
     Expression<String>? hashId,
     Expression<int>? tableInfoId,
+    Expression<String>? tableNameText,
     Expression<String>? creationDate,
     Expression<String>? modificationDate,
     Expression<bool>? isCanceled,
@@ -9229,6 +9278,7 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
       if (id != null) 'id': id,
       if (hashId != null) 'hash_id': hashId,
       if (tableInfoId != null) 'table_info_id': tableInfoId,
+      if (tableNameText != null) 'table_name_text': tableNameText,
       if (creationDate != null) 'creation_date': creationDate,
       if (modificationDate != null) 'modification_date': modificationDate,
       if (isCanceled != null) 'is_canceled': isCanceled,
@@ -9253,6 +9303,7 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     Value<int>? id,
     Value<String>? hashId,
     Value<int?>? tableInfoId,
+    Value<String?>? tableNameText,
     Value<String?>? creationDate,
     Value<String?>? modificationDate,
     Value<bool?>? isCanceled,
@@ -9274,6 +9325,7 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
       id: id ?? this.id,
       hashId: hashId ?? this.hashId,
       tableInfoId: tableInfoId ?? this.tableInfoId,
+      tableNameText: tableNameText ?? this.tableNameText,
       creationDate: creationDate ?? this.creationDate,
       modificationDate: modificationDate ?? this.modificationDate,
       isCanceled: isCanceled ?? this.isCanceled,
@@ -9308,6 +9360,9 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     }
     if (tableInfoId.present) {
       map['table_info_id'] = Variable<int>(tableInfoId.value);
+    }
+    if (tableNameText.present) {
+      map['table_name_text'] = Variable<String>(tableNameText.value);
     }
     if (creationDate.present) {
       map['creation_date'] = Variable<String>(creationDate.value);
@@ -9364,6 +9419,7 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
           ..write('id: $id, ')
           ..write('hashId: $hashId, ')
           ..write('tableInfoId: $tableInfoId, ')
+          ..write('tableNameText: $tableNameText, ')
           ..write('creationDate: $creationDate, ')
           ..write('modificationDate: $modificationDate, ')
           ..write('isCanceled: $isCanceled, ')
@@ -26917,6 +26973,7 @@ typedef $$OrdersTableTableCreateCompanionBuilder =
       Value<int> id,
       Value<String> hashId,
       Value<int?> tableInfoId,
+      Value<String?> tableNameText,
       Value<String?> creationDate,
       Value<String?> modificationDate,
       Value<bool?> isCanceled,
@@ -26939,6 +26996,7 @@ typedef $$OrdersTableTableUpdateCompanionBuilder =
       Value<int> id,
       Value<String> hashId,
       Value<int?> tableInfoId,
+      Value<String?> tableNameText,
       Value<String?> creationDate,
       Value<String?> modificationDate,
       Value<bool?> isCanceled,
@@ -27101,6 +27159,11 @@ class $$OrdersTableTableFilterComposer
 
   ColumnFilters<String> get hashId => $composableBuilder(
     column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tableNameText => $composableBuilder(
+    column: $table.tableNameText,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -27349,6 +27412,11 @@ class $$OrdersTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get tableNameText => $composableBuilder(
+    column: $table.tableNameText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get creationDate => $composableBuilder(
     column: $table.creationDate,
     builder: (column) => ColumnOrderings(column),
@@ -27539,6 +27607,11 @@ class $$OrdersTableTableAnnotationComposer
 
   GeneratedColumn<String> get hashId =>
       $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get tableNameText => $composableBuilder(
+    column: $table.tableNameText,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get creationDate => $composableBuilder(
     column: $table.creationDate,
@@ -27800,6 +27873,7 @@ class $$OrdersTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> hashId = const Value.absent(),
                 Value<int?> tableInfoId = const Value.absent(),
+                Value<String?> tableNameText = const Value.absent(),
                 Value<String?> creationDate = const Value.absent(),
                 Value<String?> modificationDate = const Value.absent(),
                 Value<bool?> isCanceled = const Value.absent(),
@@ -27820,6 +27894,7 @@ class $$OrdersTableTableTableManager
                 id: id,
                 hashId: hashId,
                 tableInfoId: tableInfoId,
+                tableNameText: tableNameText,
                 creationDate: creationDate,
                 modificationDate: modificationDate,
                 isCanceled: isCanceled,
@@ -27842,6 +27917,7 @@ class $$OrdersTableTableTableManager
                 Value<int> id = const Value.absent(),
                 Value<String> hashId = const Value.absent(),
                 Value<int?> tableInfoId = const Value.absent(),
+                Value<String?> tableNameText = const Value.absent(),
                 Value<String?> creationDate = const Value.absent(),
                 Value<String?> modificationDate = const Value.absent(),
                 Value<bool?> isCanceled = const Value.absent(),
@@ -27862,6 +27938,7 @@ class $$OrdersTableTableTableManager
                 id: id,
                 hashId: hashId,
                 tableInfoId: tableInfoId,
+                tableNameText: tableNameText,
                 creationDate: creationDate,
                 modificationDate: modificationDate,
                 isCanceled: isCanceled,

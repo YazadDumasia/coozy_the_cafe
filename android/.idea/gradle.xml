@@ -29,7 +29,7 @@
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_secure_storage-10.3.1/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/flutter_timezone-5.1.0/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/fluttertoast-10.0.0/android" />
-            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/geocoding_android-4.0.1/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/geocoding_android-5.1.0/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/geolocator_android-5.0.3/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/image_cropper-12.2.1/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/image_picker_android-0.8.13+19/android" />
@@ -37,6 +37,7 @@
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/jni_flutter-1.0.2/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/package_info_plus-10.2.1/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/permission_handler_android-14.0.0/android" />
+            <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/sensors_plus-7.1.0/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/share_plus-13.3.0/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/shared_preferences_android-2.4.27/android" />
             <option value="$USER_HOME$/.pub-cache/hosted/pub.dev/sms_autofill-2.5.0/android" />

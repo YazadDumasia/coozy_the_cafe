@@ -5,7 +5,6 @@ import '../pages/table_screen/table_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import '../cubit/table_cubit.dart';
-import '../cubit/table_picker_cubit.dart';
 
 class TableRoutes {
   static List<RouteBase> get routes => [
@@ -20,10 +19,11 @@ class TableRoutes {
     GoRoute(
       path: AppRoutePath.tablePickerScreenRoute,
       name: AppRouteName.tablePicker,
-      builder: (context, state) => BlocProvider<TablePickerCubit>(
-        create: (context) => GetIt.instance<TablePickerCubit>()..loadTables(),
-        child: const TablePickerScreen(),
-      ),
+      builder: (context, state) => TablePickerScreen(),
+      // builder: (context, state) => BlocProvider<TablePickerCubit>(
+      //   create: (context) => GetIt.instance<TablePickerCubit>()..loadTables(),
+      //   child: const TablePickerScreen(),
+      // ),
     ),
   ];
 }
