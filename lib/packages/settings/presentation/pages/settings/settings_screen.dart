@@ -52,21 +52,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final prefs = await SharedPreferences.getInstance();
     final isEnabled = prefs.getBool(_prefKeyFakeData) ?? false;
     _isFakeDataEnabledNotifier.value = isEnabled;
-    _statusMessageNotifier.value = isEnabled
-        ? 'Fake data active (1.5 years history, 1,800+ records)'
-        : 'Fake data inactive';
 
-    if (isEnabled) {
-      _completedStageKeysNotifier.value = {
-        'customers',
-        'employees',
-        'attendance_leaves',
-        'tables_menu',
-        'inventory_purchases',
-        'reservations',
-        'orders_invoices',
-      };
+    final database = GetIt.instance<CoozyDatabase>();
+    final counts = await FakeDataHelper.getDatasetCounts(database);
+
+    final completed = <String>{};
+    for (final entry in counts.entries) {
+      if (entry.value > 0) {
+        completed.add(entry.key);
+      }
     }
+    _completedStageKeysNotifier.value = completed;
+    _statusMessageNotifier.value = completed.isNotEmpty
+        ? 'Fake data active (${completed.length} table datasets populated)'
+        : 'Fake data inactive';
   }
 
   String _tr(BuildContext context, String key, String fallback) {
@@ -219,7 +218,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ),
         );
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('Error processing master fake data: $e\n$stackTrace');
       if (mounted) {
         _statusMessageNotifier.value = 'Error processing fake data: $e';
         ScaffoldMessenger.of(context).showSnackBar(
@@ -261,8 +261,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (enable) {
         _statusMessageNotifier.value = 'Generating fake data for $name...';
-        final count = await FakeDataHelper.generateFakeData(
+        final count = await FakeDataHelper.generateDatasetData(
           database,
+          stageKeys,
           onProgress: (stageKey, stageDesc, currentStep, totalSteps) {
             core.NotificationApi.showFakeDataProgressNotification(
               currentStep: currentStep,
@@ -335,9 +336,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
           );
         }
       }
-    } catch (e) {
+    } catch (e, stackTrace) {
+      debugPrint('Error updating $name fake data: $e\n$stackTrace');
       if (mounted) {
         _statusMessageNotifier.value = 'Error updating $name fake data: $e';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              context.tr(
+                    shared.LocaleKeys.commonCustomErrorMsg,
+                    track: shared.TrackConstants.commonTrack,
+                    params: {"error": e.toString()},
+                  ) ??
+                  'Error updating $name fake data: ${e.toString()}',
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } finally {
       if (mounted) {
@@ -359,146 +374,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _tr(context, shared.LocaleKeys.settingsTitle, 'Settings'),
           ),
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
-            // Theme Section
-            Text(
-              _tr(
-                context,
-                shared.LocaleKeys.settingsAppearanceSection,
-                'Appearance',
-              ),
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: BlocBuilder<shared.ThemeBloc, shared.ThemeState>(
-                  builder: (context, themeState) {
-                    final isDark = themeState.themeMode == ThemeMode.dark;
-                    return Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: theme.primaryColor.withValues(alpha: 0.1),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            isDark
-                                ? Icons.dark_mode_rounded
-                                : Icons.light_mode_rounded,
-                            color: theme.primaryColor,
-                          ),
-                        ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _tr(
-                                  context,
-                                  shared.LocaleKeys.settingsDarkThemeLabel,
-                                  'Dark Theme',
-                                ),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                isDark
-                                    ? _tr(
-                                        context,
-                                        shared
-                                            .LocaleKeys
-                                            .settingsDarkThemeEnabled,
-                                        'Dark theme enabled',
-                                      )
-                                    : _tr(
-                                        context,
-                                        shared
-                                            .LocaleKeys
-                                            .settingsDarkThemeDisabled,
-                                        'Light theme enabled',
-                                      ),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Switch.adaptive(
-                          value: isDark,
-                          activeThumbColor: theme.primaryColor,
-                          onChanged: (value) {
-                            context.read<shared.ThemeBloc>().add(
-                              shared.ThemeToggleRequested(value),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
+        body: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 900),
+            child: ListView(
+              padding: const EdgeInsets.all(16.0),
+              children: [
+                // Theme Section
+                Text(
+                  _tr(
+                    context,
+                    shared.LocaleKeys.settingsAppearanceSection,
+                    'Appearance',
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
                 ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-
-            // Language & Localization Section
-            Text(
-              _tr(
-                context,
-                shared.LocaleKeys.settingsLanguageSection,
-                'Language & Localization',
-              ),
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: FutureBuilder<List<shared.LanguageModel>>(
-                  future: shared.LanguageModel.getSupportedLanguages(),
-                  builder: (context, snapshot) {
-                    final availableLanguages =
-                        snapshot.data ?? shared.LanguageModel.getLanguages();
-
-                    return BlocBuilder<shared.LocaleCubit, Locale>(
-                      builder: (context, currentLocale) {
-                        final selectedLanguage = availableLanguages.firstWhere(
-                          (lang) =>
-                              lang.code == currentLocale.languageCode &&
-                              lang.countryCode == currentLocale.countryCode,
-                          orElse: () => availableLanguages.firstWhere(
-                            (lang) => lang.code == currentLocale.languageCode,
-                            orElse: () => availableLanguages.first,
-                          ),
-                        );
-
+                const SizedBox(height: 8),
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: BlocBuilder<shared.ThemeBloc, shared.ThemeState>(
+                      builder: (context, themeState) {
+                        final isDark = themeState.themeMode == ThemeMode.dark;
                         return Row(
                           children: [
                             Container(
@@ -510,7 +415,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
-                                Icons.language_rounded,
+                                isDark
+                                    ? Icons.dark_mode_rounded
+                                    : Icons.light_mode_rounded,
                                 color: theme.primaryColor,
                               ),
                             ),
@@ -522,10 +429,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Text(
                                     _tr(
                                       context,
-                                      shared
-                                          .LocaleKeys
-                                          .settingsAppLanguageLabel,
-                                      'App Language',
+                                      shared.LocaleKeys.settingsDarkThemeLabel,
+                                      'Dark Theme',
                                     ),
                                     style: const TextStyle(
                                       fontSize: 16,
@@ -534,7 +439,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    selectedLanguage.name ?? 'English',
+                                    isDark
+                                        ? _tr(
+                                            context,
+                                            shared
+                                                .LocaleKeys
+                                                .settingsDarkThemeEnabled,
+                                            'Dark theme enabled',
+                                          )
+                                        : _tr(
+                                            context,
+                                            shared
+                                                .LocaleKeys
+                                                .settingsDarkThemeDisabled,
+                                            'Light theme enabled',
+                                          ),
                                     style: const TextStyle(
                                       fontSize: 12,
                                       color: Colors.grey,
@@ -543,234 +462,359 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ],
                               ),
                             ),
-                            DropdownButton<shared.LanguageModel>(
-                              value: selectedLanguage,
-                              menuMaxHeight: 400,
-                              underline: const SizedBox.shrink(),
-                              icon: const Icon(Icons.arrow_drop_down),
-                              items: availableLanguages.map((lang) {
-                                return DropdownMenuItem<shared.LanguageModel>(
-                                  value: lang,
-                                  child: Text(
-                                    lang.name ?? lang.code ?? '',
-                                    style: const TextStyle(fontSize: 14),
-                                  ),
+                            Switch.adaptive(
+                              value: isDark,
+                              activeThumbColor: theme.primaryColor,
+                              onChanged: (value) {
+                                context.read<shared.ThemeBloc>().add(
+                                  shared.ThemeToggleRequested(value),
                                 );
-                              }).toList(),
-                              onChanged: (newLang) {
-                                if (newLang != null) {
-                                  context
-                                      .read<shared.LocaleCubit>()
-                                      .changeLocale(newLang);
-                                }
                               },
                             ),
                           ],
                         );
                       },
-                    );
-                  },
+                    ),
+                  ),
                 ),
-              ),
-            ),
 
-            const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-            // Demo & Testing Section
-            Text(
-              _tr(
-                context,
-                shared.LocaleKeys.settingsDemoTestingSection,
-                'Demo & Testing',
-              ),
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 8),
-            ValueListenableBuilder<bool>(
-              valueListenable: _isLoadingNotifier,
-              builder: (context, isLoading, child) {
-                return Card(
+                // Language & Localization Section
+                Text(
+                  _tr(
+                    context,
+                    shared.LocaleKeys.settingsLanguageSection,
+                    'Language & Localization',
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Card(
                   elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(12),
-                    onTap: isLoading
-                        ? null
-                        : () {
-                            _showFakeDataBottomSheet(context: context);
-                          },
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: Colors.amber.withValues(alpha: 0.15),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.data_array_rounded,
-                                  color: Colors.amber,
-                                ),
-                              ),
-                              const SizedBox(width: 14),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _tr(
-                                        context,
-                                        shared
-                                            .LocaleKeys
-                                            .settingsFakeDataModeLabel,
-                                        'Fake / Sample Data Mode',
-                                      ),
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      _tr(
-                                        context,
-                                        shared
-                                            .LocaleKeys
-                                            .settingsFakeDataModeSubtitle,
-                                        'Generates 1,800+ realistic records spanning 1.5 years back across Customers, Orders, Staff, Inventory, Purchases, & Reservations.',
-                                      ),
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (isLoading)
-                                const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.5,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: FutureBuilder<List<shared.LanguageModel>>(
+                      future: shared.LanguageModel.getSupportedLanguages(),
+                      builder: (context, snapshot) {
+                        final availableLanguages =
+                            snapshot.data ??
+                            shared.LanguageModel.getLanguages();
+
+                        return BlocBuilder<shared.LocaleCubit, Locale>(
+                          builder: (context, currentLocale) {
+                            final selectedLanguage = availableLanguages
+                                .firstWhere(
+                                  (lang) =>
+                                      lang.code == currentLocale.languageCode &&
+                                      lang.countryCode ==
+                                          currentLocale.countryCode,
+                                  orElse: () => availableLanguages.firstWhere(
+                                    (lang) =>
+                                        lang.code == currentLocale.languageCode,
+                                    orElse: () => availableLanguages.first,
                                   ),
-                                )
-                              else
-                                ValueListenableBuilder<bool>(
-                                  valueListenable: _isFakeDataEnabledNotifier,
-                                  builder: (context, isEnabled, child) {
-                                    return Switch.adaptive(
-                                      value: isEnabled,
-                                      activeThumbColor: Colors.amber,
-                                      onChanged: isLoading
-                                          ? null
-                                          : _onToggleFakeData,
-                                    );
-                                  },
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 12),
-                          ValueListenableBuilder<String>(
-                            valueListenable: _statusMessageNotifier,
-                            builder: (context, statusMsg, child) {
-                              if (statusMsg.isEmpty) {
-                                return const SizedBox.shrink();
-                              }
-                              return Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 12,
-                                  vertical: 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: theme.primaryColor.withValues(
-                                    alpha: 0.08,
+                                );
+
+                            return Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: theme.primaryColor.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    shape: BoxShape.circle,
                                   ),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Text(
-                                  statusMsg,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
+                                  child: Icon(
+                                    Icons.language_rounded,
                                     color: theme.primaryColor,
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        _tr(
+                                          context,
+                                          shared
+                                              .LocaleKeys
+                                              .settingsAppLanguageLabel,
+                                          'App Language',
+                                        ),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        selectedLanguage.name ?? 'English',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                DropdownButton<shared.LanguageModel>(
+                                  value: selectedLanguage,
+                                  menuMaxHeight: 400,
+                                  underline: const SizedBox.shrink(),
+                                  icon: const Icon(Icons.arrow_drop_down),
+                                  items: availableLanguages.map((lang) {
+                                    return DropdownMenuItem<
+                                      shared.LanguageModel
+                                    >(
+                                      value: lang,
+                                      child: Text(
+                                        lang.name ?? lang.code ?? '',
+                                        style: const TextStyle(fontSize: 14),
+                                      ),
+                                    );
+                                  }).toList(),
+                                  onChanged: (newLang) {
+                                    if (newLang != null) {
+                                      context
+                                          .read<shared.LocaleCubit>()
+                                          .changeLocale(newLang);
+                                    }
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
                     ),
                   ),
-                );
-              },
-            ),
+                ),
 
-            const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
-            // Live Progress Banner (during fake data generation/removal)
-            ValueListenableBuilder<bool>(
-              valueListenable: _isLoadingNotifier,
-              builder: (context, isLoading, child) {
-                if (!isLoading) return const SizedBox.shrink();
-                return ValueListenableBuilder<int>(
-                  valueListenable: _currentStepNotifier,
-                  builder: (context, currentStep, child) {
-                    return ValueListenableBuilder<int>(
-                      valueListenable: _totalStepsNotifier,
-                      builder: (context, totalSteps, child) {
-                        return ValueListenableBuilder<String>(
-                          valueListenable: _currentStepDescNotifier,
-                          builder: (context, stepDesc, child) {
-                            final double progress = totalSteps > 0
-                                ? (currentStep / totalSteps).clamp(0.0, 1.0)
-                                : 0.0;
-                            final int percentage = (progress * 100).round();
-
-                            return Card(
-                              color: Colors.amber.shade50,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                side: BorderSide(
-                                  color: Colors.amber.shade300,
-                                  width: 1,
-                                ),
+                // Demo & Testing Section
+                Text(
+                  _tr(
+                    context,
+                    shared.LocaleKeys.settingsDemoTestingSection,
+                    'Demo & Testing',
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isLoadingNotifier,
+                  builder: (context, isLoading, child) {
+                    return Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: isLoading
+                            ? null
+                            : () {
+                                _showFakeDataBottomSheet(context: context);
+                              },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.amber.withValues(
+                                        alpha: 0.15,
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.data_array_rounded,
+                                      color: Colors.amber,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 14),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          _tr(
+                                            context,
+                                            shared
+                                                .LocaleKeys
+                                                .settingsFakeDataModeLabel,
+                                            'Fake / Sample Data Mode',
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          _tr(
+                                            context,
+                                            shared
+                                                .LocaleKeys
+                                                .settingsFakeDataModeSubtitle,
+                                            'Generates 1,800+ realistic records spanning 1.5 years back across Customers, Orders, Staff, Inventory, Purchases, & Reservations.',
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (isLoading)
+                                    const SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.5,
+                                      ),
+                                    )
+                                  else
+                                    ValueListenableBuilder<bool>(
+                                      valueListenable:
+                                          _isFakeDataEnabledNotifier,
+                                      builder: (context, isEnabled, child) {
+                                        return Switch.adaptive(
+                                          value: isEnabled,
+                                          activeThumbColor: Colors.amber,
+                                          onChanged: isLoading
+                                              ? null
+                                              : _onToggleFakeData,
+                                        );
+                                      },
+                                    ),
+                                ],
                               ),
-                              margin: const EdgeInsets.only(bottom: 16),
-                              child: Padding(
-                                padding: const EdgeInsets.all(14.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                              const SizedBox(height: 12),
+                              ValueListenableBuilder<String>(
+                                valueListenable: _statusMessageNotifier,
+                                builder: (context, statusMsg, child) {
+                                  if (statusMsg.isEmpty) {
+                                    return const SizedBox.shrink();
+                                  }
+                                  return Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: theme.primaryColor.withValues(
+                                        alpha: 0.08,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      statusMsg,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: theme.primaryColor,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
+                // Live Progress Banner (during fake data generation/removal)
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isLoadingNotifier,
+                  builder: (context, isLoading, child) {
+                    if (!isLoading) return const SizedBox.shrink();
+                    return ValueListenableBuilder<int>(
+                      valueListenable: _currentStepNotifier,
+                      builder: (context, currentStep, child) {
+                        return ValueListenableBuilder<int>(
+                          valueListenable: _totalStepsNotifier,
+                          builder: (context, totalSteps, child) {
+                            return ValueListenableBuilder<String>(
+                              valueListenable: _currentStepDescNotifier,
+                              builder: (context, stepDesc, child) {
+                                final double progress = totalSteps > 0
+                                    ? (currentStep / totalSteps).clamp(0.0, 1.0)
+                                    : 0.0;
+                                final int percentage = (progress * 100).round();
+
+                                return Card(
+                                  color: Colors.amber.shade50,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: BorderSide(
+                                      color: Colors.amber.shade300,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  margin: const EdgeInsets.only(bottom: 16),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(14.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const SizedBox(
-                                              width: 14,
-                                              height: 14,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                color: Colors.amber,
-                                              ),
+                                            Row(
+                                              children: [
+                                                const SizedBox(
+                                                  width: 14,
+                                                  height: 14,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                        color: Colors.amber,
+                                                      ),
+                                                ),
+                                                const SizedBox(width: 8),
+                                                Text(
+                                                  'Processing ($currentStep / $totalSteps)',
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.bold,
+                                                    color:
+                                                        Colors.amber.shade900,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                            const SizedBox(width: 8),
                                             Text(
-                                              'Processing ($currentStep / $totalSteps)',
+                                              '$percentage%',
                                               style: TextStyle(
                                                 fontSize: 13,
                                                 fontWeight: FontWeight.bold,
@@ -779,150 +823,158 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             ),
                                           ],
                                         ),
-                                        Text(
-                                          '$percentage%',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.amber.shade900,
+                                        const SizedBox(height: 8),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
+                                          child: LinearProgressIndicator(
+                                            value: progress,
+                                            backgroundColor:
+                                                Colors.amber.shade100,
+                                            color: Colors.amber.shade700,
+                                            minHeight: 6,
                                           ),
                                         ),
+                                        if (stepDesc.isNotEmpty) ...[
+                                          const SizedBox(height: 8),
+                                          Text(
+                                            stepDesc,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.amber.shade900,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                          ),
+                                        ],
                                       ],
                                     ),
-                                    const SizedBox(height: 8),
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: LinearProgressIndicator(
-                                        value: progress,
-                                        backgroundColor: Colors.amber.shade100,
-                                        color: Colors.amber.shade700,
-                                        minHeight: 6,
-                                      ),
-                                    ),
-                                    if (stepDesc.isNotEmpty) ...[
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        stepDesc,
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.amber.shade900,
-                                          fontStyle: FontStyle.italic,
-                                        ),
-                                      ),
-                                    ],
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                );
+                              },
                             );
                           },
                         );
                       },
                     );
                   },
-                );
-              },
-            ),
+                ),
 
-            // Included Sample Data Sets Header
-            Text(
-              _tr(
-                context,
-                shared.LocaleKeys.settingsIncludedDataSetsTitle,
-                'Included Sample Data Sets:',
-              ),
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey,
-              ),
-            ),
-            const SizedBox(height: 8),
+                // Included Sample Data Sets Header
+                Text(
+                  _tr(
+                    context,
+                    shared.LocaleKeys.settingsIncludedDataSetsTitle,
+                    'Included Sample Data Sets:',
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 8),
 
-            _buildDataSetTile(
-              icon: Icons.people_alt_outlined,
-              stageKeys: ['customers'],
-              title: _tr(
-                context,
-                shared.LocaleKeys.settingsCustomersSetTitle,
-                'Customers & Contact Info',
-              ),
-              subtitle: _tr(
-                context,
-                shared.LocaleKeys.settingsCustomersSetSubtitle,
-                '120+ Fake Customers with names & phone numbers',
-              ),
+                _buildDataSetTile(
+                  icon: Icons.people_alt_outlined,
+                  stageKeys: ['customers'],
+                  title: 'Customers Table',
+                  subtitle:
+                      '250+ Fake Customers with contact info & phone numbers',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.badge_outlined,
+                  stageKeys: ['employees'],
+                  title: 'Employees / Staff Table',
+                  subtitle:
+                      '100 Staff Profiles (Managers, Chefs, Baristas, Waiters, Cashiers)',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.co_present_outlined,
+                  stageKeys: ['attendance'],
+                  title: 'Staff Attendance Table',
+                  subtitle:
+                      'Daily check-in / check-out logs and working durations',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.event_busy_outlined,
+                  stageKeys: ['leaves'],
+                  title: 'Staff Leaves Table',
+                  subtitle:
+                      '200+ Full-Day & Half-Day leave requests with reasons',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.table_restaurant_outlined,
+                  stageKeys: ['table_info'],
+                  title: 'Dining Tables Table',
+                  subtitle:
+                      '12 Dining Tables with chair capacities & color themes',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.category_outlined,
+                  stageKeys: ['categories'],
+                  title: 'Menu Categories Table',
+                  subtitle:
+                      '7 Main Menu Categories (Beverages, Main Course, Desserts, etc.)',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.folder_open_outlined,
+                  stageKeys: ['subcategories'],
+                  title: 'Menu Subcategories Table',
+                  subtitle: '21 Menu Subcategories linked to main categories',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.restaurant_menu_outlined,
+                  stageKeys: ['menu_items'],
+                  title: 'Menu Items & Variations Table',
+                  subtitle:
+                      '28 Menu Items with Portion Variations & Customer Reviews',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.menu_book_outlined,
+                  stageKeys: ['recipes'],
+                  title: 'Recipes Table',
+                  subtitle:
+                      '8 Gourmet Cafe Recipes with prep time, ingredients & instructions',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.inventory_2_outlined,
+                  stageKeys: ['inventory'],
+                  title: 'Inventory Raw Stock Table',
+                  subtitle:
+                      '10 Kitchen Raw Material Stock Items with live stock levels',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.shopping_cart_outlined,
+                  stageKeys: ['purchases'],
+                  title: 'Stock Purchases Table',
+                  subtitle:
+                      '100+ Stock Purchase Receipts & supplier cost records',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.event_seat_outlined,
+                  stageKeys: ['reservations'],
+                  title: 'Table Reservations Table',
+                  subtitle:
+                      '215 Table Reservations (15 Current for Today + 200 Upcoming over next 2 weeks)',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.receipt_long_outlined,
+                  stageKeys: ['orders'],
+                  title: 'Orders & Kitchen Items Table',
+                  subtitle:
+                      '150+ Customer Orders (Dine-In, Takeaway, Delivery)',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.point_of_sale_outlined,
+                  stageKeys: ['invoices'],
+                  title: 'Invoices & Payments Table',
+                  subtitle:
+                      '100+ Invoices with 5% GST calculation & Payment Transactions',
+                ),
+              ],
             ),
-            _buildDataSetTile(
-              icon: Icons.restaurant_menu_outlined,
-              stageKeys: ['tables_menu'],
-              title: _tr(
-                context,
-                shared.LocaleKeys.homeDrawerMenuItemLabel,
-                'Menu Items, Categories & Variations',
-              ),
-              subtitle: _tr(
-                context,
-                shared.LocaleKeys.menuItemPageAddMenuItemAppbarTitle,
-                '20 Categories, 300 Subcategories & 7,500 Menu Items with 15,000 Variations',
-              ),
-            ),
-            _buildDataSetTile(
-              icon: Icons.badge_outlined,
-              stageKeys: ['employees', 'attendance_leaves'],
-              title: _tr(
-                context,
-                shared.LocaleKeys.settingsStaffSetTitle,
-                'Staff Management & Attendance',
-              ),
-              subtitle: _tr(
-                context,
-                shared.LocaleKeys.settingsStaffSetSubtitle,
-                '20 Employees, 300+ Attendance & 60+ Leave records',
-              ),
-            ),
-            _buildDataSetTile(
-              icon: Icons.shopping_bag_outlined,
-              stageKeys: ['orders_invoices'],
-              title: _tr(
-                context,
-                shared.LocaleKeys.settingsOrdersSetTitle,
-                'Orders, Invoices & Payments',
-              ),
-              subtitle: _tr(
-                context,
-                shared.LocaleKeys.settingsOrdersSetSubtitle,
-                '250+ Orders & Invoices (1.5 Years history)',
-              ),
-            ),
-            _buildDataSetTile(
-              icon: Icons.inventory_2_outlined,
-              stageKeys: ['inventory_purchases'],
-              title: _tr(
-                context,
-                shared.LocaleKeys.settingsInventorySetTitle,
-                'Inventory & Purchases',
-              ),
-              subtitle: _tr(
-                context,
-                shared.LocaleKeys.settingsInventorySetSubtitle,
-                '20 Inventory Items & 150+ Purchase records',
-              ),
-            ),
-            _buildDataSetTile(
-              icon: Icons.event_seat_outlined,
-              stageKeys: ['reservations'],
-              title: _tr(
-                context,
-                shared.LocaleKeys.settingsReservationsSetTitle,
-                'Table Reservations & Dining Tables',
-              ),
-              subtitle: _tr(
-                context,
-                shared.LocaleKeys.settingsReservationsSetSubtitle,
-                '12 Dining Tables & 80+ Booked Table Reservations',
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -1241,21 +1293,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   String _getDatasetOverviewText(List<String> stageKeys) {
-    if (stageKeys.contains('customers')) {
-      return 'Generates 200+ fake customers with names, Indian phone numbers (+91), ISO codes, and registration timestamps spanning 1.5 years back.';
-    } else if (stageKeys.contains('employees') ||
-        stageKeys.contains('attendance_leaves')) {
-      return 'Generates 200 employee profiles (Managers, Chefs, Baristas, Waiters), 600+ historical attendance logs, current month daily attendance for date picker, and 300+ Full-Day & Half-Day leave records.';
-    } else if (stageKeys.contains('orders_invoices')) {
-      return 'Generates 250+ Orders (Dine-In, Takeaway, Delivery), 20 Live Active Kitchen Orders ready for testing, 250+ Invoices with 5% GST calculation, itemized sales breakdown, and Payment Transactions.';
-    } else if (stageKeys.contains('inventory_purchases')) {
-      return 'Generates 20 Kitchen Inventory items (Espresso Beans, Milk, Flour, Soda, Cheese) with live stock levels and 150+ Stock Purchase logs.';
-    } else if (stageKeys.contains('tables_menu')) {
-      return 'Generates 20 Categories, 300 Subcategories (15 per category), and 7,500 Menu Items (25 per subcategory) with 15,000 Small & Large Portion Variations.';
-    } else if (stageKeys.contains('reservations')) {
-      return 'Generates 12 Dining Tables and 80+ Booked Table Reservations linked to active customers with party sizes (2-8 guests) and reservation notes.';
+    final key = stageKeys.first;
+    switch (key) {
+      case 'customers':
+        return 'Generates 250+ fake customers with names, Indian phone numbers (+91), ISO codes, and registration timestamps.';
+      case 'employees':
+        return 'Generates 100 staff profiles (Managers, Head Chefs, Baristas, Waiters, Cashiers) with contact & salary details.';
+      case 'attendance':
+        return 'Generates daily attendance logs (Full-Day, Half-Day, Absent) for staff members.';
+      case 'leaves':
+        return 'Generates 200+ Full-Day & Half-Day staff leave applications with status & leave reasons.';
+      case 'table_info':
+        return 'Generates 12 Dining Tables with chair numbers and color coding.';
+      case 'categories':
+        return 'Generates 7 main Menu Categories (Beverages, Main Course, Desserts, Starters, Snacks, Bakery, Breakfast).';
+      case 'subcategories':
+        return 'Generates 21 Menu Subcategories linked to categories.';
+      case 'menu_items':
+        return 'Generates 28 Menu Items with Small/Medium/Large Portion Variations & Customer Reviews.';
+      case 'recipes':
+        return 'Generates 8 Gourmet Cafe Recipes with preparation & cooking times, ingredients, and instructions.';
+      case 'inventory':
+        return 'Generates 10 Kitchen Raw Stock Items (Espresso Beans, Milk, Flour, Sugar, Cheese) with current stock levels.';
+      case 'purchases':
+        return 'Generates 100+ Stock Purchase logs with quantities and purchase prices.';
+      case 'reservations':
+        return 'Generates 215 Table Reservations: 15 Current records for Today and 200 Upcoming records spanning the next day to 2 weeks ahead.';
+      case 'orders':
+        return 'Generates 150+ Customer Orders with Order Items, status, and order type (Dine-In, Takeaway).';
+      case 'invoices':
+        return 'Generates 100+ Invoices with 5% GST tax calculation, item breakdowns, and Payment Transactions.';
+      default:
+        return 'Generates realistic demo records for this database table.';
     }
-    return 'Generates realistic demo records spanning 1.5 years back.';
   }
 
   void _showFakeDataDialog({

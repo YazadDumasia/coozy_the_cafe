@@ -246,7 +246,8 @@ abstract class LocaleKeys {
   static String emptyStatus = 'empty_status';
   static String occupiedStatus = 'occupied_status';
   static String reservedStatus = 'reserved_status';
-  static String tableReservedConfirmationMsg = 'table_reserved_confirmation_msg';
+  static String tableReservedConfirmationMsg =
+      'table_reserved_confirmation_msg';
   static String allowPlaceOrder = 'allow_place_order';
   static String tableAddedSuccessfullyText = 'table_added_successfully_text';
   static String tableFailedToAddedText = 'table_failed_to_added_text';
@@ -991,4 +992,42 @@ abstract class LocaleKeys {
   static const String removeDataButton = 'remove_data_button';
   static const String datasetActiveText = 'dataset_active_text';
   static const String datasetInactiveText = 'dataset_inactive_text';
+
+  // reservation page
+  static const String reservationAppBarTitle = 'reservation_app_bar_title';
+  static const String currentTab = 'current_tab';
+  static const String upcomingTab = 'upcoming_tab';
+  static const String addReservationTooltip = 'add_reservation_tooltip';
+  static const String searchReservationHint = 'search_reservation_hint';
+  static const String noCurrentReservations = 'no_current_reservations';
+  static const String noUpcomingReservations = 'no_upcoming_reservations';
+  static const String addReservationTitle = 'add_reservation_title';
+  static const String editReservationTitle = 'edit_reservation_title';
+  static const String reservationDetailTitle = 'reservation_detail_title';
+  static const String customerNameLabel = 'customer_name_label';
+  static const String customerNameHint = 'customer_name_hint';
+  static const String customerNameError = 'customer_name_error';
+  static const String phoneNumberLabel = 'phone_number_label';
+  static const String phoneNumberHint = 'phone_number_hint';
+  static const String dateTimeLabel = 'date_time_label';
+  static const String dateTimeHint = 'date_time_hint';
+  static const String numberOfPeopleLabel = 'number_of_people_label';
+  static const String numberOfPeopleHint = 'number_of_people_hint';
+  static const String selectTableLabel = 'select_table_label';
+  static const String selectTableHint = 'select_table_hint';
+  static const String selectMenuItemsLabel = 'select_menu_items_label';
+  static const String selectMenuItemsHint = 'select_menu_items_hint';
+  static const String notesLabel = 'notes_label';
+  static const String notesHint = 'notes_hint';
+  static const String statusLabel = 'status_label';
+  static const String statusConfirmed = 'status_confirmed';
+  static const String statusCompleted = 'status_completed';
+  static const String statusCancelled = 'status_cancelled';
+  static const String saveReservationBtn = 'save_reservation_btn';
+  static const String updateReservationBtn = 'update_reservation_btn';
+  static const String deleteReservationTitle = 'delete_reservation_title';
+  static const String deleteReservationSubtitle = 'delete_reservation_subtitle';
+  static const String reservationCreatedSuccess = 'reservation_created_success';
+  static const String reservationUpdatedSuccess = 'reservation_updated_success';
+  static const String reservationDeletedSuccess = 'reservation_deleted_success';
 }

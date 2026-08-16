@@ -64,25 +64,40 @@ class NotificationApi {
     }
   }
 
-  static Future<void> requestNotificationPermission() async {
-    if (PlatformUtils.isAndroid()) {
-      await _notifications
-          .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >()
-          ?.requestNotificationsPermission();
-    } else if (PlatformUtils.isIOS()) {
-      await _notifications
-          .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin
-          >()
-          ?.requestPermissions(alert: true, badge: true, sound: true);
-    } else if (PlatformUtils.isMacOS()) {
-      await _notifications
-          .resolvePlatformSpecificImplementation<
-            MacOSFlutterLocalNotificationsPlugin
-          >()
-          ?.requestPermissions(alert: true, badge: true, sound: true);
+  static bool _permissionRequested = false;
+
+  static Future<bool> requestNotificationPermission() async {
+    try {
+      if (PlatformUtils.isAndroid()) {
+        final granted = await _notifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()
+            ?.requestNotificationsPermission();
+        _permissionRequested = granted ?? false;
+        return _permissionRequested;
+      } else if (PlatformUtils.isIOS()) {
+        final granted = await _notifications
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >()
+            ?.requestPermissions(alert: true, badge: true, sound: true);
+        _permissionRequested = granted ?? false;
+        return _permissionRequested;
+      } else if (PlatformUtils.isMacOS()) {
+        final granted = await _notifications
+            .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin
+            >()
+            ?.requestPermissions(alert: true, badge: true, sound: true);
+        _permissionRequested = granted ?? false;
+        return _permissionRequested;
+      }
+      _permissionRequested = true;
+      return true;
+    } catch (_) {
+      _permissionRequested = false;
+      return false;
     }
   }
 
@@ -92,13 +107,22 @@ class NotificationApi {
     String? body,
     String? payload,
   }) async {
-    await _notifications.show(
-      id: id,
-      title: title,
-      body: body,
-      notificationDetails: await _notificationDetails(),
-      payload: payload,
-    );
+    try {
+      await _notifications.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: await _notificationDetails(),
+        payload: payload,
+      );
+    } catch (e) {
+      if (!e.toString().contains('permissions first')) {
+        PlatformUtils.debugLog(
+          NotificationApi,
+          'Failed to show notification: $e',
+        );
+      }
+    }
   }
 
   static Future<void> showProgressNotification({
@@ -111,32 +135,41 @@ class NotificationApi {
     String channelName = 'App Operation Progress',
     String channelDescription = 'Shows progress for app background operations',
   }) async {
-    await _notifications.show(
-      id: id,
-      title: title,
-      body: body,
-      notificationDetails: NotificationDetails(
-        iOS: const DarwinNotificationDetails(
-          presentAlert: true,
-          presentBadge: true,
-          presentSound: false,
-          threadIdentifier: 'coozy_the_cafe_app_progress',
+    try {
+      await _notifications.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: NotificationDetails(
+          iOS: const DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: false,
+            threadIdentifier: 'coozy_the_cafe_app_progress',
+          ),
+          android: AndroidNotificationDetails(
+            'coozy_the_cafe_app_notification_progress',
+            channelName,
+            channelDescription: channelDescription,
+            priority: Priority.high,
+            category: AndroidNotificationCategory.progress,
+            importance: Importance.high,
+            showProgress: true,
+            maxProgress: maxProgress,
+            progress: progress,
+            onlyAlertOnce: true,
+          ),
         ),
-        android: AndroidNotificationDetails(
-          'coozy_the_cafe_app_notification_progress',
-          channelName,
-          channelDescription: channelDescription,
-          priority: Priority.high,
-          category: AndroidNotificationCategory.progress,
-          importance: Importance.high,
-          showProgress: true,
-          maxProgress: maxProgress,
-          progress: progress,
-          onlyAlertOnce: true,
-        ),
-      ),
-      payload: payload,
-    );
+        payload: payload,
+      );
+    } catch (e) {
+      if (!e.toString().contains('permissions first')) {
+        PlatformUtils.debugLog(
+          NotificationApi,
+          'Failed to show progress notification: $e',
+        );
+      }
+    }
   }
 
   static Future<void> showFakeDataProgressNotification({
@@ -145,57 +178,36 @@ class NotificationApi {
     required int totalSteps,
     required String statusDesc,
   }) async {
-    try {
-      await showProgressNotification(
-        id: id,
-        title: 'Generating Fake Data ($currentStep/$totalSteps)',
-        body: statusDesc,
-        progress: currentStep,
-        maxProgress: totalSteps,
-        channelName: 'Fake Data Generation Progress',
-        channelDescription: 'Shows progress for generating fake sample data',
-      );
-    } catch (e) {
-      PlatformUtils.debugLog(
-        NotificationApi,
-        'Failed to show fake data progress notification: $e',
-      );
-    }
+    await showProgressNotification(
+      id: id,
+      title: 'Generating Fake Data ($currentStep/$totalSteps)',
+      body: statusDesc,
+      progress: currentStep,
+      maxProgress: totalSteps,
+      channelName: 'Fake Data Generation Progress',
+      channelDescription: 'Shows progress for generating fake sample data',
+    );
   }
 
   static Future<void> showFakeDataCompletedNotification({
     int id = 0,
     required int count,
   }) async {
-    try {
-      await cancel(id);
-      await showNotification(
-        id: id,
-        title: 'Fake Data Created!',
-        body: 'Successfully added $count fake records across all cafe modules.',
-      );
-    } catch (e) {
-      PlatformUtils.debugLog(
-        NotificationApi,
-        'Failed to show fake data completed notification: $e',
-      );
-    }
+    await cancel(id);
+    await showNotification(
+      id: id,
+      title: 'Fake Data Created!',
+      body: 'Successfully added $count fake records across all cafe modules.',
+    );
   }
 
   static Future<void> showFakeDataRemovedNotification({int id = 0}) async {
-    try {
-      await cancel(id);
-      await showNotification(
-        id: id,
-        title: 'Fake Data Removed',
-        body: 'All fake records have been cleanly removed from the database.',
-      );
-    } catch (e) {
-      PlatformUtils.debugLog(
-        NotificationApi,
-        'Failed to show fake data removed notification: $e',
-      );
-    }
+    await cancel(id);
+    await showNotification(
+      id: id,
+      title: 'Fake Data Removed',
+      body: 'All fake records have been cleanly removed from the database.',
+    );
   }
 
   static Future<void> showScheduledNotification({
@@ -273,11 +285,15 @@ class NotificationApi {
   }
 
   static Future<void> cancel(int id) async {
-    await _notifications.cancel(id: id);
+    try {
+      await _notifications.cancel(id: id);
+    } catch (_) {}
   }
 
   static Future<void> cancelAll() async {
-    await _notifications.cancelAll();
+    try {
+      await _notifications.cancelAll();
+    } catch (_) {}
   }
 }
 

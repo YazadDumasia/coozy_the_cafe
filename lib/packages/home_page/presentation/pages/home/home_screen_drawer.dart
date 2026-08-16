@@ -258,10 +258,17 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.reservationListScreenRoute,
                       ),
-                      onTap: () => HomeScreenDrawerActions.showComingSoon(
-                        context,
-                        'Reservations Screen Coming Soon!',
-                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        if (!_isRouteActive(
+                          currentLocation,
+                          core.AppRoutePath.reservationListScreenRoute,
+                        )) {
+                          context.push(
+                            core.AppRoutePath.reservationListScreenRoute,
+                          );
+                        }
+                      },
                     ),
                     _buildDrawerItem(
                       context,

@@ -861,8 +861,6 @@ class _PhoneNumberTextFormFieldState extends State<PhoneNumberTextFormField>
   @override
   void dispose() {
     _scaleController.dispose();
-    widget.focusNode?.dispose();
-    widget.controller?.dispose();
     super.dispose();
   }
 }

@@ -1,0 +1,88 @@
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:drift/drift.dart';
+
+import '../../domain/entities/table_entity.dart';
+
+class TablePickerDao {
+  final CoozyDatabase db;
+
+  const TablePickerDao(this.db);
+
+  Stream<List<TableEntity>> watchTablesWithStatus() {
+    final query =
+        db.select(db.tableInfoTable).join([
+          leftOuterJoin(
+            db.ordersTable,
+            db.ordersTable.tableInfoId.equalsExp(db.tableInfoTable.id) &
+                db.ordersTable.isCanceled.equals(false) &
+                db.ordersTable.isDeleted.equals(false),
+          ),
+        ])..orderBy([
+          OrderingTerm(
+            expression: db.tableInfoTable.sortOrderIndex,
+            mode: OrderingMode.asc,
+          ),
+        ]);
+
+    return query.watch().map((rows) {
+      final tablesById = <int, TableEntity>{};
+
+      for (final row in rows) {
+        final table = row.readTable(db.tableInfoTable);
+        final order = row.readTableOrNull(db.ordersTable);
+        final status = _resolveStatus(order);
+        final entity = TableEntity(
+          id: table.id,
+          name: table.name ?? 'Table ${table.id}',
+          colorValue: table.colorValue,
+          sortOrderIndex: table.sortOrderIndex ?? 0,
+          nosOfChairs: table.nosOfChairs ?? 0,
+          status: status,
+        );
+
+        final existing = tablesById[table.id];
+        if (existing == null ||
+            _priority(entity.status) > _priority(existing.status)) {
+          tablesById[table.id] = entity;
+        }
+      }
+
+      final list = tablesById.values.toList()
+        ..sort((a, b) => a.sortOrderIndex.compareTo(b.sortOrderIndex));
+      return list;
+    });
+  }
+
+  static TableStatus _resolveStatus(Order? order) {
+    if (order == null) {
+      return TableStatus.empty;
+    }
+
+    final statusValue = (order.status ?? '').trim().toLowerCase();
+
+    if (statusValue.contains('pending_payment')) {
+      return TableStatus.pendingBill;
+    }
+
+    if (statusValue.isEmpty ||
+        statusValue == 'in_progress' ||
+        statusValue == 'active' ||
+        statusValue == 'in-progress' ||
+        statusValue == 'in progress') {
+      return TableStatus.occupied;
+    }
+
+    return TableStatus.occupied;
+  }
+
+  static int _priority(TableStatus status) {
+    switch (status) {
+      case TableStatus.empty:
+        return 0;
+      case TableStatus.occupied:
+        return 1;
+      case TableStatus.pendingBill:
+        return 2;
+    }
+  }
+}

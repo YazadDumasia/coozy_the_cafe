@@ -240,6 +240,8 @@ class AppRouteName {
   static const String customerEdit = 'customer-edit';
   static const String customerPicker = 'customer-picker';
 
+  static const String reservationList = 'reservation-list';
+
   static const String settings = 'settings';
 
   static String getTitleForRouteName(String? name) {
@@ -321,6 +323,8 @@ class AppRouteName {
         return 'Staff Reports';
       case customerList:
         return 'Customers';
+      case reservationList:
+        return 'Reservations';
       case customerInfo:
         return 'Customer Info';
       case customerEdit:

@@ -17,12 +17,19 @@ class ReservationsDao extends DatabaseAccessor<CoozyDatabase>
     return query.getSingleOrNull();
   }
 
-  Future<List<Reservation>> getAllReservations() {
-    final query = select(reservationsTable);
+  Future<List<Reservation>> getCurrentReservations() {
+    final nowIso = DateTime.now().toIso8601String().substring(0, 10);
+    final query = select(reservationsTable)
+      ..where(
+        (t) =>
+            t.reservationDateTime.like('$nowIso%') |
+            t.status.equals(0) |
+            t.status.equals(1),
+      );
     return (query..orderBy([
           (t) => OrderingTerm(
             expression: t.reservationDateTime,
-            mode: OrderingMode.desc,
+            mode: OrderingMode.asc,
           ),
         ]))
         .get();

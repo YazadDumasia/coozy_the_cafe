@@ -12,6 +12,7 @@ import '../../inventory/presentation/navigation/inventory_routes.dart';
 import '../../purchase/presentation/navigation/purchase_routes.dart';
 import '../../customer/presentation/navigation/customer_routes.dart';
 import '../../recipes/presentation/navigation/recipes_routes.dart';
+import '../../reservation/presentation/navigation/reservation_routes.dart';
 import '../../staff_management/presentation/navigation/staff_routes.dart';
 import '../../settings/presentation/navigation/settings_routes.dart';
 import '../../waiter_order_placement/presentation/navigation/waiter_order_placement_routes.dart';
@@ -66,6 +67,7 @@ class AppRouter {
       ...PurchaseRoutes.routes,
       ...CustomerRoutes.routes,
       ...RecipesRoutes.routes,
+      ...ReservationRoutes.routes,
       ...StaffRoutes.routes,
       ...SettingsRoutes.routes,
       ...WaiterOrderPlacementRoutes.routes,

@@ -1,22 +1,89 @@
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:flutter/material.dart';
-import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class TablePickerScreen extends StatefulWidget {
-  final Function(TableInfo)? onTableSelected;
+import '../../../data/datasources/table_picker_dao.dart';
+import '../../../data/repositories/tables_repository_impl.dart';
+import '../../../domain/entities/table_entity.dart';
+import '../../../domain/usecases/watch_tables_use_case.dart';
+import '../../bloc/table_picker_bloc.dart';
+import '../../widgets/table_picker/table_card_widget.dart';
+
+class TablePickerScreen extends StatelessWidget {
+  final Function(TableEntity)? onTableSelected;
 
   const TablePickerScreen({super.key, this.onTableSelected});
 
   @override
-  State<TablePickerScreen> createState() => _TablePickerScreenState();
-}
-
-class _TablePickerScreenState extends State<TablePickerScreen> {
-
-
-  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(resizeToAvoidBottomInset: true, appBar: AppBar(),),
+    return BlocProvider(
+      create: (_) {
+        final db = CoozyDatabase();
+        final dao = TablePickerDao(db);
+        final repository = TablesRepositoryImpl(tablePickerDao: dao);
+        final useCase = WatchTablesUseCase(repository);
+        return TablePickerBloc(watchTablesUseCase: useCase)
+          ..add(const LoadTablesEvent());
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Table Picker')),
+        body: BlocBuilder<TablePickerBloc, TablePickerState>(
+          builder: (context, state) {
+            if (state is TablePickerLoading || state is TablePickerInitial) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
+            if (state is TablePickerError) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(state.message, textAlign: TextAlign.center),
+                ),
+              );
+            }
+
+            if (state is! TablePickerLoaded) {
+              return const SizedBox.shrink();
+            }
+
+            final tables = state.tables;
+            if (tables.isEmpty) {
+              return const Center(child: Text('No tables available'));
+            }
+
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth;
+                final crossAxisCount = width < 600
+                    ? 2
+                    : width < 900
+                    ? 3
+                    : 4;
+
+                return Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: GridView.builder(
+                    itemCount: tables.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: crossAxisCount,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.9,
+                    ),
+                    itemBuilder: (context, index) {
+                      final table = tables[index];
+                      return TableCardWidget(
+                        table: table,
+                        onTap: () => onTableSelected?.call(table),
+                      );
+                    },
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }
