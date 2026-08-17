@@ -33,7 +33,7 @@ class TablePickerDao {
         final status = _resolveStatus(order);
         final entity = TableEntity(
           id: table.id,
-          name: table.name ?? 'Table ${table.id}',
+          name: table.tableLabel ?? table.tableNo ?? 'Table ${table.id}',
           colorValue: table.colorValue,
           sortOrderIndex: table.sortOrderIndex ?? 0,
           nosOfChairs: table.nosOfChairs ?? 0,

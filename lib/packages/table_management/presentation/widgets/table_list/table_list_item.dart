@@ -72,7 +72,7 @@ class TableListItem extends StatelessWidget {
                                   children: <Widget>[
                                     Expanded(
                                       child: Text(
-                                        "${context.tr(shared.LocaleKeys.tableNameLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Table Name"}: ${model.name}",
+                                        "${context.tr(shared.LocaleKeys.tableNameLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Table Label"}: ${model.tableLabel ?? model.tableNo ?? ''}",
                                         textAlign: TextAlign.start,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -80,6 +80,26 @@ class TableListItem extends StatelessWidget {
                                     ),
                                   ],
                                 ),
+                                if (model.tableNo != null &&
+                                    model.tableNo!.isNotEmpty) ...[
+                                  const SizedBox(height: 3),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Text(
+                                          "Table No: ${model.tableNo}",
+                                          textAlign: TextAlign.start,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                                 const SizedBox(height: 5),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.start,

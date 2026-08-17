@@ -590,7 +590,8 @@ class FakeDataHelper {
           .insert(
             TableInfoTableCompanion.insert(
               hashId: Value('$fakePrefix${uuid.v4()}'),
-              name: Value('Table $i (Demo)'),
+              tableLabel: Value('Table $i (Demo)'),
+              tableNo: Value('T-$i'),
               colorValue: const Value('4280391411'),
               sortOrderIndex: Value(i),
               nosOfChairs: Value(2 + (i % 4) * 2),
@@ -943,7 +944,7 @@ class FakeDataHelper {
               isoCode: const Value('IN'),
               customerId: Value(cust.id),
               tableId: Value(table.id),
-              tableReservedName: Value(table.name ?? 'Table 1'),
+              tableReservedName: Value(table.tableLabel ?? 'Table 1'),
               reservationDateTime: Value(rDate.toIso8601String()),
               numberOfPeople: Value(1 + random.nextInt(8)),
               status: Value(random.nextInt(2)),
@@ -977,7 +978,7 @@ class FakeDataHelper {
               isoCode: const Value('IN'),
               customerId: Value(cust.id),
               tableId: Value(table.id),
-              tableReservedName: Value(table.name ?? 'Table 1'),
+              tableReservedName: Value(table.tableLabel ?? 'Table 1'),
               reservationDateTime: Value(rDate.toIso8601String()),
               numberOfPeople: Value(1 + random.nextInt(8)),
               status: Value(random.nextInt(2)),

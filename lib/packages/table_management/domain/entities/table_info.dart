@@ -1,6 +1,7 @@
 class TableInfo {
   final int? id;
-  final String? name;
+  final String? tableLabel;
+  final String? tableNo;
   final String? colorValue;
   final int? sortOrderIndex;
   final int? nosOfChairs;
@@ -11,7 +12,8 @@ class TableInfo {
 
   const TableInfo({
     this.id,
-    this.name,
+    this.tableLabel,
+    this.tableNo,
     this.colorValue,
     this.sortOrderIndex,
     this.nosOfChairs,
@@ -23,7 +25,8 @@ class TableInfo {
 
   TableInfo copyWith({
     int? id,
-    String? name,
+    String? tableLabel,
+    String? tableNo,
     String? colorValue,
     int? sortOrderIndex,
     int? nosOfChairs,
@@ -34,7 +37,8 @@ class TableInfo {
   }) {
     return TableInfo(
       id: id ?? this.id,
-      name: name ?? this.name,
+      tableLabel: tableLabel ?? this.tableLabel,
+      tableNo: tableNo ?? this.tableNo,
       colorValue: colorValue ?? this.colorValue,
       sortOrderIndex: sortOrderIndex ?? this.sortOrderIndex,
       nosOfChairs: nosOfChairs ?? this.nosOfChairs,

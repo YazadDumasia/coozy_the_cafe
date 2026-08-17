@@ -2,10 +2,8 @@ import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 abstract class BaseTable extends Table {
-  IntColumn get createdBy =>
-      integer().nullable().references(UserLoginsTable, #id)();
-  IntColumn get updatedBy =>
-      integer().nullable().references(UserLoginsTable, #id)();
+  IntColumn get createdBy => integer().nullable()();
+  IntColumn get updatedBy => integer().nullable()();
 }
 
 @DataClassName('TableInfoData')
@@ -16,7 +14,8 @@ class TableInfoTable extends BaseTable {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get hashId =>
       text().unique().clientDefault(() => const Uuid().v8())();
-  TextColumn get name => text().nullable()();
+  TextColumn get tableLabel => text().nullable()();
+  TextColumn get tableNo => text().nullable()();
   TextColumn get colorValue => text().nullable()();
   IntColumn get sortOrderIndex => integer().nullable()();
   IntColumn get nosOfChairs => integer().nullable()();

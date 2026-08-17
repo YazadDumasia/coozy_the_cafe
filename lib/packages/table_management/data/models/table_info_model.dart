@@ -5,7 +5,8 @@ import 'package:coozy_the_cafe/packages/database/src/database.dart';
 class TableInfoModel extends TableInfo {
   const TableInfoModel({
     super.id,
-    super.name,
+    super.tableLabel,
+    super.tableNo,
     super.colorValue,
     super.sortOrderIndex,
     super.nosOfChairs,
@@ -14,7 +15,8 @@ class TableInfoModel extends TableInfo {
   factory TableInfoModel.fromEntity(TableInfo entity) {
     return TableInfoModel(
       id: entity.id,
-      name: entity.name,
+      tableLabel: entity.tableLabel,
+      tableNo: entity.tableNo,
       colorValue: entity.colorValue,
       sortOrderIndex: entity.sortOrderIndex,
       nosOfChairs: entity.nosOfChairs,
@@ -24,7 +26,8 @@ class TableInfoModel extends TableInfo {
   factory TableInfoModel.fromTableInfoData(TableInfoData data) {
     return TableInfoModel(
       id: data.id,
-      name: data.name,
+      tableLabel: data.tableLabel,
+      tableNo: data.tableNo,
       colorValue: data.colorValue,
       sortOrderIndex: data.sortOrderIndex,
       nosOfChairs: data.nosOfChairs,
@@ -34,7 +37,10 @@ class TableInfoModel extends TableInfo {
   TableInfoTableCompanion toCompanion() {
     return TableInfoTableCompanion(
       id: id == null ? const Value.absent() : Value(id!),
-      name: name == null ? const Value.absent() : Value(name!),
+      tableLabel: tableLabel == null
+          ? const Value.absent()
+          : Value(tableLabel!),
+      tableNo: tableNo == null ? const Value.absent() : Value(tableNo!),
       colorValue: colorValue == null
           ? const Value.absent()
           : Value(colorValue!),

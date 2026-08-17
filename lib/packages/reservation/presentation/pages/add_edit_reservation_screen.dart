@@ -63,11 +63,11 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     if (r?.tableReservedName != null && r!.tableReservedName!.isNotEmpty) {
       final names = r.tableReservedName!.split(', ');
       _selectedTablesNotifier.value = names
-          .map((name) => TableInfo(id: r.tableId, name: name))
+          .map((name) => TableInfo(id: r.tableId, tableLabel: name))
           .toList();
     } else if (r?.tableId != null) {
       _selectedTablesNotifier.value = [
-        TableInfo(id: r!.tableId, name: r.tableReservedName),
+        TableInfo(id: r!.tableId, tableLabel: r.tableReservedName),
       ];
     }
 
@@ -134,7 +134,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
         ? selectedTables.first.id
         : null;
     final combinedTableNames = selectedTables
-        .map((t) => t.name ?? 'Table')
+        .map((t) => t.tableLabel ?? t.tableNo ?? 'Table')
         .join(', ');
 
     AddEditReservationScreenActions.submitForm(
@@ -236,7 +236,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
             children: selectedTables.map((t) {
               return Chip(
                 avatar: const Icon(Icons.table_restaurant, size: 16),
-                label: Text(t.name ?? 'Table'),
+                label: Text(t.tableLabel ?? t.tableNo ?? 'Table'),
                 visualDensity: VisualDensity.compact,
                 onDeleted: () {
                   final updated = List<TableInfo>.from(selectedTables)

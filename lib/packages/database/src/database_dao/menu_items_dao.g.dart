@@ -4,8 +4,6 @@ part of 'menu_items_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$MenuItemsDaoMixin on DatabaseAccessor<CoozyDatabase> {
-  $RolesTableTable get rolesTable => attachedDatabase.rolesTable;
-  $UserLoginsTableTable get userLoginsTable => attachedDatabase.userLoginsTable;
   $MenuItemsTableTable get menuItemsTable => attachedDatabase.menuItemsTable;
   $MenuItemVariationsTableTable get menuItemVariationsTable =>
       attachedDatabase.menuItemVariationsTable;
@@ -17,13 +15,6 @@ mixin _$MenuItemsDaoMixin on DatabaseAccessor<CoozyDatabase> {
 class MenuItemsDaoManager {
   final _$MenuItemsDaoMixin _db;
   MenuItemsDaoManager(this._db);
-  $$RolesTableTableTableManager get rolesTable =>
-      $$RolesTableTableTableManager(_db.attachedDatabase, _db.rolesTable);
-  $$UserLoginsTableTableTableManager get userLoginsTable =>
-      $$UserLoginsTableTableTableManager(
-        _db.attachedDatabase,
-        _db.userLoginsTable,
-      );
   $$MenuItemsTableTableTableManager get menuItemsTable =>
       $$MenuItemsTableTableTableManager(
         _db.attachedDatabase,

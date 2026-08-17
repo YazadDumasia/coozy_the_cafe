@@ -63,8 +63,9 @@ class _TablePickerViewState extends State<TablePickerView> {
       _filteredTablesNotifier.value = _allTablesNotifier.value;
     } else {
       _filteredTablesNotifier.value = _allTablesNotifier.value.where((t) {
-        final name = (t.name ?? '').toLowerCase();
-        return name.contains(q);
+        final label = (t.tableLabel ?? '').toLowerCase();
+        final no = (t.tableNo ?? '').toLowerCase();
+        return label.contains(q) || no.contains(q);
       }).toList();
     }
   }
@@ -79,7 +80,8 @@ class _TablePickerViewState extends State<TablePickerView> {
       currentList.add(
         TableInfo(
           id: item.id,
-          name: item.name,
+          tableLabel: item.tableLabel,
+          tableNo: item.tableNo,
           colorValue: item.colorValue,
           sortOrderIndex: item.sortOrderIndex,
           nosOfChairs: item.nosOfChairs,
@@ -156,7 +158,11 @@ class _TablePickerViewState extends State<TablePickerView> {
                           value: isSelected,
                           selected: isSelected,
                           activeColor: Theme.of(context).colorScheme.primary,
-                          title: Text(item.name ?? 'Table ${item.id}'),
+                          title: Text(
+                            item.tableLabel ??
+                                item.tableNo ??
+                                'Table ${item.id}',
+                          ),
                           subtitle: Text('${item.nosOfChairs ?? 0} Chairs'),
                           secondary: CircleAvatar(
                             radius: 12,

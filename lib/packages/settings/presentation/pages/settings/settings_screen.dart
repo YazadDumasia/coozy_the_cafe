@@ -250,9 +250,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }) async {
     if (_isLoadingNotifier.value) return;
 
+    final name = datasetName ?? 'Dataset';
+
+    if (!enable) {
+      final bool? confirm = await showDialog<bool>(
+        context: context,
+        builder: (ctx) {
+          return AlertDialog(
+            title: Text('Remove $name Fake Data?'),
+            content: Text(
+              'Are you sure you want to remove fake records for $name?\n\n'
+              'Note: If other datasets depend on this data, dependent fake records may also be cleaned up.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: const Text('Remove'),
+              ),
+            ],
+          );
+        },
+      );
+
+      if (confirm != true) return;
+    }
+
     _isLoadingNotifier.value = true;
     final database = GetIt.instance<CoozyDatabase>();
-    final name = datasetName ?? 'Dataset';
 
     try {
       await core.NotificationApi.init();

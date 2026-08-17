@@ -45,7 +45,7 @@ class TableGridItem extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "${context.tr(shared.LocaleKeys.tableNameLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Table Name"}: ${model.name}",
+                              "${context.tr(shared.LocaleKeys.tableNameLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Table Label"}: ${model.tableLabel ?? model.tableNo ?? ''}",
                               textAlign: TextAlign.start,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -53,6 +53,22 @@ class TableGridItem extends StatelessWidget {
                           ),
                         ],
                       ),
+                      if (model.tableNo != null && model.tableNo!.isNotEmpty)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                "Table No: ${model.tableNo}",
+                                textAlign: TextAlign.start,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,

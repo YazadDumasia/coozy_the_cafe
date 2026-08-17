@@ -4,8 +4,6 @@ part of 'invoices_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$InvoicesDaoMixin on DatabaseAccessor<CoozyDatabase> {
-  $RolesTableTable get rolesTable => attachedDatabase.rolesTable;
-  $UserLoginsTableTable get userLoginsTable => attachedDatabase.userLoginsTable;
   $PaymentModesTableTable get paymentModesTable =>
       attachedDatabase.paymentModesTable;
   $TableInfoTableTable get tableInfoTable => attachedDatabase.tableInfoTable;
@@ -24,13 +22,6 @@ mixin _$InvoicesDaoMixin on DatabaseAccessor<CoozyDatabase> {
 class InvoicesDaoManager {
   final _$InvoicesDaoMixin _db;
   InvoicesDaoManager(this._db);
-  $$RolesTableTableTableManager get rolesTable =>
-      $$RolesTableTableTableManager(_db.attachedDatabase, _db.rolesTable);
-  $$UserLoginsTableTableTableManager get userLoginsTable =>
-      $$UserLoginsTableTableTableManager(
-        _db.attachedDatabase,
-        _db.userLoginsTable,
-      );
   $$PaymentModesTableTableTableManager get paymentModesTable =>
       $$PaymentModesTableTableTableManager(
         _db.attachedDatabase,

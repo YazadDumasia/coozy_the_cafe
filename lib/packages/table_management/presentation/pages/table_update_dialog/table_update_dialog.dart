@@ -20,6 +20,8 @@ class TableUpdateDialog extends StatefulWidget {
 class TableUpdateDialogState extends State<TableUpdateDialog> {
   TextEditingController? _tableNameController;
   FocusNode? _tableNameFocusNode;
+  TextEditingController? _tableNoController;
+  FocusNode? _tableNoFocusNode;
   TextEditingController? _nosOfChairsController;
   FocusNode? _nosOfChairsFocusNode;
 
@@ -53,8 +55,12 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
   @override
   void initState() {
     super.initState();
-    _tableNameController = TextEditingController(text: widget.table.name);
+    _tableNameController = TextEditingController(text: widget.table.tableLabel);
     _tableNameFocusNode = FocusNode();
+    _tableNoController = TextEditingController(
+      text: widget.table.tableNo ?? '',
+    );
+    _tableNoFocusNode = FocusNode();
     _nosOfChairsFocusNode = FocusNode();
     _nosOfChairsController = TextEditingController(
       text: '${widget.table.nosOfChairs}',
@@ -75,6 +81,8 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
     _selectedColorNotifier.dispose();
     _tableNameController?.dispose();
     _tableNameFocusNode?.dispose();
+    _tableNoController?.dispose();
+    _tableNoFocusNode?.dispose();
     _nosOfChairsController?.dispose();
     _nosOfChairsFocusNode?.dispose();
     _hexColorTextEditingController.dispose();
@@ -90,7 +98,7 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
               shared.LocaleKeys.tableUpdateTitle,
               track: shared.TrackConstants.tablePageTrack,
             ) ??
-            'Update Table Name',
+            'Update Table Info',
       ),
       scrollable: true,
       content: ConstrainedBox(
@@ -115,28 +123,49 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
                               shared.LocaleKeys.tableNameLabelText,
                               track: shared.TrackConstants.tablePageTrack,
                             ) ??
-                            'Table Name',
+                            'Table Label',
                         hintText:
                             context.tr(
                               shared.LocaleKeys.tableNameHintText,
                               track: shared.TrackConstants.tablePageTrack,
                             ) ??
-                            'Enter table name like Table1',
+                            'Enter table label like Table1',
                       ),
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       keyboardType: TextInputType.text,
-                      textInputAction: TextInputAction.done,
+                      textInputAction: TextInputAction.next,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return context.tr(
                                 shared.LocaleKeys.tableNameErrorText,
                                 track: shared.TrackConstants.tablePageTrack,
                               ) ??
-                              'Table name is required.';
+                              'Table label is required.';
                         } else {
                           return null;
                         }
                       },
+                      onFieldSubmitted: (String value) {
+                        FocusScope.of(context).requestFocus(_tableNoFocusNode);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 15),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextFormField(
+                      controller: _tableNoController,
+                      focusNode: _tableNoFocusNode,
+                      decoration: const InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        labelText: 'Table No',
+                        hintText: 'Enter table number e.g. T-1',
+                      ),
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       onFieldSubmitted: (String value) {
                         FocusScope.of(
                           context,
@@ -263,6 +292,7 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
               context,
               _formKey,
               _tableNameController!,
+              _tableNoController!,
               _hexColorTextEditingController,
               _nosOfChairsController!,
               widget.table,

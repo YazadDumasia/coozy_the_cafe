@@ -4,8 +4,6 @@ part of 'inventory_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$InventoryDaoMixin on DatabaseAccessor<CoozyDatabase> {
-  $RolesTableTable get rolesTable => attachedDatabase.rolesTable;
-  $UserLoginsTableTable get userLoginsTable => attachedDatabase.userLoginsTable;
   $InventoryTableTable get inventoryTable => attachedDatabase.inventoryTable;
   $PurchaseTableTable get purchaseTable => attachedDatabase.purchaseTable;
   InventoryDaoManager get managers => InventoryDaoManager(this);
@@ -14,13 +12,6 @@ mixin _$InventoryDaoMixin on DatabaseAccessor<CoozyDatabase> {
 class InventoryDaoManager {
   final _$InventoryDaoMixin _db;
   InventoryDaoManager(this._db);
-  $$RolesTableTableTableManager get rolesTable =>
-      $$RolesTableTableTableManager(_db.attachedDatabase, _db.rolesTable);
-  $$UserLoginsTableTableTableManager get userLoginsTable =>
-      $$UserLoginsTableTableTableManager(
-        _db.attachedDatabase,
-        _db.userLoginsTable,
-      );
   $$InventoryTableTableTableManager get inventoryTable =>
       $$InventoryTableTableTableManager(
         _db.attachedDatabase,

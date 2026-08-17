@@ -18,6 +18,8 @@ class NewTableInfoDialog extends StatefulWidget {
 class NewTableInfoDialogState extends State<NewTableInfoDialog> {
   late TextEditingController _tableNameController;
   FocusNode? _tableNameFocusNode;
+  late TextEditingController _tableNoController;
+  FocusNode? _tableNoFocusNode;
   late TextEditingController _nosOfChairsController;
   FocusNode? _nosOfChairsFocusNode;
   late TextEditingController _hexColorTextEditingController;
@@ -55,6 +57,8 @@ class NewTableInfoDialogState extends State<NewTableInfoDialog> {
     _hexColorFocusNode = FocusNode();
     _tableNameController = TextEditingController(text: '');
     _tableNameFocusNode = FocusNode();
+    _tableNoController = TextEditingController(text: '');
+    _tableNoFocusNode = FocusNode();
     _nosOfChairsFocusNode = FocusNode();
     _nosOfChairsController = TextEditingController(text: '');
   }
@@ -67,6 +71,8 @@ class NewTableInfoDialogState extends State<NewTableInfoDialog> {
     _hexColorFocusNode?.dispose();
     _tableNameController.dispose();
     _tableNameFocusNode?.dispose();
+    _tableNoController.dispose();
+    _tableNoFocusNode?.dispose();
     _nosOfChairsController.dispose();
     _nosOfChairsFocusNode?.dispose();
     super.dispose();
@@ -114,28 +120,48 @@ class NewTableInfoDialogState extends State<NewTableInfoDialog> {
                             shared.LocaleKeys.tableNameLabelText,
                             track: shared.TrackConstants.tablePageTrack,
                           ) ??
-                          'Table Name',
+                          'Table Label',
                       hintText:
                           context.tr(
                             shared.LocaleKeys.tableNameHintText,
                             track: shared.TrackConstants.tablePageTrack,
                           ) ??
-                          'Enter table name like Table1',
+                          'Enter table label like Table1',
                     ),
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.next,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return context.tr(
                               shared.LocaleKeys.tableNameErrorText,
                               track: shared.TrackConstants.tablePageTrack,
                             ) ??
-                            'Table name is required.';
+                            'Table label is required.';
                       } else {
                         return null;
                       }
                     },
+                    onFieldSubmitted: (String value) {
+                      FocusScope.of(context).requestFocus(_tableNoFocusNode);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 15),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextFormField(
+                    controller: _tableNoController,
+                    focusNode: _tableNoFocusNode,
+                    decoration: const InputDecoration(
+                      labelText: 'Table No',
+                      hintText: 'Enter table number e.g. T-1',
+                    ),
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
                     onFieldSubmitted: (String value) {
                       FocusScope.of(
                         context,
@@ -260,6 +286,7 @@ class NewTableInfoDialogState extends State<NewTableInfoDialog> {
               context,
               _formKey,
               _tableNameController,
+              _tableNoController,
               _hexColorTextEditingController,
               _nosOfChairsController,
               widget.onCreate,

@@ -74,7 +74,7 @@ class CoozyDatabase extends _$CoozyDatabase {
   CoozyDatabase.withQueryExecutor(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -82,6 +82,9 @@ class CoozyDatabase extends _$CoozyDatabase {
       await customStatement('PRAGMA foreign_keys = ON;');
       await customStatement(
         'CREATE INDEX IF NOT EXISTS idx_invoice_pagination ON invoices (created_date DESC, id DESC);',
+      );
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_reservations_pagination ON reservations (reservation_date_time DESC, id DESC);',
       );
       await batch((batch) {
         for (final p in db_constants.DbConstants.allPermissions) {
@@ -96,21 +99,7 @@ class CoozyDatabase extends _$CoozyDatabase {
         }
       });
     },
-    onUpgrade: (m, from, to) async {
-      if (from < 2) {
-        await m.addColumn(employeesTable, employeesTable.email);
-        await m.addColumn(employeesTable, employeesTable.salary);
-      }
-      if (from < 3) {
-        await m.addColumn(employeesTable, employeesTable.addressLine1);
-        await m.addColumn(employeesTable, employeesTable.addressLine2);
-      }
-      if (from < 4) {
-        await m.addColumn(employeesTable, employeesTable.idProof);
-        await m.addColumn(employeesTable, employeesTable.idProofNumber);
-        await m.addColumn(employeesTable, employeesTable.totalLeaves);
-      }
-    },
+    onUpgrade: (m, from, to) async {},
   );
 
   static const String secretKey = 'CoozyTheCafe';

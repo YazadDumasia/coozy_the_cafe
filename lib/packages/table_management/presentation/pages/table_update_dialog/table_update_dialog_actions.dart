@@ -12,6 +12,7 @@ class TableUpdateDialogActions {
     BuildContext context,
     GlobalKey<FormState> formKey,
     TextEditingController tableNameController,
+    TextEditingController tableNoController,
     TextEditingController hexColorTextEditingController,
     TextEditingController nosOfChairsController,
     TableInfo table,
@@ -19,14 +20,16 @@ class TableUpdateDialogActions {
   ) {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
-      final String tableName = tableNameController.text;
+      final String tableLabel = tableNameController.text;
+      final String tableNo = tableNoController.text;
       final String color = hexColorTextEditingController.text;
       final int? nosOfChairs = int.tryParse(
         nosOfChairsController.text.toString(),
       );
       final TableInfo updatedTableInfo = TableInfo(
         id: table.id,
-        name: tableName,
+        tableLabel: tableLabel,
+        tableNo: tableNo,
         nosOfChairs: nosOfChairs ?? 4,
         colorValue: color,
         sortOrderIndex: table.sortOrderIndex,

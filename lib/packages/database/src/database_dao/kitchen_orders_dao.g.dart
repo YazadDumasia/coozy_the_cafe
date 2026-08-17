@@ -4,8 +4,6 @@ part of 'kitchen_orders_dao.dart';
 
 // ignore_for_file: type=lint
 mixin _$KitchenOrdersDaoMixin on DatabaseAccessor<CoozyDatabase> {
-  $RolesTableTable get rolesTable => attachedDatabase.rolesTable;
-  $UserLoginsTableTable get userLoginsTable => attachedDatabase.userLoginsTable;
   $TableInfoTableTable get tableInfoTable => attachedDatabase.tableInfoTable;
   $CustomersTableTable get customersTable => attachedDatabase.customersTable;
   $ReservationsTableTable get reservationsTable =>
@@ -21,13 +19,6 @@ mixin _$KitchenOrdersDaoMixin on DatabaseAccessor<CoozyDatabase> {
 class KitchenOrdersDaoManager {
   final _$KitchenOrdersDaoMixin _db;
   KitchenOrdersDaoManager(this._db);
-  $$RolesTableTableTableManager get rolesTable =>
-      $$RolesTableTableTableManager(_db.attachedDatabase, _db.rolesTable);
-  $$UserLoginsTableTableTableManager get userLoginsTable =>
-      $$UserLoginsTableTableTableManager(
-        _db.attachedDatabase,
-        _db.userLoginsTable,
-      );
   $$TableInfoTableTableTableManager get tableInfoTable =>
       $$TableInfoTableTableTableManager(
         _db.attachedDatabase,
