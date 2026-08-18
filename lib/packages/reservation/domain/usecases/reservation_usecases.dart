@@ -24,6 +24,16 @@ class GetUpcomingReservationsUseCase {
   }
 }
 
+class GetUpcomingReservationsCountUseCase {
+  final ReservationRepository repository;
+
+  GetUpcomingReservationsCountUseCase(this.repository);
+
+  Future<int> call() {
+    return repository.getUpcomingReservationsCount();
+  }
+}
+
 class SearchReservationsUseCase {
   final ReservationRepository repository;
 

@@ -22,6 +22,14 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
     return await query.getSingleOrNull();
   }
 
+  /// Get a single customer by phone number
+  Future<Customer?> getCustomerByPhoneNumber(String phoneNumber) async {
+    final query = select(customersTable)
+      ..where((t) => t.phoneNumber.equals(phoneNumber))
+      ..limit(1);
+    return await query.getSingleOrNull();
+  }
+
   /// Get a list of all customers with pagination and optional search
   Future<List<Customer>?> searchCustomers({
     int pageNumber = 1,

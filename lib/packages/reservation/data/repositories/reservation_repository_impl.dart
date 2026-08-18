@@ -24,6 +24,11 @@ class ReservationRepositoryImpl implements ReservationRepository {
   }
 
   @override
+  Future<int> getUpcomingReservationsCount() {
+    return localDataSource.getUpcomingReservationsCount();
+  }
+
+  @override
   Future<List<ReservationEntity>> searchReservations({
     required String query,
     required int limit,

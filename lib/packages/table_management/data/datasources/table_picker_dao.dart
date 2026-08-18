@@ -33,7 +33,8 @@ class TablePickerDao {
         final status = _resolveStatus(order);
         final entity = TableEntity(
           id: table.id,
-          name: table.tableLabel ?? table.tableNo ?? 'Table ${table.id}',
+          name: table.tableLabel ?? 'Table ${table.id}',
+          tableNumber: table.tableNo,
           colorValue: table.colorValue,
           sortOrderIndex: table.sortOrderIndex ?? 0,
           nosOfChairs: table.nosOfChairs ?? 0,
@@ -79,10 +80,12 @@ class TablePickerDao {
     switch (status) {
       case TableStatus.empty:
         return 0;
-      case TableStatus.occupied:
+      case TableStatus.reserved:
         return 1;
-      case TableStatus.pendingBill:
+      case TableStatus.occupied:
         return 2;
+      case TableStatus.pendingBill:
+        return 3;
     }
   }
 }

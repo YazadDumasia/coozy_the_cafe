@@ -59,6 +59,7 @@ class ReservationEntity extends Equatable {
   final String? reservationDateTime;
   final int? numberOfPeople;
   final int? status; // 0: Pending, 1: Confirmed, 2: Completed, 3: Cancelled
+  final String? occasion;
   final String? notes;
   final List<PreOrderedMenuItemEntity> preOrderedItems;
   final String? creationDate;
@@ -76,6 +77,7 @@ class ReservationEntity extends Equatable {
     this.reservationDateTime,
     this.numberOfPeople,
     this.status = 0,
+    this.occasion,
     this.notes,
     this.preOrderedItems = const [],
     this.creationDate,
@@ -94,6 +96,7 @@ class ReservationEntity extends Equatable {
     String? reservationDateTime,
     int? numberOfPeople,
     int? status,
+    String? occasion,
     String? notes,
     List<PreOrderedMenuItemEntity>? preOrderedItems,
     String? creationDate,
@@ -111,6 +114,7 @@ class ReservationEntity extends Equatable {
       reservationDateTime: reservationDateTime ?? this.reservationDateTime,
       numberOfPeople: numberOfPeople ?? this.numberOfPeople,
       status: status ?? this.status,
+      occasion: occasion ?? this.occasion,
       notes: notes ?? this.notes,
       preOrderedItems: preOrderedItems ?? this.preOrderedItems,
       creationDate: creationDate ?? this.creationDate,
@@ -131,6 +135,7 @@ class ReservationEntity extends Equatable {
     reservationDateTime,
     numberOfPeople,
     status,
+    occasion,
     notes,
     preOrderedItems,
     creationDate,

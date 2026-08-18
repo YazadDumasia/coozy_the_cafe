@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../domain/entities/reservation_entity.dart';
@@ -16,6 +17,14 @@ class ReservationCard extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
   });
+
+  Future<void> _makePhoneCall(String? phoneNumber) async {
+    if (phoneNumber == null || phoneNumber.trim().isEmpty) return;
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber.trim());
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
+    }
+  }
 
   Color _getStatusColor(int? status) {
     switch (status) {
@@ -85,6 +94,7 @@ class ReservationCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusColor = _getStatusColor(reservation.status);
+    final hasPhone = reservation.phoneNumber?.trim().isNotEmpty == true;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -137,29 +147,46 @@ class ReservationCard extends StatelessWidget {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Icon(Icons.phone, size: 16, color: Colors.grey),
-                  const SizedBox(width: 6),
-                  Text(
-                    reservation.phoneNumber?.isNotEmpty == true
-                        ? reservation.phoneNumber!
-                        : 'No Contact',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  const Spacer(),
-                  const Icon(
-                    Icons.table_restaurant,
-                    size: 16,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    reservation.tableReservedName ?? 'Table N/A',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                  Expanded(
+                    child: InkWell(
+                      onTap: hasPhone
+                          ? () => _makePhoneCall(reservation.phoneNumber)
+                          : null,
+                      borderRadius: BorderRadius.circular(4),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.phone,
+                            size: 16,
+                            color: hasPhone ? Colors.green : Colors.grey,
+                          ),
+                          const SizedBox(width: 6),
+                          Flexible(
+                            child: Text(
+                              hasPhone
+                                  ? reservation.phoneNumber!
+                                  : 'No Contact',
+                              style: Theme.of(context).textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: hasPhone
+                                        ? Colors.green.shade700
+                                        : null,
+                                    fontWeight: hasPhone
+                                        ? FontWeight.w500
+                                        : null,
+                                  ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 6),
+              _buildTableBadge(context),
               const SizedBox(height: 6),
               Row(
                 children: [
@@ -182,6 +209,22 @@ class ReservationCard extends StatelessWidget {
                   ),
                 ],
               ),
+              if (reservation.occasion?.isNotEmpty == true) ...[
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    const Icon(Icons.cake, size: 16, color: Colors.purple),
+                    const SizedBox(width: 6),
+                    Text(
+                      reservation.occasion!,
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Colors.purple.shade700,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
               if (reservation.preOrderedItems.isNotEmpty) ...[
                 const Divider(height: 16),
                 Row(
@@ -209,6 +252,20 @@ class ReservationCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  if (hasPhone) ...[
+                    IconButton(
+                      icon: const Icon(
+                        Icons.call,
+                        size: 20,
+                        color: Colors.green,
+                      ),
+                      tooltip: 'Call Customer',
+                      onPressed: () => _makePhoneCall(reservation.phoneNumber),
+                      constraints: const BoxConstraints(),
+                      padding: const EdgeInsets.all(6),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   IconButton(
                     icon: const Icon(Icons.edit, size: 20, color: Colors.blue),
                     onPressed: onEdit,
@@ -228,6 +285,70 @@ class ReservationCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTableBadge(BuildContext context) {
+    final track = shared.TrackConstants.reservationPageTrack;
+    final labelText =
+        context.tr(shared.LocaleKeys.selectTableLabel, track: track) ??
+        'Table Assignment';
+    final tableName = reservation.tableReservedName;
+
+    if (tableName == null || tableName.trim().isEmpty) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            '$labelText: ',
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          Chip(
+            avatar: const Icon(Icons.table_restaurant, size: 14),
+            label: const Text('N/A'),
+            visualDensity: VisualDensity.compact,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ],
+      );
+    }
+
+    final tableList = tableName
+        .split(', ')
+        .where((t) => t.trim().isNotEmpty)
+        .toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            const Icon(Icons.table_restaurant, size: 16, color: Colors.grey),
+            const SizedBox(width: 6),
+            Text(
+              '$labelText:',
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Wrap(
+          spacing: 6,
+          runSpacing: 4,
+          children: tableList.map((t) {
+            return Chip(
+              avatar: const Icon(Icons.table_restaurant, size: 14),
+              label: Text(t),
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

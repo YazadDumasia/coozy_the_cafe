@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
 import '../../domain/entities/reservation_entity.dart';
 import '../bloc/reservation_action_cubit.dart';
@@ -37,6 +39,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     [],
   );
   final ValueNotifier<int> _statusNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<String?> _occasionNotifier = ValueNotifier<String?>(null);
 
   bool get _isEdit => widget.reservation != null;
 
@@ -52,7 +55,10 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     _notesController = TextEditingController(text: r?.notes ?? '');
 
     _statusNotifier.value = r?.status ?? 0;
+    _occasionNotifier.value = r?.occasion;
     _isoCodeNotifier.value = r?.isoCode ?? 'IN';
+
+    _phoneController.addListener(_onPhoneChanged);
 
     if (r?.reservationDateTime != null) {
       _dateTimeNotifier.value = DateTime.tryParse(r!.reservationDateTime!);
@@ -76,8 +82,26 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     }
   }
 
+  Future<void> _onPhoneChanged() async {
+    final phone = _phoneController.text.trim();
+    if (phone.length < 5) return;
+    try {
+      final db = GetIt.I<CoozyDatabase>();
+      final customer = await db.customersDao.getCustomerByPhoneNumber(phone);
+      if (customer != null && mounted) {
+        if (_nameController.text.trim().isEmpty) {
+          _nameController.text = customer.name ?? '';
+        }
+        if (customer.isoCode != null && customer.isoCode!.isNotEmpty) {
+          _isoCodeNotifier.value = customer.isoCode!;
+        }
+      }
+    } catch (_) {}
+  }
+
   @override
   void dispose() {
+    _phoneController.removeListener(_onPhoneChanged);
     _nameController.dispose();
     _phoneController.dispose();
     _guestsController.dispose();
@@ -89,6 +113,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     _selectedTablesNotifier.dispose();
     _selectedMenuItemsNotifier.dispose();
     _statusNotifier.dispose();
+    _occasionNotifier.dispose();
     super.dispose();
   }
 
@@ -150,6 +175,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
       primaryTableId: primaryTableId,
       combinedTableNames: combinedTableNames,
       selectedMenuItems: _selectedMenuItemsNotifier.value,
+      occasion: _occasionNotifier.value,
       notes: _notesController.text,
       status: _statusNotifier.value,
       creationDate: widget.reservation?.creationDate,
@@ -292,6 +318,8 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
         const SizedBox(height: 16),
         _buildGuestsField(track),
         const SizedBox(height: 16),
+        _buildOccasionField(track),
+        const SizedBox(height: 16),
         _buildNotesField(track),
         const SizedBox(height: 16),
         _buildStatusField(track),
@@ -349,6 +377,8 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
             Expanded(child: _buildGuestsField(track)),
           ],
         ),
+        const SizedBox(height: 16),
+        _buildOccasionField(track).inExpandedRow(),
         const SizedBox(height: 16),
         _buildNotesField(track).inExpandedRow(),
         const SizedBox(height: 16),
@@ -607,6 +637,74 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
         border: const OutlineInputBorder(),
         prefixIcon: const Icon(Icons.group),
       ),
+    );
+  }
+
+  Widget _buildOccasionField(String track) {
+    return ValueListenableBuilder<String?>(
+      valueListenable: _occasionNotifier,
+      builder: (context, occasion, _) {
+        return DropdownButtonFormField<String?>(
+          initialValue: occasion,
+          decoration: InputDecoration(
+            labelText:
+                context.tr(shared.LocaleKeys.occasionLabel, track: track) ??
+                'Occasion Type',
+            hintText:
+                context.tr(shared.LocaleKeys.occasionHint, track: track) ??
+                'Select Occasion Type',
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.cake),
+          ),
+          items: [
+            DropdownMenuItem<String?>(
+              value: null,
+              child: Text(
+                context.tr(shared.LocaleKeys.occasionNone, track: track) ??
+                    'None',
+              ),
+            ),
+            DropdownMenuItem<String?>(
+              value: 'Birthday',
+              child: Text(
+                context.tr(shared.LocaleKeys.occasionBirthday, track: track) ??
+                    'Birthday',
+              ),
+            ),
+            DropdownMenuItem<String?>(
+              value: 'Anniversary',
+              child: Text(
+                context.tr(shared.LocaleKeys.occasionAnniversary, track: track) ??
+                    'Anniversary',
+              ),
+            ),
+            DropdownMenuItem<String?>(
+              value: 'Get Together',
+              child: Text(
+                context.tr(shared.LocaleKeys.occasionGetTogether, track: track) ??
+                    'Get Together',
+              ),
+            ),
+            DropdownMenuItem<String?>(
+              value: 'Office Celebration',
+              child: Text(
+                context.tr(shared.LocaleKeys.occasionOfficeParty, track: track) ??
+                    'Office Celebration',
+              ),
+            ),
+            DropdownMenuItem<String?>(
+              value: 'Other',
+              child: Text(
+                context.tr(shared.LocaleKeys.occasionOther, track: track) ??
+                    'Other',
+              ),
+            ),
+          ],
+          onChanged: (val) {
+            _occasionNotifier.value = val;
+          },
+        );
+      },
     );
   }
 

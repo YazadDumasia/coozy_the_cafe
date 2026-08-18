@@ -1004,6 +1004,12 @@ abstract class LocaleKeys {
   static const String addReservationTitle = 'add_reservation_title';
   static const String editReservationTitle = 'edit_reservation_title';
   static const String reservationDetailTitle = 'reservation_detail_title';
+  static const String guestLabel = 'guest_label';
+  static const String noContactDetails = 'no_contact_details';
+  static const String callTooltip = 'call_tooltip';
+  static const String tableAssignmentLabel = 'table_assignment_label';
+  static const String notAssigned = 'not_assigned';
+  static const String peopleSuffix = 'people_suffix';
   static const String customerNameLabel = 'customer_name_label';
   static const String customerNameHint = 'customer_name_hint';
   static const String customerNameError = 'customer_name_error';
@@ -1019,6 +1025,14 @@ abstract class LocaleKeys {
   static const String selectMenuItemsHint = 'select_menu_items_hint';
   static const String notesLabel = 'notes_label';
   static const String notesHint = 'notes_hint';
+  static const String occasionLabel = 'occasion_label';
+  static const String occasionHint = 'occasion_hint';
+  static const String occasionNone = 'occasion_none';
+  static const String occasionBirthday = 'occasion_birthday';
+  static const String occasionAnniversary = 'occasion_anniversary';
+  static const String occasionGetTogether = 'occasion_get_together';
+  static const String occasionOfficeParty = 'occasion_office_party';
+  static const String occasionOther = 'occasion_other';
   static const String statusLabel = 'status_label';
   static const String statusConfirmed = 'status_confirmed';
   static const String statusCompleted = 'status_completed';

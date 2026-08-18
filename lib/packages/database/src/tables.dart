@@ -522,6 +522,7 @@ class ReservationsTable extends BaseTable {
   TextColumn get reservationDateTime => text().nullable()();
   IntColumn get numberOfPeople => integer().nullable()();
   IntColumn get status => integer().nullable()();
+  TextColumn get occasion => text().nullable()();
   TextColumn get notes => text().nullable()();
   TextColumn get creationDate => text().nullable()();
   TextColumn get modificationDate => text().nullable()();

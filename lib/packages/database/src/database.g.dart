@@ -6300,6 +6300,17 @@ class $ReservationsTableTable extends ReservationsTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _occasionMeta = const VerificationMeta(
+    'occasion',
+  );
+  @override
+  late final GeneratedColumn<String> occasion = GeneratedColumn<String>(
+    'occasion',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _notesMeta = const VerificationMeta('notes');
   @override
   late final GeneratedColumn<String> notes = GeneratedColumn<String>(
@@ -6346,6 +6357,7 @@ class $ReservationsTableTable extends ReservationsTable
     reservationDateTime,
     numberOfPeople,
     status,
+    occasion,
     notes,
     creationDate,
     modificationDate,
@@ -6452,6 +6464,12 @@ class $ReservationsTableTable extends ReservationsTable
         status.isAcceptableOrUnknown(data['status']!, _statusMeta),
       );
     }
+    if (data.containsKey('occasion')) {
+      context.handle(
+        _occasionMeta,
+        occasion.isAcceptableOrUnknown(data['occasion']!, _occasionMeta),
+      );
+    }
     if (data.containsKey('notes')) {
       context.handle(
         _notesMeta,
@@ -6537,6 +6555,10 @@ class $ReservationsTableTable extends ReservationsTable
         DriftSqlType.int,
         data['${effectivePrefix}status'],
       ),
+      occasion: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}occasion'],
+      ),
       notes: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
@@ -6572,6 +6594,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
   final String? reservationDateTime;
   final int? numberOfPeople;
   final int? status;
+  final String? occasion;
   final String? notes;
   final String? creationDate;
   final String? modificationDate;
@@ -6589,6 +6612,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
     this.reservationDateTime,
     this.numberOfPeople,
     this.status,
+    this.occasion,
     this.notes,
     this.creationDate,
     this.modificationDate,
@@ -6630,6 +6654,9 @@ class Reservation extends DataClass implements Insertable<Reservation> {
     }
     if (!nullToAbsent || status != null) {
       map['status'] = Variable<int>(status);
+    }
+    if (!nullToAbsent || occasion != null) {
+      map['occasion'] = Variable<String>(occasion);
     }
     if (!nullToAbsent || notes != null) {
       map['notes'] = Variable<String>(notes);
@@ -6680,6 +6707,9 @@ class Reservation extends DataClass implements Insertable<Reservation> {
       status: status == null && nullToAbsent
           ? const Value.absent()
           : Value(status),
+      occasion: occasion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(occasion),
       notes: notes == null && nullToAbsent
           ? const Value.absent()
           : Value(notes),
@@ -6715,6 +6745,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
       ),
       numberOfPeople: serializer.fromJson<int?>(json['numberOfPeople']),
       status: serializer.fromJson<int?>(json['status']),
+      occasion: serializer.fromJson<String?>(json['occasion']),
       notes: serializer.fromJson<String?>(json['notes']),
       creationDate: serializer.fromJson<String?>(json['creationDate']),
       modificationDate: serializer.fromJson<String?>(json['modificationDate']),
@@ -6737,6 +6768,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
       'reservationDateTime': serializer.toJson<String?>(reservationDateTime),
       'numberOfPeople': serializer.toJson<int?>(numberOfPeople),
       'status': serializer.toJson<int?>(status),
+      'occasion': serializer.toJson<String?>(occasion),
       'notes': serializer.toJson<String?>(notes),
       'creationDate': serializer.toJson<String?>(creationDate),
       'modificationDate': serializer.toJson<String?>(modificationDate),
@@ -6757,6 +6789,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
     Value<String?> reservationDateTime = const Value.absent(),
     Value<int?> numberOfPeople = const Value.absent(),
     Value<int?> status = const Value.absent(),
+    Value<String?> occasion = const Value.absent(),
     Value<String?> notes = const Value.absent(),
     Value<String?> creationDate = const Value.absent(),
     Value<String?> modificationDate = const Value.absent(),
@@ -6780,6 +6813,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
         ? numberOfPeople.value
         : this.numberOfPeople,
     status: status.present ? status.value : this.status,
+    occasion: occasion.present ? occasion.value : this.occasion,
     notes: notes.present ? notes.value : this.notes,
     creationDate: creationDate.present ? creationDate.value : this.creationDate,
     modificationDate: modificationDate.present
@@ -6813,6 +6847,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
           ? data.numberOfPeople.value
           : this.numberOfPeople,
       status: data.status.present ? data.status.value : this.status,
+      occasion: data.occasion.present ? data.occasion.value : this.occasion,
       notes: data.notes.present ? data.notes.value : this.notes,
       creationDate: data.creationDate.present
           ? data.creationDate.value
@@ -6839,6 +6874,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
           ..write('reservationDateTime: $reservationDateTime, ')
           ..write('numberOfPeople: $numberOfPeople, ')
           ..write('status: $status, ')
+          ..write('occasion: $occasion, ')
           ..write('notes: $notes, ')
           ..write('creationDate: $creationDate, ')
           ..write('modificationDate: $modificationDate')
@@ -6861,6 +6897,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
     reservationDateTime,
     numberOfPeople,
     status,
+    occasion,
     notes,
     creationDate,
     modificationDate,
@@ -6882,6 +6919,7 @@ class Reservation extends DataClass implements Insertable<Reservation> {
           other.reservationDateTime == this.reservationDateTime &&
           other.numberOfPeople == this.numberOfPeople &&
           other.status == this.status &&
+          other.occasion == this.occasion &&
           other.notes == this.notes &&
           other.creationDate == this.creationDate &&
           other.modificationDate == this.modificationDate);
@@ -6901,6 +6939,7 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
   final Value<String?> reservationDateTime;
   final Value<int?> numberOfPeople;
   final Value<int?> status;
+  final Value<String?> occasion;
   final Value<String?> notes;
   final Value<String?> creationDate;
   final Value<String?> modificationDate;
@@ -6918,6 +6957,7 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
     this.reservationDateTime = const Value.absent(),
     this.numberOfPeople = const Value.absent(),
     this.status = const Value.absent(),
+    this.occasion = const Value.absent(),
     this.notes = const Value.absent(),
     this.creationDate = const Value.absent(),
     this.modificationDate = const Value.absent(),
@@ -6936,6 +6976,7 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
     this.reservationDateTime = const Value.absent(),
     this.numberOfPeople = const Value.absent(),
     this.status = const Value.absent(),
+    this.occasion = const Value.absent(),
     this.notes = const Value.absent(),
     this.creationDate = const Value.absent(),
     this.modificationDate = const Value.absent(),
@@ -6954,6 +6995,7 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
     Expression<String>? reservationDateTime,
     Expression<int>? numberOfPeople,
     Expression<int>? status,
+    Expression<String>? occasion,
     Expression<String>? notes,
     Expression<String>? creationDate,
     Expression<String>? modificationDate,
@@ -6973,6 +7015,7 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
         'reservation_date_time': reservationDateTime,
       if (numberOfPeople != null) 'number_of_people': numberOfPeople,
       if (status != null) 'status': status,
+      if (occasion != null) 'occasion': occasion,
       if (notes != null) 'notes': notes,
       if (creationDate != null) 'creation_date': creationDate,
       if (modificationDate != null) 'modification_date': modificationDate,
@@ -6993,6 +7036,7 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
     Value<String?>? reservationDateTime,
     Value<int?>? numberOfPeople,
     Value<int?>? status,
+    Value<String?>? occasion,
     Value<String?>? notes,
     Value<String?>? creationDate,
     Value<String?>? modificationDate,
@@ -7011,6 +7055,7 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
       reservationDateTime: reservationDateTime ?? this.reservationDateTime,
       numberOfPeople: numberOfPeople ?? this.numberOfPeople,
       status: status ?? this.status,
+      occasion: occasion ?? this.occasion,
       notes: notes ?? this.notes,
       creationDate: creationDate ?? this.creationDate,
       modificationDate: modificationDate ?? this.modificationDate,
@@ -7061,6 +7106,9 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
     if (status.present) {
       map['status'] = Variable<int>(status.value);
     }
+    if (occasion.present) {
+      map['occasion'] = Variable<String>(occasion.value);
+    }
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
@@ -7089,6 +7137,7 @@ class ReservationsTableCompanion extends UpdateCompanion<Reservation> {
           ..write('reservationDateTime: $reservationDateTime, ')
           ..write('numberOfPeople: $numberOfPeople, ')
           ..write('status: $status, ')
+          ..write('occasion: $occasion, ')
           ..write('notes: $notes, ')
           ..write('creationDate: $creationDate, ')
           ..write('modificationDate: $modificationDate')
@@ -23318,6 +23367,7 @@ typedef $$ReservationsTableTableCreateCompanionBuilder =
       Value<String?> reservationDateTime,
       Value<int?> numberOfPeople,
       Value<int?> status,
+      Value<String?> occasion,
       Value<String?> notes,
       Value<String?> creationDate,
       Value<String?> modificationDate,
@@ -23337,6 +23387,7 @@ typedef $$ReservationsTableTableUpdateCompanionBuilder =
       Value<String?> reservationDateTime,
       Value<int?> numberOfPeople,
       Value<int?> status,
+      Value<String?> occasion,
       Value<String?> notes,
       Value<String?> creationDate,
       Value<String?> modificationDate,
@@ -23465,6 +23516,11 @@ class $$ReservationsTableTableFilterComposer
 
   ColumnFilters<int> get status => $composableBuilder(
     column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get occasion => $composableBuilder(
+    column: $table.occasion,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -23619,6 +23675,11 @@ class $$ReservationsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get occasion => $composableBuilder(
+    column: $table.occasion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get notes => $composableBuilder(
     column: $table.notes,
     builder: (column) => ColumnOrderings(column),
@@ -23732,6 +23793,9 @@ class $$ReservationsTableTableAnnotationComposer
 
   GeneratedColumn<int> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get occasion =>
+      $composableBuilder(column: $table.occasion, builder: (column) => column);
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
@@ -23868,6 +23932,7 @@ class $$ReservationsTableTableTableManager
                 Value<String?> reservationDateTime = const Value.absent(),
                 Value<int?> numberOfPeople = const Value.absent(),
                 Value<int?> status = const Value.absent(),
+                Value<String?> occasion = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> creationDate = const Value.absent(),
                 Value<String?> modificationDate = const Value.absent(),
@@ -23885,6 +23950,7 @@ class $$ReservationsTableTableTableManager
                 reservationDateTime: reservationDateTime,
                 numberOfPeople: numberOfPeople,
                 status: status,
+                occasion: occasion,
                 notes: notes,
                 creationDate: creationDate,
                 modificationDate: modificationDate,
@@ -23904,6 +23970,7 @@ class $$ReservationsTableTableTableManager
                 Value<String?> reservationDateTime = const Value.absent(),
                 Value<int?> numberOfPeople = const Value.absent(),
                 Value<int?> status = const Value.absent(),
+                Value<String?> occasion = const Value.absent(),
                 Value<String?> notes = const Value.absent(),
                 Value<String?> creationDate = const Value.absent(),
                 Value<String?> modificationDate = const Value.absent(),
@@ -23921,6 +23988,7 @@ class $$ReservationsTableTableTableManager
                 reservationDateTime: reservationDateTime,
                 numberOfPeople: numberOfPeople,
                 status: status,
+                occasion: occasion,
                 notes: notes,
                 creationDate: creationDate,
                 modificationDate: modificationDate,

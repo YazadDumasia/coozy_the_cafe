@@ -22,6 +22,7 @@ void registerReservationDependencies(GetIt sl) {
   // UseCases
   sl.registerLazySingleton(() => GetCurrentReservationsUseCase(sl()));
   sl.registerLazySingleton(() => GetUpcomingReservationsUseCase(sl()));
+  sl.registerLazySingleton(() => GetUpcomingReservationsCountUseCase(sl()));
   sl.registerLazySingleton(() => SearchReservationsUseCase(sl()));
   sl.registerLazySingleton(() => CreateReservationUseCase(sl()));
   sl.registerLazySingleton(() => UpdateReservationUseCase(sl()));
@@ -36,6 +37,7 @@ void registerReservationDependencies(GetIt sl) {
   sl.registerFactory(
     () => UpcomingReservationBloc(
       getUpcomingReservationsUseCase: sl(),
+      getUpcomingReservationsCountUseCase: sl(),
       searchReservationsUseCase: sl(),
     ),
   );

@@ -11,6 +11,8 @@ abstract class ReservationLocalDataSource {
     required int pageNo,
   });
 
+  Future<int> getUpcomingReservationsCount();
+
   Future<List<ReservationEntity>> searchReservations({
     required String query,
     required int limit,
@@ -62,6 +64,7 @@ class ReservationLocalDataSourceImpl implements ReservationLocalDataSource {
       reservationDateTime: data.reservationDateTime,
       numberOfPeople: data.numberOfPeople,
       status: data.status,
+      occasion: data.occasion,
       notes: cleanNotes,
       preOrderedItems: items,
       creationDate: data.creationDate,
@@ -90,6 +93,7 @@ class ReservationLocalDataSourceImpl implements ReservationLocalDataSource {
       reservationDateTime: Value(entity.reservationDateTime),
       numberOfPeople: Value(entity.numberOfPeople),
       status: Value(entity.status ?? 0),
+      occasion: Value(entity.occasion),
       notes: Value(combinedNotes),
       creationDate: Value(
         entity.creationDate ?? DateTime.now().toIso8601String(),
@@ -109,11 +113,16 @@ class ReservationLocalDataSourceImpl implements ReservationLocalDataSource {
     required int limit,
     required int pageNo,
   }) async {
-    final list = await reservationsDao.getReservationsPaginated(
+    final list = await reservationsDao.getUpcomingReservations(
       limit: limit,
       pageNo: pageNo,
     );
     return list.map(_mapToEntity).toList();
+  }
+
+  @override
+  Future<int> getUpcomingReservationsCount() {
+    return reservationsDao.getUpcomingReservationsCount();
   }
 
   @override

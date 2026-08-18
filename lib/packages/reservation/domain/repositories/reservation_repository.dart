@@ -8,6 +8,8 @@ abstract class ReservationRepository {
     required int pageNo,
   });
 
+  Future<int> getUpcomingReservationsCount();
+
   Future<List<ReservationEntity>> searchReservations({
     required String query,
     required int limit,

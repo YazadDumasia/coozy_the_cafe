@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'package:drift/drift.dart' hide Column;
 import 'package:faker/faker.dart';
@@ -920,8 +921,36 @@ class FakeDataHelper {
       tables = await db.select(db.tableInfoTable).get();
     }
 
+    var menuItems = await db.select(db.menuItemsTable).get();
+    if (menuItems.isEmpty) {
+      await _generateMenuItems(
+        db,
+        random,
+        uuid,
+        now.subtract(const Duration(days: 100)),
+        () => now,
+      );
+      menuItems = await db.select(db.menuItemsTable).get();
+    }
+
     int inserted = 0;
     final todayStart = DateTime(now.year, now.month, now.day);
+
+    String generateRandomPreOrders(Random random, List<dynamic> menuItems) {
+      if (menuItems.isEmpty || random.nextDouble() > 0.6) return '';
+      final count = 1 + random.nextInt(3);
+      final List<Map<String, dynamic>> items = [];
+      for (int i = 0; i < count; i++) {
+        final item = menuItems[random.nextInt(menuItems.length)];
+        items.add({
+          'id': item.id,
+          'item_name': item.name ?? 'Cafe Item',
+          'quantity': 1 + random.nextInt(3),
+          'price': item.price ?? 5.0,
+        });
+      }
+      return 'PRE_ORDERED_ITEMS:${jsonEncode(items)}';
+    }
 
     // 1. Current Reservations: 15 records for Today
     for (int r = 0; r < 15; r++) {
@@ -933,6 +962,12 @@ class FakeDataHelper {
           minutes: random.nextInt(4) * 15,
         ),
       );
+
+      final preOrdersStr = generateRandomPreOrders(random, menuItems);
+      final baseNotes = faker.lorem.sentence();
+      final finalNotes = preOrdersStr.isNotEmpty
+          ? '$baseNotes\n$preOrdersStr'
+          : baseNotes;
 
       await db
           .into(db.reservationsTable)
@@ -948,7 +983,7 @@ class FakeDataHelper {
               reservationDateTime: Value(rDate.toIso8601String()),
               numberOfPeople: Value(1 + random.nextInt(8)),
               status: Value(random.nextInt(2)),
-              notes: Value(faker.lorem.sentence()),
+              notes: Value(finalNotes),
               creationDate: Value(now.toIso8601String()),
             ),
           );
@@ -968,6 +1003,12 @@ class FakeDataHelper {
         ),
       );
 
+      final preOrdersStr = generateRandomPreOrders(random, menuItems);
+      final baseNotes = faker.lorem.sentence();
+      final finalNotes = preOrdersStr.isNotEmpty
+          ? '$baseNotes\n$preOrdersStr'
+          : baseNotes;
+
       await db
           .into(db.reservationsTable)
           .insert(
@@ -982,7 +1023,7 @@ class FakeDataHelper {
               reservationDateTime: Value(rDate.toIso8601String()),
               numberOfPeople: Value(1 + random.nextInt(8)),
               status: Value(random.nextInt(2)),
-              notes: Value(faker.lorem.sentence()),
+              notes: Value(finalNotes),
               creationDate: Value(now.toIso8601String()),
             ),
           );

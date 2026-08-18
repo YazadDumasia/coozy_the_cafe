@@ -51,12 +51,14 @@ class UpcomingReservationLoaded extends UpcomingReservationState {
   final List<ReservationEntity> reservations;
   final bool hasReachedMax;
   final int pageNo;
+  final int totalCount;
   final String searchQuery;
 
   const UpcomingReservationLoaded({
     required this.reservations,
     required this.hasReachedMax,
     required this.pageNo,
+    required this.totalCount,
     this.searchQuery = '',
   });
 
@@ -64,18 +66,26 @@ class UpcomingReservationLoaded extends UpcomingReservationState {
     List<ReservationEntity>? reservations,
     bool? hasReachedMax,
     int? pageNo,
+    int? totalCount,
     String? searchQuery,
   }) {
     return UpcomingReservationLoaded(
       reservations: reservations ?? this.reservations,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       pageNo: pageNo ?? this.pageNo,
+      totalCount: totalCount ?? this.totalCount,
       searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 
   @override
-  List<Object?> get props => [reservations, hasReachedMax, pageNo, searchQuery];
+  List<Object?> get props => [
+        reservations,
+        hasReachedMax,
+        pageNo,
+        totalCount,
+        searchQuery,
+      ];
 }
 
 class UpcomingReservationError extends UpcomingReservationState {
@@ -88,11 +98,13 @@ class UpcomingReservationError extends UpcomingReservationState {
 class UpcomingReservationBloc
     extends Bloc<UpcomingReservationEvent, UpcomingReservationState> {
   final GetUpcomingReservationsUseCase getUpcomingReservationsUseCase;
+  final GetUpcomingReservationsCountUseCase getUpcomingReservationsCountUseCase;
   final SearchReservationsUseCase searchReservationsUseCase;
-  static const int _limit = 15;
+  static const int _limit = 20;
 
   UpcomingReservationBloc({
     required this.getUpcomingReservationsUseCase,
+    required this.getUpcomingReservationsCountUseCase,
     required this.searchReservationsUseCase,
   }) : super(UpcomingReservationInitial()) {
     on<FetchUpcomingReservations>(_onFetchUpcoming);
@@ -101,16 +113,60 @@ class UpcomingReservationBloc
     on<UpdateUpcomingReservation>(_onUpdateUpcoming);
   }
 
-  void _onRemoveUpcoming(
+  Future<void> _onRemoveUpcoming(
     RemoveUpcomingReservation event,
     Emitter<UpcomingReservationState> emit,
-  ) {
+  ) async {
     if (state is UpcomingReservationLoaded) {
       final currentState = state as UpcomingReservationLoaded;
       final updatedList = currentState.reservations
           .where((item) => item.id != event.id)
           .toList();
-      emit(currentState.copyWith(reservations: updatedList));
+      final newCount = (currentState.totalCount - 1).clamp(0, 999999);
+
+      if (newCount == 0) {
+        // All upcoming records in database have been deleted
+        emit(currentState.copyWith(
+          reservations: [],
+          totalCount: 0,
+          hasReachedMax: true,
+          pageNo: 1,
+        ));
+        return;
+      }
+
+      // Re-query database up to current list size to ensure smooth continuous list without gaps
+      final itemsNeeded = updatedList.length < _limit
+          ? _limit
+          : (updatedList.length ~/ _limit) * _limit;
+
+      try {
+        final List<ReservationEntity> refetchedItems;
+        if (currentState.searchQuery.isNotEmpty) {
+          refetchedItems = await searchReservationsUseCase(
+            query: currentState.searchQuery,
+            limit: itemsNeeded,
+            pageNo: 1,
+          );
+        } else {
+          refetchedItems = await getUpcomingReservationsUseCase(
+            limit: itemsNeeded,
+            pageNo: 1,
+          );
+        }
+        final newPageNo = (refetchedItems.length / _limit).ceil().clamp(1, 999999);
+        emit(currentState.copyWith(
+          reservations: refetchedItems,
+          totalCount: newCount,
+          pageNo: newPageNo,
+          hasReachedMax: refetchedItems.length >= newCount || refetchedItems.length < itemsNeeded,
+        ));
+      } catch (_) {
+        emit(currentState.copyWith(
+          reservations: updatedList,
+          totalCount: newCount,
+        ));
+      }
     }
   }
 
@@ -148,11 +204,13 @@ class UpcomingReservationBloc
           limit: _limit,
           pageNo: 1,
         );
+        final totalCount = await getUpcomingReservationsCountUseCase();
         emit(
           UpcomingReservationLoaded(
             reservations: reservations,
             hasReachedMax: reservations.length < _limit,
             pageNo: 1,
+            totalCount: totalCount,
           ),
         );
       } catch (e) {
@@ -189,6 +247,7 @@ class UpcomingReservationBloc
                   reservations: currentState.reservations + newItems,
                   hasReachedMax: newItems.length < _limit,
                   pageNo: nextPage,
+                  totalCount: currentState.totalCount,
                   searchQuery: currentState.searchQuery,
                 ),
         );
@@ -209,11 +268,13 @@ class UpcomingReservationBloc
           limit: _limit,
           pageNo: 1,
         );
+        final totalCount = await getUpcomingReservationsCountUseCase();
         emit(
           UpcomingReservationLoaded(
             reservations: reservations,
             hasReachedMax: reservations.length < _limit,
             pageNo: 1,
+            totalCount: totalCount,
             searchQuery: '',
           ),
         );
@@ -228,6 +289,7 @@ class UpcomingReservationBloc
             reservations: reservations,
             hasReachedMax: reservations.length < _limit,
             pageNo: 1,
+            totalCount: reservations.length,
             searchQuery: event.query.trim(),
           ),
         );

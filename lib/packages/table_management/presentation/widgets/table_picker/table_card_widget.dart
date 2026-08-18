@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart';
 import 'package:flutter/material.dart';
 
 import '../../../domain/entities/table_entity.dart';
@@ -6,122 +7,239 @@ class TableCardWidget extends StatelessWidget {
   final TableEntity table;
   final VoidCallback? onTap;
 
-  const TableCardWidget({super.key, required this.table, this.onTap});
+  final String? elapsedTime;
+  final String? elapsedCount;
+  final String? cookingCount;
+  final String? servedCount;
+  final String? reservationInfo;
+
+  const TableCardWidget({
+    super.key,
+    required this.table,
+    this.onTap,
+    this.elapsedTime,
+    this.elapsedCount,
+    this.cookingCount,
+    this.servedCount,
+    this.reservationInfo,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isOccupied = table.status == TableStatus.occupied;
-    final resolvedHeaderColor = _parseHexColor(
-      table.colorValue,
-      const Color(0xFFD9D9D9),
-    );
-    final cardBaseColor = isOccupied
-        ? theme.primaryColor
-        : const Color(0xFFE8E8E8);
-    final bodyColor = Colors.white;
-    final textColor = isOccupied ? Colors.white : Colors.black87;
-    final secondaryTextColor = isOccupied
-        ? Colors.white70
-        : Colors.grey.shade700;
-    final detailText = _buildDetailText();
+    final isDark = theme.brightness == Brightness.dark;
+    final colorScheme = theme.colorScheme;
+    final status = table.status;
 
-    return Padding(
-      padding: const EdgeInsets.all(2),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: onTap,
-          child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            decoration: BoxDecoration(
-              color: cardBaseColor,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(
-                    alpha: isOccupied ? 0.12 : 0.04,
-                  ),
-                  blurRadius: isOccupied ? 10 : 5,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
+    // Theme-aware colors matching design palette for light & dark mode
+    Color headerBgColor;
+    Color headerTextColor;
+
+    switch (status) {
+      case TableStatus.occupied:
+      case TableStatus.pendingBill:
+        headerBgColor = isDark ? const Color(0xFF2E7D32) : const Color(0xFF4CAF50); // Vibrant Green
+        headerTextColor = Colors.white;
+        break;
+      case TableStatus.reserved:
+        headerBgColor = isDark ? const Color(0xFFE65100) : const Color(0xFFFF9800); // Vibrant Amber
+        headerTextColor = Colors.white;
+        break;
+      case TableStatus.empty:
+        headerBgColor = isDark
+            ? colorScheme.surfaceContainerHighest
+            : const Color(0xFFEBEBEB); // Grey header matching proportions
+        headerTextColor = colorScheme.onSurface;
+        break;
+    }
+
+    final tableNoDisplay =
+        (table.tableNumber != null && table.tableNumber!.trim().isNotEmpty)
+            ? table.tableNumber!.trim()
+            : table.name.trim();
+
+    final tableHeaderTitle = 'TABLE - $tableNoDisplay'.toUpperCase();
+
+    final cardBgColor = colorScheme.surface;
+    final onSurface = colorScheme.onSurface;
+    final onSurfaceVariant = colorScheme.onSurfaceVariant;
+
+    return Card(
+      elevation: 2,
+      margin: EdgeInsets.zero,
+      color: cardBgColor,
+      shadowColor: theme.shadowColor.withValues(alpha: isDark ? 0.3 : 0.15),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(10.0),
+        child: Material(
+          color: cardBgColor,
+          type: MaterialType.card,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          child: InkWell(
+            onTap: onTap,
+            splashColor: colorScheme.primary.withValues(alpha: 0.15),
+            highlightColor: colorScheme.primary.withValues(alpha: 0.08),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
+                // --- Header Banner Box ---
+                Ink(
+                  width: double.infinity,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
-                    vertical: 14,
+                    vertical: 24, // Vertical padding for taller header banner view
                   ),
-                  decoration: BoxDecoration(
-                    color: isOccupied
-                        ? theme.primaryColor
-                        : resolvedHeaderColor,
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(12),
-                    ),
-                  ),
+                  color: headerBgColor,
                   child: Text(
-                    'TABLE - ${table.name}'.toUpperCase(),
-                    maxLines: 1,
+                    tableHeaderTitle,
+                    textAlign: TextAlign.start,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: isOccupied ? Colors.white : Colors.black87,
-                      fontWeight: FontWeight.w600,
+                      color: headerTextColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 15,
                       letterSpacing: 0.4,
                     ),
-                  ),
+                  ).inExpandedRow(),
                 ),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: bodyColor,
-                      borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(12),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+
+                // --- Body Content Box ---
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Top Status / Info Section
+                      if (status == TableStatus.occupied ||
+                          status == TableStatus.pendingBill) ...[
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.timer_outlined,
+                              size: 15,
+                              color: onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                elapsedTime ?? '1h:48m:53s',
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 13,
+                                  color: onSurface,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                      ] else if (status == TableStatus.reserved) ...[
                         Text(
-                          table.status.label.toUpperCase(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          'RESERVED',
                           style: theme.textTheme.labelLarge?.copyWith(
-                            color: isOccupied
-                                ? theme.primaryColor
-                                : Colors.black87,
-                            fontWeight: FontWeight.w700,
+                            color: isDark ? const Color(0xFFFFB74D) : const Color(0xFFFF9800),
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.bookmark_border,
+                              size: 14,
+                              color: onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                reservationInfo ?? 'Res. #104 - 7:30 PM',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 12,
+                                  color: onSurface,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+                      ] else ...[
+                        // Empty Table
+                        Text(
+                          'EMPTY',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            color: onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                            fontStyle: FontStyle.italic,
+                            fontSize: 13,
                             letterSpacing: 0.4,
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 5),
+                      ],
+
+                      // Table Label (Bottom Text)
+                      if (_hasValidTableLabel()) ...[
                         Text(
-                          detailText,
+                          _buildDetailText(),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: textColor,
-                            height: 1.3,
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontSize: 12.5,
+                            color: onSurfaceVariant,
+                            height: 1.2,
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Nos. of chairs: ${table.nosOfChairs}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: secondaryTextColor,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                        const SizedBox(height: 5),
                       ],
-                    ),
+
+                      // Bottom Row: Seating metrics or Chair count
+                      if (status == TableStatus.occupied ||
+                          status == TableStatus.pendingBill) ...[
+                        Row(
+                          children: [
+                            _buildCountIndicator(
+                              context: context,
+                              count: elapsedCount ?? '2',
+                              icon: Icons.hourglass_bottom,
+                            ),
+                            const SizedBox(width: 4),
+                            _buildCountIndicator(
+                              context: context,
+                              count: cookingCount ?? '-',
+                              icon: Icons.soup_kitchen_outlined,
+                            ),
+                            const SizedBox(width: 4),
+                            _buildCountIndicator(
+                              context: context,
+                              count: servedCount ?? '-',
+                              icon: Icons.dinner_dining_outlined,
+                            ),
+                          ],
+                        ),
+                      ] else ...[
+                        if (table.nosOfChairs > 0)
+                          Text(
+                            'Chairs: ${table.nosOfChairs}',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: onSurfaceVariant,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                      ],
+                    ],
                   ),
                 ),
               ],
@@ -132,40 +250,50 @@ class TableCardWidget extends StatelessWidget {
     );
   }
 
-  String _buildDetailText() {
-    final name = table.name.trim();
-    if (name.isEmpty) {
-      return 'Table details';
-    }
+  Widget _buildCountIndicator({
+    required BuildContext context,
+    required String count,
+    required IconData icon,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
 
-    return name.toLowerCase();
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        decoration: BoxDecoration(
+          color: isDark
+              ? colorScheme.surfaceContainerHighest
+              : const Color(0xFFEEEEEE),
+          borderRadius: BorderRadius.circular(2),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              count,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+                color: colorScheme.onSurface,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Icon(icon, size: 16, color: colorScheme.onSurface),
+          ],
+        ),
+      ),
+    );
   }
 
-  static Color _parseHexColor(String? value, Color fallbackColor) {
-    if (value == null || value.trim().isEmpty) {
-      return fallbackColor;
-    }
+  bool _hasValidTableLabel() {
+    final label = table.name.trim();
+    if (label.isEmpty) return false;
+    return true;
+  }
 
-    var hex = value.trim();
-    hex = hex.replaceAll('#', '');
-    hex = hex.replaceAll('0x', '').replaceAll('0X', '');
-
-    if (hex.length == 3) {
-      hex = hex.split('').expand((char) => [char, char]).join();
-    }
-
-    if (hex.length == 6) {
-      hex = 'FF$hex';
-    }
-
-    if (hex.length != 8) {
-      return fallbackColor;
-    }
-
-    try {
-      return Color(int.parse(hex, radix: 16));
-    } catch (_) {
-      return fallbackColor;
-    }
+  String _buildDetailText() {
+    return table.name.trim().toLowerCase();
   }
 }

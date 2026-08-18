@@ -72,6 +72,10 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                   ? TextField(
                       controller: _searchController,
                       autofocus: true,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
                       decoration: InputDecoration(
                         hintText:
                             context.tr(
@@ -79,6 +83,9 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                               track: track,
                             ) ??
                             'Search by name or phone...',
+                        hintStyle: Theme.of(
+                          context,
+                        ).textTheme.titleMedium?.copyWith(color: Colors.white),
                         border: InputBorder.none,
                       ),
                       onChanged: (query) =>
@@ -212,10 +219,12 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                         >(
                           builder: (context, state) {
                             final count = state is UpcomingReservationLoaded
-                                ? _filterReservationsSync(
-                                    state.reservations,
-                                    criteria,
-                                  ).length
+                                ? (criteria.isActive
+                                      ? _filterReservationsSync(
+                                          state.reservations,
+                                          criteria,
+                                        ).length
+                                      : state.totalCount)
                                 : 0;
                             final label =
                                 context.tr(

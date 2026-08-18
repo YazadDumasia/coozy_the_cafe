@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum TableStatus { empty, occupied, pendingBill }
+enum TableStatus { empty, occupied, pendingBill, reserved }
 
 extension TableStatusX on TableStatus {
   String get label {
@@ -11,6 +11,8 @@ extension TableStatusX on TableStatus {
         return 'Occupied';
       case TableStatus.pendingBill:
         return 'Pending Bill';
+      case TableStatus.reserved:
+        return 'Reserved';
     }
   }
 }
@@ -18,6 +20,7 @@ extension TableStatusX on TableStatus {
 class TableEntity extends Equatable {
   final int? id;
   final String name;
+  final String? tableNumber;
   final String? colorValue;
   final int sortOrderIndex;
   final int nosOfChairs;
@@ -26,6 +29,7 @@ class TableEntity extends Equatable {
   const TableEntity({
     required this.id,
     required this.name,
+    this.tableNumber,
     required this.colorValue,
     required this.sortOrderIndex,
     required this.nosOfChairs,
@@ -36,6 +40,7 @@ class TableEntity extends Equatable {
   List<Object?> get props => [
     id,
     name,
+    tableNumber,
     colorValue,
     sortOrderIndex,
     nosOfChairs,

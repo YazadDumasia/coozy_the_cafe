@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../bloc/current_reservation_cubit.dart';
 import '../bloc/upcoming_reservation_bloc.dart';
 import '../bloc/reservation_action_cubit.dart';
@@ -106,25 +107,85 @@ class MainReservationScreenActions {
     }
   }
 
+  static void confirmDeleteReservation(
+    BuildContext context, {
+    required ReservationEntity item,
+    required VoidCallback onConfirmed,
+  }) {
+    final track = shared.TrackConstants.reservationPageTrack;
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: Text(
+          context.tr(shared.LocaleKeys.deleteReservationTitle, track: track) ??
+              'Delete Reservation?',
+        ),
+        content: Text(
+          context.tr(
+                shared.LocaleKeys.deleteReservationSubtitle,
+                track: track,
+              ) ??
+              'Are you sure you want to delete this reservation?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: Text(
+              context.tr(
+                    shared.LocaleKeys.commonCancel,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Cancel',
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(dialogCtx);
+              onConfirmed();
+            },
+            child: Text(
+              context.tr(
+                    shared.LocaleKeys.commonDelete,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Delete',
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   static void onDeleteCurrentReservation(
     BuildContext context,
     ReservationEntity item,
   ) {
-    if (item.id != null) {
-      context.read<CurrentReservationCubit>().removeReservation(item.id!);
-      context.read<ReservationActionCubit>().deleteReservation(item.id!);
-    }
+    if (item.id == null) return;
+    confirmDeleteReservation(
+      context,
+      item: item,
+      onConfirmed: () {
+        context.read<CurrentReservationCubit>().removeReservation(item.id!);
+        context.read<ReservationActionCubit>().deleteReservation(item.id!);
+      },
+    );
   }
 
   static void onDeleteUpcomingReservation(
     BuildContext context,
     ReservationEntity item,
   ) {
-    if (item.id != null) {
-      context.read<UpcomingReservationBloc>().add(
-        RemoveUpcomingReservation(item.id!),
-      );
-      context.read<ReservationActionCubit>().deleteReservation(item.id!);
-    }
+    if (item.id == null) return;
+    confirmDeleteReservation(
+      context,
+      item: item,
+      onConfirmed: () {
+        context.read<UpcomingReservationBloc>().add(
+          RemoveUpcomingReservation(item.id!),
+        );
+        context.read<ReservationActionCubit>().deleteReservation(item.id!);
+      },
+    );
   }
 }

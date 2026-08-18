@@ -20,12 +20,7 @@ class ReservationsDao extends DatabaseAccessor<CoozyDatabase>
   Future<List<Reservation>> getCurrentReservations() {
     final nowIso = DateTime.now().toIso8601String().substring(0, 10);
     final query = select(reservationsTable)
-      ..where(
-        (t) =>
-            t.reservationDateTime.like('$nowIso%') |
-            t.status.equals(0) |
-            t.status.equals(1),
-      );
+      ..where((t) => t.reservationDateTime.like('$nowIso%'));
     return (query..orderBy([
           (t) => OrderingTerm(
             expression: t.reservationDateTime,
@@ -33,6 +28,42 @@ class ReservationsDao extends DatabaseAccessor<CoozyDatabase>
           ),
         ]))
         .get();
+  }
+
+  Future<List<Reservation>> getUpcomingReservations({
+    required int limit,
+    required int pageNo,
+  }) {
+    final now = DateTime.now();
+    final y = now.year.toString().padLeft(4, '0');
+    final m = now.month.toString().padLeft(2, '0');
+    final d = now.day.toString().padLeft(2, '0');
+    final todayEndStr = '$y-$m-${d}T23:59:59.999';
+    final offset = (pageNo - 1) * limit;
+    final query = select(reservationsTable)
+      ..where((t) => t.reservationDateTime.isBiggerThanValue(todayEndStr));
+    return (query
+          ..orderBy([
+            (t) => OrderingTerm(
+              expression: t.reservationDateTime,
+              mode: OrderingMode.asc,
+            ),
+          ])
+          ..limit(limit, offset: offset))
+        .get();
+  }
+
+  Future<int> getUpcomingReservationsCount() async {
+    final now = DateTime.now();
+    final y = now.year.toString().padLeft(4, '0');
+    final m = now.month.toString().padLeft(2, '0');
+    final d = now.day.toString().padLeft(2, '0');
+    final todayEndStr = '$y-$m-${d}T23:59:59.999';
+    final countExp = reservationsTable.id.count();
+    final query = selectOnly(reservationsTable)..addColumns([countExp]);
+    query.where(reservationsTable.reservationDateTime.isBiggerThanValue(todayEndStr));
+    final result = await query.getSingle();
+    return result.read(countExp) ?? 0;
   }
 
   Future<List<Reservation>> getReservationsPaginated({
