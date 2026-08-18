@@ -5,8 +5,13 @@ import 'package:lottie/lottie.dart' as lottie;
 import '../../gen/assets.gen.dart' as asts;
 
 class ErrorPage extends StatefulWidget {
-  const ErrorPage({required this.onPressedRetryButton, super.key});
+  const ErrorPage({
+    required this.onPressedRetryButton,
+    this.errorMsg,
+    super.key,
+  });
   final GestureTapCallback? onPressedRetryButton;
+  final String? errorMsg;
 
   @override
   State<ErrorPage> createState() => _ErrorPageState();
@@ -48,6 +53,22 @@ class _ErrorPageState extends State<ErrorPage>
                     fit: BoxFit.scaleDown,
                   ),
                 ),
+                const SizedBox(height: 10),
+                Text(
+                  widget.errorMsg?.isNotEmpty ?? false
+                      ? widget.errorMsg ?? ''
+                      : (context.tr(
+                              shared.LocaleKeys.commonErrorMsg,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Something when wrong. Please try again.'),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ).inExpandedRow(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: widget.onPressedRetryButton,
                   child: Text(
@@ -73,6 +94,22 @@ class _ErrorPageState extends State<ErrorPage>
                     fit: BoxFit.scaleDown,
                   ),
                 ),
+                const SizedBox(height: 10),
+                Text(
+                  widget.errorMsg?.isNotEmpty ?? false
+                      ? widget.errorMsg ?? ''
+                      : (context.tr(
+                              shared.LocaleKeys.commonErrorMsg,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Something when wrong. Please try again.'),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ).inExpandedRow(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: widget.onPressedRetryButton,
                   child: Text(
@@ -98,6 +135,22 @@ class _ErrorPageState extends State<ErrorPage>
                     fit: BoxFit.scaleDown,
                   ),
                 ),
+                const SizedBox(height: 10),
+                Text(
+                  widget.errorMsg?.isNotEmpty ?? false
+                      ? widget.errorMsg ?? ''
+                      : (context.tr(
+                              shared.LocaleKeys.commonErrorMsg,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Something when wrong. Please try again.'),
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleMedium,
+                ).inExpandedRow(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                const SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: widget.onPressedRetryButton,
                   child: Text(

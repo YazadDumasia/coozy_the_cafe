@@ -29,10 +29,14 @@ class EditMenuCategoryScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.crudSuccessUpdate,
-                      track: shared.TrackConstants.commonTrack,
+                      shared.LocaleKeys.menuCategoryUpdatedSuccessfullyText,
+                      track: shared.TrackConstants.menuCategoryPageTrack,
                     ) ??
-                    'Record updated successfully.',
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessUpdate,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Category updated successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor

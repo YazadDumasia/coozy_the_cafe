@@ -137,10 +137,14 @@ class InventoryListScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.crudSuccessUpdate,
-                      track: shared.TrackConstants.commonTrack,
+                      shared.LocaleKeys.inventoryAddEditDailogUpdateSuccessfully,
+                      track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
-                    'Record updated successfully.',
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessUpdate,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Inventory item updated successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor
@@ -201,10 +205,14 @@ class InventoryListScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.crudSuccessUpdate,
-                      track: shared.TrackConstants.commonTrack,
+                      shared.LocaleKeys.inventoryAddEditDailogUpdateSuccessfully,
+                      track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
-                    'Record updated successfully.',
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessUpdate,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Inventory item updated successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor
@@ -318,10 +326,14 @@ class InventoryListScreenActions {
                                   'Success',
                               descriptions:
                                   context.tr(
-                                    shared.LocaleKeys.crudSuccessDelete,
-                                    track: shared.TrackConstants.commonTrack,
+                                    shared.LocaleKeys.inventoryDeleteSuccessfully,
+                                    track: shared.TrackConstants.inventoryPageTrack,
                                   ) ??
-                                  'Record deleted successfully.',
+                                  (context.tr(
+                                        shared.LocaleKeys.crudSuccessDelete,
+                                        track: shared.TrackConstants.commonTrack,
+                                      ) ??
+                                      'Inventory item deleted successfully.'),
                               titleIcon: Lottie.asset(
                                 MediaQuery.of(context).platformBrightness ==
                                         Brightness.light

@@ -49,10 +49,14 @@ class AddNewMenuSubcategoryScreenActions {
                   'Success',
               descriptions:
                   context.tr(
-                    shared.LocaleKeys.crudSuccessAdd,
-                    track: shared.TrackConstants.commonTrack,
+                    shared.LocaleKeys.menuSubCategoryAddedSuccessfully,
+                    track: shared.TrackConstants.menuSubCategoryPageTrack,
                   ) ??
-                  'Record added successfully.',
+                  (context.tr(
+                        shared.LocaleKeys.crudSuccessAdd,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Sub-category added successfully.'),
               titleIcon: Lottie.asset(
                 MediaQuery.of(context).platformBrightness == Brightness.light
                     ? Assets.lottie.doneLightBrownColor

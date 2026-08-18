@@ -256,7 +256,13 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
                 },
                 builder: (context, state) {
                   if (state is AttendanceLoadingState) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const shared.LoadingPage();
+                  } else if (state is AttendanceErrorState) {
+                    return shared.ErrorPage(
+                      onPressedRetryButton: () {
+                        context.read<AttendanceBloc>().add(LoadAttendanceEvent());
+                      },
+                    );
                   } else if (state is AttendanceLoadedState) {
                     if (state.attendanceList.isEmpty) {
                       return const AttendanceEmptyView();

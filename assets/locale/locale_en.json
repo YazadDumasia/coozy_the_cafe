@@ -265,7 +265,8 @@
         "menu_category_name_error_msg": "Category name is required.",
         "menu_category_full_list_delete_dialog_title": "Are you sure?",
         "menu_category_full_list_delete_dialog_subTitle": "Do you really want to delete this category information? You will not be able to undo this action.",
-        "menu_category_full_list_enable_status_text": "Enable Status:"
+        "menu_category_full_list_enable_status_text": "Enable Status:",
+        "menu_category_deleted_successfully_text": "Category deleted successfully."
     },
     "menu_item_page": {
         "menu_item_page_add_new_category": "Add new category",
@@ -351,7 +352,8 @@
         "menu_item_page_unit_pound": "Pound",
         "menu_item_page_unit_gallon": "Gallon",
         "menu_item_page_unit_pint": "Pint",
-        "menu_item_page_unit_quart": "Quart"
+        "menu_item_page_unit_quart": "Quart",
+        "menu_item_page_deleted_successfully": "Menu item deleted successfully."
     },
     "menu_sub_category_page": {
         "menu_sub_category_appbar_title": "All Subcategories",
@@ -369,7 +371,9 @@
         "menu_sub_category_new_added_failed_successfully_text": "Failed to add new sub-category.",
         "menu_sub_category_under_category": "Under Category:",
         "menu_subCategory_update_successfully": "Sub-category updated successfully.",
-        "menu_subCategory_update_failed": "Failed to update sub-category."
+        "menu_subCategory_update_failed": "Failed to update sub-category.",
+        "menu_subCategory_added_successfully": "Sub-category added successfully.",
+        "menu_subCategory_deleted_successfully": "Sub-category deleted successfully."
     },
     "menu_main_page": {},
     "permission_page": {},
@@ -523,7 +527,8 @@
         "inventory_list_popup_menu_adjust_stock": "Adjust Stock",
         "inventory_list_popup_menu_record_purchase": "record purchase",
         "inventory_picker_page_current_stock": "Inventory picker page current stock",
-        "inventory_add_edit_dailog_must_be_greater_than_or_zero": "Must be 0 or greater"
+        "inventory_add_edit_dailog_must_be_greater_than_or_zero": "Must be 0 or greater",
+        "inventory_delete_successfully": "Inventory item deleted successfully."
     },
     "purchase_page": {
         "purchase_save_purchase": "Save Purchase",
@@ -560,7 +565,10 @@
         "edit_customer_title": "Edit Customer",
         "add_customer_btn": "Add Customer",
         "save_changes_btn": "Save Changes",
-        "customer_dialog_delete_sub_title": "Are you sure you want to delete this customer?"
+        "customer_dialog_delete_sub_title": "Are you sure you want to delete this customer?",
+        "customer_add_success": "Customer added successfully.",
+        "customer_update_success": "Customer updated successfully.",
+        "customer_delete_success": "Customer deleted successfully."
     },
     "home_page": {
         "home_drawer_home_label": "Home",

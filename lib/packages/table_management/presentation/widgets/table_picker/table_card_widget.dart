@@ -38,11 +38,15 @@ class TableCardWidget extends StatelessWidget {
     switch (status) {
       case TableStatus.occupied:
       case TableStatus.pendingBill:
-        headerBgColor = isDark ? const Color(0xFF2E7D32) : const Color(0xFF4CAF50); // Vibrant Green
+        headerBgColor = isDark
+            ? const Color(0xFF2E7D32)
+            : const Color(0xFF4CAF50); // Vibrant Green
         headerTextColor = Colors.white;
         break;
       case TableStatus.reserved:
-        headerBgColor = isDark ? const Color(0xFFE65100) : const Color(0xFFFF9800); // Vibrant Amber
+        headerBgColor = isDark
+            ? const Color(0xFFE65100)
+            : const Color(0xFFFF9800); // Vibrant Amber
         headerTextColor = Colors.white;
         break;
       case TableStatus.empty:
@@ -55,8 +59,8 @@ class TableCardWidget extends StatelessWidget {
 
     final tableNoDisplay =
         (table.tableNumber != null && table.tableNumber!.trim().isNotEmpty)
-            ? table.tableNumber!.trim()
-            : table.name.trim();
+        ? table.tableNumber!.trim()
+        : table.name.trim();
 
     final tableHeaderTitle = 'TABLE - $tableNoDisplay'.toUpperCase();
 
@@ -91,7 +95,8 @@ class TableCardWidget extends StatelessWidget {
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
-                    vertical: 24, // Vertical padding for taller header banner view
+                    vertical:
+                        24, // Vertical padding for taller header banner view
                   ),
                   color: headerBgColor,
                   child: Text(
@@ -128,7 +133,7 @@ class TableCardWidget extends StatelessWidget {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                elapsedTime ?? '1h:48m:53s',
+                                elapsedTime ?? '',
                                 style: TextStyle(
                                   fontStyle: FontStyle.italic,
                                   fontSize: 13,
@@ -143,7 +148,9 @@ class TableCardWidget extends StatelessWidget {
                         Text(
                           'RESERVED',
                           style: theme.textTheme.labelLarge?.copyWith(
-                            color: isDark ? const Color(0xFFFFB74D) : const Color(0xFFFF9800),
+                            color: isDark
+                                ? const Color(0xFFFFB74D)
+                                : const Color(0xFFFF9800),
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.5,
                             fontStyle: FontStyle.italic,

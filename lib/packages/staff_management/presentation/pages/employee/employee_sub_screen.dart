@@ -219,7 +219,13 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                 },
                 builder: (context, state) {
                   if (state is EmployeeLoadingState) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const shared.LoadingPage();
+                  } else if (state is EmployeeErrorState) {
+                    return shared.ErrorPage(
+                      onPressedRetryButton: () {
+                        context.read<EmployeeBloc>().add(LoadEmployeesEvent());
+                      },
+                    );
                   } else if (state is EmployeeLoadedState) {
                     if (state.employees.isEmpty) {
                       return const EmployeeEmptyView();

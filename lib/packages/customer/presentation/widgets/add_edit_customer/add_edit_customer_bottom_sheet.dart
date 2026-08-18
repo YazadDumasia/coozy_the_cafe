@@ -86,10 +86,14 @@ class _AddEditCustomerBottomSheetState
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.crudSuccessAdd,
-                      track: shared.TrackConstants.commonTrack,
+                      shared.LocaleKeys.customerAddSuccess,
+                      track: shared.TrackConstants.customerPageTrack,
                     ) ??
-                    'Record added successfully.',
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessAdd,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Customer added successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor
@@ -151,10 +155,14 @@ class _AddEditCustomerBottomSheetState
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.crudSuccessUpdate,
-                      track: shared.TrackConstants.commonTrack,
+                      shared.LocaleKeys.customerUpdateSuccess,
+                      track: shared.TrackConstants.customerPageTrack,
                     ) ??
-                    'Record updated successfully.',
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessUpdate,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Customer updated successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor

@@ -121,7 +121,7 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                     builder: (context, state) {
                       if (state is InventoryLoading ||
                           state is InventoryInitial) {
-                        return Center(child: CircularProgressIndicator());
+                        return const shared.LoadingPage();
                       } else if (state is InventoryLoaded) {
                         var filteredItems = state.items.where((item) {
                           if (searchQuery.isNotEmpty &&
@@ -264,10 +264,10 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                           ),
                         );
                       } else if (state is InventoryError) {
-                        return Center(
-                          child: Text(
-                            '${context.tr(shared.LocaleKeys.commonError, track: shared.TrackConstants.commonTrack) ?? 'Error'}: ${state.message}',
-                          ),
+                        return shared.ErrorPage(
+                          onPressedRetryButton: () {
+                            context.read<InventoryBloc>().add(LoadInventoryItems());
+                          },
                         );
                       }
                       return Center(

@@ -53,10 +53,19 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                 ) ??
                 'Customers',
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => CustomerListScreenActions.showAddEditForm(context),
-          child: Icon(Icons.add),
+          actions: [
+            IconButton(
+              onPressed: () =>
+                  CustomerListScreenActions.showAddEditForm(context),
+              icon: const Icon(Icons.add),
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.addCustomerBtn,
+                    track: shared.TrackConstants.customerPageTrack,
+                  ) ??
+                  'Add Customer',
+            ),
+          ],
         ),
         body: _buildBody(),
       ),
@@ -93,19 +102,16 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
               if (state is CustomerInitial ||
                   (state is CustomerLoading &&
                       context.read<CustomerBloc>().state is! CustomerLoaded)) {
-                return Center(child: CircularProgressIndicator());
+                return const shared.LoadingPage();
               }
 
               if (state is CustomerError) {
-                return Center(
-                  child: Text(
-                    context.tr(
-                          shared.LocaleKeys.commonCustomErrorMsg,
-                          track: shared.TrackConstants.commonTrack,
-                          params: {"error": state.message},
-                        ) ??
-                        'Error: ${state.message}',
-                  ),
+                return shared.ErrorPage(
+                  onPressedRetryButton: () {
+                    context.read<CustomerBloc>().add(
+                      const LoadCustomers(isRefresh: true),
+                    );
+                  },
                 );
               }
 

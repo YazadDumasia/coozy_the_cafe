@@ -85,10 +85,14 @@ class MenuCategoryFullListScreenActions {
                           'Success',
                       descriptions:
                           context.tr(
-                            shared.LocaleKeys.crudSuccessDelete,
-                            track: shared.TrackConstants.commonTrack,
+                            shared.LocaleKeys.menuCategoryDeletedSuccessfullyText,
+                            track: shared.TrackConstants.menuCategoryPageTrack,
                           ) ??
-                          'Record deleted successfully.',
+                          (context.tr(
+                                shared.LocaleKeys.crudSuccessDelete,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Category deleted successfully.'),
                       titleIcon: Lottie.asset(
                         MediaQuery.of(context).platformBrightness ==
                                 Brightness.light

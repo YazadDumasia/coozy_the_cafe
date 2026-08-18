@@ -317,8 +317,12 @@ abstract class LocaleKeys {
       'menu_category_full_list_delete_dialog_subTitle';
   static String menuCategoryFullListEnableStatusText =
       'menu_category_full_list_enable_status_text';
+  static String menuCategoryDeletedSuccessfullyText =
+      'menu_category_deleted_successfully_text';
 
   // menu_item_page
+  static String menuItemPageDeletedSuccessfully =
+      'menu_item_page_deleted_successfully';
   static String addEditMenuItemScreenCreateSuccessfully =
       'add_edit_menu_item_screen_create_successfully';
   static String addEditMenuItemScreenUpdateSuccessfully =
@@ -478,6 +482,10 @@ abstract class LocaleKeys {
   static String menuSubCategoryUpdateSuccessfully =
       'menu_subCategory_update_successfully';
   static String menuSubCategoryUpdateFailed = 'menu_subCategory_update_failed';
+  static String menuSubCategoryAddedSuccessfully =
+      'menu_subCategory_added_successfully';
+  static String menuSubCategoryDeletedSuccessfully =
+      'menu_subCategory_deleted_successfully';
 
   // employee
   static String employeeScreenDeleteTitleDialog =
@@ -630,6 +638,8 @@ abstract class LocaleKeys {
       'inventory_add_edit_dailog_create_successfully';
   static String inventoryAddEditDailogUpdateSuccessfully =
       'inventory_add_edit_dailog_update_successfully';
+  static String inventoryDeleteSuccessfully =
+      'inventory_delete_successfully';
   static String inventoryAppbar = 'inventory_appbar';
   static String inventoryListPageAddPurchaseForItem =
       'inventory_list_page_add_purchase_for_item';
@@ -710,6 +720,9 @@ abstract class LocaleKeys {
   static String editCustomerTitle = 'edit_customer_title';
   static String addCustomerBtn = 'add_customer_btn';
   static String saveChangesBtn = 'save_changes_btn';
+  static String customerAddSuccess = 'customer_add_success';
+  static String customerUpdateSuccess = 'customer_update_success';
+  static String customerDeleteSuccess = 'customer_delete_success';
 
   // home_page
   static String homePageAreYouSureExitTitle =

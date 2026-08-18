@@ -253,7 +253,13 @@ class _LeaveSubScreenState extends State<LeaveSubScreen>
                 },
                 builder: (context, state) {
                   if (state is LeaveLoadingState) {
-                    return const Center(child: CircularProgressIndicator());
+                    return const shared.LoadingPage();
+                  } else if (state is LeaveErrorState) {
+                    return shared.ErrorPage(
+                      onPressedRetryButton: () {
+                        context.read<LeaveBloc>().add(LoadLeavesEvent());
+                      },
+                    );
                   } else if (state is LeaveLoadedState) {
                     if (state.leaves.isEmpty) {
                       return const LeaveEmptyView();

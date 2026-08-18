@@ -405,10 +405,14 @@ class _MainReservationScreenState extends State<MainReservationScreen>
     return BlocBuilder<CurrentReservationCubit, CurrentReservationState>(
       builder: (context, state) {
         if (state is CurrentReservationLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const shared.LoadingPage();
         }
         if (state is CurrentReservationError) {
-          return Center(child: Text(state.message));
+          return shared.ErrorPage(
+            onPressedRetryButton: () {
+              MainReservationScreenActions.refreshAll(context);
+            },
+          );
         }
         if (state is CurrentReservationLoaded) {
           return FutureBuilder<List<ReservationEntity>>(
@@ -471,10 +475,14 @@ class _MainReservationScreenState extends State<MainReservationScreen>
     return BlocBuilder<UpcomingReservationBloc, UpcomingReservationState>(
       builder: (context, state) {
         if (state is UpcomingReservationLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const shared.LoadingPage();
         }
         if (state is UpcomingReservationError) {
-          return Center(child: Text(state.message));
+          return shared.ErrorPage(
+            onPressedRetryButton: () {
+              MainReservationScreenActions.refreshAll(context);
+            },
+          );
         }
         if (state is UpcomingReservationLoaded) {
           return FutureBuilder<List<ReservationEntity>>(

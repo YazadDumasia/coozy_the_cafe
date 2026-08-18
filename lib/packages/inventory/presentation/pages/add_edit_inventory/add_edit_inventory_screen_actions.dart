@@ -52,10 +52,14 @@ class AddEditInventoryScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.crudSuccessAdd,
-                      track: shared.TrackConstants.commonTrack,
+                      shared.LocaleKeys.inventoryAddEditDailogCreateSuccessfully,
+                      track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
-                    'Record added successfully.',
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessAdd,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Inventory item created successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor
@@ -115,10 +119,14 @@ class AddEditInventoryScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.crudSuccessUpdate,
-                      track: shared.TrackConstants.commonTrack,
+                      shared.LocaleKeys.inventoryAddEditDailogUpdateSuccessfully,
+                      track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
-                    'Record updated successfully.',
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessUpdate,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Inventory item updated successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor

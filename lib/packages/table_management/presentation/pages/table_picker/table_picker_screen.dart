@@ -2,6 +2,7 @@ import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../../data/datasources/table_picker_dao.dart';
 import '../../../data/repositories/tables_repository_impl.dart';
 import '../../../domain/entities/table_entity.dart';
@@ -32,15 +33,14 @@ class TablePickerScreen extends StatelessWidget {
           body: BlocBuilder<TablePickerBloc, TablePickerState>(
             builder: (context, state) {
               if (state is TablePickerLoading || state is TablePickerInitial) {
-                return const Center(child: CircularProgressIndicator());
+                return const shared.LoadingPage();
               }
 
               if (state is TablePickerError) {
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(state.message, textAlign: TextAlign.center),
-                  ),
+                return shared.ErrorPage(
+                  onPressedRetryButton: () {
+                    context.read<TablePickerBloc>().add(const LoadTablesEvent());
+                  },
                 );
               }
 

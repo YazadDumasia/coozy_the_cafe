@@ -222,10 +222,14 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                                 'Success',
                             descriptions:
                                 rootContext.tr(
-                                  shared.LocaleKeys.crudSuccessUpdate,
-                                  track: shared.TrackConstants.commonTrack,
+                                  shared.LocaleKeys.inventoryAddEditDailogUpdateSuccessfully,
+                                  track: shared.TrackConstants.inventoryPageTrack,
                                 ) ??
-                                'Record updated successfully.',
+                                (rootContext.tr(
+                                      shared.LocaleKeys.crudSuccessUpdate,
+                                      track: shared.TrackConstants.commonTrack,
+                                    ) ??
+                                    'Inventory item updated successfully.'),
                             titleIcon: Lottie.asset(
                               MediaQuery.of(rootContext).platformBrightness ==
                                       Brightness.light

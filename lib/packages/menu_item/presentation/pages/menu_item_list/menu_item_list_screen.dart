@@ -7,6 +7,7 @@ import '../../widgets/menu_item_list/menu_item_list_item.dart';
 
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
+import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_event.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_state.dart';
 
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
@@ -282,7 +283,7 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
           child: BlocBuilder<MenuItemBloc, MenuItemState>(
             builder: (context, state) {
               if (state is MenuItemLoading || state is MenuItemInitial) {
-                return const Center(child: CircularProgressIndicator());
+                return const shared.LoadingPage();
               } else if (state is MenuItemLoaded) {
                 var filteredItems = state.items.where((item) {
                   if (_selectedCategoryIdNotifier.value != null &&
@@ -401,15 +402,10 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                   ),
                 );
               } else if (state is MenuItemError) {
-                return Center(
-                  child: Text(
-                    context.tr(
-                          shared.LocaleKeys.commonCustomErrorMsg,
-                          track: shared.TrackConstants.commonTrack,
-                          params: {"error": state.message},
-                        ) ??
-                        'Error: ${state.message}',
-                  ),
+                return shared.ErrorPage(
+                  onPressedRetryButton: () {
+                    context.read<MenuItemBloc>().add(LoadMenuItems());
+                  },
                 );
               }
               return const SizedBox.shrink();

@@ -45,10 +45,14 @@ class MenuItemListScreenActions {
                   'Success',
               descriptions:
                   context.tr(
-                    shared.LocaleKeys.crudSuccessDelete,
-                    track: shared.TrackConstants.commonTrack,
+                    shared.LocaleKeys.menuItemPageDeletedSuccessfully,
+                    track: shared.TrackConstants.menuItemPageTrack,
                   ) ??
-                  'Record deleted successfully.',
+                  (context.tr(
+                        shared.LocaleKeys.crudSuccessDelete,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Menu item deleted successfully.'),
               titleIcon: Lottie.asset(
                 MediaQuery.of(context).platformBrightness == Brightness.light
                     ? Assets.lottie.doneLightBrownColor

@@ -128,11 +128,15 @@ class AddEditMenuItemScreenActions {
                     ) ??
                     'Success',
                 descriptions:
-                    context.tr(
-                      shared.LocaleKeys.crudSuccessAdd,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    'Record added successfully.',
+                  context.tr(
+                    shared.LocaleKeys.addEditMenuItemScreenCreateSuccessfully,
+                    track: shared.TrackConstants.menuItemPageTrack,
+                  ) ??
+                  (context.tr(
+                        shared.LocaleKeys.crudSuccessAdd,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Menu item added successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor
@@ -192,10 +196,14 @@ class AddEditMenuItemScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.crudSuccessUpdate,
-                      track: shared.TrackConstants.commonTrack,
+                      shared.LocaleKeys.addEditMenuItemScreenUpdateSuccessfully,
+                      track: shared.TrackConstants.menuItemPageTrack,
                     ) ??
-                    'Record updated successfully.',
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessUpdate,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Menu item updated successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor

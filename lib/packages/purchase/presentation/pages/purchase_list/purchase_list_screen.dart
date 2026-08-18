@@ -297,13 +297,15 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
 
                       if (filteredPurchases.isEmpty) {
                         if (state.isLoading) {
-                          return Center(child: CircularProgressIndicator());
+                          return const shared.LoadingPage();
                         }
                         if (state.errorMessage != null) {
-                          return Center(
-                            child: Text(
-                              '${context.tr(shared.LocaleKeys.commonError, track: shared.TrackConstants.commonTrack) ?? 'Error'}: ${state.errorMessage}',
-                            ),
+                          return shared.ErrorPage(
+                            onPressedRetryButton: () {
+                              context.read<PurchaseListBloc>().add(
+                                    const LoadPurchases(isRefresh: true),
+                                  );
+                            },
                           );
                         }
                         return const PurchaseEmptyView();

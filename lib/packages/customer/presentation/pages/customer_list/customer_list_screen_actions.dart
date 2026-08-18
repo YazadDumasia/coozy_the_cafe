@@ -89,10 +89,14 @@ class CustomerListScreenActions {
                             'Success',
                         descriptions:
                             context.tr(
-                              shared.LocaleKeys.crudSuccessDelete,
-                              track: shared.TrackConstants.commonTrack,
+                              shared.LocaleKeys.customerDeleteSuccess,
+                              track: shared.TrackConstants.customerPageTrack,
                             ) ??
-                            'Record deleted successfully.',
+                            (context.tr(
+                                  shared.LocaleKeys.crudSuccessDelete,
+                                  track: shared.TrackConstants.commonTrack,
+                                ) ??
+                                'Customer deleted successfully.'),
                         titleIcon: Lottie.asset(
                           MediaQuery.of(context).platformBrightness ==
                                   Brightness.light

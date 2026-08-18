@@ -62,10 +62,14 @@ class MenuSubcategoryFullListScreenActions {
                           'Success',
                       descriptions:
                           context.tr(
-                            shared.LocaleKeys.crudSuccessUpdate,
-                            track: shared.TrackConstants.commonTrack,
+                            shared.LocaleKeys.menuSubCategoryUpdateSuccessfully,
+                            track: shared.TrackConstants.menuSubCategoryPageTrack,
                           ) ??
-                          'Record updated successfully.',
+                          (context.tr(
+                                shared.LocaleKeys.crudSuccessUpdate,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Sub-category updated successfully.'),
                       titleIcon: Lottie.asset(
                         MediaQuery.of(context).platformBrightness ==
                                 Brightness.light
@@ -229,10 +233,14 @@ class MenuSubcategoryFullListScreenActions {
                             'Success',
                         descriptions:
                             context.tr(
-                              shared.LocaleKeys.crudSuccessDelete,
-                              track: shared.TrackConstants.commonTrack,
+                              shared.LocaleKeys.menuSubCategoryDeletedSuccessfully,
+                              track: shared.TrackConstants.menuSubCategoryPageTrack,
                             ) ??
-                            'Record deleted successfully.',
+                            (context.tr(
+                                  shared.LocaleKeys.crudSuccessDelete,
+                                  track: shared.TrackConstants.commonTrack,
+                                ) ??
+                                'Sub-category deleted successfully.'),
                         showDuration: const Duration(seconds: 3),
                         titleIcon: Lottie.asset(
                           MediaQuery.of(context).platformBrightness ==
