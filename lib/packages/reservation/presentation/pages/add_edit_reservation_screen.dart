@@ -27,6 +27,8 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
   late TextEditingController _guestsController;
   late TextEditingController _notesController;
   final FocusNode _phoneFocusNode = FocusNode();
+  final FocusNode _nameFocusNode = FocusNode();
+  List<Customer> _customerSuggestions = [];
 
   final ValueNotifier<String> _isoCodeNotifier = ValueNotifier<String>('IN');
   final ValueNotifier<DateTime?> _dateTimeNotifier = ValueNotifier<DateTime?>(
@@ -59,6 +61,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     _isoCodeNotifier.value = r?.isoCode ?? 'IN';
 
     _phoneController.addListener(_onPhoneChanged);
+    _loadCustomerSuggestions();
 
     if (r?.reservationDateTime != null) {
       _dateTimeNotifier.value = DateTime.tryParse(r!.reservationDateTime!);
@@ -79,6 +82,71 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
 
     if (r?.preOrderedItems != null) {
       _selectedMenuItemsNotifier.value = List.from(r!.preOrderedItems);
+    }
+  }
+
+  Future<void> _loadCustomerSuggestions() async {
+    try {
+      final db = GetIt.I<CoozyDatabase>();
+      final list = await db.customersDao.searchCustomers(limit: 100);
+      if (list != null && mounted) {
+        setState(() {
+          _customerSuggestions = list;
+        });
+      }
+    } catch (_) {}
+  }
+
+  void _selectCustomer(Customer selection) {
+    if (selection.name != null && selection.name!.isNotEmpty) {
+      _nameController.text = selection.name!;
+      _nameController.selection = TextSelection.collapsed(
+        offset: _nameController.text.length,
+      );
+    }
+    if (selection.phoneNumber != null && selection.phoneNumber!.isNotEmpty) {
+      _phoneController.text = selection.phoneNumber!;
+      _phoneController.selection = TextSelection.collapsed(
+        offset: _phoneController.text.length,
+      );
+    }
+
+    String? targetIsoCode;
+    if (selection.isoCode != null && selection.isoCode!.isNotEmpty) {
+      String code = selection.isoCode!.trim();
+      if (code.startsWith('+')) {
+        code = code.substring(1);
+      }
+      if (RegExp(r'^\d+$').hasMatch(code)) {
+        try {
+          final country = shared.CountryPickerUtils.getCountryByPhoneCode(code);
+          targetIsoCode = country.isoCode.toUpperCase();
+        } catch (_) {
+          targetIsoCode = code.toUpperCase();
+        }
+      } else {
+        try {
+          final country = shared.CountryPickerUtils.getCountryByIsoCode(code);
+          targetIsoCode = country.isoCode.toUpperCase();
+        } catch (_) {
+          targetIsoCode = code.toUpperCase();
+        }
+      }
+    } else if (selection.phoneNumber != null &&
+        selection.phoneNumber!.trim().isNotEmpty) {
+      try {
+        final phone = selection.phoneNumber!.trim();
+        final parsed = shared.PhoneNumber.fromCompleteNumber(
+          completeNumber: phone.startsWith('+') ? phone : '+$phone',
+        );
+        if (parsed.countryISOCode.isNotEmpty) {
+          targetIsoCode = parsed.countryISOCode.toUpperCase();
+        }
+      } catch (_) {}
+    }
+
+    if (targetIsoCode != null && targetIsoCode.isNotEmpty) {
+      _isoCodeNotifier.value = targetIsoCode;
     }
   }
 
@@ -107,6 +175,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     _guestsController.dispose();
     _notesController.dispose();
     _phoneFocusNode.dispose();
+    _nameFocusNode.dispose();
 
     _isoCodeNotifier.dispose();
     _dateTimeNotifier.dispose();
@@ -235,7 +304,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
                     blurRadius: 6,
                     offset: const Offset(0, -2),
                   ),
@@ -330,6 +399,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
           valueListenable: _selectedTablesNotifier,
           builder: (context, selectedTables, _) {
             return TablePickerView(
+              key: const ValueKey('mobile_table_picker'),
               selectedTables: selectedTables,
               onTablesChanged: (tables) =>
                   _selectedTablesNotifier.value = tables,
@@ -344,6 +414,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
           valueListenable: _selectedMenuItemsNotifier,
           builder: (context, selectedItems, _) {
             return MenuItemPickerView(
+              key: const ValueKey('mobile_menu_picker'),
               selectedItems: selectedItems,
               onItemsChanged: (items) =>
                   _selectedMenuItemsNotifier.value = items,
@@ -398,6 +469,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                     valueListenable: _selectedTablesNotifier,
                     builder: (context, selectedTables, _) {
                       return TablePickerView(
+                        key: const ValueKey('desktop_table_picker'),
                         selectedTables: selectedTables,
                         onTablesChanged: (tables) =>
                             _selectedTablesNotifier.value = tables,
@@ -419,6 +491,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                     valueListenable: _selectedMenuItemsNotifier,
                     builder: (context, selectedItems, _) {
                       return MenuItemPickerView(
+                        key: const ValueKey('desktop_menu_picker'),
                         selectedItems: selectedItems,
                         onItemsChanged: (items) =>
                             _selectedMenuItemsNotifier.value = items,
@@ -452,8 +525,20 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            IconButton(
+              icon: const Icon(Icons.search, size: 20),
+              tooltip: 'Search Tables',
+              onPressed: () {
+                TablePickerView.showSearchDialog(
+                  context,
+                  selectedTables: _selectedTablesNotifier.value,
+                  onTablesChanged: (tables) =>
+                      _selectedTablesNotifier.value = tables,
+                );
+              },
+            ),
             if (selectedTables.isNotEmpty) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               Chip(
                 label: Text('${selectedTables.length} selected'),
                 visualDensity: VisualDensity.compact,
@@ -485,8 +570,20 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
+            IconButton(
+              icon: const Icon(Icons.search, size: 20),
+              tooltip: 'Search Menu Items',
+              onPressed: () {
+                MenuItemPickerView.showSearchDialog(
+                  context,
+                  selectedItems: _selectedMenuItemsNotifier.value,
+                  onItemsChanged: (items) =>
+                      _selectedMenuItemsNotifier.value = items,
+                );
+              },
+            ),
             if (selectedMenuItems.isNotEmpty) ...[
-              const SizedBox(width: 8),
+              const SizedBox(width: 4),
               Flexible(
                 child: Chip(
                   label: Text(
@@ -541,28 +638,165 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     );
   }
 
-  Widget _buildNameField(String track) {
-    return TextFormField(
-      controller: _nameController,
-      decoration: InputDecoration(
-        labelText:
-            context.tr(shared.LocaleKeys.customerNameLabel, track: track) ??
-            'Customer Name',
-        hintText:
-            context.tr(shared.LocaleKeys.customerNameHint, track: track) ??
-            'Enter customer name',
-        border: const OutlineInputBorder(),
-        prefixIcon: const Icon(Icons.person),
-      ),
-      validator: (val) {
-        if (val == null || val.trim().isEmpty) {
-          return context.tr(
-                shared.LocaleKeys.customerNameError,
-                track: track,
-              ) ??
-              'Customer name is required';
+  String _formatCustomerPhoneWithIso(Customer option) {
+    final phone = option.phoneNumber ?? '';
+    final rawIso = option.isoCode ?? '';
+    if (phone.isEmpty) return 'No phone number';
+
+    if (rawIso.isNotEmpty) {
+      if (rawIso.startsWith('+')) {
+        return '$rawIso $phone';
+      } else if (RegExp(r'^\d+$').hasMatch(rawIso)) {
+        return '+$rawIso $phone';
+      } else {
+        try {
+          final country = shared.CountryPickerUtils.getCountryByIsoCode(rawIso);
+          return '+${country.phoneCode} $phone';
+        } catch (_) {
+          return '$rawIso $phone';
         }
-        return null;
+      }
+    }
+    return phone;
+  }
+
+  Widget? _buildIsoBadge(BuildContext context, Customer option) {
+    final rawIso = option.isoCode;
+    if (rawIso == null || rawIso.isEmpty) return null;
+    String displayIso = rawIso;
+    if (RegExp(r'^\d+$').hasMatch(rawIso) || rawIso.startsWith('+')) {
+      final code = rawIso.replaceAll('+', '');
+      try {
+        final country = shared.CountryPickerUtils.getCountryByPhoneCode(code);
+        displayIso = country.isoCode;
+      } catch (_) {}
+    }
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.primaryContainer,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        displayIso.toUpperCase(),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCustomerOptionsView(
+    BuildContext context,
+    AutocompleteOnSelected<Customer> onSelected,
+    Iterable<Customer> options,
+  ) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Material(
+        elevation: 6,
+        borderRadius: BorderRadius.circular(8),
+        color: Theme.of(context).cardColor,
+        child: Container(
+          constraints: const BoxConstraints(maxHeight: 220),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Theme.of(context).dividerColor),
+          ),
+          child: ListView.separated(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            itemCount: options.length,
+            separatorBuilder: (context, index) => const Divider(height: 1),
+            itemBuilder: (BuildContext context, int index) {
+              final Customer option = options.elementAt(index);
+              return ListTile(
+                dense: true,
+                leading: CircleAvatar(
+                  radius: 14,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
+                  child: Icon(
+                    Icons.person,
+                    size: 16,
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
+                  ),
+                ),
+                title: Text(
+                  option.name ?? 'Unknown Customer',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text(
+                  _formatCustomerPhoneWithIso(option),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Theme.of(context).textTheme.bodySmall?.color,
+                  ),
+                ),
+                trailing: _buildIsoBadge(context, option),
+                onTap: () => onSelected(option),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Iterable<Customer> _searchCustomerSuggestions(String query) {
+    final q = query.trim().toLowerCase();
+    if (q.isEmpty) return const Iterable<Customer>.empty();
+    return _customerSuggestions.where((Customer customer) {
+      final name = (customer.name ?? '').toLowerCase();
+      final phone = (customer.phoneNumber ?? '').toLowerCase();
+      return name.contains(q) || phone.contains(q);
+    });
+  }
+
+  Widget _buildNameField(String track) {
+    return RawAutocomplete<Customer>(
+      textEditingController: _nameController,
+      focusNode: _nameFocusNode,
+      displayStringForOption: (Customer option) => option.name ?? '',
+      optionsBuilder: (TextEditingValue textEditingValue) {
+        return _searchCustomerSuggestions(textEditingValue.text);
+      },
+      onSelected: _selectCustomer,
+      optionsViewOpenDirection: OptionsViewOpenDirection.down,
+      optionsViewBuilder: (context, onSelected, options) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 5),
+          child: _buildCustomerOptionsView(context, onSelected, options),
+        );
+      },
+      fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+        return TextFormField(
+          controller: controller,
+          focusNode: focusNode,
+          decoration: InputDecoration(
+            labelText:
+                context.tr(shared.LocaleKeys.customerNameLabel, track: track) ??
+                'Customer Name',
+            hintText:
+                context.tr(shared.LocaleKeys.customerNameHint, track: track) ??
+                'Enter customer name',
+            border: const OutlineInputBorder(),
+            prefixIcon: const Icon(Icons.person),
+          ),
+          validator: (val) {
+            if (val == null || val.trim().isEmpty) {
+              return context.tr(
+                    shared.LocaleKeys.customerNameError,
+                    track: track,
+                  ) ??
+                  'Customer name is required';
+            }
+            return null;
+          },
+        );
       },
     );
   }
@@ -571,26 +805,50 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     return ValueListenableBuilder<String>(
       valueListenable: _isoCodeNotifier,
       builder: (context, isoCode, _) {
-        return shared.PhoneNumberTextFormField(
-          controller: _phoneController,
+        return RawAutocomplete<Customer>(
+          textEditingController: _phoneController,
           focusNode: _phoneFocusNode,
-          showDropdownIcon: true,
-          showCountryFlag: true,
-          initialCountryCode: isoCode,
-          flagsButtonMargin: const EdgeInsets.all(10),
-          isCountryButtonPersistent: false,
-          textInputAction: TextInputAction.next,
-          decoration: InputDecoration(
-            labelText:
-                context.tr(shared.LocaleKeys.phoneNumberLabel, track: track) ??
-                'Phone Number',
-            hintText:
-                context.tr(shared.LocaleKeys.phoneNumberHint, track: track) ??
-                'Enter phone number',
-            border: const OutlineInputBorder(),
-          ),
-          onCountryChanged: (shared.Country country) {
-            _isoCodeNotifier.value = country.isoCode;
+          displayStringForOption: (Customer option) => option.phoneNumber ?? '',
+          optionsBuilder: (TextEditingValue textEditingValue) {
+            return _searchCustomerSuggestions(textEditingValue.text);
+          },
+          onSelected: _selectCustomer,
+          optionsViewBuilder: (context, onSelected, options) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 5.0),
+              child: _buildCustomerOptionsView(context, onSelected, options),
+            );
+          },
+          fieldViewBuilder: (context, controller, focusNode, onFieldSubmitted) {
+            return shared.PhoneNumberTextFormField(
+              key: ValueKey(isoCode),
+              controller: controller,
+              focusNode: focusNode,
+              showDropdownIcon: true,
+              showCountryFlag: true,
+              initialCountryCode: isoCode,
+              flagsButtonMargin: const EdgeInsets.all(10),
+              isCountryButtonPersistent: true,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                labelText:
+                    context.tr(
+                      shared.LocaleKeys.phoneNumberLabel,
+                      track: track,
+                    ) ??
+                    'Phone Number',
+                hintText:
+                    context.tr(
+                      shared.LocaleKeys.phoneNumberHint,
+                      track: track,
+                    ) ??
+                    'Enter phone number',
+                border: const OutlineInputBorder(),
+              ),
+              onCountryChanged: (shared.Country country) {
+                _isoCodeNotifier.value = country.isoCode;
+              },
+            );
           },
         );
       },
@@ -674,21 +932,30 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
             DropdownMenuItem<String?>(
               value: 'Anniversary',
               child: Text(
-                context.tr(shared.LocaleKeys.occasionAnniversary, track: track) ??
+                context.tr(
+                      shared.LocaleKeys.occasionAnniversary,
+                      track: track,
+                    ) ??
                     'Anniversary',
               ),
             ),
             DropdownMenuItem<String?>(
               value: 'Get Together',
               child: Text(
-                context.tr(shared.LocaleKeys.occasionGetTogether, track: track) ??
+                context.tr(
+                      shared.LocaleKeys.occasionGetTogether,
+                      track: track,
+                    ) ??
                     'Get Together',
               ),
             ),
             DropdownMenuItem<String?>(
               value: 'Office Celebration',
               child: Text(
-                context.tr(shared.LocaleKeys.occasionOfficeParty, track: track) ??
+                context.tr(
+                      shared.LocaleKeys.occasionOfficeParty,
+                      track: track,
+                    ) ??
                     'Office Celebration',
               ),
             ),
@@ -713,7 +980,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
       controller: _notesController,
       maxLines: 3,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(20),
+        contentPadding: const EdgeInsets.all(20),
         labelText:
             context.tr(shared.LocaleKeys.notesLabel, track: track) ??
             'Notes / Special Requests',

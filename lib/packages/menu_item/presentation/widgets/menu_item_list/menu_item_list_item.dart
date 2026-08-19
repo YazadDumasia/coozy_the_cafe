@@ -115,10 +115,12 @@ class MenuItemListItem extends StatelessWidget {
                 width: 1,
               ),
             ),
-            child: ExpansionTile(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: ExpansionTile(
               tilePadding: const EdgeInsets.symmetric(
                 horizontal: 16,
-                vertical: 6,
+                vertical: 2,
               ),
               childrenPadding: EdgeInsets.zero,
               shape: const RoundedRectangleBorder(
@@ -142,7 +144,7 @@ class MenuItemListItem extends StatelessWidget {
                 ],
               ),
               subtitle: Padding(
-                padding: const EdgeInsets.only(top: 6.0),
+                padding: const EdgeInsets.only(top: 4.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -249,7 +251,8 @@ class MenuItemListItem extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ),
+  );
   }
 
   Widget _buildFoodTypeIndicator(String? foodType) {

@@ -352,7 +352,7 @@ class FakeDataHelper {
     final list = <CustomersTableCompanion>[];
     for (int i = 0; i < 250; i++) {
       final custName = faker.person.name();
-      final phone = '+91 ${random.nextInt(899999999) + 100000000}';
+      final phone = '${9000000000 + random.nextInt(999999999)}';
       final diffDays = now.difference(startDate).inDays;
       final randomDays = random.nextInt(diffDays > 0 ? diffDays : 1);
       final created = startDate.add(
@@ -400,7 +400,7 @@ class FakeDataHelper {
     final list = <EmployeesTableCompanion>[];
     for (int i = 0; i < 100; i++) {
       final empName = faker.person.name();
-      final phone = '+91 ${random.nextInt(899999999) + 100000000}';
+      final phone = '${9000000000 + random.nextInt(999999999)}';
       final pos = positions[i % positions.length];
       final diffDays = now.difference(startDate).inDays;
       final randomDays = random.nextInt(diffDays > 0 ? diffDays : 1);
@@ -946,7 +946,7 @@ class FakeDataHelper {
           'id': item.id,
           'item_name': item.name ?? 'Cafe Item',
           'quantity': 1 + random.nextInt(3),
-          'price': item.price ?? 5.0,
+          'price': item.sellingPrice ?? 5.0,
         });
       }
       return 'PRE_ORDERED_ITEMS:${jsonEncode(items)}';

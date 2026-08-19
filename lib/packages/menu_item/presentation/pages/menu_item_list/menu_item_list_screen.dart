@@ -371,7 +371,7 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                       ),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                         maxCrossAxisExtent: isDesktop ? 450 : 550,
-                        mainAxisExtent: 175,
+                        mainAxisExtent: 190,
                         crossAxisSpacing: 12,
                         mainAxisSpacing: 12,
                       ),

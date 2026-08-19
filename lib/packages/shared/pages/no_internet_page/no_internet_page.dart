@@ -38,51 +38,64 @@ class _NoInternetPageState extends State<NoInternetPage>
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Container(
-                child: Lottie.asset(
-                  Assets.lottie.lostConnection,
-                  controller: _controller,
-                  onLoaded: (composition) {
-                    // Configure the AnimationController with the duration of the
-                    // Lottie file and start the animation.
-                    _controller
-                      ..duration = composition.duration
-                      ..forward()
-                      ..repeat();
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxWidth: 360,
+                    maxHeight: 280,
+                  ),
+                  child: Lottie.asset(
+                    Assets.lottie.lostConnection,
+                    controller: _controller,
+                    fit: BoxFit.contain,
+                    onLoaded: (composition) {
+                      // Configure the AnimationController with the duration of the
+                      // Lottie file and start the animation.
+                      _controller
+                        ..duration = composition.duration
+                        ..forward()
+                        ..repeat();
+                    },
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isVisible,
+                  builder: (context, isVisible, child) {
+                    return Visibility(
+                      visible: isVisible,
+                      child: Text(
+                        context.tr(
+                              shared.LocaleKeys.commonNoInternetConnection,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'No Internet Connection',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                    );
                   },
-                  width: MediaQuery.of(context).size.width * .65,
                 ),
-              ),
-              ValueListenableBuilder<bool>(
-                valueListenable: _isVisible,
-                builder: (context, isVisible, child) {
-                  return Visibility(
-                    visible: isVisible,
-                    child: Text(
-                      context.tr(
-                            shared.LocaleKeys.commonNoInternetConnection,
-                            track: shared.TrackConstants.commonTrack,
-                          ) ??
-                          'No Internet Connection',
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: widget.onPressedRetryButton,
-                child: Text(
-                  context.tr(
-                        shared.LocaleKeys.commonRetry,
-                        track: shared.TrackConstants.commonTrack,
-                      ) ??
-                      'Retry',
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: widget.onPressedRetryButton,
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.commonRetry,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Retry',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

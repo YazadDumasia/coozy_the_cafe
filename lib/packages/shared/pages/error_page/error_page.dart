@@ -41,127 +41,144 @@ class _ErrorPageState extends State<ErrorPage>
         resizeToAvoidBottomInset: false,
         body: shared.ResponsiveLayout(
           mobile: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  child: lottie.Lottie.asset(
-                    asts.Assets.lottie.errorLoader,
-
-                    width: MediaQuery.sizeOf(context).width * 0.65,
-                    height: MediaQuery.sizeOf(context).height * 0.3,
-                    fit: BoxFit.scaleDown,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 320,
+                      maxHeight: 260,
+                    ),
+                    child: lottie.Lottie.asset(
+                      asts.Assets.lottie.errorLoader,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  widget.errorMsg?.isNotEmpty ?? false
-                      ? widget.errorMsg ?? ''
-                      : (context.tr(
-                              shared.LocaleKeys.commonErrorMsg,
-                              track: shared.TrackConstants.commonTrack,
-                            ) ??
-                            'Something when wrong. Please try again.'),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ).inExpandedRow(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: widget.onPressedRetryButton,
-                  child: Text(
-                    context.tr(
-                          shared.LocaleKeys.commonRetry,
-                          track: shared.TrackConstants.errorMsgTrack,
-                        ) ??
-                        'Retry',
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.errorMsg?.isNotEmpty ?? false
+                        ? widget.errorMsg ?? ''
+                        : (context.tr(
+                                shared.LocaleKeys.commonErrorMsg,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Something went wrong. Please try again.'),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ).inExpandedRow(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: widget.onPressedRetryButton,
+                    child: Text(
+                      context.tr(
+                            shared.LocaleKeys.commonRetry,
+                            track: shared.TrackConstants.errorMsgTrack,
+                          ) ??
+                          'Retry',
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           tablet: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  child: lottie.Lottie.asset(
-                    asts.Assets.lottie.errorLoader,
-                    width: 250,
-                    height: 300,
-                    fit: BoxFit.scaleDown,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 320,
+                      maxHeight: 260,
+                    ),
+                    child: lottie.Lottie.asset(
+                      asts.Assets.lottie.errorLoader,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  widget.errorMsg?.isNotEmpty ?? false
-                      ? widget.errorMsg ?? ''
-                      : (context.tr(
-                              shared.LocaleKeys.commonErrorMsg,
-                              track: shared.TrackConstants.commonTrack,
-                            ) ??
-                            'Something when wrong. Please try again.'),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ).inExpandedRow(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: widget.onPressedRetryButton,
-                  child: Text(
-                    context.tr(
-                          shared.LocaleKeys.commonRetry,
-                          track: shared.TrackConstants.errorMsgTrack,
-                        ) ??
-                        'Retry',
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.errorMsg?.isNotEmpty ?? false
+                        ? widget.errorMsg ?? ''
+                        : (context.tr(
+                                shared.LocaleKeys.commonErrorMsg,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Something went wrong. Please try again.'),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ).inExpandedRow(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: widget.onPressedRetryButton,
+                    child: Text(
+                      context.tr(
+                            shared.LocaleKeys.commonRetry,
+                            track: shared.TrackConstants.errorMsgTrack,
+                          ) ??
+                          'Retry',
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           desktop: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Container(
-                  child: lottie.Lottie.asset(
-                    asts.Assets.lottie.errorLoader,
-                    width: 250,
-                    height: 300,
-                    fit: BoxFit.scaleDown,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(
+                      maxWidth: 320,
+                      maxHeight: 260,
+                    ),
+                    child: lottie.Lottie.asset(
+                      asts.Assets.lottie.errorLoader,
+                      fit: BoxFit.contain,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  widget.errorMsg?.isNotEmpty ?? false
-                      ? widget.errorMsg ?? ''
-                      : (context.tr(
-                              shared.LocaleKeys.commonErrorMsg,
-                              track: shared.TrackConstants.commonTrack,
-                            ) ??
-                            'Something when wrong. Please try again.'),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ).inExpandedRow(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: widget.onPressedRetryButton,
-                  child: Text(
-                    context.tr(
-                          shared.LocaleKeys.commonRetry,
-                          track: shared.TrackConstants.errorMsgTrack,
-                        ) ??
-                        'Retry',
+                  const SizedBox(height: 10),
+                  Text(
+                    widget.errorMsg?.isNotEmpty ?? false
+                        ? widget.errorMsg ?? ''
+                        : (context.tr(
+                                shared.LocaleKeys.commonErrorMsg,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Something went wrong. Please try again.'),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ).inExpandedRow(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: widget.onPressedRetryButton,
+                    child: Text(
+                      context.tr(
+                            shared.LocaleKeys.commonRetry,
+                            track: shared.TrackConstants.errorMsgTrack,
+                          ) ??
+                          'Retry',
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

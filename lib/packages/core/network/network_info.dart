@@ -15,7 +15,15 @@ class NetworkInfoImpl implements NetworkInfo {
     : _connectionChecker = connectionChecker ?? InternetConnection();
 
   @override
-  Future<bool> get isConnected => _connectionChecker.hasInternetAccess;
+  Future<bool> get isConnected async {
+    // if (kIsWeb) {
+    //   // In web browsers, CORS policies block cross-origin ping requests
+    //   // executed by internet_connection_checker_plus (returning false).
+    //   // Since the app has already loaded over HTTP/HTTPS in the browser, treat as connected.
+    //   return true;
+    // }
+    return _connectionChecker.hasInternetAccess;
+  }
 
   @override
   Stream<InternetStatus> get onStatusChange =>

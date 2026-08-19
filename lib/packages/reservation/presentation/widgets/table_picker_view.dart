@@ -13,6 +13,62 @@ class TablePickerView extends StatefulWidget {
     required this.onTablesChanged,
   });
 
+  static Future<void> showSearchDialog(
+    BuildContext context, {
+    required List<TableInfo> selectedTables,
+    required ValueChanged<List<TableInfo>> onTablesChanged,
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Container(
+            width: 500,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Search & Select Tables',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Flexible(
+                  child: TablePickerView(
+                    key: const ValueKey('dialog_table_picker'),
+                    selectedTables: selectedTables,
+                    onTablesChanged: onTablesChanged,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Done'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   State<TablePickerView> createState() => _TablePickerViewState();
 }
@@ -91,6 +147,26 @@ class _TablePickerViewState extends State<TablePickerView> {
     widget.onTablesChanged(currentList);
   }
 
+  Color _parseTableColor(BuildContext context, String? colorValue) {
+    if (colorValue == null || colorValue.trim().isEmpty) {
+      return Theme.of(context).colorScheme.primary;
+    }
+    final clean = colorValue.trim().replaceAll('#', '');
+    final parsed = int.tryParse(clean) ?? int.tryParse(clean, radix: 16);
+    if (parsed != null) {
+      return Color(parsed | 0xFF000000);
+    }
+    return Theme.of(context).colorScheme.primary;
+  }
+
+  @override
+  void didUpdateWidget(covariant TablePickerView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedTables != widget.selectedTables) {
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
@@ -103,6 +179,8 @@ class _TablePickerViewState extends State<TablePickerView> {
           );
         }
 
+        final hintColor = Theme.of(context).hintColor;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -110,10 +188,23 @@ class _TablePickerViewState extends State<TablePickerView> {
           children: [
             TextField(
               controller: _searchController,
-              onChanged: _onSearch,
+              onChanged: (val) {
+                _onSearch(val);
+                setState(() {});
+              },
               decoration: InputDecoration(
                 hintText: 'Search tables...',
                 prefixIcon: const Icon(Icons.search, size: 20),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        onPressed: () {
+                          _searchController.clear();
+                          _onSearch('');
+                          setState(() {});
+                        },
+                      )
+                    : null,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -137,10 +228,55 @@ class _TablePickerViewState extends State<TablePickerView> {
                 child: ValueListenableBuilder<List<TableInfoData>>(
                   valueListenable: _filteredTablesNotifier,
                   builder: (context, filteredTables, child) {
+                    if (_allTablesNotifier.value.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.table_restaurant,
+                                size: 36,
+                                color: hintColor,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'No Tables inserted',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: hintColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
                     if (filteredTables.isEmpty) {
-                      return const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Center(child: Text('No matching tables.')),
+                      return Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.search_off,
+                                size: 36,
+                                color: hintColor,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'No matching tables found.',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: hintColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     }
 
@@ -166,13 +302,10 @@ class _TablePickerViewState extends State<TablePickerView> {
                           subtitle: Text('${item.nosOfChairs ?? 0} Chairs'),
                           secondary: CircleAvatar(
                             radius: 12,
-                            backgroundColor: item.colorValue != null
-                                ? Color(
-                                    int.parse(
-                                      item.colorValue!.replaceAll('#', '0xff'),
-                                    ),
-                                  )
-                                : Theme.of(context).colorScheme.primary,
+                            backgroundColor: _parseTableColor(
+                              context,
+                              item.colorValue,
+                            ),
                           ),
                           onChanged: (_) => _toggleSelection(item),
                         );

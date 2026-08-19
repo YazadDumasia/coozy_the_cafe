@@ -13,6 +13,62 @@ class MenuItemPickerView extends StatefulWidget {
     required this.onItemsChanged,
   });
 
+  static Future<void> showSearchDialog(
+    BuildContext context, {
+    required List<PreOrderedMenuItemEntity> selectedItems,
+    required ValueChanged<List<PreOrderedMenuItemEntity>> onItemsChanged,
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Container(
+            width: 500,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Search & Pre-order Menu Items',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Flexible(
+                  child: MenuItemPickerView(
+                    key: const ValueKey('dialog_menu_item_picker'),
+                    selectedItems: selectedItems,
+                    onItemsChanged: onItemsChanged,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ElevatedButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Done'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   State<MenuItemPickerView> createState() => _MenuItemPickerViewState();
 }
@@ -97,6 +153,14 @@ class _MenuItemPickerViewState extends State<MenuItemPickerView> {
   }
 
   @override
+  void didUpdateWidget(covariant MenuItemPickerView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.selectedItems != widget.selectedItems) {
+      setState(() {});
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
       valueListenable: _isLoadingNotifier,
@@ -108,15 +172,30 @@ class _MenuItemPickerViewState extends State<MenuItemPickerView> {
           );
         }
 
+        final hintColor = Theme.of(context).hintColor;
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             TextField(
               controller: _searchController,
-              onChanged: _onSearch,
+              onChanged: (val) {
+                _onSearch(val);
+                setState(() {});
+              },
               decoration: InputDecoration(
                 hintText: 'Search menu items...',
                 prefixIcon: const Icon(Icons.search, size: 20),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        onPressed: () {
+                          _searchController.clear();
+                          _onSearch('');
+                          setState(() {});
+                        },
+                      )
+                    : null,
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 10,
@@ -140,10 +219,55 @@ class _MenuItemPickerViewState extends State<MenuItemPickerView> {
                 child: ValueListenableBuilder<List<MenuItem>>(
                   valueListenable: _filteredItemsNotifier,
                   builder: (context, filteredItems, child) {
+                    if (_allItemsNotifier.value.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.restaurant_menu,
+                                size: 36,
+                                color: hintColor,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'No menu items available.',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: hintColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
                     if (filteredItems.isEmpty) {
-                      return const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Center(child: Text('No matching menu items.')),
+                      return Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.search_off,
+                                size: 36,
+                                color: hintColor,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'No matching menu items found.',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: hintColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     }
 

@@ -56,9 +56,30 @@ class CustomerListItem extends StatelessWidget {
                 }
               }
             }
+
+            String cleanPhone = phone.trim();
+            if (phonePrefix.isNotEmpty) {
+              final doublePrefix = '$phonePrefix $phonePrefix';
+              while (cleanPhone.startsWith(doublePrefix)) {
+                cleanPhone = cleanPhone.substring(phonePrefix.length).trim();
+              }
+              if (cleanPhone.startsWith('$phonePrefix ')) {
+                cleanPhone = cleanPhone.substring(phonePrefix.length).trim();
+              } else if (cleanPhone.startsWith(phonePrefix)) {
+                cleanPhone = cleanPhone.substring(phonePrefix.length).trim();
+              }
+            }
+
+            if (cleanPhone.startsWith('+') && phonePrefix.isNotEmpty) {
+              final match = RegExp(r'^\+\d+\s*').firstMatch(cleanPhone);
+              if (match != null) {
+                cleanPhone = cleanPhone.substring(match.end).trim();
+              }
+            }
+
             final displayPhone = phonePrefix.isNotEmpty
-                ? '$phonePrefix $phone'
-                : phone;
+                ? '$phonePrefix $cleanPhone'
+                : cleanPhone;
             return Text(displayPhone);
           },
         ),
