@@ -5,20 +5,68 @@ import 'app_localization.dart';
 import 'app_theme_extension.dart';
 
 extension MilkyBackgroundEffect on Widget {
-  Widget inMilkyBackgroundEffect({Size? size}) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10.0),
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        child: Container(
-          width: size?.width,
-          height: size?.height,
-          decoration: BoxDecoration(
-            color: Colors.grey.shade200.withValues(alpha: 0.5),
+  /// Wraps the widget in a customizable frosted glass / milky blur effect.
+  ///
+  /// Dynamically adapts to Light and Dark themes when [color] is not explicitly provided.
+  Widget inMilkyBackgroundEffect({
+    Size? size,
+    double? width,
+    double? height,
+    BorderRadiusGeometry borderRadius = const BorderRadius.all(
+      Radius.circular(10.0),
+    ),
+    double blur = 10.0,
+    double? sigmaX,
+    double? sigmaY,
+    Color? color,
+    BoxBorder? border,
+    List<BoxShadow>? boxShadow,
+    EdgeInsetsGeometry? padding,
+    EdgeInsetsGeometry? margin,
+    Clip clipBehavior = Clip.antiAlias,
+  }) {
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        final isDark = theme.brightness == Brightness.dark;
+
+        final effectiveColor =
+            color ??
+            (isDark
+                ? theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.35,
+                )
+                : Colors.grey.shade200.withValues(alpha: 0.5));
+
+        final effectiveSigmaX = sigmaX ?? blur;
+        final effectiveSigmaY = sigmaY ?? blur;
+
+        return Container(
+          margin: margin,
+          child: ClipRRect(
+            borderRadius: borderRadius,
+            clipBehavior: clipBehavior,
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(
+                sigmaX: effectiveSigmaX,
+                sigmaY: effectiveSigmaY,
+              ),
+              child: Container(
+                width: size?.width ?? width,
+                height: size?.height ?? height,
+                padding: padding,
+                decoration: BoxDecoration(
+                  color: effectiveColor,
+                  borderRadius: borderRadius,
+                  border: border,
+                  boxShadow: boxShadow,
+                ),
+                child: this,
+              ),
+            ),
           ),
-          child: this,
-        ),
-      ),
+        );
+      },
     );
   }
 }

@@ -339,6 +339,8 @@ class MaterialTheme {
     useMaterial3: true,
     brightness: colorScheme.brightness,
     colorScheme: colorScheme,
+    splashColor: colorScheme.primary.withValues(alpha: 0.15),
+    highlightColor: colorScheme.primary.withValues(alpha: 0.08),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: colorScheme.primary,

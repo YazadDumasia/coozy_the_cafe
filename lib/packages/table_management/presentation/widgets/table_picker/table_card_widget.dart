@@ -50,10 +50,24 @@ class TableCardWidget extends StatelessWidget {
         headerTextColor = Colors.white;
         break;
       case TableStatus.empty:
-        headerBgColor = isDark
-            ? colorScheme.surfaceContainerHighest
-            : const Color(0xFFEBEBEB); // Grey header matching proportions
-        headerTextColor = colorScheme.onSurface;
+        Color? customColor;
+        if (table.colorValue != null && table.colorValue!.trim().isNotEmpty) {
+          final hexString = table.colorValue!.replaceAll('#', '').trim();
+          final val = int.tryParse(hexString, radix: 16);
+          if (val != null) {
+            customColor = Color(val | 0xFF000000);
+          }
+        }
+        headerBgColor =
+            customColor ??
+            (isDark
+                ? colorScheme.surfaceContainerHighest
+                : const Color(0xFFEBEBEB));
+        headerTextColor = (customColor != null)
+            ? (customColor.computeLuminance() > 0.5
+                  ? Colors.black
+                  : Colors.white)
+            : Colors.white;
         break;
     }
 
@@ -69,7 +83,7 @@ class TableCardWidget extends StatelessWidget {
     final onSurfaceVariant = colorScheme.onSurfaceVariant;
 
     return Card(
-      elevation: 2,
+      elevation: 5,
       margin: EdgeInsets.zero,
       color: cardBgColor,
       shadowColor: theme.shadowColor.withValues(alpha: isDark ? 0.3 : 0.15),
@@ -84,8 +98,6 @@ class TableCardWidget extends StatelessWidget {
           ),
           child: InkWell(
             onTap: onTap,
-            splashColor: colorScheme.primary.withValues(alpha: 0.15),
-            highlightColor: colorScheme.primary.withValues(alpha: 0.08),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -167,7 +179,7 @@ class TableCardWidget extends StatelessWidget {
                             const SizedBox(width: 4),
                             Expanded(
                               child: Text(
-                                reservationInfo ?? 'Res. #104 - 7:30 PM',
+                                reservationInfo ?? '',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(

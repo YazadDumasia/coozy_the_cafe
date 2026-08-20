@@ -388,6 +388,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     } finally {
       if (mounted) {
+        _activeStageKeyNotifier.value = null;
         _isLoadingNotifier.value = false;
       }
     }
