@@ -4,7 +4,6 @@ import 'package:uuid/uuid.dart';
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
 import 'package:coozy_the_cafe/packages/purchase/domain/entities/purchase_record.dart';
 import 'package:coozy_the_cafe/packages/purchase/presentation/bloc/item_purchase_bloc.dart';
-import 'package:coozy_the_cafe/packages/purchase/presentation/bloc/item_purchase_event.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class AddPurchaseScreenActions {

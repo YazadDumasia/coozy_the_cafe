@@ -48,6 +48,7 @@ class AppRoutePath {
   // Sub-routes for Menu Items
   static const String addNewMenuItemScreenRoute = 'menu-item-add';
   static const String updateMenuItemScreenRoute = 'menu-item-update';
+  static const String detailMenuItemScreenRoute = 'detail/:id';
 
   // Sub-routes for Menu Categories
   static const String addNewMenuCategoryScreenRoute = 'menu-category-add';
@@ -215,6 +216,7 @@ class AppRouteName {
   static const String menuItemList = 'menu-item-list';
   static const String menuItemAdd = 'menu-item-add';
   static const String menuItemUpdate = 'menu-item-update';
+  static const String menuItemDetail = 'menu-item-detail';
 
   static const String menuCategoryList = 'menu-category-list';
   static const String menuCategoryAdd = 'menu-category-add';

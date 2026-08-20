@@ -11,7 +11,6 @@ import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_categ
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
-import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_state.dart';
 
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 

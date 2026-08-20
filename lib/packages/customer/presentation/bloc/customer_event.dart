@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import '../../domain/entities/customer_entity.dart';
+part of 'customer_bloc.dart';
 
 sealed class CustomerEvent extends Equatable {
   const CustomerEvent();

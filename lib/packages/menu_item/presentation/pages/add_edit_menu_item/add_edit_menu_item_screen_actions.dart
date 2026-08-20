@@ -9,10 +9,8 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item.dart';
 import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item_variation.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
-import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_event.dart';
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
-import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_event.dart';
 
 class AddEditMenuItemScreenActions {
   static void handleAddCategory(BuildContext context, bool mounted) async {

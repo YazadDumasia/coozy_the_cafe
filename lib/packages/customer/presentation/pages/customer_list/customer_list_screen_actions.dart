@@ -6,7 +6,6 @@ import '../../../../shared/gen/assets.gen.dart';
 import '../../../../shared/coozy_shared.dart' as shared;
 import '../../../domain/entities/customer_entity.dart';
 import '../../bloc/customer_bloc.dart';
-import '../../bloc/customer_event.dart';
 import '../../widgets/add_edit_customer/add_edit_customer_bottom_sheet.dart';
 
 class CustomerListScreenActions {

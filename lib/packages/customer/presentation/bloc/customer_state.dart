@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/customer_entity.dart';
+part of 'customer_bloc.dart';
 
 sealed class CustomerState extends Equatable {
   const CustomerState();

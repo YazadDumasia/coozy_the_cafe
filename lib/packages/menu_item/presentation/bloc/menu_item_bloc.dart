@@ -1,10 +1,12 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/menu_item.dart';
 import '../../domain/usecases/menu_item_usecases.dart';
-import 'menu_item_event.dart';
-import 'menu_item_state.dart';
 import '../../../shared/l10n/locale_keys.dart';
+
+part 'menu_item_event.dart';
+part 'menu_item_state.dart';
 
 class MenuItemBloc extends Bloc<MenuItemEvent, MenuItemState> {
   final GetMenuItemsUseCase getMenuItemsUseCase;
@@ -34,6 +36,10 @@ class MenuItemBloc extends Bloc<MenuItemEvent, MenuItemState> {
     LoadMenuItems event,
     Emitter<MenuItemState> emit,
   ) async {
+    if (event.isSilent && state is MenuItemLoaded) {
+      await _reloadSilently(emit);
+      return;
+    }
     emit(MenuItemLoading());
     try {
       final items = await getMenuItemsUseCase();
@@ -93,7 +99,15 @@ class MenuItemBloc extends Bloc<MenuItemEvent, MenuItemState> {
     try {
       await updateMenuItemUseCase(event.item);
       event.onSuccess?.call();
-      await _reloadSilently(emit);
+      if (state is MenuItemLoaded) {
+        final current = state as MenuItemLoaded;
+        final updatedItems = current.items.map((item) {
+          return item.id == event.item.id ? event.item : item;
+        }).toList();
+        emit(current.copyWith(items: updatedItems));
+      } else {
+        await _reloadSilently(emit);
+      }
     } catch (e, stackTrace) {
       debugPrint('UpdateMenuItem Exception: $e\n$stackTrace');
       event.onError?.call(LocaleKeys.crudErrorUpdate);

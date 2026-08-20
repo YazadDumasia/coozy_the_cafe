@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 abstract class NetworkInfo {
@@ -16,12 +17,12 @@ class NetworkInfoImpl implements NetworkInfo {
 
   @override
   Future<bool> get isConnected async {
-    // if (kIsWeb) {
-    //   // In web browsers, CORS policies block cross-origin ping requests
-    //   // executed by internet_connection_checker_plus (returning false).
-    //   // Since the app has already loaded over HTTP/HTTPS in the browser, treat as connected.
-    //   return true;
-    // }
+    if (kIsWeb) {
+      // In web browsers, CORS policies block cross-origin ping requests
+      // executed by internet_connection_checker_plus (returning false).
+      // Since the app has already loaded over HTTP/HTTPS in the browser, treat as connected.
+      return true;
+    }
     return _connectionChecker.hasInternetAccess;
   }
 

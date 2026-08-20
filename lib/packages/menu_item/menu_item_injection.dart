@@ -26,7 +26,7 @@ void registerMenuItemDependencies(GetIt sl) {
   sl.registerLazySingleton(() => DeleteMenuItemUseCase(sl()));
 
   // Bloc
-  sl.registerFactory(
+  sl.registerLazySingleton(
     () => MenuItemBloc(
       getMenuItemsUseCase: sl(),
       getMenuItemsByCategoryUseCase: sl(),

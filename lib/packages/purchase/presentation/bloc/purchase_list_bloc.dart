@@ -1,7 +1,12 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/purchase_record.dart';
+import '../../domain/entities/purchase_summary.dart';
 import '../../domain/usecases/purchase_usecases.dart';
-import 'purchase_list_event.dart';
-import 'purchase_list_state.dart';
+
+part 'purchase_list_event.dart';
+part 'purchase_list_state.dart';
 
 class PurchaseListBloc extends Bloc<PurchaseListEvent, PurchaseListState> {
   final GetAllPurchasesPagedUseCase getAllPurchasesPagedUseCase;

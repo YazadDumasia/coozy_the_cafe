@@ -6,8 +6,6 @@ import '../../widgets/purchase_list/purchase_list_item.dart';
 
 import 'dart:async';
 import 'package:coozy_the_cafe/packages/purchase/presentation/bloc/purchase_list_bloc.dart';
-import 'package:coozy_the_cafe/packages/purchase/presentation/bloc/purchase_list_event.dart';
-import 'package:coozy_the_cafe/packages/purchase/presentation/bloc/purchase_list_state.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class PurchaseListScreen extends StatefulWidget {

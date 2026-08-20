@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/menu_item.dart';
+part of 'menu_item_bloc.dart';
 
 sealed class MenuItemState extends Equatable {
   const MenuItemState();

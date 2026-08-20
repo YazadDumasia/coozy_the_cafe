@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import '../../../domain/entities/inventory_item.dart';
+part of 'inventory_bloc.dart';
 
 sealed class InventoryEvent extends Equatable {
   const InventoryEvent();

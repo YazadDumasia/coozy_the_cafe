@@ -7,7 +7,6 @@ import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
-import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_event.dart';
 
 class MenuItemListScreenActions {
   static void handleAddMenuItem(BuildContext context) async {
@@ -15,7 +14,7 @@ class MenuItemListScreenActions {
       '${core.AppRoutePath.menuItemFullListScreenRoute}/${core.AppRoutePath.addNewMenuItemScreenRoute}',
     );
     if (context.mounted) {
-      context.read<MenuItemBloc>().add(LoadMenuItems());
+      context.read<MenuItemBloc>().add(const LoadMenuItems(isSilent: true));
     }
   }
 
@@ -25,7 +24,7 @@ class MenuItemListScreenActions {
       extra: item,
     );
     if (context.mounted) {
-      context.read<MenuItemBloc>().add(LoadMenuItems());
+      context.read<MenuItemBloc>().add(const LoadMenuItems(isSilent: true));
     }
   }
 

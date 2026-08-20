@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/customer_entity.dart';
 import '../../bloc/customer_bloc.dart';
-import '../../bloc/customer_event.dart';
 
 class AddEditCustomerBottomSheet extends StatefulWidget {
   final CustomerEntity? customer;

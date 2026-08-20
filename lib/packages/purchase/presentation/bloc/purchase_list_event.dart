@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import '../../domain/entities/purchase_record.dart';
+part of 'purchase_list_bloc.dart';
 
 sealed class PurchaseListEvent extends Equatable {
   const PurchaseListEvent();

@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/menu_subcategory.dart';
+part of 'menu_subcategory_bloc.dart';
 
 sealed class MenuSubcategoryState extends Equatable {
   const MenuSubcategoryState();

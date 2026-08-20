@@ -1,7 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import '../../domain/entities/purchase_record.dart';
-import '../../../inventory/domain/entities/inventory_item.dart';
+part of 'item_purchase_bloc.dart';
 
 sealed class ItemPurchaseEvent extends Equatable {
   const ItemPurchaseEvent();

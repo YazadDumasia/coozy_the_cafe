@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import '../../domain/entities/menu_subcategory.dart';
+part of 'menu_subcategory_bloc.dart';
 
 sealed class MenuSubcategoryEvent extends Equatable {
   const MenuSubcategoryEvent();

@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/table_info.dart';
@@ -7,7 +8,8 @@ import '../../domain/usecases/delete_table_usecase.dart';
 import '../../domain/usecases/get_tables_usecase.dart';
 import '../../domain/usecases/update_table_usecase.dart';
 import '../../domain/usecases/update_table_sort_orders_usecase.dart';
-import 'table_state.dart';
+
+part 'table_state.dart';
 
 class TableCubit extends Cubit<TableState> {
   final GetTablesUseCase getTablesUseCase;

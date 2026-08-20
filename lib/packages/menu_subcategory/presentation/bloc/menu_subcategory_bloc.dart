@@ -1,9 +1,12 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/menu_subcategory.dart';
 import '../../domain/usecases/menu_subcategory_usecases.dart';
-import 'menu_subcategory_event.dart';
-import 'menu_subcategory_state.dart';
 import '../../../shared/coozy_shared.dart' as shared;
+
+part 'menu_subcategory_event.dart';
+part 'menu_subcategory_state.dart';
 
 class MenuSubcategoryBloc
     extends Bloc<MenuSubcategoryEvent, MenuSubcategoryState> {

@@ -1,4 +1,4 @@
-import 'package:equatable/equatable.dart';
+part of 'inventory_picker_bloc.dart';
 
 sealed class InventoryPickerEvent extends Equatable {
   const InventoryPickerEvent();

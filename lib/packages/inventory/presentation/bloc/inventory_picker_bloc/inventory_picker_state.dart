@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-import '../../../domain/entities/inventory_item.dart';
+part of 'inventory_picker_bloc.dart';
 
 class InventoryPickerState extends Equatable {
   final List<InventoryItem> items;

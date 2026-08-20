@@ -8,7 +8,6 @@ import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_bloc.dart';
-import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_event.dart';
 
 class AddEditInventoryScreenActions {
   static void saveItem({

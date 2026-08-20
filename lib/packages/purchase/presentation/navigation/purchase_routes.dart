@@ -5,7 +5,6 @@ import '../../../core/navigation/app_routes.dart';
 import '../pages/purchase_list/purchase_list_screen.dart';
 import '../pages/add_purchase/add_purchase_screen.dart';
 import '../bloc/purchase_list_bloc.dart';
-import '../bloc/purchase_list_event.dart';
 import '../bloc/item_purchase_bloc.dart';
 import '../../../inventory/domain/entities/inventory_item.dart';
 

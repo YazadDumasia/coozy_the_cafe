@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -66,38 +67,149 @@ class NotificationApi {
 
   static bool _permissionRequested = false;
 
+  static bool get permissionRequested => _permissionRequested;
+
+  /// Checks whether notification permission is currently granted.
+  static Future<bool> checkNotificationPermission() async {
+    try {
+      if (PlatformUtils.isAndroid()) {
+        final androidPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+        final enabled = await androidPlugin?.areNotificationsEnabled();
+        return enabled ?? false;
+      } else if (PlatformUtils.isIOS()) {
+        final iosPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >();
+        final permissions = await iosPlugin?.checkPermissions();
+        return permissions?.isEnabled ?? false;
+      } else if (PlatformUtils.isMacOS()) {
+        final macosPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin
+            >();
+        final permissions = await macosPlugin?.checkPermissions();
+        return permissions?.isEnabled ?? false;
+      }
+      final status = await Permission.notification.status;
+      return status.isGranted;
+    } catch (e, st) {
+      PlatformUtils.debugLog(
+        NotificationApi,
+        'Error checking notification permission: $e\n$st',
+      );
+      return false;
+    }
+  }
+
+  /// Requests notification permission across supported platforms.
   static Future<bool> requestNotificationPermission() async {
     try {
       if (PlatformUtils.isAndroid()) {
-        final granted = await _notifications
+        final androidPlugin = _notifications
             .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin
-            >()
-            ?.requestNotificationsPermission();
+            >();
+        final granted = await androidPlugin?.requestNotificationsPermission();
         _permissionRequested = granted ?? false;
         return _permissionRequested;
       } else if (PlatformUtils.isIOS()) {
-        final granted = await _notifications
+        final iosPlugin = _notifications
             .resolvePlatformSpecificImplementation<
               IOSFlutterLocalNotificationsPlugin
-            >()
-            ?.requestPermissions(alert: true, badge: true, sound: true);
+            >();
+        final granted = await iosPlugin?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+          critical: true,
+        );
         _permissionRequested = granted ?? false;
         return _permissionRequested;
       } else if (PlatformUtils.isMacOS()) {
-        final granted = await _notifications
+        final macosPlugin = _notifications
             .resolvePlatformSpecificImplementation<
               MacOSFlutterLocalNotificationsPlugin
-            >()
-            ?.requestPermissions(alert: true, badge: true, sound: true);
+            >();
+        final granted = await macosPlugin?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+          critical: true,
+        );
         _permissionRequested = granted ?? false;
         return _permissionRequested;
       }
-      _permissionRequested = true;
-      return true;
-    } catch (_) {
+      final status = await Permission.notification.request();
+      _permissionRequested = status.isGranted;
+      return _permissionRequested;
+    } catch (e, st) {
+      PlatformUtils.debugLog(
+        NotificationApi,
+        'Error requesting notification permission: $e\n$st',
+      );
       _permissionRequested = false;
       return false;
+    }
+  }
+
+  /// Requests exact alarms permission on Android (required for exact scheduled notifications).
+  static Future<bool> requestExactAlarmsPermission() async {
+    try {
+      if (PlatformUtils.isAndroid()) {
+        final androidPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+        final granted = await androidPlugin?.requestExactAlarmsPermission();
+        return granted ?? false;
+      }
+      return true;
+    } catch (e, st) {
+      PlatformUtils.debugLog(
+        NotificationApi,
+        'Error requesting exact alarms permission: $e\n$st',
+      );
+      return false;
+    }
+  }
+
+  /// Opens notification settings directly using flutter_local_notifications v22.2.0+ openAppNotificationSettings(),
+  /// falling back to permission_handler's openAppSettings if needed.
+  static Future<bool> openNotificationSettings() async {
+    try {
+      if (PlatformUtils.isAndroid()) {
+        final androidPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+        await androidPlugin?.openAppNotificationSettings();
+        return true;
+      } else if (PlatformUtils.isIOS()) {
+        final iosPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              IOSFlutterLocalNotificationsPlugin
+            >();
+        await iosPlugin?.openAppNotificationSettings();
+        return true;
+      } else if (PlatformUtils.isMacOS()) {
+        final macosPlugin = _notifications
+            .resolvePlatformSpecificImplementation<
+              MacOSFlutterLocalNotificationsPlugin
+            >();
+        await macosPlugin?.openAppNotificationSettings();
+        return true;
+      }
+      return await openAppSettings();
+    } catch (e, st) {
+      PlatformUtils.debugLog(
+        NotificationApi,
+        'Error opening notification settings: $e\n$st',
+      );
+      return await openAppSettings();
     }
   }
 

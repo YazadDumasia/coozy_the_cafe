@@ -31,23 +31,28 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
   Future<void> fetchInitialInfo() async {
     final bool isConnected = await networkInfo.isConnected;
     if (isClosed) return;
-    if (!isConnected) {
-      emit(LoginScreenNoInternetState());
-      return;
-    }
     emit(LoginScreenLoadingState());
 
-    final deviceInfo = await deviceInfoService.getDeviceInfo();
-    if (isClosed) return;
-    _platform = deviceInfo['platform'];
-    _buildMode = deviceInfo['buildMode'];
-    _ipAddress = deviceInfo['ipAddress'];
-    _ipInfo = deviceInfo['ipInfo'];
+    if (isConnected) {
+      try {
+        final deviceInfo = await deviceInfoService.getDeviceInfo();
+        if (isClosed) return;
+        _platform = deviceInfo['platform'];
+        _buildMode = deviceInfo['buildMode'];
+        _ipAddress = deviceInfo['ipAddress'];
+        _ipInfo = deviceInfo['ipInfo'];
 
-    PlatformUtils.debugLog(
-      LoginScreenCubit,
-      'Platform: $_platform, Build Mode: $_buildMode, IP: $_ipAddress, Info: $_ipInfo',
-    );
+        PlatformUtils.debugLog(
+          LoginScreenCubit,
+          'Platform: $_platform, Build Mode: $_buildMode, IP: $_ipAddress, Info: $_ipInfo',
+        );
+      } catch (e) {
+        PlatformUtils.debugLog(
+          LoginScreenCubit,
+          'Failed to fetch online device info: $e',
+        );
+      }
+    }
 
     emit(LoginScreenLoadedState());
   }

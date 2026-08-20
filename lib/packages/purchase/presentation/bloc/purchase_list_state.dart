@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/purchase_record.dart';
-import '../../domain/entities/purchase_summary.dart';
+part of 'purchase_list_bloc.dart';
 
 class PurchaseListState extends Equatable {
   final List<PurchaseRecord> purchases;

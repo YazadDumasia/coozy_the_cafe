@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/coozy_shared.dart' as shared;
 import '../../bloc/customer_bloc.dart';
-import '../../bloc/customer_event.dart';
-import '../../bloc/customer_state.dart';
 import 'customer_list_screen_actions.dart';
 import '../../widgets/customer_list/customer_empty_view.dart';
 import '../../widgets/customer_list/customer_list_item.dart';

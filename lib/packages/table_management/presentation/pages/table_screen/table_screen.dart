@@ -12,7 +12,6 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
 import 'package:coozy_the_cafe/packages/table_management/presentation/cubit/table_cubit.dart';
-import 'package:coozy_the_cafe/packages/table_management/presentation/cubit/table_state.dart';
 
 class TableScreen extends StatefulWidget {
   const TableScreen({super.key});

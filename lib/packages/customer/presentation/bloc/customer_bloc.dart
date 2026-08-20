@@ -1,9 +1,12 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/customer_entity.dart';
 import '../../domain/usecases/customer_usecases.dart';
-import 'customer_event.dart';
-import 'customer_state.dart';
 import '../../../shared/coozy_shared.dart' as shared;
+
+part 'customer_event.dart';
+part 'customer_state.dart';
 
 class CustomerBloc extends Bloc<CustomerEvent, CustomerState> {
   final GetCustomersUseCase getCustomersUseCase;

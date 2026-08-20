@@ -1,5 +1,4 @@
-import 'package:equatable/equatable.dart';
-import '../../domain/entities/table_info.dart';
+part of 'table_cubit.dart';
 
 sealed class TableState extends Equatable {
   const TableState();

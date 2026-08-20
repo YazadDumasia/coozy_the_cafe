@@ -1,7 +1,12 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../domain/entities/purchase_record.dart';
 import '../../domain/usecases/purchase_usecases.dart';
-import 'item_purchase_event.dart';
-import 'item_purchase_state.dart';
+import '../../../inventory/domain/entities/inventory_item.dart';
+
+part 'item_purchase_event.dart';
+part 'item_purchase_state.dart';
 
 class ItemPurchaseBloc extends Bloc<ItemPurchaseEvent, ItemPurchaseState> {
   final GetPurchasesUseCase getPurchasesUseCase;

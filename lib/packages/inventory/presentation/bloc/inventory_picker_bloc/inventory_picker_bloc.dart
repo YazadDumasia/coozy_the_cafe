@@ -1,7 +1,10 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../domain/entities/inventory_item.dart';
 import '../../../domain/usecases/inventory_usecases.dart';
-import 'inventory_picker_event.dart';
-import 'inventory_picker_state.dart';
+
+part 'inventory_picker_event.dart';
+part 'inventory_picker_state.dart';
 
 class InventoryPickerBloc
     extends Bloc<InventoryPickerEvent, InventoryPickerState> {

@@ -7,7 +7,6 @@ import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_bloc.dart';
-import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_event.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/widgets/adjust_stock/adjust_stock_dialog.dart';
 import 'package:coozy_the_cafe/packages/purchase/presentation/pages/purchase_list/purchase_list_screen_actions.dart';
 

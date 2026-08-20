@@ -6,10 +6,10 @@ import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item.dart
 import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item_variation.dart';
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
-import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_state.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
-import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_event.dart';
 import '../../pages/menu_item_list/menu_item_list_screen_actions.dart';
+import 'package:go_router/go_router.dart';
+import 'package:coozy_the_cafe/packages/core/navigation/app_routes.dart';
 
 class MenuItemListItem extends StatelessWidget {
   final MenuItem item;
@@ -115,9 +115,7 @@ class MenuItemListItem extends StatelessWidget {
                 width: 1,
               ),
             ),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: ExpansionTile(
+            child: ExpansionTile(
               tilePadding: const EdgeInsets.symmetric(
                 horizontal: 16,
                 vertical: 2,
@@ -140,6 +138,28 @@ class MenuItemListItem extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.info_outline, size: 20),
+                    tooltip:
+                        context.tr(
+                          shared.LocaleKeys.commonInfo,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Details',
+                    onPressed: () async {
+                      if (item.id != null) {
+                        await context.push(
+                          '${AppRoutePath.menuItemFullListScreenRoute}/detail/${item.id}',
+                        );
+                        if (context.mounted) {
+                          final bloc = context.read<MenuItemBloc>();
+                          if (!bloc.isClosed) {
+                            bloc.add(const LoadMenuItems(isSilent: true));
+                          }
+                        }
+                      }
+                    },
                   ),
                 ],
               ),
@@ -251,8 +271,7 @@ class MenuItemListItem extends StatelessWidget {
           ),
         ),
       ),
-    ),
-  );
+    );
   }
 
   Widget _buildFoodTypeIndicator(String? foodType) {

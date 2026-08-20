@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
-import '../../domain/entities/menu_item.dart';
+part of 'menu_item_bloc.dart';
 
 sealed class MenuItemEvent extends Equatable {
   const MenuItemEvent();
@@ -9,7 +7,13 @@ sealed class MenuItemEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class LoadMenuItems extends MenuItemEvent {}
+class LoadMenuItems extends MenuItemEvent {
+  final bool isSilent;
+  const LoadMenuItems({this.isSilent = false});
+
+  @override
+  List<Object?> get props => [isSilent];
+}
 
 class LoadMenuItemsByCategory extends MenuItemEvent {
   final int categoryId;

@@ -6,7 +6,6 @@ import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import '../../../../inventory/domain/entities/inventory_item.dart';
 import '../../bloc/inventroy_bloc/inventory_bloc.dart';
-import '../../bloc/inventroy_bloc/inventory_event.dart';
 
 class AdjustStockDialog extends StatefulWidget {
   final InventoryItem item;

@@ -9,7 +9,6 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
 import 'package:coozy_the_cafe/packages/purchase/domain/entities/purchase_record.dart';
 import 'package:coozy_the_cafe/packages/purchase/presentation/bloc/purchase_list_bloc.dart';
-import 'package:coozy_the_cafe/packages/purchase/presentation/bloc/purchase_list_event.dart';
 import 'package:coozy_the_cafe/packages/purchase/presentation/widgets/add_purchase/purchase_form_bottom_sheet.dart';
 
 class PurchaseListScreenActions {
