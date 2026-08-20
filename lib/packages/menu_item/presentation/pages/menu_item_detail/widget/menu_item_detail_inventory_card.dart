@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class MenuItemDetailInventoryCard extends StatelessWidget {
   final double? stockQuantity;
@@ -42,7 +43,11 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  'Inventory & Portion',
+                  context.tr(
+                        shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
+                        track: shared.TrackConstants.menuItemPageTrack,
+                      ) ??
+                      'Inventory & Portion',
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
@@ -57,7 +62,12 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                   child: _buildInfoItem(
                     context,
                     icon: Icons.pie_chart_outline,
-                    label: 'Stock Quantity',
+                    label:
+                        context.tr(
+                          shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnitQuantity,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Stock Quantity',
                     value: stockQuantity != null
                         ? '${stockQuantity!.toStringAsFixed(stockQuantity! % 1 == 0 ? 0 : 2)} units'
                         : 'Not Tracked',
@@ -67,7 +77,12 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                   child: _buildInfoItem(
                     context,
                     icon: Icons.scale_outlined,
-                    label: 'Portion Size',
+                    label:
+                        context.tr(
+                          shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Portion Size',
                     value: (quantity != null && quantity!.isNotEmpty)
                         ? quantity!
                         : 'N/A',
@@ -82,7 +97,12 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                   child: _buildInfoItem(
                     context,
                     icon: Icons.shopping_bag_outlined,
-                    label: 'Purchase Unit',
+                    label:
+                        context.tr(
+                          shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Purchase Unit',
                     value: (purchaseUnit != null && purchaseUnit!.isNotEmpty)
                         ? purchaseUnit!
                         : 'N/A',
@@ -92,7 +112,12 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                   child: _buildInfoItem(
                     context,
                     icon: Icons.sort,
-                    label: 'Sort Index',
+                    label:
+                        context.tr(
+                          shared.LocaleKeys.menuItemPageTypes,
+                          track: shared.TrackConstants.menuItemPageTrack,
+                        ) ??
+                        'Sort Index',
                     value: sortOrderIndex != null ? '#$sortOrderIndex' : 'N/A',
                   ),
                 ),

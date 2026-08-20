@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../domain/entities/reservation_entity.dart';
 
 class MenuItemPickerView extends StatefulWidget {
@@ -37,7 +38,11 @@ class MenuItemPickerView extends StatefulWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Search & Pre-order Menu Items',
+                      context.tr(
+                            shared.LocaleKeys.searchMenuItemsTitle,
+                            track: shared.TrackConstants.reservationPageTrack,
+                          ) ??
+                          'Search & Pre-order Menu Items',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -59,7 +64,13 @@ class MenuItemPickerView extends StatefulWidget {
                 const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Done'),
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.commonDone,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Done',
+                  ),
                 ),
               ],
             ),
@@ -184,7 +195,12 @@ class _MenuItemPickerViewState extends State<MenuItemPickerView> {
                 setState(() {});
               },
               decoration: InputDecoration(
-                hintText: 'Search menu items...',
+                hintText:
+                    context.tr(
+                      shared.LocaleKeys.searchMenuItemHint,
+                      track: shared.TrackConstants.reservationPageTrack,
+                    ) ??
+                    'Search menu items...',
                 prefixIcon: const Icon(Icons.search, size: 20),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(

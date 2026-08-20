@@ -59,8 +59,15 @@ class AddEditMenuItemScreenActions {
 
     if (categoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a category'),
+        SnackBar(
+          content: Text(
+            context.tr(
+                  shared.LocaleKeys
+                      .menuItemPageAddEditMenuItemPleaseSelectCategory,
+                  track: shared.TrackConstants.menuItemPageTrack,
+                ) ??
+                'Please select a category',
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -69,8 +76,15 @@ class AddEditMenuItemScreenActions {
 
     if (foodType == null || foodType.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please select a food type'),
+        SnackBar(
+          content: Text(
+            context.tr(
+                  shared.LocaleKeys
+                      .menuItemPageAddEditMenuItemPleaseSelectFoodType,
+                  track: shared.TrackConstants.menuItemPageTrack,
+                ) ??
+                'Please select a food type',
+          ),
           backgroundColor: Colors.red,
         ),
       );
@@ -79,8 +93,14 @@ class AddEditMenuItemScreenActions {
 
     if (variations != null && variations.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please add at least one variation'),
+        SnackBar(
+          content: Text(
+            context.tr(
+                  shared.LocaleKeys.menuItemPageAddEditMenuItemAdd,
+                  track: shared.TrackConstants.menuItemPageTrack,
+                ) ??
+                'Please add at least one variation',
+          ),
           backgroundColor: Colors.red,
         ),
       );

@@ -29,7 +29,15 @@ class TablePickerScreen extends StatelessWidget {
       },
       child: SafeArea(
         child: Scaffold(
-          appBar: AppBar(title: const Text('Table Picker')),
+          appBar: AppBar(
+            title: Text(
+              context.tr(
+                    shared.LocaleKeys.tablePickerTitle,
+                    track: shared.TrackConstants.tablePageTrack,
+                  ) ??
+                  'Table Picker',
+            ),
+          ),
           body: BlocBuilder<TablePickerBloc, TablePickerState>(
             builder: (context, state) {
               if (state is TablePickerLoading || state is TablePickerInitial) {
@@ -50,7 +58,15 @@ class TablePickerScreen extends StatelessWidget {
 
               final tables = state.tables;
               if (tables.isEmpty) {
-                return const Center(child: Text('No tables available'));
+                return Center(
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.noTablesAvailable,
+                          track: shared.TrackConstants.tablePageTrack,
+                        ) ??
+                        'No tables available',
+                  ),
+                );
               }
               return Padding(
                 padding: const EdgeInsets.all(10.0),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class HomeScreenBottomNavBar extends StatelessWidget {
   final TabController tabController;
@@ -18,10 +19,42 @@ class HomeScreenBottomNavBar extends StatelessWidget {
         tabController.animateTo(index);
       },
       items: [
-        BottomNavigationBarItem(icon: Icon(Icons.today), label: 'Today'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Waiter'),
-        BottomNavigationBarItem(icon: Icon(Icons.kitchen), label: 'Kitchen'),
-        BottomNavigationBarItem(icon: Icon(Icons.more_horiz), label: 'More'),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.today),
+          label:
+              context.tr(
+                shared.LocaleKeys.homeTabToday,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Today',
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.person),
+          label:
+              context.tr(
+                shared.LocaleKeys.homeTabWaiter,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Waiter',
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.kitchen),
+          label:
+              context.tr(
+                shared.LocaleKeys.homeTabKitchen,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Kitchen',
+        ),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.more_horiz),
+          label:
+              context.tr(
+                shared.LocaleKeys.homeTabMore,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'More',
+        ),
       ],
     );
   }

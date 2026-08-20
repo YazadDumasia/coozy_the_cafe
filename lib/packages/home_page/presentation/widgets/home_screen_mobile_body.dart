@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'home_screen_popup_menu.dart';
 import 'home_screen_tab_bar_view.dart';
 
@@ -18,11 +19,17 @@ class HomeScreenMobileBody extends StatelessWidget {
       controller: scrollController,
       slivers: <Widget>[
         SliverAppBar(
-          shape: RoundedRectangleBorder(),
+          shape: const RoundedRectangleBorder(),
           floating: true,
           pinned: true,
-          title: Text('Coozy the Cafe'),
-          actions: <Widget>[HomeScreenPopupMenu()],
+          title: Text(
+            context.tr(
+                  shared.LocaleKeys.homePageCoozyTheCafe,
+                  track: shared.TrackConstants.homePageTrack,
+                ) ??
+                'Coozy the Cafe',
+          ),
+          actions: const <Widget>[HomeScreenPopupMenu()],
         ),
         SliverFillRemaining(
           child: HomeScreenTabBarView(tabController: tabController),

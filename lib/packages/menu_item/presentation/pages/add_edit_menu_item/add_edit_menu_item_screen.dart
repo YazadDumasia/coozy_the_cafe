@@ -802,7 +802,13 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                             mounted,
                           ),
                       icon: const Icon(Icons.add, size: 18),
-                      label: const Text('Add subcategory'),
+                      label: Text(
+                        context.tr(
+                              shared.LocaleKeys.addMenuSubCategoryBtnText,
+                              track: shared.TrackConstants.menuCategoryPageTrack,
+                            ) ??
+                            'Add subcategory',
+                      ),
                     ),
                   ),
                 ],
@@ -957,7 +963,13 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                       });
                     },
                     icon: const Icon(Icons.add, size: 16),
-                    label: const Text('Add Variation'),
+                    label: Text(
+                      context.tr(
+                            shared.LocaleKeys.menuItemPageVariations,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Add Variation',
+                    ),
                     style: OutlinedButton.styleFrom(
                       visualDensity: VisualDensity.compact,
                       padding: const EdgeInsets.symmetric(
@@ -1090,9 +1102,20 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                       menuMaxHeight: MediaQuery.of(context).size.height * 0.35,
                       isDense: true,
                       isExpanded: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Selling Unit',
-                        hintText: 'Select measuring unit',
+                      decoration: InputDecoration(
+                        labelText:
+                            context.tr(
+                              shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
+                              track: shared.TrackConstants.menuItemPageTrack,
+                            ) ??
+                            'Selling Unit',
+                        hintText:
+                            context.tr(
+                              shared.LocaleKeys
+                                  .menuItemPageAddEditMenuItemSellingUnitHint,
+                              track: shared.TrackConstants.menuItemPageTrack,
+                            ) ??
+                            'Select measuring unit',
                       ),
                       initialValue: normalizedUnit,
                       onChanged: (val) {
@@ -1114,9 +1137,21 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                             RegExp(r'^\d+\.?\d{0,3}'),
                           ),
                         ],
-                        decoration: const InputDecoration(
-                          labelText: 'Selling Unit Quantity',
-                          hintText: 'Enter quantity',
+                        decoration: InputDecoration(
+                          labelText:
+                              context.tr(
+                                shared.LocaleKeys
+                                    .menuItemPageAddEditMenuItemSellingUnitQuantity,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Selling Unit Quantity',
+                          hintText:
+                              context.tr(
+                                shared.LocaleKeys
+                                    .menuItemPageAddEditMenuItemSellingUnitQuantityHint,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Enter quantity',
                         ),
                         validator: (val) {
                           if (unit != 'Unit') {
@@ -1152,8 +1187,13 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                         RegExp(r'^\d+\.?\d{0,2}'),
                       ),
                     ],
-                    decoration: const InputDecoration(
-                      labelText: 'Cost Price',
+                    decoration: InputDecoration(
+                      labelText:
+                          context.tr(
+                            shared.LocaleKeys.menuItemPageAddEditMenuItemCostPrice,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Cost Price',
                       hintText: '0.00',
                     ),
                     validator: (val) {
@@ -1181,8 +1221,13 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                         RegExp(r'^\d+\.?\d{0,2}'),
                       ),
                     ],
-                    decoration: const InputDecoration(
-                      labelText: 'Selling Price',
+                    decoration: InputDecoration(
+                      labelText:
+                          context.tr(
+                            shared.LocaleKeys.menuItemPageAddEditMenuItemSellingPrice,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Selling Price',
                       hintText: '0.00',
                     ),
                     validator: (val) {

@@ -271,6 +271,12 @@ abstract class LocaleKeys {
   static String disableReorderIconTableIconTooltipText =
       'disable_reorder_icon_table_icon_tooltip_text';
   static String tableUpdateTitle = 'table_update_title';
+  static String tableHeaderPrefix = 'table_header_prefix';
+  static String chairsLabel = 'chairs_label';
+  static String tablePickerTitle = 'table_picker_title';
+  static String noTablesAvailable = 'no_tables_available';
+  static String tableNoLabel = 'table_no_label';
+  static String tableNoHint = 'table_no_hint';
 
   // menu_category_page
   static String menuCategoryAppbarTitle = 'menu_category_appbar_title';
@@ -1012,6 +1018,8 @@ abstract class LocaleKeys {
   static const String upcomingTab = 'upcoming_tab';
   static const String addReservationTooltip = 'add_reservation_tooltip';
   static const String searchReservationHint = 'search_reservation_hint';
+  static const String searchTableHint = 'search_table_hint';
+  static const String searchMenuItemHint = 'search_menu_item_hint';
   static const String noCurrentReservations = 'no_current_reservations';
   static const String noUpcomingReservations = 'no_upcoming_reservations';
   static const String addReservationTitle = 'add_reservation_title';
@@ -1057,4 +1065,8 @@ abstract class LocaleKeys {
   static const String reservationCreatedSuccess = 'reservation_created_success';
   static const String reservationUpdatedSuccess = 'reservation_updated_success';
   static const String reservationDeletedSuccess = 'reservation_deleted_success';
+  static const String searchTablesTitle = 'search_tables_title';
+  static const String searchMenuItemsTitle = 'search_menu_items_title';
+  static const String filterReservationsTitle = 'filter_reservations_title';
+  static const String selectDateAndTimeMsg = 'select_date_and_time_msg';
 }

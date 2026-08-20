@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class ReservationFilterCriteria {
   final int? status;
@@ -108,7 +109,13 @@ class _ReservationFilterBottomSheetState
                               const ReservationFilterCriteria();
                         },
                         icon: const Icon(Icons.refresh, size: 16),
-                        label: const Text('Reset All'),
+                        label: Text(
+                          context.tr(
+                                shared.LocaleKeys.commonReset,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Reset All',
+                        ),
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.red,
                         ),
@@ -322,7 +329,13 @@ class _ReservationFilterBottomSheetState
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Cancel'),
+                        child: Text(
+                          context.tr(
+                                shared.LocaleKeys.commonCancel,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Cancel',
+                        ),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -340,7 +353,13 @@ class _ReservationFilterBottomSheetState
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        child: const Text('Apply Filters'),
+                        child: Text(
+                          context.tr(
+                                shared.LocaleKeys.commonApply,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Apply Filters',
+                        ),
                       ),
                     ),
                   ],

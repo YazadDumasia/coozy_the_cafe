@@ -159,10 +159,20 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
                     child: TextFormField(
                       controller: _tableNoController,
                       focusNode: _tableNoFocusNode,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         floatingLabelBehavior: FloatingLabelBehavior.never,
-                        labelText: 'Table No',
-                        hintText: 'Enter table number e.g. T-1',
+                        labelText:
+                            context.tr(
+                              shared.LocaleKeys.tableNoLabel,
+                              track: shared.TrackConstants.tablePageTrack,
+                            ) ??
+                            'Table No',
+                        hintText:
+                            context.tr(
+                              shared.LocaleKeys.tableNoHint,
+                              track: shared.TrackConstants.tablePageTrack,
+                            ) ??
+                            'Enter table number e.g. T-1',
                       ),
                       keyboardType: TextInputType.text,
                       textInputAction: TextInputAction.next,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class TablePickerView extends StatefulWidget {
   final List<TableInfo> selectedTables;
@@ -24,7 +25,7 @@ class TablePickerView extends StatefulWidget {
         return Dialog(
           insetPadding: const EdgeInsets.all(16),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Container(
             width: 500,
@@ -37,7 +38,11 @@ class TablePickerView extends StatefulWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Search & Select Tables',
+                      context.tr(
+                            shared.LocaleKeys.searchTablesTitle,
+                            track: shared.TrackConstants.reservationPageTrack,
+                          ) ??
+                          'Search & Select Tables',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -59,7 +64,13 @@ class TablePickerView extends StatefulWidget {
                 const SizedBox(height: 12),
                 ElevatedButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Done'),
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.commonDone,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Done',
+                  ),
                 ),
               ],
             ),
@@ -193,7 +204,11 @@ class _TablePickerViewState extends State<TablePickerView> {
                 setState(() {});
               },
               decoration: InputDecoration(
-                hintText: 'Search tables...',
+                hintText: context.tr(
+                      shared.LocaleKeys.searchTableHint,
+                      track: shared.TrackConstants.reservationPageTrack,
+                    ) ??
+                    'Search tables...',
                 prefixIcon: const Icon(Icons.search, size: 20),
                 suffixIcon: _searchController.text.isNotEmpty
                     ? IconButton(
@@ -299,7 +314,9 @@ class _TablePickerViewState extends State<TablePickerView> {
                                 item.tableNo ??
                                 'Table ${item.id}',
                           ),
-                          subtitle: Text('${item.nosOfChairs ?? 0} Chairs'),
+                          subtitle: Text(
+                            '${item.nosOfChairs ?? 0} ${context.tr(shared.LocaleKeys.chairsLabel, track: shared.TrackConstants.tablePageTrack) ?? "Chairs"}',
+                          ),
                           secondary: CircleAvatar(
                             radius: 12,
                             backgroundColor: _parseTableColor(

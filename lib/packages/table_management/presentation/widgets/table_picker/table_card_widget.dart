@@ -76,7 +76,13 @@ class TableCardWidget extends StatelessWidget {
         ? table.tableNumber!.trim()
         : table.name.trim();
 
-    final tableHeaderTitle = 'TABLE - $tableNoDisplay'.toUpperCase();
+    final tablePrefix =
+        context.tr(
+          LocaleKeys.tableHeaderPrefix,
+          track: TrackConstants.tablePageTrack,
+        ) ??
+        'TABLE';
+    final tableHeaderTitle = '$tablePrefix - $tableNoDisplay'.toUpperCase();
 
     final cardBgColor = colorScheme.surface;
     final onSurface = colorScheme.onSurface;
@@ -158,7 +164,11 @@ class TableCardWidget extends StatelessWidget {
                         const SizedBox(height: 12),
                       ] else if (status == TableStatus.reserved) ...[
                         Text(
-                          'RESERVED',
+                          context.tr(
+                                LocaleKeys.reservedStatus,
+                                track: TrackConstants.tablePageTrack,
+                              ) ??
+                              'RESERVED',
                           style: theme.textTheme.labelLarge?.copyWith(
                             color: isDark
                                 ? const Color(0xFFFFB74D)
@@ -195,7 +205,11 @@ class TableCardWidget extends StatelessWidget {
                       ] else ...[
                         // Empty Table
                         Text(
-                          'EMPTY',
+                          context.tr(
+                                LocaleKeys.emptyStatus,
+                                track: TrackConstants.tablePageTrack,
+                              ) ??
+                              'EMPTY',
                           style: theme.textTheme.labelLarge?.copyWith(
                             color: onSurfaceVariant,
                             fontWeight: FontWeight.w500,
@@ -250,7 +264,7 @@ class TableCardWidget extends StatelessWidget {
                       ] else ...[
                         if (table.nosOfChairs > 0)
                           Text(
-                            'Chairs: ${table.nosOfChairs}',
+                            '${context.tr(LocaleKeys.chairsLabel, track: TrackConstants.tablePageTrack) ?? "Chairs"}: ${table.nosOfChairs}',
                             style: TextStyle(
                               fontSize: 11,
                               color: onSurfaceVariant,
