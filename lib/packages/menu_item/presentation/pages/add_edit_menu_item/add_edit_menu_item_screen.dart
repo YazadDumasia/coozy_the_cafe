@@ -747,7 +747,12 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                 ),
                 const SizedBox(width: 8),
                 IconButton(
-                  tooltip: 'Add new category',
+                  tooltip:
+                      context.tr(
+                        shared.LocaleKeys.menuItemPageAddNewCategory,
+                        track: shared.TrackConstants.menuItemPageTrack,
+                      ) ??
+                      'Add new category',
                   icon: const Icon(Icons.add_circle_outline),
                   onPressed: () =>
                       AddEditMenuItemScreenActions.handleAddCategory(
@@ -854,7 +859,13 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                     ),
                     const SizedBox(width: 8),
                     IconButton(
-                      tooltip: 'Add new subcategory',
+                      tooltip:
+                          context.tr(
+                            shared.LocaleKeys
+                                .menuItemPageAddNewSubcategoryTooltip,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Add new subcategory',
                       icon: const Icon(Icons.add_circle_outline),
                       onPressed: () =>
                           AddEditMenuItemScreenActions.handleAddSubcategory(
@@ -1049,7 +1060,13 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                         color: Colors.red,
                         size: 20,
                       ),
-                      tooltip: 'Remove Variation',
+                      tooltip:
+                          context.tr(
+                            shared.LocaleKeys
+                                .menuItemPageRemoveVariationTooltip,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          'Remove Variation',
                       onPressed: onDelete,
                     ),
                 ],
@@ -1060,10 +1077,15 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
             TextFormField(
               controller: v.nameController,
               focusNode: v.nameFocusNode,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText:
                     'Variation Name (e.g. Small, Medium, Large, Half, Full)',
-                hintText: 'Enter variation name (optional)',
+                hintText:
+                    context.tr(
+                      shared.LocaleKeys.menuItemPageVariationNameHint,
+                      track: shared.TrackConstants.menuItemPageTrack,
+                    ) ??
+                    'Enter variation name (optional)',
               ),
             ),
             const SizedBox(height: 12),
@@ -1280,7 +1302,14 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                     return Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text('Available', style: theme.textTheme.bodySmall),
+                        Text(
+                          context.tr(
+                                shared.LocaleKeys.menuItemPageAvailable,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Available',
+                          style: theme.textTheme.bodySmall,
+                        ),
                         Switch.adaptive(
                           value: avail,
                           onChanged: (val) {

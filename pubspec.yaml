@@ -201,3 +201,6 @@ flutter:
     - family: EmplyeeIcons
       fonts:
         - asset: assets/icons/EmplyeeIcons.ttf
+    - family:  Reservation
+      fonts:
+        - asset: assets/icons/Reservation.ttf

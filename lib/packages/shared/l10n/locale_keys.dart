@@ -123,6 +123,9 @@ abstract class LocaleKeys {
   static String pagerNext = 'pager_next';
   static String todayAvailable = 'today_available';
   static String notAvailable = 'not_available';
+  static String unavailable = 'unavailable';
+  static String simpleVariation = 'simple_variation';
+  static String multiVariation = 'multi_variation';
   static String commonFilter = 'common_filter';
   static String commonFilters = 'common_filters';
   static String purchaseTransactionType = 'purchase_transaction_type';
@@ -359,6 +362,13 @@ abstract class LocaleKeys {
       'menu_item_page_add_edit_menu_item_food_type';
   static String menuItemPageAddEditMenuItemSimpleVariation =
       'menu_item_page_add_edit_menu_item_simple_variation';
+  static String menuItemPageRemoveVariationTooltip =
+      'menu_item_page_remove_variation_tooltip';
+  static String menuItemPageVariationNameHint =
+      'menu_item_page_variation_name_hint';
+  static String menuItemPageAvailable = 'menu_item_page_available';
+  static String menuItemPageAddNewSubcategoryTooltip =
+      'menu_item_page_add_new_subcategory_tooltip';
   static String menuItemPageAddEditMenuItemTodayAvailable =
       'menu_item_page_add_edit_menu_item_today_available';
   static String menuItemPageAddEditMenuItemSellingUnit =
@@ -954,6 +964,8 @@ abstract class LocaleKeys {
       'settings_generating_fake_data';
   static const String settingsRemovingFakeData = 'settings_removing_fake_data';
   static const String settingsFakeDataRemoved = 'settings_fake_data_removed';
+  static const String settingsRemoveFakeDataTitle =
+      'settings_remove_fake_data_title';
   static const String settingsIncludedDataSetsTitle =
       'settings_included_data_sets_title';
   static const String settingsCustomersSetTitle =
@@ -1021,7 +1033,11 @@ abstract class LocaleKeys {
   static const String searchTableHint = 'search_table_hint';
   static const String searchMenuItemHint = 'search_menu_item_hint';
   static const String noCurrentReservations = 'no_current_reservations';
+  static const String noCurrentReservationsFilterMatched =
+      'no_current_reservations_filter_matched';
   static const String noUpcomingReservations = 'no_upcoming_reservations';
+  static const String noUpcomingReservationsFilterMatched =
+      'no_upcoming_reservations_filter_matched';
   static const String addReservationTitle = 'add_reservation_title';
   static const String editReservationTitle = 'edit_reservation_title';
   static const String reservationDetailTitle = 'reservation_detail_title';

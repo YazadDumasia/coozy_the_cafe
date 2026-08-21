@@ -61,7 +61,17 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    isSimple ? 'Simple' : 'Multi-Variation',
+                    isSimple
+                        ? (context.tr(
+                              shared.LocaleKeys.simpleVariation,
+                              track: shared.TrackConstants.menuItemPageTrack,
+                            ) ??
+                            'Simple')
+                        : (context.tr(
+                              shared.LocaleKeys.multiVariation,
+                              track: shared.TrackConstants.menuItemPageTrack,
+                            ) ??
+                            'Multi-Variation'),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: colorScheme.onSecondaryContainer,
                       fontWeight: FontWeight.bold,
@@ -149,7 +159,17 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    isAvailable ? 'Available' : 'Unavailable',
+                    isAvailable
+                        ? (context.tr(
+                              shared.LocaleKeys.menuItemPageAvailable,
+                              track: shared.TrackConstants.menuItemPageTrack,
+                            ) ??
+                            'Available')
+                        : (context.tr(
+                              shared.LocaleKeys.unavailable,
+                              track: shared.TrackConstants.menuItemPageTrack,
+                            ) ??
+                            'Unavailable'),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: isAvailable
                           ? colorScheme.primary

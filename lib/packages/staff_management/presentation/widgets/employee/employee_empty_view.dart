@@ -12,6 +12,12 @@ class EmployeeEmptyView extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Icon(
+            shared.EmplyeeIcons.employee,
+            size: 120,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          SizedBox(height: 10),
           Text(
             context.tr(
                   shared.LocaleKeys.noEmployeesFound,
@@ -19,6 +25,10 @@ class EmployeeEmptyView extends StatelessWidget {
                 ) ??
                 'No Employees Found',
             style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ).inExpandedRow(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
           ),
         ],
       ),

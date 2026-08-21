@@ -114,7 +114,12 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                             ? Theme.of(context).colorScheme.primary
                             : null,
                       ),
-                      tooltip: 'Filter Reservations',
+                      tooltip:
+                          context.tr(
+                            shared.LocaleKeys.filterReservationsTitle,
+                            track: track,
+                          ) ??
+                          'Filter Reservations',
                       onPressed: () {
                         MainReservationScreenActions.showFilterBottomSheet(
                           context: context,
@@ -424,14 +429,37 @@ class _MainReservationScreenState extends State<MainReservationScreen>
 
               if (filteredList.isEmpty) {
                 return Center(
-                  child: Text(
-                    criteria.isActive
-                        ? 'No current reservations match the active filters.'
-                        : (context.tr(
-                                shared.LocaleKeys.noCurrentReservations,
-                                track: track,
-                              ) ??
-                              'No current reservations found.'),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        shared.ReservationIcons.noReservation,
+                        size: 200,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        criteria.isActive
+                            ? (context.tr(
+                                    shared.LocaleKeys
+                                        .noCurrentReservationsFilterMatched,
+                                    track: track,
+                                  ) ??
+                                  'No current reservations match the active filters.')
+                            : (context.tr(
+                                    shared.LocaleKeys.noCurrentReservations,
+                                    track: track,
+                                  ) ??
+                                  'No current reservations found.'),
+                        style: Theme.of(context).textTheme.titleMedium,
+                        textAlign: TextAlign.center,
+                      ).inExpandedRow(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ],
                   ),
                 );
               }
@@ -494,14 +522,39 @@ class _MainReservationScreenState extends State<MainReservationScreen>
 
               if (filteredList.isEmpty) {
                 return Center(
-                  child: Text(
-                    criteria.isActive
-                        ? 'No upcoming reservations match the active filters.'
-                        : (context.tr(
-                                shared.LocaleKeys.noUpcomingReservations,
-                                track: track,
-                              ) ??
-                              'No upcoming reservations found.'),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        criteria.isActive
+                            ? shared.ReservationIcons.hotelBell
+                            : shared.ReservationIcons.reservedCheckHolder,
+                        size: 150,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        criteria.isActive
+                            ? (context.tr(
+                                    shared.LocaleKeys
+                                        .noUpcomingReservationsFilterMatched,
+                                    track: track,
+                                  ) ??
+                                  'No upcoming reservations match the active filters.')
+                            : (context.tr(
+                                    shared.LocaleKeys.noUpcomingReservations,
+                                    track: track,
+                                  ) ??
+                                  'No upcoming reservations found.'),
+                        style: Theme.of(context).textTheme.titleMedium,
+                        textAlign: TextAlign.center,
+                      ).inExpandedRow(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                    ],
                   ),
                 );
               }

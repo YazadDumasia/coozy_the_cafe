@@ -535,7 +535,12 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.search, size: 20),
-              tooltip: 'Search Tables',
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.searchTableHint,
+                    track: track,
+                  ) ??
+                  'Search Tables',
               onPressed: () {
                 TablePickerView.showSearchDialog(
                   context,
@@ -580,7 +585,12 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.search, size: 20),
-              tooltip: 'Search Menu Items',
+              tooltip:
+                  context.tr(
+                    shared.LocaleKeys.searchMenuItemHint,
+                    track: track,
+                  ) ??
+                  'Search Menu Items',
               onPressed: () {
                 MenuItemPickerView.showSearchDialog(
                   context,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'menu_item_food_type_badge.dart';
 
 class MenuItemDetailHeaderCard extends StatelessWidget {
@@ -143,13 +144,29 @@ class MenuItemDetailHeaderCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Status',
+                          context.tr(
+                                shared.LocaleKeys.statusLabel,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Status',
                           style: theme.textTheme.labelSmall?.copyWith(
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
                         Text(
-                          isAvailable ? 'Today Available' : 'Not Available',
+                          isAvailable
+                              ? (context.tr(
+                                    shared.LocaleKeys.todayAvailable,
+                                    track:
+                                        shared.TrackConstants.menuItemPageTrack,
+                                  ) ??
+                                  'Today Available')
+                              : (context.tr(
+                                    shared.LocaleKeys.notAvailable,
+                                    track:
+                                        shared.TrackConstants.menuItemPageTrack,
+                                  ) ??
+                                  'Not Available'),
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: isAvailable

@@ -259,7 +259,12 @@ class ReservationCard extends StatelessWidget {
                         size: 20,
                         color: Colors.green,
                       ),
-                      tooltip: 'Call Customer',
+                      tooltip:
+                          context.tr(
+                            shared.LocaleKeys.callTooltip,
+                            track: shared.TrackConstants.reservationPageTrack,
+                          ) ??
+                          'Call Customer',
                       onPressed: () => _makePhoneCall(reservation.phoneNumber),
                       constraints: const BoxConstraints(),
                       padding: const EdgeInsets.all(6),

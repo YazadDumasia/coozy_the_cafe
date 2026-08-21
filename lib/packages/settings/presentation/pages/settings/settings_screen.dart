@@ -257,7 +257,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (ctx) {
           return AlertDialog(
-            title: Text('Remove $name Fake Data?'),
+            title: Text(
+              _tr(
+                context,
+                shared.LocaleKeys.settingsRemoveFakeDataTitle,
+                'Remove $name Fake Data?',
+              ),
+            ),
             content: Text(
               'Are you sure you want to remove fake records for $name?\n\n'
               'Note: If other datasets depend on this data, dependent fake records may also be cleaned up.',
@@ -265,7 +271,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text('Cancel'),
+                child: Text(
+                  _tr(context, shared.LocaleKeys.commonCancel, 'Cancel'),
+                ),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -273,7 +281,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   foregroundColor: Colors.white,
                 ),
                 onPressed: () => Navigator.of(ctx).pop(true),
-                child: const Text('Remove'),
+                child: Text(
+                  _tr(context, shared.LocaleKeys.commonDelete, 'Remove'),
+                ),
               ),
             ],
           );

@@ -19,6 +19,8 @@ export 'icons/custom_icons.dart';
 export 'icons/inventory_icon_icons.dart';
 export 'icons/menu_icons_icons.dart';
 export 'icons/menu_search_icons.dart';
+export 'icons/emplyee_icons_icons.dart';
+export 'icons/reservation_icons.dart';
 
 // l10n
 export 'l10n/locale_keys.dart';

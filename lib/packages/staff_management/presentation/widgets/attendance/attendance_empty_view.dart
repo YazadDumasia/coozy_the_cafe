@@ -9,14 +9,31 @@ class AttendanceEmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        message ??
-            (context.tr(
-                  shared.LocaleKeys.noAttendanceRecords,
-                  track: shared.TrackConstants.staffManagementPageTrack,
-                ) ??
-                'No Attendance Records'),
-        style: Theme.of(context).textTheme.titleMedium,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            shared.EmplyeeIcons.attendance,
+            size: 120,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          SizedBox(height: 10),
+          Text(
+            message ??
+                (context.tr(
+                      shared.LocaleKeys.noAttendanceRecords,
+                      track: shared.TrackConstants.staffManagementPageTrack,
+                    ) ??
+                    'No Attendance Records'),
+            style: Theme.of(context).textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ).inExpandedRow(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+          ),
+        ],
       ),
     );
   }
