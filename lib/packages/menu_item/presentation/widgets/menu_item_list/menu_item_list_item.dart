@@ -150,7 +150,7 @@ class MenuItemListItem extends StatelessWidget {
                     onPressed: () async {
                       if (item.id != null) {
                         await context.push(
-                          '${AppRoutePath.menuItemFullListScreenRoute}/detail/${item.id}',
+                          AppRoutePath.menuItemDetailRoute(item.id!),
                         );
                         if (context.mounted) {
                           final bloc = context.read<MenuItemBloc>();

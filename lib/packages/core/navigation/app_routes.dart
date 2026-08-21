@@ -49,6 +49,8 @@ class AppRoutePath {
   static const String addNewMenuItemScreenRoute = 'menu-item-add';
   static const String updateMenuItemScreenRoute = 'menu-item-update';
   static const String detailMenuItemScreenRoute = 'detail/:id';
+  static String menuItemDetailRoute(dynamic id) =>
+      '$menuItemFullListScreenRoute/detail/$id';
 
   // Sub-routes for Menu Categories
   static const String addNewMenuCategoryScreenRoute = 'menu-category-add';
