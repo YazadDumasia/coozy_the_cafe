@@ -16,8 +16,9 @@ class TableUpdateDialogActions {
     TextEditingController hexColorTextEditingController,
     TextEditingController nosOfChairsController,
     TableInfo table,
-    Function(TableInfo)? onUpdateCallback,
-  ) {
+    Function(TableInfo)? onUpdateCallback, {
+    bool isActive = true,
+  }) {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       final String tableLabel = tableNameController.text;
@@ -33,6 +34,7 @@ class TableUpdateDialogActions {
         nosOfChairs: nosOfChairs ?? 4,
         colorValue: color,
         sortOrderIndex: table.sortOrderIndex,
+        isActive: isActive,
       );
       if (onUpdateCallback != null) {
         onUpdateCallback(updatedTableInfo);

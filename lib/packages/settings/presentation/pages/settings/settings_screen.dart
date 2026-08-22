@@ -76,6 +76,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Future<void> _onToggleFakeData(bool enable) async {
     if (_isLoadingNotifier.value) return;
 
+    if (enable) {
+      _showSelectTablesDialog(context);
+      return;
+    }
+
     _isLoadingNotifier.value = true;
     _completedStageKeysNotifier.value = {};
     _activeStageKeyNotifier.value = null;
@@ -90,134 +95,67 @@ class _SettingsScreenState extends State<SettingsScreen> {
       await core.NotificationApi.requestNotificationPermission();
       if (!mounted) return;
 
-      if (enable) {
-        _statusMessageNotifier.value = _tr(
-          context,
-          shared.LocaleKeys.settingsGeneratingFakeData,
-          'Generating 1,800+ fake records across 1.5 years history...',
-        );
+      _statusMessageNotifier.value = _tr(
+        context,
+        shared.LocaleKeys.settingsRemovingFakeData,
+        'Removing all fake records...',
+      );
 
-        String? lastStageKey;
+      String? lastStageKey;
 
-        final count = await FakeDataHelper.generateFakeData(
-          database,
-          onProgress: (stageKey, stageDesc, currentStep, totalSteps) {
-            core.NotificationApi.showFakeDataProgressNotification(
-              currentStep: currentStep,
-              totalSteps: totalSteps,
-              statusDesc: stageDesc,
-            );
+      await FakeDataHelper.removeFakeData(
+        database,
+        onProgress: (stageKey, stageDesc, currentStep, totalSteps) {
+          core.NotificationApi.showFakeDataProgressNotification(
+            currentStep: currentStep,
+            totalSteps: totalSteps,
+            statusDesc: stageDesc,
+          );
 
-            if (!mounted) return;
+          if (!mounted) return;
 
-            if (lastStageKey != null) {
-              _completedStageKeysNotifier.value = {
-                ..._completedStageKeysNotifier.value,
-                lastStageKey!,
-              };
-            }
-            lastStageKey = stageKey;
-            _activeStageKeyNotifier.value = stageKey;
-            _currentStepDescNotifier.value = stageDesc;
-            _currentStepNotifier.value = currentStep;
-            _totalStepsNotifier.value = totalSteps;
-          },
-        );
+          if (lastStageKey != null) {
+            _completedStageKeysNotifier.value = {
+              ..._completedStageKeysNotifier.value,
+              lastStageKey!,
+            };
+          }
+          lastStageKey = stageKey;
+          _activeStageKeyNotifier.value = stageKey;
+          _currentStepDescNotifier.value = stageDesc;
+          _currentStepNotifier.value = currentStep;
+          _totalStepsNotifier.value = totalSteps;
+        },
+      );
 
-        if (!mounted) return;
+      if (!mounted) return;
 
-        if (lastStageKey != null) {
-          _completedStageKeysNotifier.value = {
-            ..._completedStageKeysNotifier.value,
-            lastStageKey!,
-          };
-        }
-        _activeStageKeyNotifier.value = null;
+      _activeStageKeyNotifier.value = null;
+      _completedStageKeysNotifier.value = {};
 
-        await prefs.setBool(_prefKeyFakeData, true);
-        if (!mounted) return;
-        _isFakeDataEnabledNotifier.value = true;
-        _statusMessageNotifier.value =
-            'Success! $count fake records added across all modules.';
+      await prefs.setBool(_prefKeyFakeData, false);
+      if (!mounted) return;
+      _isFakeDataEnabledNotifier.value = false;
+      _statusMessageNotifier.value = _tr(
+        context,
+        shared.LocaleKeys.settingsFakeDataRemoved,
+        'All fake records cleanly removed.',
+      );
 
-        core.NotificationApi.showFakeDataCompletedNotification(count: count);
+      core.NotificationApi.showFakeDataRemovedNotification();
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.tr(
-                    shared.LocaleKeys.fakedRecordsAddedSuccessfullyMsg,
-                    params: {'count': count.toString()},
-                    track: shared.TrackConstants.commonTrack,
-                  ) ??
-                  'Faked records of $count added successfully.',
-            ),
-            backgroundColor: Colors.green,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            context.tr(
+                  shared.LocaleKeys.fakeDataSuccessfullyRemovedMsg,
+                  track: shared.TrackConstants.commonTrack,
+                ) ??
+                'Fake data successfully removed from database.',
           ),
-        );
-      } else {
-        _statusMessageNotifier.value = _tr(
-          context,
-          shared.LocaleKeys.settingsRemovingFakeData,
-          'Removing all fake records...',
-        );
-
-        String? lastStageKey;
-
-        await FakeDataHelper.removeFakeData(
-          database,
-          onProgress: (stageKey, stageDesc, currentStep, totalSteps) {
-            core.NotificationApi.showFakeDataProgressNotification(
-              currentStep: currentStep,
-              totalSteps: totalSteps,
-              statusDesc: stageDesc,
-            );
-
-            if (!mounted) return;
-
-            if (lastStageKey != null) {
-              _completedStageKeysNotifier.value = {
-                ..._completedStageKeysNotifier.value,
-                lastStageKey!,
-              };
-            }
-            lastStageKey = stageKey;
-            _activeStageKeyNotifier.value = stageKey;
-            _currentStepDescNotifier.value = stageDesc;
-            _currentStepNotifier.value = currentStep;
-            _totalStepsNotifier.value = totalSteps;
-          },
-        );
-
-        if (!mounted) return;
-
-        _activeStageKeyNotifier.value = null;
-        _completedStageKeysNotifier.value = {};
-
-        await prefs.setBool(_prefKeyFakeData, false);
-        if (!mounted) return;
-        _isFakeDataEnabledNotifier.value = false;
-        _statusMessageNotifier.value = _tr(
-          context,
-          shared.LocaleKeys.settingsFakeDataRemoved,
-          'All fake records cleanly removed.',
-        );
-
-        core.NotificationApi.showFakeDataRemovedNotification();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.tr(
-                    shared.LocaleKeys.fakeDataSuccessfullyRemovedMsg,
-                    track: shared.TrackConstants.commonTrack,
-                  ) ??
-                  'Fake data successfully removed from database.',
-            ),
-            backgroundColor: Colors.orange,
-          ),
-        );
-      }
+          backgroundColor: Colors.orange,
+        ),
+      );
     } catch (e, stackTrace) {
       debugPrint('Error processing master fake data: $e\n$stackTrace');
       if (mounted) {
@@ -241,6 +179,395 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _isLoadingNotifier.value = false;
       }
     }
+  }
+
+  Future<void> _generateSelectedDatasetData(
+    List<String> selectedStageKeys,
+  ) async {
+    if (selectedStageKeys.isEmpty) return;
+
+    _isLoadingNotifier.value = true;
+    _completedStageKeysNotifier.value = {};
+    _activeStageKeyNotifier.value = null;
+    _currentStepNotifier.value = 0;
+
+    final database = GetIt.instance<CoozyDatabase>();
+    final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
+
+    try {
+      await core.NotificationApi.init();
+      await core.NotificationApi.requestNotificationPermission();
+      if (!mounted) return;
+
+      _statusMessageNotifier.value = _tr(
+        context,
+        shared.LocaleKeys.settingsGeneratingFakeData,
+        'Generating fake records for ${selectedStageKeys.length} selected tables...',
+      );
+
+      String? lastStageKey;
+
+      final count = await FakeDataHelper.generateDatasetData(
+        database,
+        selectedStageKeys,
+        onProgress: (stageKey, stageDesc, currentStep, totalSteps) {
+          core.NotificationApi.showFakeDataProgressNotification(
+            currentStep: currentStep,
+            totalSteps: totalSteps,
+            statusDesc: stageDesc,
+          );
+
+          if (!mounted) return;
+
+          if (lastStageKey != null) {
+            _completedStageKeysNotifier.value = {
+              ..._completedStageKeysNotifier.value,
+              lastStageKey!,
+            };
+          }
+          lastStageKey = stageKey;
+          _activeStageKeyNotifier.value = stageKey;
+          _currentStepDescNotifier.value = stageDesc;
+          _currentStepNotifier.value = currentStep;
+          _totalStepsNotifier.value = totalSteps;
+        },
+      );
+
+      if (!mounted) return;
+
+      if (lastStageKey != null) {
+        _completedStageKeysNotifier.value = {
+          ..._completedStageKeysNotifier.value,
+          lastStageKey!,
+        };
+      }
+      _activeStageKeyNotifier.value = null;
+
+      await prefs.setBool(_prefKeyFakeData, true);
+      if (!mounted) return;
+      _isFakeDataEnabledNotifier.value = true;
+      _statusMessageNotifier.value =
+          'Success! $count fake records added for ${selectedStageKeys.length} selected tables.';
+
+      core.NotificationApi.showFakeDataCompletedNotification(count: count);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            context.tr(
+                  shared.LocaleKeys.fakedRecordsAddedSuccessfullyMsg,
+                  params: {'count': count.toString()},
+                  track: shared.TrackConstants.commonTrack,
+                ) ??
+                'Faked records of $count added successfully.',
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e, stackTrace) {
+      debugPrint('Error generating selected dataset: $e\n$stackTrace');
+      if (mounted) {
+        _statusMessageNotifier.value = 'Error generating fake data: $e';
+      }
+    } finally {
+      if (mounted) {
+        _isLoadingNotifier.value = false;
+      }
+    }
+  }
+
+  void _showSelectTablesDialog(BuildContext context) {
+    final tables = [
+      _TableSelectionItem(
+        key: 'customers',
+        title: 'Customers Table',
+        subtitle: '250+ Fake Customers with contact info & phone numbers',
+        icon: Icons.people_alt_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'employees',
+        title: 'Employees / Staff Table',
+        subtitle:
+            '100 Staff Profiles (Managers, Chefs, Baristas, Waiters, Cashiers)',
+        icon: Icons.badge_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'attendance',
+        title: 'Staff Attendance Table',
+        subtitle: 'Daily check-in / check-out logs and working durations',
+        icon: Icons.co_present_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'leaves',
+        title: 'Staff Leaves Table',
+        subtitle: '200+ Full-Day & Half-Day leave requests with reasons',
+        icon: Icons.event_busy_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'table_info',
+        title: 'Dining Tables Table',
+        subtitle: '12 Dining Tables with chair capacities & color themes',
+        icon: Icons.table_restaurant_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'categories',
+        title: 'Menu Categories Table',
+        subtitle:
+            '7 Main Menu Categories (Beverages, Main Course, Desserts, etc.)',
+        icon: Icons.category_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'subcategories',
+        title: 'Menu Subcategories Table',
+        subtitle: '21 Menu Subcategories linked to main categories',
+        icon: Icons.folder_open_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'menu_items',
+        title: 'Menu Items & Variations Table',
+        subtitle: '28 Menu Items with Portion Variations & Customer Reviews',
+        icon: Icons.restaurant_menu_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'recipes',
+        title: 'Recipes Table',
+        subtitle:
+            '8 Gourmet Cafe Recipes with prep time, ingredients & instructions',
+        icon: Icons.menu_book_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'inventory',
+        title: 'Inventory Raw Stock Table',
+        subtitle: '10 Kitchen Raw Material Stock Items with live stock levels',
+        icon: Icons.inventory_2_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'purchases',
+        title: 'Stock Purchases Table',
+        subtitle: '100+ Stock Purchase Receipts & supplier cost records',
+        icon: Icons.shopping_cart_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'reservations',
+        title: 'Table Reservations & Pre-Orders Table',
+        subtitle:
+            '215 Table Reservations with Pre-Ordered Items & seat details',
+        icon: Icons.event_seat_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'orders',
+        title: 'Orders & Kitchen Items Table',
+        subtitle:
+            '150+ Customer Orders (Dine-In, Takeaway, Delivery, Pre-Orders)',
+        icon: Icons.receipt_long_outlined,
+      ),
+      _TableSelectionItem(
+        key: 'invoices',
+        title: 'Invoices & Payments Table',
+        subtitle:
+            '100+ Invoices with 5% GST calculation & Payment Transactions',
+        icon: Icons.point_of_sale_outlined,
+      ),
+    ];
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            final allSelected = tables.every((t) => t.enabled);
+            final selectedCount = tables.where((t) => t.enabled).length;
+
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              titlePadding: const EdgeInsets.fromLTRB(24, 20, 24, 10),
+              contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              actionsPadding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+              title: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.tune_rounded,
+                      color: Colors.amber.shade800,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Select Tables for Fake Data',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 2),
+                        Text(
+                          'Enable switches for tables to generate fake data',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              content: SizedBox(
+                width: double.maxFinite,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Divider(height: 1),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '$selectedCount of ${tables.length} Selected',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey.shade700,
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: () {
+                              setDialogState(() {
+                                final newValue = !allSelected;
+                                for (final t in tables) {
+                                  t.enabled = newValue;
+                                }
+                              });
+                            },
+                            icon: Icon(
+                              allSelected
+                                  ? Icons.deselect_rounded
+                                  : Icons.select_all_rounded,
+                              size: 16,
+                            ),
+                            label: Text(
+                              allSelected ? 'Deselect All' : 'Select All',
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: Container(
+                        constraints: BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.height * 0.48,
+                        ),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          itemCount: tables.length,
+                          separatorBuilder: (context, index) =>
+                              const Divider(height: 1, indent: 48),
+                          itemBuilder: (context, index) {
+                            final item = tables[index];
+                            return SwitchListTile.adaptive(
+                              value: item.enabled,
+                              activeThumbColor: Colors.amber.shade800,
+                              dense: true,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              secondary: Icon(
+                                item.icon,
+                                color: item.enabled
+                                    ? Colors.amber.shade900
+                                    : Colors.grey,
+                                size: 22,
+                              ),
+                              title: Text(
+                                item.title,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w600,
+                                  color: item.enabled
+                                      ? Colors.black87
+                                      : Colors.grey.shade600,
+                                ),
+                              ),
+                              subtitle: Text(
+                                item.subtitle,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: item.enabled
+                                      ? Colors.grey.shade700
+                                      : Colors.grey.shade500,
+                                ),
+                              ),
+                              onChanged: (val) {
+                                setDialogState(() {
+                                  item.enabled = val;
+                                });
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                OutlinedButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber.shade800,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 10,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: selectedCount == 0
+                      ? null
+                      : () {
+                          Navigator.of(dialogContext).pop();
+                          final selectedKeys = tables
+                              .where((t) => t.enabled)
+                              .map((t) => t.key)
+                              .toList();
+                          _generateSelectedDatasetData(selectedKeys);
+                        },
+                  icon: const Icon(Icons.play_arrow_rounded, size: 18),
+                  label: const Text(
+                    'Submit',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
   }
 
   Future<void> _onToggleDataset(
@@ -1029,7 +1356,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
     required String title,
     required String subtitle,
   }) {
-    final theme = Theme.of(context);
     return ValueListenableBuilder<String?>(
       valueListenable: _activeStageKeyNotifier,
       builder: (context, activeStageKey, child) {
@@ -1251,75 +1577,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         datasetName: title,
                                       );
                                     },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton.icon(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: isDone
-                                      ? Colors.red.shade600
-                                      : theme.primaryColor,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                ),
-                                onPressed: isLoading
-                                    ? null
-                                    : () {
-                                        _onToggleDataset(
-                                          stageKeys,
-                                          !isDone,
-                                          datasetName: title,
-                                        );
-                                      },
-                                icon: Icon(
-                                  isDone
-                                      ? Icons.delete_outline
-                                      : Icons.add_rounded,
-                                  size: 18,
-                                ),
-                                label: Text(
-                                  isDone ? 'Remove $title' : 'Populate $title',
-                                  style: const TextStyle(fontSize: 13),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            OutlinedButton.icon(
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                  horizontal: 12,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              onPressed: () {
-                                _showFakeDataDialog(
-                                  context: context,
-                                  selectedTitle: title,
-                                  selectedSubtitle: subtitle,
-                                  selectedIcon: icon,
-                                  stageKeys: stageKeys,
-                                );
-                              },
-                              icon: const Icon(
-                                Icons.aspect_ratio_rounded,
-                                size: 16,
-                              ),
-                              label: const Text(
-                                'Dialog',
-                                style: TextStyle(fontSize: 12),
-                              ),
                             ),
                           ],
                         ),
@@ -2137,4 +2394,20 @@ class _DatasetDetailRow extends StatelessWidget {
       ),
     );
   }
+}
+
+class _TableSelectionItem {
+  final String key;
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  bool enabled;
+
+  _TableSelectionItem({
+    required this.key,
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    bool initialEnabled = true,
+  }) : enabled = initialEnabled;
 }

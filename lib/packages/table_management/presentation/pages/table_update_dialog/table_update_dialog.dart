@@ -30,6 +30,7 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
   final ValueNotifier<Color> _selectedColorNotifier = ValueNotifier<Color>(
     Colors.white,
   );
+  late final ValueNotifier<bool> _isActiveNotifier;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -55,6 +56,7 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
   @override
   void initState() {
     super.initState();
+    _isActiveNotifier = ValueNotifier<bool>(widget.table.isActive ?? true);
     _tableNameController = TextEditingController(text: widget.table.tableLabel);
     _tableNameFocusNode = FocusNode();
     _tableNoController = TextEditingController(
@@ -77,6 +79,7 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
 
   @override
   void dispose() {
+    _isActiveNotifier.dispose();
     _hexColorTextEditingController.removeListener(_onHexColorChanged);
     _selectedColorNotifier.dispose();
     _tableNameController?.dispose();
@@ -92,6 +95,23 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final WidgetStateProperty<Icon?> thumbIcon =
+        WidgetStateProperty.resolveWith<Icon>((Set<WidgetState> states) {
+          if (states.containsAll(<Object?>[
+            WidgetState.disabled,
+            WidgetState.selected,
+          ])) {
+            return const Icon(Icons.check, color: Colors.red);
+          }
+          if (states.contains(WidgetState.disabled)) {
+            return const Icon(Icons.close);
+          }
+          if (states.contains(WidgetState.selected)) {
+            return const Icon(Icons.check, color: Colors.green);
+          }
+          return const Icon(Icons.close);
+        });
+
     return AlertDialog(
       title: Text(
         context.tr(
@@ -213,11 +233,105 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
                         FilteringTextInputFormatter.digitsOnly,
                       ],
                       onFieldSubmitted: (String value) {
-                        FocusScope.of(context).unfocus();
+                        FocusScope.of(context).requestFocus(_hexColorFocusNode);
                       },
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 15),
+              ValueListenableBuilder<bool>(
+                valueListenable: _isActiveNotifier,
+                builder: (context, isActive, child) {
+                  return Material(
+                    color: Colors.transparent,
+                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                    child: InkWell(
+                      borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      onTap: () {
+                        _isActiveNotifier.value = !isActive;
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 6.0,
+                          horizontal: 4.0,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              child: RichText(
+                                text: TextSpan(
+                                  text:
+                                      context.tr(
+                                        shared
+                                            .LocaleKeys
+                                            .tableInfoEnableStatusText,
+                                        track: shared
+                                            .TrackConstants
+                                            .tablePageTrack,
+                                      ) ??
+                                      'Enable Status:',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                  children: <InlineSpan>[
+                                    const TextSpan(text: ' '),
+                                    TextSpan(
+                                      text: isActive
+                                          ? context.tr(
+                                                  shared
+                                                      .LocaleKeys
+                                                      .commonActive,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Active'
+                                          : context.tr(
+                                                  shared
+                                                      .LocaleKeys
+                                                      .commonInactive,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .commonTrack,
+                                                ) ??
+                                                'Inactive',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium!
+                                          .copyWith(
+                                            color: isActive
+                                                ? Colors.green
+                                                : Colors.red,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 28,
+                              child: FittedBox(
+                                fit: BoxFit.fill,
+                                child: Switch.adaptive(
+                                  value: isActive,
+                                  padding: EdgeInsets.zero,
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                  onChanged: (value) {
+                                    _isActiveNotifier.value = value;
+                                  },
+                                  thumbIcon: thumbIcon,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
               SizedBox(height: 15),
               Padding(
@@ -307,6 +421,7 @@ class TableUpdateDialogState extends State<TableUpdateDialog> {
               _nosOfChairsController!,
               widget.table,
               widget.onUpdate,
+              isActive: _isActiveNotifier.value,
             );
           },
           child: Text(

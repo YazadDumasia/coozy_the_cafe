@@ -177,12 +177,9 @@ class MenuItemsDao extends DatabaseAccessor<CoozyDatabase>
 
       final result = <MenuItemWithVariations>[];
       for (final item in items) {
-        if (item.isSimpleVariation == true) {
-          continue; // from original code, if isSimpleVariation == true and available it might be skipped? Wait, original code says: `if (!isTodayAvailable || isSimpleVariation) return null;` Actually let me fix this. Original code might have had a bug or assumed simple variation is handled differently. We'll just return it if it's a simple variation without checking variations.
-        }
-
         final itemVariations = variationsMap[item.id] ?? [];
-        if (itemVariations.isNotEmpty &&
+        if (item.isSimpleVariation != true &&
+            itemVariations.isNotEmpty &&
             itemVariations.every((v) => v.isTodayAvailable == false)) {
           continue;
         }
@@ -230,10 +227,9 @@ class MenuItemsDao extends DatabaseAccessor<CoozyDatabase>
 
     final result = <MenuItemWithVariations>[];
     for (final item in items) {
-      if (item.isSimpleVariation == true) continue; // matching legacy logic
-
       final itemVariations = variationsMap[item.id] ?? [];
-      if (itemVariations.isNotEmpty &&
+      if (item.isSimpleVariation != true &&
+          itemVariations.isNotEmpty &&
           itemVariations.every((v) => v.isTodayAvailable == false)) {
         continue;
       }
@@ -308,10 +304,7 @@ class MenuItemsDao extends DatabaseAccessor<CoozyDatabase>
   }) async {
     final offset = (pageNumber - 1) * limit;
     final query = select(menuItemsTable)
-      ..where((t) => t.isTodayAvailable.equals(true))
-      ..where(
-        (t) => t.isSimpleVariation.equals(false),
-      ); // matching legacy logic
+      ..where((t) => t.isTodayAvailable.equals(true));
 
     query.orderBy([
       (t) => OrderingTerm(expression: t.name, mode: OrderingMode.asc),

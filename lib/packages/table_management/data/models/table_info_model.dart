@@ -10,6 +10,7 @@ class TableInfoModel extends TableInfo {
     super.colorValue,
     super.sortOrderIndex,
     super.nosOfChairs,
+    super.isActive,
   });
 
   factory TableInfoModel.fromEntity(TableInfo entity) {
@@ -20,6 +21,7 @@ class TableInfoModel extends TableInfo {
       colorValue: entity.colorValue,
       sortOrderIndex: entity.sortOrderIndex,
       nosOfChairs: entity.nosOfChairs,
+      isActive: entity.isActive,
     );
   }
 
@@ -31,6 +33,7 @@ class TableInfoModel extends TableInfo {
       colorValue: data.colorValue,
       sortOrderIndex: data.sortOrderIndex,
       nosOfChairs: data.nosOfChairs,
+      isActive: data.isActive,
     );
   }
 
@@ -50,6 +53,7 @@ class TableInfoModel extends TableInfo {
       nosOfChairs: nosOfChairs == null
           ? const Value.absent()
           : Value(nosOfChairs!),
+      isActive: isActive == null ? const Value.absent() : Value(isActive!),
     );
   }
 }

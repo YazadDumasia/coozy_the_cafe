@@ -16,8 +16,9 @@ class NewTableInfoDialogActions {
     TextEditingController tableNoController,
     TextEditingController hexColorTextEditingController,
     TextEditingController nosOfChairsController,
-    Function(TableInfo)? onCreate,
-  ) {
+    Function(TableInfo)? onCreate, {
+    bool isActive = true,
+  }) {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       final String tableLabel = tableNameController.text;
@@ -32,6 +33,7 @@ class NewTableInfoDialogActions {
         tableNo: tableNo,
         nosOfChairs: nosOfChairs ?? 4,
         colorValue: color,
+        isActive: isActive,
       );
       if (onCreate != null) {
         onCreate(tableInfoModel);

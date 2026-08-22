@@ -110,6 +110,20 @@ class $TableInfoTableTable extends TableInfoTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     createdBy,
@@ -121,6 +135,7 @@ class $TableInfoTableTable extends TableInfoTable
     colorValue,
     sortOrderIndex,
     nosOfChairs,
+    isActive,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -191,6 +206,12 @@ class $TableInfoTableTable extends TableInfoTable
         ),
       );
     }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
     return context;
   }
 
@@ -236,6 +257,10 @@ class $TableInfoTableTable extends TableInfoTable
         DriftSqlType.int,
         data['${effectivePrefix}nos_of_chairs'],
       ),
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      ),
     );
   }
 
@@ -255,6 +280,7 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
   final String? colorValue;
   final int? sortOrderIndex;
   final int? nosOfChairs;
+  final bool? isActive;
   const TableInfoData({
     this.createdBy,
     this.updatedBy,
@@ -265,6 +291,7 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
     this.colorValue,
     this.sortOrderIndex,
     this.nosOfChairs,
+    this.isActive,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -291,6 +318,9 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
     }
     if (!nullToAbsent || nosOfChairs != null) {
       map['nos_of_chairs'] = Variable<int>(nosOfChairs);
+    }
+    if (!nullToAbsent || isActive != null) {
+      map['is_active'] = Variable<bool>(isActive);
     }
     return map;
   }
@@ -320,6 +350,9 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
       nosOfChairs: nosOfChairs == null && nullToAbsent
           ? const Value.absent()
           : Value(nosOfChairs),
+      isActive: isActive == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isActive),
     );
   }
 
@@ -338,6 +371,7 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
       colorValue: serializer.fromJson<String?>(json['colorValue']),
       sortOrderIndex: serializer.fromJson<int?>(json['sortOrderIndex']),
       nosOfChairs: serializer.fromJson<int?>(json['nosOfChairs']),
+      isActive: serializer.fromJson<bool?>(json['isActive']),
     );
   }
   @override
@@ -353,6 +387,7 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
       'colorValue': serializer.toJson<String?>(colorValue),
       'sortOrderIndex': serializer.toJson<int?>(sortOrderIndex),
       'nosOfChairs': serializer.toJson<int?>(nosOfChairs),
+      'isActive': serializer.toJson<bool?>(isActive),
     };
   }
 
@@ -366,6 +401,7 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
     Value<String?> colorValue = const Value.absent(),
     Value<int?> sortOrderIndex = const Value.absent(),
     Value<int?> nosOfChairs = const Value.absent(),
+    Value<bool?> isActive = const Value.absent(),
   }) => TableInfoData(
     createdBy: createdBy.present ? createdBy.value : this.createdBy,
     updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
@@ -378,6 +414,7 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
         ? sortOrderIndex.value
         : this.sortOrderIndex,
     nosOfChairs: nosOfChairs.present ? nosOfChairs.value : this.nosOfChairs,
+    isActive: isActive.present ? isActive.value : this.isActive,
   );
   TableInfoData copyWithCompanion(TableInfoTableCompanion data) {
     return TableInfoData(
@@ -398,6 +435,7 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
       nosOfChairs: data.nosOfChairs.present
           ? data.nosOfChairs.value
           : this.nosOfChairs,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
     );
   }
 
@@ -412,7 +450,8 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
           ..write('tableNo: $tableNo, ')
           ..write('colorValue: $colorValue, ')
           ..write('sortOrderIndex: $sortOrderIndex, ')
-          ..write('nosOfChairs: $nosOfChairs')
+          ..write('nosOfChairs: $nosOfChairs, ')
+          ..write('isActive: $isActive')
           ..write(')'))
         .toString();
   }
@@ -428,6 +467,7 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
     colorValue,
     sortOrderIndex,
     nosOfChairs,
+    isActive,
   );
   @override
   bool operator ==(Object other) =>
@@ -441,7 +481,8 @@ class TableInfoData extends DataClass implements Insertable<TableInfoData> {
           other.tableNo == this.tableNo &&
           other.colorValue == this.colorValue &&
           other.sortOrderIndex == this.sortOrderIndex &&
-          other.nosOfChairs == this.nosOfChairs);
+          other.nosOfChairs == this.nosOfChairs &&
+          other.isActive == this.isActive);
 }
 
 class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
@@ -454,6 +495,7 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
   final Value<String?> colorValue;
   final Value<int?> sortOrderIndex;
   final Value<int?> nosOfChairs;
+  final Value<bool?> isActive;
   const TableInfoTableCompanion({
     this.createdBy = const Value.absent(),
     this.updatedBy = const Value.absent(),
@@ -464,6 +506,7 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
     this.colorValue = const Value.absent(),
     this.sortOrderIndex = const Value.absent(),
     this.nosOfChairs = const Value.absent(),
+    this.isActive = const Value.absent(),
   });
   TableInfoTableCompanion.insert({
     this.createdBy = const Value.absent(),
@@ -475,6 +518,7 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
     this.colorValue = const Value.absent(),
     this.sortOrderIndex = const Value.absent(),
     this.nosOfChairs = const Value.absent(),
+    this.isActive = const Value.absent(),
   });
   static Insertable<TableInfoData> custom({
     Expression<int>? createdBy,
@@ -486,6 +530,7 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
     Expression<String>? colorValue,
     Expression<int>? sortOrderIndex,
     Expression<int>? nosOfChairs,
+    Expression<bool>? isActive,
   }) {
     return RawValuesInsertable({
       if (createdBy != null) 'created_by': createdBy,
@@ -497,6 +542,7 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
       if (colorValue != null) 'color_value': colorValue,
       if (sortOrderIndex != null) 'sort_order_index': sortOrderIndex,
       if (nosOfChairs != null) 'nos_of_chairs': nosOfChairs,
+      if (isActive != null) 'is_active': isActive,
     });
   }
 
@@ -510,6 +556,7 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
     Value<String?>? colorValue,
     Value<int?>? sortOrderIndex,
     Value<int?>? nosOfChairs,
+    Value<bool?>? isActive,
   }) {
     return TableInfoTableCompanion(
       createdBy: createdBy ?? this.createdBy,
@@ -521,6 +568,7 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
       colorValue: colorValue ?? this.colorValue,
       sortOrderIndex: sortOrderIndex ?? this.sortOrderIndex,
       nosOfChairs: nosOfChairs ?? this.nosOfChairs,
+      isActive: isActive ?? this.isActive,
     );
   }
 
@@ -554,6 +602,9 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
     if (nosOfChairs.present) {
       map['nos_of_chairs'] = Variable<int>(nosOfChairs.value);
     }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
     return map;
   }
 
@@ -568,7 +619,8 @@ class TableInfoTableCompanion extends UpdateCompanion<TableInfoData> {
           ..write('tableNo: $tableNo, ')
           ..write('colorValue: $colorValue, ')
           ..write('sortOrderIndex: $sortOrderIndex, ')
-          ..write('nosOfChairs: $nosOfChairs')
+          ..write('nosOfChairs: $nosOfChairs, ')
+          ..write('isActive: $isActive')
           ..write(')'))
         .toString();
   }
@@ -18924,6 +18976,7 @@ typedef $$TableInfoTableTableCreateCompanionBuilder =
       Value<String?> colorValue,
       Value<int?> sortOrderIndex,
       Value<int?> nosOfChairs,
+      Value<bool?> isActive,
     });
 typedef $$TableInfoTableTableUpdateCompanionBuilder =
     TableInfoTableCompanion Function({
@@ -18936,6 +18989,7 @@ typedef $$TableInfoTableTableUpdateCompanionBuilder =
       Value<String?> colorValue,
       Value<int?> sortOrderIndex,
       Value<int?> nosOfChairs,
+      Value<bool?> isActive,
     });
 
 final class $$TableInfoTableTableReferences
@@ -19038,6 +19092,11 @@ class $$TableInfoTableTableFilterComposer
 
   ColumnFilters<int> get nosOfChairs => $composableBuilder(
     column: $table.nosOfChairs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -19145,6 +19204,11 @@ class $$TableInfoTableTableOrderingComposer
     column: $table.nosOfChairs,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TableInfoTableTableAnnotationComposer
@@ -19190,6 +19254,9 @@ class $$TableInfoTableTableAnnotationComposer
     column: $table.nosOfChairs,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
 
   Expression<T> reservationsTableRefs<T extends Object>(
     Expression<T> Function($$ReservationsTableTableAnnotationComposer a) f,
@@ -19285,6 +19352,7 @@ class $$TableInfoTableTableTableManager
                 Value<String?> colorValue = const Value.absent(),
                 Value<int?> sortOrderIndex = const Value.absent(),
                 Value<int?> nosOfChairs = const Value.absent(),
+                Value<bool?> isActive = const Value.absent(),
               }) => TableInfoTableCompanion(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -19295,6 +19363,7 @@ class $$TableInfoTableTableTableManager
                 colorValue: colorValue,
                 sortOrderIndex: sortOrderIndex,
                 nosOfChairs: nosOfChairs,
+                isActive: isActive,
               ),
           createCompanionCallback:
               ({
@@ -19307,6 +19376,7 @@ class $$TableInfoTableTableTableManager
                 Value<String?> colorValue = const Value.absent(),
                 Value<int?> sortOrderIndex = const Value.absent(),
                 Value<int?> nosOfChairs = const Value.absent(),
+                Value<bool?> isActive = const Value.absent(),
               }) => TableInfoTableCompanion.insert(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -19317,6 +19387,7 @@ class $$TableInfoTableTableTableManager
                 colorValue: colorValue,
                 sortOrderIndex: sortOrderIndex,
                 nosOfChairs: nosOfChairs,
+                isActive: isActive,
               ),
           withReferenceMapper: (p0) => p0
               .map(

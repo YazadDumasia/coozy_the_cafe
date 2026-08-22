@@ -1,12 +1,9 @@
-import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
-import '../../../data/datasources/table_picker_dao.dart';
-import '../../../data/repositories/tables_repository_impl.dart';
 import '../../../domain/entities/table_entity.dart';
-import '../../../domain/usecases/watch_tables_use_case.dart';
 import '../../bloc/table_picker_bloc.dart';
 import '../../widgets/table_picker/table_card_widget.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -19,14 +16,7 @@ class TablePickerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) {
-        final db = CoozyDatabase();
-        final dao = TablePickerDao(db);
-        final repository = TablesRepositoryImpl(tablePickerDao: dao);
-        final useCase = WatchTablesUseCase(repository);
-        return TablePickerBloc(watchTablesUseCase: useCase)
-          ..add(const LoadTablesEvent());
-      },
+      create: (_) => sl<TablePickerBloc>()..add(const LoadTablesEvent()),
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
@@ -47,7 +37,9 @@ class TablePickerScreen extends StatelessWidget {
               if (state is TablePickerError) {
                 return shared.ErrorPage(
                   onPressedRetryButton: () {
-                    context.read<TablePickerBloc>().add(const LoadTablesEvent());
+                    context.read<TablePickerBloc>().add(
+                      const LoadTablesEvent(),
+                    );
                   },
                 );
               }
@@ -59,12 +51,27 @@ class TablePickerScreen extends StatelessWidget {
               final tables = state.tables;
               if (tables.isEmpty) {
                 return Center(
-                  child: Text(
-                    context.tr(
-                          shared.LocaleKeys.noTablesAvailable,
-                          track: shared.TrackConstants.tablePageTrack,
-                        ) ??
-                        'No tables available',
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        shared.MenuIcons.roundTable,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 110,
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        context.tr(
+                              shared.LocaleKeys.noTablesAvailable,
+                              track: shared.TrackConstants.tablePageTrack,
+                            ) ??
+                            'No tables available',
+                        style: Theme.of(context).textTheme.titleMedium,
+                        textAlign: TextAlign.center,
+                      ).inExpandedRow(),
+                    ],
                   ),
                 );
               }

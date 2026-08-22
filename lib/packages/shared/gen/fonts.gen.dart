@@ -26,4 +26,7 @@ abstract final class FontFamily {
 
   /// Font family: Menu_search
   static const String menuSearch = 'Menu_search';
+
+  /// Font family: Reservation
+  static const String reservation = 'Reservation';
 }

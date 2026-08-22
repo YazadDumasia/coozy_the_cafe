@@ -105,6 +105,35 @@ class TableCubit extends Cubit<TableState> {
     }
   }
 
+  Future<void> updateTableStatus(
+    TableInfo table,
+    bool isEnable, {
+    VoidCallback? onSuccess,
+    void Function(String)? onError,
+  }) async {
+    if (state is TableLoaded) {
+      final currentState = state as TableLoaded;
+      final updated = table.copyWith(isActive: isEnable);
+
+      final updatedTables = currentState.tables.map((t) {
+        if (t.id == table.id) {
+          return updated;
+        }
+        return t;
+      }).toList();
+
+      emit(currentState.copyWith(tables: updatedTables));
+
+      try {
+        await updateTableUseCase(updated);
+        onSuccess?.call();
+      } catch (e) {
+        emit(currentState);
+        onError?.call(e.toString());
+      }
+    }
+  }
+
   Future<void> deleteTable(
     int tableId, {
     VoidCallback? onSuccess,

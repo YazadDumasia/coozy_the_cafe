@@ -66,7 +66,9 @@ class _StaffManagementScreenState extends State<StaffManagementScreen>
           bottom: TabBar(
             controller: _tabController,
             isScrollable: true,
-            tabAlignment: TabAlignment.center,
+            tabAlignment: shared.ResponsiveLayout.isDesktop(context)
+                ? TabAlignment.center
+                : TabAlignment.start,
             onTap: _onTabTapped,
             tabs: [
               Tab(

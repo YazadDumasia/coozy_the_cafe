@@ -19,6 +19,7 @@ class TableInfoTable extends BaseTable {
   TextColumn get colorValue => text().nullable()();
   IntColumn get sortOrderIndex => integer().nullable()();
   IntColumn get nosOfChairs => integer().nullable()();
+  BoolColumn get isActive => boolean().nullable()();
 }
 
 @DataClassName('Category')

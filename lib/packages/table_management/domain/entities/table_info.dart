@@ -9,6 +9,7 @@ class TableInfo {
   final String? categoryName;
   final bool isOccupied;
   final bool isReserved;
+  final bool? isActive;
 
   const TableInfo({
     this.id,
@@ -21,6 +22,7 @@ class TableInfo {
     this.categoryName,
     this.isOccupied = false,
     this.isReserved = false,
+    this.isActive = true,
   });
 
   TableInfo copyWith({
@@ -34,6 +36,7 @@ class TableInfo {
     String? categoryName,
     bool? isOccupied,
     bool? isReserved,
+    bool? isActive,
   }) {
     return TableInfo(
       id: id ?? this.id,
@@ -46,6 +49,7 @@ class TableInfo {
       categoryName: categoryName ?? this.categoryName,
       isOccupied: isOccupied ?? this.isOccupied,
       isReserved: isReserved ?? this.isReserved,
+      isActive: isActive ?? this.isActive,
     );
   }
 }

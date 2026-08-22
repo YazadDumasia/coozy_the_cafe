@@ -596,6 +596,7 @@ class FakeDataHelper {
               colorValue: const Value('4280391411'),
               sortOrderIndex: Value(i),
               nosOfChairs: Value(2 + (i % 4) * 2),
+              isActive: const Value(true),
             ),
           );
       inserted++;

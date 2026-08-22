@@ -58,6 +58,113 @@ class TableScreenActions {
     context.read<TableCubit>().loadTables();
   }
 
+  static Future<void> handleToggleTableStatus(
+    BuildContext context,
+    TableInfo table,
+    bool isEnable,
+  ) async {
+    final String tableName = table.tableLabel ?? table.tableNo ?? 'this table';
+    final String contentMsg = isEnable
+        ? (context.tr(
+                shared.LocaleKeys.tableStatusEnableConfirmationMsg,
+                params: {'tableName': tableName},
+                track: shared.TrackConstants.tablePageTrack,
+              ) ??
+              'Are you sure you want to enable $tableName?')
+        : (context.tr(
+                shared.LocaleKeys.tableStatusDisableConfirmationMsg,
+                params: {'tableName': tableName},
+                track: shared.TrackConstants.tablePageTrack,
+              ) ??
+              'Are you sure you want to disable $tableName?');
+
+    final bool? isConfirmed =
+        await shared.DialogUtils.showConfirmationDialog<bool>(
+          context: context,
+          title:
+              context.tr(
+                shared.LocaleKeys.tableScreenDeleteTitleTxt,
+                track: shared.TrackConstants.tablePageTrack,
+              ) ??
+              'Are you sure?',
+          content: contentMsg,
+          cancelText:
+              context.tr(
+                shared.LocaleKeys.commonCancel,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Cancel',
+          confirmText:
+              context.tr(
+                shared.LocaleKeys.commonOkay,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Okay',
+          titleIcon: Icon(
+            Icons.info_outline,
+            size: 50,
+            color: Theme.of(context).primaryColor,
+          ),
+        );
+
+    if (isConfirmed != true) return;
+
+    if (!context.mounted) return;
+
+    shared.DialogUtils.showLoadingDialog(context);
+
+    await context.read<TableCubit>().updateTableStatus(
+      table,
+      isEnable,
+      onSuccess: () {
+        if (context.mounted) {
+          Navigator.pop(context); // Pop loading dialog
+          shared.DialogUtils.showAutoDismissDialog(
+            context: context,
+            descriptions:
+                isEnable
+                    ? (context.tr(
+                          shared.LocaleKeys.tableStatusEnabledSuccessMsg,
+                          track: shared.TrackConstants.tablePageTrack,
+                        ) ??
+                        'Table status has been enabled successfully.')
+                    : (context.tr(
+                          shared.LocaleKeys.tableStatusDisabledSuccessMsg,
+                          track: shared.TrackConstants.tablePageTrack,
+                        ) ??
+                        'Table status has been disabled successfully.'),
+            title: '',
+            titleIcon: Lottie.asset(
+              MediaQuery.of(context).platformBrightness == Brightness.light
+                  ? Assets.lottie.doneLightBrownColor
+                  : Assets.lottie.doneBrownColor,
+              repeat: false,
+            ),
+          );
+        }
+      },
+      onError: (error) {
+        core.PlatformUtils.debugLog(
+          TableScreenActions,
+          'handleToggleTableStatus:onError: $error',
+        );
+        if (context.mounted) {
+          Navigator.pop(context); // Pop loading dialog
+          shared.DialogUtils.showAutoDismissDialog(
+            context: context,
+            title:
+                context.tr(
+                  shared.LocaleKeys.commonError,
+                  track: shared.TrackConstants.commonTrack,
+                ) ??
+                'Error',
+            descriptions: error,
+          );
+        }
+      },
+    );
+  }
+
   static Future<void> onDeleteTable(
     BuildContext context,
     TableInfo model,

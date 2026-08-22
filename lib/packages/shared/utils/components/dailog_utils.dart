@@ -588,27 +588,41 @@ class DialogUtils {
                                       Brightness.light
                                   ? Colors.white
                                   : null,
-                              fontWeight: FontWeight.w700,
+                              fontWeight: FontWeight.w500,
                             ),
-                        textAlign: TextAlign.start,
+                        textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 20),
+                      SizedBox(height: 24),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           if (cancelText != null || onCancel != null)
-                            TextButton(
+                            OutlinedButton(
                               onPressed: () {
                                 if (onCancel != null) {
                                   onCancel();
                                 } else {
-                                  // Navigator.pop(dialogContext);
                                   if (dialogContext.mounted &&
                                       dialogContext.canPop()) {
-                                    dialogContext.pop();
+                                    dialogContext.pop(false as T);
                                   }
                                 }
                               },
+                              style: OutlinedButton.styleFrom(
+                                side: BorderSide(
+                                  color: Theme.of(context).brightness == Brightness.light
+                                      ? Colors.white
+                                      : Theme.of(context).colorScheme.primary,
+                                  width: 1.5,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 10,
+                                ),
+                              ),
                               child: Text(
                                 cancelText ?? 'Cancel',
                                 style: Theme.of(context).textTheme.titleSmall!
@@ -617,24 +631,41 @@ class DialogUtils {
                                           Theme.of(context).brightness ==
                                               Brightness.light
                                           ? Colors.white
-                                          : null,
+                                          : Theme.of(context).colorScheme.primary,
                                       fontWeight: FontWeight.w700,
                                     ),
                               ),
                             ),
                           if (confirmText != null || onConfirm != null)
-                            TextButton(
+                            ElevatedButton(
                               onPressed: () {
                                 if (onConfirm != null) {
                                   onConfirm();
                                 } else {
-                                  // Navigator.pop(dialogContext);
                                   if (dialogContext.mounted &&
                                       dialogContext.canPop()) {
-                                    dialogContext.pop();
+                                    dialogContext.pop(true as T);
                                   }
                                 }
                               },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Theme.of(context).brightness == Brightness.light
+                                        ? Colors.white
+                                        : Theme.of(context).colorScheme.primary,
+                                foregroundColor:
+                                    Theme.of(context).brightness == Brightness.light
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Colors.white,
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 10,
+                                ),
+                              ),
                               child: Text(
                                 confirmText ?? 'Okay',
                                 style: Theme.of(context).textTheme.titleSmall!
@@ -642,8 +673,8 @@ class DialogUtils {
                                       color:
                                           Theme.of(context).brightness ==
                                               Brightness.light
-                                          ? Colors.white
-                                          : null,
+                                          ? Theme.of(context).colorScheme.primary
+                                          : Colors.white,
                                       fontWeight: FontWeight.w700,
                                     ),
                               ),

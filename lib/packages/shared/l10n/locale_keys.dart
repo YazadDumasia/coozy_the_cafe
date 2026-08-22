@@ -241,6 +241,7 @@ abstract class LocaleKeys {
   static String tableNameLabelText = 'table_name_label_text';
   static String tableNameHintText = 'table_name_hint_text';
   static String tableNameErrorText = 'table_name_error_text';
+  static String tableLabelText = 'table_label_text';
   static String tableNosOfChairsLabelText = 'table_nos_of_chairs_label_text';
   static String tableNosOfChairsHintText = 'table_nos_of_chairs_hint_text';
   static String tableInfoAppBarTitle = 'table_info_app_bar_title';
@@ -280,6 +281,17 @@ abstract class LocaleKeys {
   static String noTablesAvailable = 'no_tables_available';
   static String tableNoLabel = 'table_no_label';
   static String tableNoHint = 'table_no_hint';
+  static String tableInfoEnableStatusText = 'table_info_enable_status_text';
+  static String tableStatusChangeConfirmationMsg =
+      'table_status_change_confirmation_msg';
+  static String tableStatusEnableConfirmationMsg =
+      'table_status_enable_confirmation_msg';
+  static String tableStatusDisableConfirmationMsg =
+      'table_status_disable_confirmation_msg';
+  static String tableStatusEnabledSuccessMsg =
+      'table_status_enabled_success_msg';
+  static String tableStatusDisabledSuccessMsg =
+      'table_status_disabled_success_msg';
 
   // menu_category_page
   static String menuCategoryAppbarTitle = 'menu_category_appbar_title';

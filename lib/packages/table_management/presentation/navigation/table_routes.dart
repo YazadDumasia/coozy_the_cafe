@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/waiter_order_placement/presentation/navigation/waiter_order_placement_routes.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/navigation/app_routes.dart';
 import '../pages/table_picker/table_picker_screen.dart';
@@ -19,11 +20,14 @@ class TableRoutes {
     GoRoute(
       path: AppRoutePath.tablePickerScreenRoute,
       name: AppRouteName.tablePicker,
-      builder: (context, state) => TablePickerScreen(),
-      // builder: (context, state) => BlocProvider<TablePickerCubit>(
-      //   create: (context) => GetIt.instance<TablePickerCubit>()..loadTables(),
-      //   child: const TablePickerScreen(),
-      // ),
+      builder: (context, state) => TablePickerScreen(
+        onTableSelected: (table) {
+          context.push(
+            WaiterOrderPlacementRoutes.menuItemPickerRoute,
+            extra: table,
+          );
+        },
+      ),
     ),
   ];
 }

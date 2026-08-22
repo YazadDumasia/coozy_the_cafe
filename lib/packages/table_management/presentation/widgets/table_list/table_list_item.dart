@@ -72,7 +72,7 @@ class TableListItem extends StatelessWidget {
                                   children: <Widget>[
                                     Expanded(
                                       child: Text(
-                                        "${context.tr(shared.LocaleKeys.tableNameLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Table Label"}: ${model.tableLabel ?? model.tableNo ?? ''}",
+                                        "${context.tr(shared.LocaleKeys.tableLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Table Label"}: ${model.tableLabel ?? model.tableNo ?? ''}",
                                         textAlign: TextAlign.start,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
@@ -91,7 +91,7 @@ class TableListItem extends StatelessWidget {
                                     children: <Widget>[
                                       Expanded(
                                         child: Text(
-                                          "Table No: ${model.tableNo}",
+                                          "${context.tr(shared.LocaleKeys.tableNoLabel, track: shared.TrackConstants.tablePageTrack) ?? "Table No"}: ${model.tableNo}",
                                           textAlign: TextAlign.start,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -112,6 +112,65 @@ class TableListItem extends StatelessWidget {
                                         textAlign: TextAlign.start,
                                         maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    RichText(
+                                      text: TextSpan(
+                                        text:
+                                            context.tr(
+                                              shared
+                                                  .LocaleKeys
+                                                  .tableInfoEnableStatusText,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .tablePageTrack,
+                                            ) ??
+                                            'Enable Status:',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                        children: <InlineSpan>[
+                                          const TextSpan(text: ' '),
+                                          TextSpan(
+                                            text: (model.isActive ?? false)
+                                                ? context.tr(
+                                                        shared
+                                                            .LocaleKeys
+                                                            .commonActive,
+                                                        track: shared
+                                                            .TrackConstants
+                                                            .commonTrack,
+                                                      ) ??
+                                                      'Active'
+                                                : context.tr(
+                                                        shared
+                                                            .LocaleKeys
+                                                            .commonInactive,
+                                                        track: shared
+                                                            .TrackConstants
+                                                            .commonTrack,
+                                                      ) ??
+                                                      'Inactive',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium!
+                                                .copyWith(
+                                                  color: (model.isActive ??
+                                                          false)
+                                                      ? Colors.green
+                                                      : Colors.red,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -138,6 +197,13 @@ class TableListItem extends StatelessWidget {
                             if (value == 'edit') {
                               TableScreenActions.onUpdateModel(context, model);
                             }
+                            if (value == 'toggle_status') {
+                              TableScreenActions.handleToggleTableStatus(
+                                context,
+                                model,
+                                !(model.isActive ?? false),
+                              );
+                            }
                             if (value == 'delete') {
                               TableScreenActions.onDeleteTable(context, model);
                             }
@@ -153,6 +219,14 @@ class TableListItem extends StatelessWidget {
                                             shared.TrackConstants.commonTrack,
                                       ) ??
                                       'Edit',
+                                ),
+                              ),
+                              PopupMenuItem(
+                                value: 'toggle_status',
+                                child: Text(
+                                  (model.isActive ?? false)
+                                      ? 'Disable'
+                                      : 'Enable',
                                 ),
                               ),
                               PopupMenuItem(

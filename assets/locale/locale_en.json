@@ -236,6 +236,7 @@
         "table_name_label_text": "Table Name",
         "table_name_error_text": "Table name is required.",
         "table_name_hint_text": "Enter table name like Table1",
+        "table_label_text": "Table Label",
         "table_nos_of_chairs_hint_text": "Enter number of chairs",
         "table_nos_of_chairs_label_text": "Nos Of Chairs per Table",
         "table_screen_delete_title_txt": "Are you sure?",
@@ -248,7 +249,13 @@
         "table_picker_title": "Table Picker",
         "no_tables_available": "No tables available",
         "table_no_label": "Table No",
-        "table_no_hint": "Enter table number e.g. T-1"
+        "table_no_hint": "Enter table number e.g. T-1",
+        "table_info_enable_status_text": "Enable Status:",
+        "table_status_change_confirmation_msg": "Are you sure you want to change the status of this table?",
+        "table_status_enable_confirmation_msg": "Are you sure you want to enable ${tableName}?",
+        "table_status_disable_confirmation_msg": "Are you sure you want to disable ${tableName}?",
+        "table_status_enabled_success_msg": "Table status has been enabled successfully.",
+        "table_status_disabled_success_msg": "Table status has been disabled successfully."
     },
     "menu_category_page": {
         "menu_category_appbar_title": "Menu Category",

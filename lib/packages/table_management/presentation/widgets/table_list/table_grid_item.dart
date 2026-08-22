@@ -45,7 +45,7 @@ class TableGridItem extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                              "${context.tr(shared.LocaleKeys.tableNameLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Table Label"}: ${model.tableLabel ?? model.tableNo ?? ''}",
+                              "${context.tr(shared.LocaleKeys.tableLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Table Label"}: ${model.tableLabel ?? model.tableNo ?? ''}",
                               textAlign: TextAlign.start,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -61,9 +61,9 @@ class TableGridItem extends StatelessWidget {
                           children: <Widget>[
                             Expanded(
                               child: Text(
-                                "Table No: ${model.tableNo}",
+                                "${context.tr(shared.LocaleKeys.tableNoLabel, track: shared.TrackConstants.tablePageTrack) ?? "Table No"}: ${model.tableNo}",
                                 textAlign: TextAlign.start,
-                                maxLines: 1,
+                                maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -78,12 +78,59 @@ class TableGridItem extends StatelessWidget {
                             child: Text(
                               "${context.tr(shared.LocaleKeys.tableNosOfChairsLabelText, track: shared.TrackConstants.tablePageTrack) ?? "Nos Of Chairs per Table"}: ${model.nosOfChairs}",
                               textAlign: TextAlign.start,
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
                       ),
+                      const SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          RichText(
+                            text: TextSpan(
+                              text:
+                                  context.tr(
+                                    shared.LocaleKeys.tableInfoEnableStatusText,
+                                    track: shared.TrackConstants.tablePageTrack,
+                                  ) ??
+                                  'Enable Status:',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              children: <InlineSpan>[
+                                const TextSpan(text: ' '),
+                                TextSpan(
+                                  text: (model.isActive ?? false)
+                                      ? context.tr(
+                                              shared.LocaleKeys.commonActive,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .commonTrack,
+                                            ) ??
+                                            'Active'
+                                      : context.tr(
+                                              shared.LocaleKeys.commonInactive,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .commonTrack,
+                                            ) ??
+                                            'Inactive',
+                                  style: Theme.of(context).textTheme.bodyMedium!
+                                      .copyWith(
+                                        color: (model.isActive ?? false)
+                                            ? Colors.green
+                                            : Colors.red,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
