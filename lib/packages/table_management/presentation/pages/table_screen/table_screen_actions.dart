@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
@@ -111,28 +113,28 @@ class TableScreenActions {
 
     if (!context.mounted) return;
 
-    shared.DialogUtils.showLoadingDialog(context);
-
+    unawaited(shared.DialogUtils.showLoadingDialog(context));
     await context.read<TableCubit>().updateTableStatus(
       table,
       isEnable,
-      onSuccess: () {
+      onSuccess: () async {
         if (context.mounted) {
-          Navigator.pop(context); // Pop loading dialog
+          if (Navigator.canPop(context)) {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
           shared.DialogUtils.showAutoDismissDialog(
             context: context,
-            descriptions:
-                isEnable
-                    ? (context.tr(
-                          shared.LocaleKeys.tableStatusEnabledSuccessMsg,
-                          track: shared.TrackConstants.tablePageTrack,
-                        ) ??
-                        'Table status has been enabled successfully.')
-                    : (context.tr(
-                          shared.LocaleKeys.tableStatusDisabledSuccessMsg,
-                          track: shared.TrackConstants.tablePageTrack,
-                        ) ??
-                        'Table status has been disabled successfully.'),
+            descriptions: isEnable
+                ? (context.tr(
+                        shared.LocaleKeys.tableStatusEnabledSuccessMsg,
+                        track: shared.TrackConstants.tablePageTrack,
+                      ) ??
+                      'Table status has been enabled successfully.')
+                : (context.tr(
+                        shared.LocaleKeys.tableStatusDisabledSuccessMsg,
+                        track: shared.TrackConstants.tablePageTrack,
+                      ) ??
+                      'Table status has been disabled successfully.'),
             title: '',
             titleIcon: Lottie.asset(
               MediaQuery.of(context).platformBrightness == Brightness.light
@@ -149,7 +151,9 @@ class TableScreenActions {
           'handleToggleTableStatus:onError: $error',
         );
         if (context.mounted) {
-          Navigator.pop(context); // Pop loading dialog
+          if (Navigator.canPop(context)) {
+            Navigator.of(context, rootNavigator: true).pop();
+          }
           shared.DialogUtils.showAutoDismissDialog(
             context: context,
             title:

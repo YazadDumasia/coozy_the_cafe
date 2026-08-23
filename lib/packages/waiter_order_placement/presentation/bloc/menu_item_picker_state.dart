@@ -22,7 +22,12 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
   final String searchQuery;
   final bool isSubmitting;
   final String? orderSuccessMessage;
+  final int? createdOrderId;
+  final String? submittedTableName;
   final String? errorMessage;
+  final int? editingOrderId;
+  final int? loadedTableId;
+  final String? loadedTableName;
 
   const MenuItemPickerLoadedState({
     required this.catalogData,
@@ -31,7 +36,12 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
     this.searchQuery = '',
     this.isSubmitting = false,
     this.orderSuccessMessage,
+    this.createdOrderId,
+    this.submittedTableName,
     this.errorMessage,
+    this.editingOrderId,
+    this.loadedTableId,
+    this.loadedTableName,
   });
 
   MenuItemPickerLoadedState copyWith({
@@ -41,7 +51,12 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
     String? searchQuery,
     bool? isSubmitting,
     String? orderSuccessMessage,
+    int? createdOrderId,
+    String? submittedTableName,
     String? errorMessage,
+    int? editingOrderId,
+    int? loadedTableId,
+    String? loadedTableName,
   }) {
     return MenuItemPickerLoadedState(
       catalogData: catalogData ?? this.catalogData,
@@ -50,7 +65,12 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
       searchQuery: searchQuery ?? this.searchQuery,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       orderSuccessMessage: orderSuccessMessage,
+      createdOrderId: createdOrderId ?? this.createdOrderId,
+      submittedTableName: submittedTableName ?? this.submittedTableName,
       errorMessage: errorMessage,
+      editingOrderId: editingOrderId ?? this.editingOrderId,
+      loadedTableId: loadedTableId ?? this.loadedTableId,
+      loadedTableName: loadedTableName ?? this.loadedTableName,
     );
   }
 
@@ -79,7 +99,12 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
         searchQuery,
         isSubmitting,
         orderSuccessMessage,
+        createdOrderId,
+        submittedTableName,
         errorMessage,
+        editingOrderId,
+        loadedTableId,
+        loadedTableName,
       ];
 }
 

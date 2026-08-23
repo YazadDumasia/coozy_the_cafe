@@ -12,11 +12,13 @@ class SubmitOrderUseCase {
     required int tableId,
     required String tableName,
     required List<OrderCartItem> cartItems,
+    int? orderId,
   }) async {
     return await repository.submitOrder(
       tableId: tableId,
       tableName: tableName,
       cartItems: cartItems,
+      orderId: orderId,
     );
   }
 }

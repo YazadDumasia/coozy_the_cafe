@@ -122,11 +122,10 @@ class TableCubit extends Cubit<TableState> {
         return t;
       }).toList();
 
-      emit(currentState.copyWith(tables: updatedTables));
-
       try {
         await updateTableUseCase(updated);
         onSuccess?.call();
+        emit(currentState.copyWith(tables: updatedTables));
       } catch (e) {
         emit(currentState);
         onError?.call(e.toString());

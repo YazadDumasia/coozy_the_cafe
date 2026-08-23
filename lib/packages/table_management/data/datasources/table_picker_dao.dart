@@ -39,6 +39,8 @@ class TablePickerDao {
           sortOrderIndex: table.sortOrderIndex ?? 0,
           nosOfChairs: table.nosOfChairs ?? 0,
           status: status,
+          orderCreationDate:
+              order != null ? DateTime.tryParse(order.creationDate ?? '') : null,
         );
 
         final existing = tablesById[table.id];

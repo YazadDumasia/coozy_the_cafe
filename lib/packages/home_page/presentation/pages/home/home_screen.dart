@@ -78,17 +78,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           key: _scaffoldKey,
           resizeToAvoidBottomInset: true,
           drawer: const HomeScreenDrawer(),
-          bottomNavigationBar: !shared.ResponsiveLayout.isDesktop(context)
-              ? ValueListenableBuilder<int>(
-                  valueListenable: currentTabIndex,
-                  builder: (context, tabIndex, child) {
-                    return HomeScreenBottomNavBar(
-                      tabController: _tabController,
-                      currentTabIndex: tabIndex,
-                    );
-                  },
-                )
-              : null,
+          bottomNavigationBar: ValueListenableBuilder<int>(
+            valueListenable: currentTabIndex,
+            builder: (context, tabIndex, child) {
+              return HomeScreenBottomNavBar(
+                tabController: _tabController,
+                currentTabIndex: tabIndex,
+              );
+            },
+          ),
           body: shared.ResponsiveLayout(
             mobile: HomeScreenMobileBody(
               scrollController: _scrollController,

@@ -228,9 +228,10 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                         );
                       },
                       susItemBuilder: (context, index) {
+                        const double headerHeight = 36.0;
                         final tag = state.customers[index].getSuspensionTag();
                         return Container(
-                          height: 36,
+                          height: headerHeight,
                           width: double.infinity,
                           margin: EdgeInsets.only(top: index == 0 ? 0 : 10),
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),

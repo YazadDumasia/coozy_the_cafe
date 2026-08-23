@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../domain/entities/menu_catalog_data.dart';
 import '../../domain/entities/order_cart_item.dart';
 import '../../domain/usecases/get_active_menu_catalog_usecase.dart';
+import '../../domain/usecases/get_order_details_usecase.dart';
 import '../../domain/usecases/submit_order_usecase.dart';
 
 part 'menu_item_picker_event.dart';
@@ -13,10 +14,12 @@ class MenuItemPickerBloc
     extends Bloc<MenuItemPickerEvent, MenuItemPickerState> {
   final GetActiveMenuCatalogUseCase getActiveMenuCatalogUseCase;
   final SubmitOrderUseCase submitOrderUseCase;
+  final GetOrderDetailsUseCase getOrderDetailsUseCase;
 
   MenuItemPickerBloc({
     required this.getActiveMenuCatalogUseCase,
     required this.submitOrderUseCase,
+    required this.getOrderDetailsUseCase,
   }) : super(const MenuItemPickerInitialState()) {
     on<LoadMenuCatalogEvent>(_onLoadMenuCatalog);
     on<SelectCategoryTabEvent>(_onSelectCategoryTab);
@@ -32,14 +35,40 @@ class MenuItemPickerBloc
     Emitter<MenuItemPickerState> emit,
   ) async {
     emit(const MenuItemPickerLoadingState());
-    final result = await getActiveMenuCatalogUseCase();
-    result.fold(
-      (failure) => emit(MenuItemPickerErrorState(message: failure.message)),
-      (catalogData) => emit(
-        MenuItemPickerLoadedState(
-          catalogData: catalogData,
-          selectedTabIndex: 0,
-        ),
+    final catalogResult = await getActiveMenuCatalogUseCase();
+
+    if (catalogResult.isLeft()) {
+      final failureMessage =
+          catalogResult.fold((l) => l.message, (_) => 'Failed to load menu catalog');
+      emit(MenuItemPickerErrorState(message: failureMessage));
+      return;
+    }
+
+    final catalogData = catalogResult.getOrElse(() => throw Exception());
+    List<OrderCartItem> initialCartItems = const [];
+    int? loadedTableId;
+    String? loadedTableName;
+
+    if (event.orderId != null) {
+      final orderDetailsResult = await getOrderDetailsUseCase(event.orderId!);
+      orderDetailsResult.fold(
+        (failure) {},
+        (details) {
+          initialCartItems = details.cartItems;
+          loadedTableId = details.tableId;
+          loadedTableName = details.tableName;
+        },
+      );
+    }
+
+    emit(
+      MenuItemPickerLoadedState(
+        catalogData: catalogData,
+        selectedTabIndex: 0,
+        cartItems: initialCartItems,
+        editingOrderId: event.orderId,
+        loadedTableId: loadedTableId,
+        loadedTableName: loadedTableName,
       ),
     );
   }
@@ -173,10 +202,12 @@ class MenuItemPickerBloc
 
       emit(currentState.copyWith(isSubmitting: true));
 
+      final targetOrderId = event.orderId ?? currentState.editingOrderId;
       final result = await submitOrderUseCase(
         tableId: event.tableId,
         tableName: event.tableName,
         cartItems: currentState.cartItems,
+        orderId: targetOrderId,
       );
 
       result.fold(
@@ -189,7 +220,9 @@ class MenuItemPickerBloc
         (orderId) => emit(
           currentState.copyWith(
             isSubmitting: false,
-            orderSuccessMessage: 'Order placed successfully! (ID: #$orderId)',
+            orderSuccessMessage: 'order_placed_successfully_for_table_msg',
+            createdOrderId: orderId,
+            submittedTableName: event.tableName,
             cartItems: const [],
           ),
         ),

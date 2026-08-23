@@ -93,6 +93,7 @@ class DialogUtils {
     await showDialog(
       context: context,
       barrierDismissible: false,
+      useRootNavigator: true,
       builder: (context) {
         Future.delayed(showDuration, () {
           // if (context.mounted && Navigator.canPop(context)) {
@@ -255,6 +256,7 @@ class DialogUtils {
     await showDialog(
       context: context,
       barrierDismissible: barrierDismissible ?? false,
+      useRootNavigator: true,
       builder: (BuildContext context) {
         return PopScope(
           canPop: true,
@@ -273,6 +275,7 @@ class DialogUtils {
     await showGeneralDialog(
       context: context,
       barrierDismissible: false,
+      useRootNavigator: true,
       barrierLabel: '',
       barrierColor: Colors.transparent,
       transitionDuration: const Duration(milliseconds: 200),
@@ -305,6 +308,7 @@ class DialogUtils {
     showDialog(
       context: context,
       barrierDismissible: false,
+      useRootNavigator: true,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -349,6 +353,7 @@ class DialogUtils {
     showDialog(
       context: context,
       barrierDismissible: false,
+      useRootNavigator: true,
       builder: (context) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
@@ -424,6 +429,7 @@ class DialogUtils {
     await showDialog(
       context: context,
       barrierDismissible: barrierDismissible,
+      useRootNavigator: true,
       builder: (dialogContext) {
         Future.delayed(duration, () {
           // if (dialogContext.mounted && Navigator.canPop(dialogContext)) {
@@ -447,6 +453,7 @@ class DialogUtils {
     await showDialog(
       context: context,
       barrierDismissible: false, // Prevents dismissing dialog on outside tap
+      useRootNavigator: true,
       builder: (BuildContext context) {
         return AlertDialog(
           contentPadding: const EdgeInsets.all(10),
@@ -522,6 +529,7 @@ class DialogUtils {
     return await showDialog<T>(
       context: context,
       barrierDismissible: barrierDismissible,
+      useRootNavigator: true,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
           shape: RoundedRectangleBorder(
@@ -610,7 +618,9 @@ class DialogUtils {
                               },
                               style: OutlinedButton.styleFrom(
                                 side: BorderSide(
-                                  color: Theme.of(context).brightness == Brightness.light
+                                  color:
+                                      Theme.of(context).brightness ==
+                                          Brightness.light
                                       ? Colors.white
                                       : Theme.of(context).colorScheme.primary,
                                   width: 1.5,
@@ -631,7 +641,9 @@ class DialogUtils {
                                           Theme.of(context).brightness ==
                                               Brightness.light
                                           ? Colors.white
-                                          : Theme.of(context).colorScheme.primary,
+                                          : Theme.of(
+                                              context,
+                                            ).colorScheme.primary,
                                       fontWeight: FontWeight.w700,
                                     ),
                               ),
@@ -650,13 +662,15 @@ class DialogUtils {
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
-                                    Theme.of(context).brightness == Brightness.light
-                                        ? Colors.white
-                                        : Theme.of(context).colorScheme.primary,
+                                    Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Colors.white
+                                    : Theme.of(context).colorScheme.primary,
                                 foregroundColor:
-                                    Theme.of(context).brightness == Brightness.light
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Colors.white,
+                                    Theme.of(context).brightness ==
+                                        Brightness.light
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.white,
                                 elevation: 3,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -673,7 +687,9 @@ class DialogUtils {
                                       color:
                                           Theme.of(context).brightness ==
                                               Brightness.light
-                                          ? Theme.of(context).colorScheme.primary
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.primary
                                           : Colors.white,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -724,6 +740,7 @@ class DialogUtils {
   }) async {
     return await showDialog<T>(
       context: context,
+      useRootNavigator: true,
       barrierDismissible: barrierDismissible,
       builder: (BuildContext dialogContext) {
         return AlertDialog(

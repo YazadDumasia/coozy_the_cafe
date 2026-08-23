@@ -10,6 +10,11 @@ class SubcategoryHeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const EdgeInsets headerPadding = EdgeInsets.symmetric(
+      horizontal: 16.0,
+      vertical: 8.0,
+    );
+    const EdgeInsets headerMargin = EdgeInsets.only(top: 12.0, bottom: 6.0);
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -19,8 +24,8 @@ class SubcategoryHeaderWidget extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      margin: const EdgeInsets.only(top: 12, bottom: 6),
+      padding: headerPadding,
+      margin: headerMargin,
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(6),

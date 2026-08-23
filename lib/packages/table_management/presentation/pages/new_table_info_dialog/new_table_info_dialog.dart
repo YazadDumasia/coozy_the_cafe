@@ -83,6 +83,7 @@ class NewTableInfoDialogState extends State<NewTableInfoDialog> {
 
   @override
   Widget build(BuildContext context) {
+    const double switchHeight = 28.0;
     final WidgetStateProperty<Icon?> thumbIcon =
         WidgetStateProperty.resolveWith<Icon>((Set<WidgetState> states) {
           if (states.containsAll(<Object?>[
@@ -303,7 +304,7 @@ class NewTableInfoDialogState extends State<NewTableInfoDialog> {
                             ),
                           ),
                           SizedBox(
-                            height: 28,
+                            height: switchHeight,
                             child: FittedBox(
                               fit: BoxFit.fill,
                               child: Switch.adaptive(

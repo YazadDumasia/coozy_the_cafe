@@ -5,6 +5,10 @@ import '../../domain/entities/order_cart_item.dart';
 import '../../domain/repositories/waiter_order_placement_repository.dart';
 import '../datasources/waiter_order_placement_local_datasource.dart';
 
+import '../../domain/entities/active_table_order.dart';
+
+import '../../domain/entities/order_details.dart';
+
 class WaiterOrderPlacementRepositoryImpl
     implements WaiterOrderPlacementRepository {
   final WaiterOrderPlacementLocalDataSource localDataSource;
@@ -26,14 +30,51 @@ class WaiterOrderPlacementRepositoryImpl
     required int tableId,
     required String tableName,
     required List<OrderCartItem> cartItems,
+    int? orderId,
   }) async {
     try {
-      final orderId = await localDataSource.submitOrder(
+      final resOrderId = await localDataSource.submitOrder(
         tableId: tableId,
         tableName: tableName,
         cartItems: cartItems,
+        orderId: orderId,
       );
-      return Right(orderId);
+      return Right(resOrderId);
+    } catch (e) {
+      return Left(DatabaseFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, OrderDetails>> getOrderDetails(int orderId) async {
+    try {
+      final orderDetails = await localDataSource.getOrderDetails(orderId);
+      return Right(orderDetails);
+    } catch (e) {
+      return Left(DatabaseFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<ActiveTableOrder>>> getActiveTableOrders() async {
+    try {
+      final orders = await localDataSource.getActiveTableOrders();
+      return Right(orders);
+    } catch (e) {
+      return Left(DatabaseFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Stream<List<ActiveTableOrder>> watchActiveTableOrders() {
+    return localDataSource.watchActiveTableOrders();
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteTableOrder(int orderId) async {
+    try {
+      await localDataSource.deleteTableOrder(orderId);
+      return const Right(null);
     } catch (e) {
       return Left(DatabaseFailure(message: e.toString()));
     }

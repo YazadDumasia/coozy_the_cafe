@@ -255,7 +255,19 @@
         "table_status_enable_confirmation_msg": "Are you sure you want to enable ${tableName}?",
         "table_status_disable_confirmation_msg": "Are you sure you want to disable ${tableName}?",
         "table_status_enabled_success_msg": "Table status has been enabled successfully.",
-        "table_status_disabled_success_msg": "Table status has been disabled successfully."
+        "table_status_disabled_success_msg": "Table status has been disabled successfully.",
+        "order_placed_successfully_for_table_msg": "Order placed successfully for ${tableName}! (ID: #${orderId})",
+        "send_order_btn_text": "Send Order",
+        "bill_now_btn_text": "Bill Now",
+        "current_order_tab_title": "Current Order",
+        "review_order_btn_text": "Review Order",
+        "no_items_added_to_current_order_msg": "No items added to current order yet",
+        "select_category_tab_to_browse_msg": "Select a category tab above to browse and add items",
+        "search_dish_name_hint": "Search dish name...",
+        "cart_is_empty_msg": "Cart is empty. Please add items to place order.",
+        "add_new_order_btn_text": "Add New Order",
+        "select_category_title": "Select Category",
+        "no_items_available_in_category_msg": "No items available in this category"
     },
     "menu_category_page": {
         "menu_category_appbar_title": "Menu Category",
@@ -857,6 +869,10 @@
         "leave_screen_option_new": "New",
         "leave_screen_option_in_progress": "In Progress",
         "leave_screen_option_completed": "Completed",
-        "leave_screen_option_canceled": "Canceled"
+        "leave_screen_option_canceled": "Canceled",
+        "total_table_orders": "Total Table Orders: {count}",
+        "delete_table_order_title": "Delete Table Order",
+        "delete_table_order_confirm_message": "Are you Sure? It will be deleted Permanently",
+        "shape_label": "Shape"
     }
 }

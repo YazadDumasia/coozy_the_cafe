@@ -1,4 +1,5 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 
 class CategoryDropdownAppBarTitle extends StatelessWidget {
@@ -15,11 +16,12 @@ class CategoryDropdownAppBarTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double popupMenuOffsetY = 45.0;
     final theme = Theme.of(context);
 
     return PopupMenuButton<int>(
       onSelected: onCategorySelected,
-      offset: const Offset(0, 45),
+      offset: const Offset(0, popupMenuOffsetY),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       itemBuilder: (context) {
         final menuItems = <PopupMenuEntry<int>>[];
@@ -37,7 +39,9 @@ class CategoryDropdownAppBarTitle extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  'CURRENT ORDER',
+                  (context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
+                          'Current Order')
+                      .toUpperCase(),
                   style: TextStyle(
                     fontWeight: selectedTabIndex == 0
                         ? FontWeight.bold
@@ -80,7 +84,9 @@ class CategoryDropdownAppBarTitle extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              'SELECT CATEGORY',
+              (context.tr(shared.LocaleKeys.selectCategoryTitle) ??
+                      'Select Category')
+                  .toUpperCase(),
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,

@@ -10,8 +10,12 @@ class CustomerListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const EdgeInsets cardMargin = EdgeInsets.symmetric(
+      horizontal: 8.0,
+      vertical: 4.0,
+    );
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      margin: cardMargin,
       child: ListTile(
         leading: CircleAvatar(
           child: Text(

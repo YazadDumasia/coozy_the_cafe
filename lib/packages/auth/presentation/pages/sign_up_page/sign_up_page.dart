@@ -49,11 +49,12 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
+    const double logoSize = 120.0;
     appLogoLight = Image.asset(
       asts.Assets.images.appLogoClearBg.path,
       fit: BoxFit.scaleDown,
-      width: 120,
-      height: 120,
+      width: logoSize,
+      height: logoSize,
     );
 
     _firstNameTextEditingController = TextEditingController(text: '');

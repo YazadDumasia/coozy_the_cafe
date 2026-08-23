@@ -8,7 +8,11 @@ sealed class MenuItemPickerEvent extends Equatable {
 }
 
 class LoadMenuCatalogEvent extends MenuItemPickerEvent {
-  const LoadMenuCatalogEvent();
+  final int? orderId;
+  const LoadMenuCatalogEvent({this.orderId});
+
+  @override
+  List<Object?> get props => [orderId];
 }
 
 class SelectCategoryTabEvent extends MenuItemPickerEvent {
@@ -73,12 +77,14 @@ class FilterSearchQueryEvent extends MenuItemPickerEvent {
 class SubmitOrderEvent extends MenuItemPickerEvent {
   final int tableId;
   final String tableName;
+  final int? orderId;
 
   const SubmitOrderEvent({
     required this.tableId,
     required this.tableName,
+    this.orderId,
   });
 
   @override
-  List<Object?> get props => [tableId, tableName];
+  List<Object?> get props => [tableId, tableName, orderId];
 }

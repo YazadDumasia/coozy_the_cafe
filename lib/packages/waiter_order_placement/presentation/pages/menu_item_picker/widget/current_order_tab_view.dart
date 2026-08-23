@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/entities/order_cart_item.dart';
 import 'package:coozy_the_cafe/packages/waiter_order_placement/presentation/bloc/menu_item_picker_bloc.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ class CurrentOrderTabView extends StatelessWidget {
   final List<OrderCartItem> cartItems;
   final int tableId;
   final String tableName;
+  final int? orderId;
   final bool isSubmitting;
 
   const CurrentOrderTabView({
@@ -14,11 +16,15 @@ class CurrentOrderTabView extends StatelessWidget {
     required this.cartItems,
     required this.tableId,
     required this.tableName,
+    this.orderId,
     this.isSubmitting = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    const double buttonHeight = 40.0;
+    const EdgeInsets listPadding = EdgeInsets.all(10.0);
+    const double horizontalPadding = 10.0;
     final theme = Theme.of(context);
     final orientation = MediaQuery.of(context).orientation;
     final isLandscape = orientation == Orientation.landscape;
@@ -35,14 +41,16 @@ class CurrentOrderTabView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'No items added to current order yet',
+              context.tr(shared.LocaleKeys.noItemsAddedToCurrentOrderMsg) ??
+                  'No items added to current order yet',
               style: theme.textTheme.titleMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 6),
             Text(
-              'Select a category tab above to browse and add items',
+              context.tr(shared.LocaleKeys.selectCategoryTabToBrowseMsg) ??
+                  'Select a category tab above to browse and add items',
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -57,7 +65,7 @@ class CurrentOrderTabView extends StatelessWidget {
         // List of items in current order
         Expanded(
           child: ListView.builder(
-            padding: const EdgeInsets.all(10),
+            padding: listPadding,
             itemCount: cartItems.length,
             addAutomaticKeepAlives: false,
             addRepaintBoundaries: true,
@@ -67,65 +75,100 @@ class CurrentOrderTabView extends StatelessWidget {
             },
           ),
         ),
-
-        // Bottom "SEND ORDER" Green Button Container
-        Container(
-          width: double.infinity,
+        // Bottom Action Bar: Side-by-side Theme-based BILL NOW & SEND ORDER Buttons
+        Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: 16,
+            horizontal: horizontalPadding,
             vertical: isLandscape ? 8 : 12,
-          ),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.08),
-                blurRadius: 4,
-                offset: const Offset(0, -2),
-              ),
-            ],
           ),
           child: SafeArea(
             top: false,
-            child: SizedBox(
-              height: 48,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF388E3C), // Vibrant Green
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  elevation: 2,
-                ),
-                onPressed: isSubmitting
-                    ? null
-                    : () {
-                        context.read<MenuItemPickerBloc>().add(
-                              SubmitOrderEvent(
-                                tableId: tableId,
-                                tableName: tableName,
-                              ),
-                            );
-                      },
-                child: isSubmitting
-                    ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2.5,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (orderId != null) ...[
+                  Expanded(
+                    child: SizedBox(
+                      height: buttonHeight,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 2,
                         ),
-                      )
-                    : const Text(
-                        'SEND ORDER',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1.0,
+                        onPressed: isSubmitting
+                            ? null
+                            : () {
+                                context.read<MenuItemPickerBloc>().add(
+                                  SubmitOrderEvent(
+                                    tableId: tableId,
+                                    tableName: tableName,
+                                    orderId: orderId,
+                                  ),
+                                );
+                              },
+                        child: Text(
+                          context.tr(shared.LocaleKeys.billNowBtnText) ??
+                              'Bill Now',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onPrimary,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.0,
+                          ),
                         ),
                       ),
-              ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                ],
+                Expanded(
+                  child: SizedBox(
+                    height: buttonHeight,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary,
+                        foregroundColor: theme.colorScheme.onPrimary,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        elevation: 2,
+                      ),
+                      onPressed: isSubmitting
+                          ? null
+                          : () {
+                              context.read<MenuItemPickerBloc>().add(
+                                SubmitOrderEvent(
+                                  tableId: tableId,
+                                  tableName: tableName,
+                                  orderId: orderId,
+                                ),
+                              );
+                            },
+                      child: isSubmitting
+                          ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                color: theme.colorScheme.onPrimary,
+                                strokeWidth: 2.5,
+                              ),
+                            )
+                          : Text(
+                              context.tr(shared.LocaleKeys.sendOrderBtnText) ??
+                                  'Send Order',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -134,6 +177,11 @@ class CurrentOrderTabView extends StatelessWidget {
   }
 
   Widget _buildGreenCartItemCard(BuildContext context, OrderCartItem item) {
+    const EdgeInsets cardMargin = EdgeInsets.only(bottom: 8.0);
+    const EdgeInsets cardPadding = EdgeInsets.symmetric(
+      horizontal: 12.0,
+      vertical: 12.0,
+    );
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -143,13 +191,11 @@ class CurrentOrderTabView extends StatelessWidget {
 
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: cardMargin,
       color: greenBgColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        padding: cardPadding,
         child: Row(
           children: [
             // Dish Name & Variation
@@ -184,11 +230,11 @@ class CurrentOrderTabView extends StatelessWidget {
             InkWell(
               onTap: () {
                 context.read<MenuItemPickerBloc>().add(
-                      UpdateCartItemQuantityEvent(
-                        cartItem: item,
-                        newQuantity: item.quantity - 1,
-                      ),
-                    );
+                  UpdateCartItemQuantityEvent(
+                    cartItem: item,
+                    newQuantity: item.quantity - 1,
+                  ),
+                );
               },
               child: const Icon(
                 Icons.remove_circle,
@@ -200,11 +246,11 @@ class CurrentOrderTabView extends StatelessWidget {
             InkWell(
               onTap: () {
                 context.read<MenuItemPickerBloc>().add(
-                      UpdateCartItemQuantityEvent(
-                        cartItem: item,
-                        newQuantity: item.quantity + 1,
-                      ),
-                    );
+                  UpdateCartItemQuantityEvent(
+                    cartItem: item,
+                    newQuantity: item.quantity + 1,
+                  ),
+                );
               },
               child: const Icon(
                 Icons.add_circle,

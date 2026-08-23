@@ -25,6 +25,7 @@ class TableEntity extends Equatable {
   final int sortOrderIndex;
   final int nosOfChairs;
   final TableStatus status;
+  final DateTime? orderCreationDate;
 
   const TableEntity({
     required this.id,
@@ -34,6 +35,7 @@ class TableEntity extends Equatable {
     required this.sortOrderIndex,
     required this.nosOfChairs,
     required this.status,
+    this.orderCreationDate,
   });
 
   @override
@@ -45,5 +47,6 @@ class TableEntity extends Equatable {
     sortOrderIndex,
     nosOfChairs,
     status,
+    orderCreationDate,
   ];
 }

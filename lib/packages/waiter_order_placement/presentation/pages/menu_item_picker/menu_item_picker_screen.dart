@@ -14,12 +14,14 @@ class MenuItemPickerScreen extends StatefulWidget {
   final TableEntity? table;
   final int? tableId;
   final String? tableName;
+  final int? orderId;
 
   const MenuItemPickerScreen({
     super.key,
     this.table,
     this.tableId,
     this.tableName,
+    this.orderId,
   });
 
   @override
@@ -79,18 +81,31 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
         if (state is MenuItemPickerLoadedState) {
           if (state.orderSuccessMessage != null &&
               state.orderSuccessMessage!.isNotEmpty) {
+            final tName = state.submittedTableName ?? effectiveTableName;
+            final oId = state.createdOrderId?.toString() ?? '';
+            final localizedMsg = context.tr(
+                  shared.LocaleKeys.orderPlacedSuccessfullyForTableMsg,
+                  params: {
+                    'tableName': tName,
+                    'orderId': oId,
+                  },
+                ) ??
+                'Order placed successfully for $tName! (ID: #$oId)';
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.orderSuccessMessage!),
+                content: Text(localizedMsg),
                 backgroundColor: Colors.green,
               ),
             );
             context.go(core.AppRoutePath.homeRoute);
           } else if (state.errorMessage != null &&
               state.errorMessage!.isNotEmpty) {
+            final errText = (state.errorMessage == 'Cart is empty. Please add items to place order.')
+                ? (context.tr(shared.LocaleKeys.cartIsEmptyMsg) ?? state.errorMessage!)
+                : state.errorMessage!;
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage!),
+                content: Text(errText),
                 backgroundColor: Colors.red,
               ),
             );
@@ -155,8 +170,9 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   ? TextField(
                       controller: searchController,
                       focusNode: searchFocusNode,
-                      decoration: const InputDecoration(
-                        hintText: 'Search dish name...',
+                      decoration: InputDecoration(
+                        hintText: context.tr(shared.LocaleKeys.searchDishNameHint) ??
+                            'Search dish name...',
                         border: InputBorder.none,
                       ),
                       style: theme.textTheme.titleMedium,
@@ -171,7 +187,8 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
               actions: [
                 // Fast Forward / Order Summary Action Button (>> icon)
                 IconButton(
-                  tooltip: 'Current Order',
+                  tooltip: context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
+                      'Current Order',
                   icon: Icon(
                     Icons.fast_forward_rounded,
                     color: appBarFgColor,
@@ -208,7 +225,11 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   color: appBarFgColor.withValues(alpha: 0.7),
                 ),
                 tabs: [
-                  const Tab(text: 'CURRENT ORDER'),
+                  Tab(
+                    text: (context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
+                            'CURRENT ORDER')
+                        .toUpperCase(),
+                  ),
                   for (final cat in categories)
                     Tab(text: (cat.name ?? '').toUpperCase()),
                 ],
@@ -220,8 +241,9 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                 // Tab 0: Current Order Tab
                 CurrentOrderTabView(
                   cartItems: state.cartItems,
-                  tableId: effectiveTableId,
-                  tableName: effectiveTableName,
+                  tableId: state.loadedTableId ?? effectiveTableId,
+                  tableName: state.loadedTableName ?? effectiveTableName,
+                  orderId: widget.orderId ?? state.editingOrderId,
                   isSubmitting: state.isSubmitting,
                 ),
 
@@ -230,6 +252,11 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   CategoryMenuItemsTabView(
                     categoryData: catalogData.categoryDataList[i],
                     searchQuery: state.searchQuery,
+                    onReviewOrder: () {
+                      if (_tabController != null) {
+                        onTabSelected(_tabController!, 0);
+                      }
+                    },
                   ),
               ],
             ),

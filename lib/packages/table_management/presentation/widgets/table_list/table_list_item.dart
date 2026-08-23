@@ -17,6 +17,7 @@ class TableListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double avatarSize = 40.0;
     return Card(
       // key: ValueKey(model.id ?? index),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -42,8 +43,8 @@ class TableListItem extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Container(
-                      width: 40,
-                      height: 40,
+                      width: avatarSize,
+                      height: avatarSize,
                       decoration: BoxDecoration(
                         color: Color(
                           int.parse(model.colorValue ?? '000000', radix: 16) |

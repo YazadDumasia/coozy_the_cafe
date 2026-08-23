@@ -15,6 +15,7 @@ class TablePickerScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double iconSize = 110.0;
     return BlocProvider(
       create: (_) => sl<TablePickerBloc>()..add(const LoadTablesEvent()),
       child: SafeArea(
@@ -59,7 +60,7 @@ class TablePickerScreen extends StatelessWidget {
                       Icon(
                         shared.MenuIcons.roundTable,
                         color: Theme.of(context).colorScheme.primary,
-                        size: 110,
+                        size: iconSize,
                       ),
                       SizedBox(height: 10),
                       Text(
@@ -89,9 +90,12 @@ class TablePickerScreen extends StatelessWidget {
                   addRepaintBoundaries: true,
                   itemBuilder: (context, index) {
                     final table = tables[index];
+                    final isSelectable = table.status == TableStatus.empty;
                     return TableCardWidget(
                       table: table,
-                      onTap: () => onTableSelected?.call(table),
+                      onTap: isSelectable
+                          ? () => onTableSelected?.call(table)
+                          : null,
                     );
                   },
                 ),

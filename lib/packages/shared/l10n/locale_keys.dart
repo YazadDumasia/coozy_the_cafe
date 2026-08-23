@@ -292,6 +292,22 @@ abstract class LocaleKeys {
       'table_status_enabled_success_msg';
   static String tableStatusDisabledSuccessMsg =
       'table_status_disabled_success_msg';
+  static String orderPlacedSuccessfullyForTableMsg =
+      'order_placed_successfully_for_table_msg';
+  static String sendOrderBtnText = 'send_order_btn_text';
+  static String billNowBtnText = 'bill_now_btn_text';
+  static String currentOrderTabTitle = 'current_order_tab_title';
+  static String reviewOrderBtnText = 'review_order_btn_text';
+  static String noItemsAddedToCurrentOrderMsg =
+      'no_items_added_to_current_order_msg';
+  static String selectCategoryTabToBrowseMsg =
+      'select_category_tab_to_browse_msg';
+  static String searchDishNameHint = 'search_dish_name_hint';
+  static String cartIsEmptyMsg = 'cart_is_empty_msg';
+  static String addNewOrderBtnText = 'add_new_order_btn_text';
+  static String selectCategoryTitle = 'select_category_title';
+  static String noItemsAvailableInCategoryMsg =
+      'no_items_available_in_category_msg';
 
   // menu_category_page
   static String menuCategoryAppbarTitle = 'menu_category_appbar_title';
@@ -1097,4 +1113,9 @@ abstract class LocaleKeys {
   static const String searchMenuItemsTitle = 'search_menu_items_title';
   static const String filterReservationsTitle = 'filter_reservations_title';
   static const String selectDateAndTimeMsg = 'select_date_and_time_msg';
+  static const String totalTableOrders = 'total_table_orders';
+  static const String deleteTableOrderTitle = 'delete_table_order_title';
+  static const String deleteTableOrderConfirmMessage =
+      'delete_table_order_confirm_message';
+  static const String shapeLabel = 'shape_label';
 }

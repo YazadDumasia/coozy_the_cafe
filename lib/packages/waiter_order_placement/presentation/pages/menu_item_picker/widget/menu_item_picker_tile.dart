@@ -17,6 +17,14 @@ class MenuItemPickerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const EdgeInsets cardMargin = EdgeInsets.symmetric(
+      horizontal: 4.0,
+      vertical: 4.0,
+    );
+    const EdgeInsets cardPadding = EdgeInsets.symmetric(
+      horizontal: 14.0,
+      vertical: 12.0,
+    );
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -35,7 +43,7 @@ class MenuItemPickerTile extends StatelessWidget {
 
     return Card(
       elevation: isSelected ? 2 : 1,
-      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      margin: cardMargin,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(color: cardBorderColor, width: isSelected ? 1.5 : 1.0),
@@ -46,7 +54,7 @@ class MenuItemPickerTile extends StatelessWidget {
         onTap: onAdd,
         onLongPress: quantityInCart > 0 ? onRemove : null,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          padding: cardPadding,
           child: Row(
             children: [
               // Left: Name & Price

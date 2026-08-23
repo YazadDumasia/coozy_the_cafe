@@ -57,11 +57,12 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
   @override
   void initState() {
     super.initState();
+    const double logoSize = 120.0;
     appLogoLight = Image.asset(
       assets_gen.Assets.images.appLogoClearBg.path,
       fit: BoxFit.scaleDown,
-      width: 120,
-      height: 120,
+      width: logoSize,
+      height: logoSize,
     );
 
     _scrollController = ScrollController();

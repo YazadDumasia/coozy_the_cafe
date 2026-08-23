@@ -60,4 +60,5 @@ export 'utils/components/upper_case_text_formatter.dart';
 export 'utils/components/wobble_animation_widget.dart';
 
 // widgets
+export 'widgets/live_order_timer_widget/live_order_timer_widget.dart';
 export 'widgets/widgets.dart';

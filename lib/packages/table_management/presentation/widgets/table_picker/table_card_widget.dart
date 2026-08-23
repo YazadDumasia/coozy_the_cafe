@@ -141,25 +141,15 @@ class TableCardWidget extends StatelessWidget {
                       // Top Status / Info Section
                       if (status == TableStatus.occupied ||
                           status == TableStatus.pendingBill) ...[
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.timer_outlined,
-                              size: 15,
-                              color: onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                elapsedTime ?? '',
-                                style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  fontSize: 13,
-                                  color: onSurface,
-                                ),
-                              ),
-                            ),
-                          ],
+                        LiveOrderTimerWidget(
+                          creationDate: table.orderCreationDate,
+                          icon: Icons.timer_outlined,
+                          iconColor: onSurfaceVariant,
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontSize: 13,
+                            color: onSurface,
+                          ),
                         ),
                         const SizedBox(height: 12),
                       ] else if (status == TableStatus.reserved) ...[

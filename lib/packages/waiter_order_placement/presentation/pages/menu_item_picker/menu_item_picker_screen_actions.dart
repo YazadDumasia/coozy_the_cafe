@@ -16,8 +16,8 @@ mixin MenuItemPickerScreenActions<T extends StatefulWidget> on State<T> {
   void _onSearchChanged() {
     if (mounted) {
       context.read<MenuItemPickerBloc>().add(
-            FilterSearchQueryEvent(searchController.text.trim()),
-          );
+        FilterSearchQueryEvent(searchController.text.trim()),
+      );
     }
   }
 
@@ -28,8 +28,8 @@ mixin MenuItemPickerScreenActions<T extends StatefulWidget> on State<T> {
         searchController.clear();
         searchFocusNode.unfocus();
         context.read<MenuItemPickerBloc>().add(
-              const FilterSearchQueryEvent(''),
-            );
+          const FilterSearchQueryEvent(''),
+        );
       } else {
         searchFocusNode.requestFocus();
       }
@@ -37,10 +37,12 @@ mixin MenuItemPickerScreenActions<T extends StatefulWidget> on State<T> {
   }
 
   void onTabSelected(TabController tabController, int index) {
-    tabController.animateTo(index);
-    context.read<MenuItemPickerBloc>().add(
-          SelectCategoryTabEvent(index),
-        );
+    tabController.animateTo(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear,
+    );
+    context.read<MenuItemPickerBloc>().add(SelectCategoryTabEvent(index));
   }
 
   void disposeActions() {

@@ -23,11 +23,17 @@ class WaiterOrderPlacementRoutes {
         TableEntity? table;
         int? tableId;
         String? tableName;
+        int? orderId;
 
-        if (state.extra is TableEntity) {
+        if (state.extra is int) {
+          orderId = state.extra as int;
+        } else if (state.extra is TableEntity) {
           table = state.extra as TableEntity;
         } else if (state.extra is Map<String, dynamic>) {
           final map = state.extra as Map<String, dynamic>;
+          if (map['orderId'] is int) {
+            orderId = map['orderId'] as int;
+          }
           if (map['table'] is TableEntity) {
             table = map['table'] as TableEntity;
           }
@@ -40,12 +46,13 @@ class WaiterOrderPlacementRoutes {
         }
 
         return BlocProvider<MenuItemPickerBloc>(
-          create: (_) =>
-              sl<MenuItemPickerBloc>()..add(const LoadMenuCatalogEvent()),
+          create: (_) => sl<MenuItemPickerBloc>()
+            ..add(LoadMenuCatalogEvent(orderId: orderId)),
           child: MenuItemPickerScreen(
             table: table,
             tableId: tableId,
             tableName: tableName,
+            orderId: orderId,
           ),
         );
       },

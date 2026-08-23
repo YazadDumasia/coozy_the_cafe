@@ -11,6 +11,7 @@ class TableGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double colorIndicatorSize = 30.0;
     return Card(
       // key: ValueKey(model.id ?? index),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -141,8 +142,8 @@ class TableGridItem extends StatelessWidget {
                             textAlign: TextAlign.start,
                           ),
                           Container(
-                            width: 30,
-                            height: 30,
+                            width: colorIndicatorSize,
+                            height: colorIndicatorSize,
                             decoration: BoxDecoration(
                               color: Color(
                                 int.parse(

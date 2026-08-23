@@ -31,6 +31,7 @@ class _SuccessfullyScreenState extends State<SuccessfullyScreen>
 
   @override
   Widget build(BuildContext context) {
+    const double lottieDimension = 200.0;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final lottieAsset = isDark
         ? Assets.lottie.successDark
@@ -73,8 +74,8 @@ class _SuccessfullyScreenState extends State<SuccessfullyScreen>
                         }
                       });
                   },
-                  width: 200,
-                  height: 200,
+                  width: lottieDimension,
+                  height: lottieDimension,
                   repeat: false,
                 ),
                 const SizedBox(height: 24),
