@@ -157,13 +157,12 @@ class TableCubit extends Cubit<TableState> {
       final currentState = state as TableLoaded;
       final list = List<TableInfo>.from(currentState.tables);
 
-      int actualNewIndex = newIndex;
-      if (actualNewIndex > oldIndex) {
-        actualNewIndex -= 1;
-      }
+      if (oldIndex < 0 || oldIndex >= list.length) return;
+      if (newIndex < 0 || newIndex >= list.length) return;
 
       final item = list.removeAt(oldIndex);
-      list.insert(actualNewIndex, item);
+      final int insertIndex = newIndex.clamp(0, list.length);
+      list.insert(insertIndex, item);
 
       // Optimistically update UI
       emit(currentState.copyWith(tables: list));
@@ -172,8 +171,8 @@ class TableCubit extends Cubit<TableState> {
       try {
         final List<TableInfo> updatedList = [];
         for (
-          int i = min(oldIndex, actualNewIndex);
-          i <= max(oldIndex, actualNewIndex);
+          int i = min(oldIndex, newIndex);
+          i <= max(oldIndex, newIndex);
           i++
         ) {
           updatedList.add(list[i].copyWith(sortOrderIndex: i));

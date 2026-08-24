@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../widgets/menu_item_list/menu_item_category_filter_header.dart';
 import '../../widgets/menu_item_list/menu_item_empty_view.dart';
@@ -42,6 +44,16 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (context.canPop()) {
+                context.pop();
+              } else {
+                context.go(core.AppRoutePath.homeRoute);
+              }
+            },
+          ),
           title: Text(
             context.tr(
                   shared.LocaleKeys.homeDrawerMenuItemLabel,

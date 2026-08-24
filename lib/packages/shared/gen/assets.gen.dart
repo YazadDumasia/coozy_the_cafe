@@ -17,20 +17,8 @@ class $AssetsDataGen {
   /// File path: assets/data/recipes_dataset.json
   String get recipesDataset => 'assets/data/recipes_dataset.json';
 
-  /// File path: assets/data/recipes_for_indian_food_dataset.json
-  String get recipesForIndianFoodDataset =>
-      'assets/data/recipes_for_indian_food_dataset.json';
-
-  /// File path: assets/data/recipes_for_indian_food_dataset1.json
-  String get recipesForIndianFoodDataset1 =>
-      'assets/data/recipes_for_indian_food_dataset1.json';
-
   /// List of all assets
-  List<String> get values => [
-    recipesDataset,
-    recipesForIndianFoodDataset,
-    recipesForIndianFoodDataset1,
-  ];
+  List<String> get values => [recipesDataset];
 }
 
 class $AssetsIconsGen {
