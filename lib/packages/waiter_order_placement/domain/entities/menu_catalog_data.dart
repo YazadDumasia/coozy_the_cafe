@@ -16,11 +16,11 @@ class MenuCatalogCategoryData extends Equatable {
 
   @override
   List<Object?> get props => [
-        category,
-        subcategories,
-        uncategorizedItems,
-        subcategoryItems,
-      ];
+    category,
+    subcategories,
+    uncategorizedItems,
+    subcategoryItems,
+  ];
 }
 
 class MenuCatalogData extends Equatable {

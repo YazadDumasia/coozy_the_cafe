@@ -98,7 +98,12 @@ class ActiveTableOrdersBloc
     } else {
       _currentOrders = event.orders;
       final durations = await _computeDurations(_currentOrders);
-      emit(ActiveTableOrdersLoaded(orders: event.orders, orderDurations: durations));
+      emit(
+        ActiveTableOrdersLoaded(
+          orders: event.orders,
+          orderDurations: durations,
+        ),
+      );
       _startTicker();
     }
   }
@@ -137,7 +142,9 @@ class ActiveTableOrdersBloc
     _tickerTimer = null;
   }
 
-  Future<Map<int, String>> _computeDurations(List<ActiveTableOrder> orders) async {
+  Future<Map<int, String>> _computeDurations(
+    List<ActiveTableOrder> orders,
+  ) async {
     final creationDatesMap = <int, String>{};
     for (final o in orders) {
       if (o.creationDate != null) {

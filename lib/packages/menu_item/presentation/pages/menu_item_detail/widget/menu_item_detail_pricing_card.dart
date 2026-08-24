@@ -8,10 +8,7 @@ import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bl
 class MenuItemDetailPricingCard extends StatelessWidget {
   final MenuItem item;
 
-  const MenuItemDetailPricingCard({
-    super.key,
-    required this.item,
-  });
+  const MenuItemDetailPricingCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +52,10 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: colorScheme.secondaryContainer,
                     borderRadius: BorderRadius.circular(12),
@@ -63,15 +63,15 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                   child: Text(
                     isSimple
                         ? (context.tr(
-                              shared.LocaleKeys.simpleVariation,
-                              track: shared.TrackConstants.menuItemPageTrack,
-                            ) ??
-                            'Simple')
+                                shared.LocaleKeys.simpleVariation,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Simple')
                         : (context.tr(
-                              shared.LocaleKeys.multiVariation,
-                              track: shared.TrackConstants.menuItemPageTrack,
-                            ) ??
-                            'Multi-Variation'),
+                                shared.LocaleKeys.multiVariation,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Multi-Variation'),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: colorScheme.onSecondaryContainer,
                       fontWeight: FontWeight.bold,
@@ -100,9 +100,14 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: variations.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 10),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 10),
                 itemBuilder: (context, index) {
-                  return _buildVariationTile(context, variations[index], isSimple);
+                  return _buildVariationTile(
+                    context,
+                    variations[index],
+                    isSimple,
+                  );
                 },
               ),
           ],
@@ -161,15 +166,15 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                   Text(
                     isAvailable
                         ? (context.tr(
-                              shared.LocaleKeys.menuItemPageAvailable,
-                              track: shared.TrackConstants.menuItemPageTrack,
-                            ) ??
-                            'Available')
+                                shared.LocaleKeys.menuItemPageAvailable,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Available')
                         : (context.tr(
-                              shared.LocaleKeys.unavailable,
-                              track: shared.TrackConstants.menuItemPageTrack,
-                            ) ??
-                            'Unavailable'),
+                                shared.LocaleKeys.unavailable,
+                                track: shared.TrackConstants.menuItemPageTrack,
+                              ) ??
+                              'Unavailable'),
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: isAvailable
                           ? colorScheme.primary
@@ -184,16 +189,21 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                       fit: BoxFit.scaleDown,
                       child: Switch.adaptive(
                         value: isAvailable,
-                        thumbIcon: WidgetStateProperty.resolveWith<Icon?>((states) {
+                        thumbIcon: WidgetStateProperty.resolveWith<Icon?>((
+                          states,
+                        ) {
                           if (states.contains(WidgetState.selected)) {
                             return const Icon(Icons.check, color: Colors.green);
                           }
                           return Icon(Icons.close, color: colorScheme.error);
                         }),
                         onChanged: (bool newVal) {
-                          final updatedVariations = item.variations.map((vItem) {
+                          final updatedVariations = item.variations.map((
+                            vItem,
+                          ) {
                             if ((vItem.id != null && vItem.id == v.id) ||
-                                (vItem.hashId != null && vItem.hashId == v.hashId) ||
+                                (vItem.hashId != null &&
+                                    vItem.hashId == v.hashId) ||
                                 (vItem.name == v.name)) {
                               return vItem.copyWith(isTodayAvailable: newVal);
                             }
@@ -210,8 +220,8 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                           );
 
                           context.read<MenuItemBloc>().add(
-                                UpdateMenuItem(updatedItem),
-                              );
+                            UpdateMenuItem(updatedItem),
+                          );
                         },
                       ),
                     ),
@@ -254,7 +264,9 @@ class MenuItemDetailPricingCard extends StatelessWidget {
               ),
             ],
           ),
-          if (v.quantity != null || v.purchaseUnit != null || v.sortOrderIndex != null) ...[
+          if (v.quantity != null ||
+              v.purchaseUnit != null ||
+              v.sortOrderIndex != null) ...[
             const SizedBox(height: 8),
             Row(
               children: [
@@ -263,7 +275,8 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                     child: _buildTileDetail(
                       context,
                       label: 'Portion / Unit',
-                      value: '${v.quantity ?? ''} ${v.purchaseUnit ?? ''}'.trim(),
+                      value: '${v.quantity ?? ''} ${v.purchaseUnit ?? ''}'
+                          .trim(),
                     ),
                   ),
                 if (v.sortOrderIndex != null)

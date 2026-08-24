@@ -301,8 +301,8 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
                           return shared.ErrorPage(
                             onPressedRetryButton: () {
                               context.read<PurchaseListBloc>().add(
-                                    const LoadPurchases(isRefresh: true),
-                                  );
+                                const LoadPurchases(isRefresh: true),
+                              );
                             },
                           );
                         }

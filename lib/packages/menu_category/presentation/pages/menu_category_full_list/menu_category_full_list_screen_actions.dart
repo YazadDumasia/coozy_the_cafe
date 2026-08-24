@@ -85,7 +85,9 @@ class MenuCategoryFullListScreenActions {
                           'Success',
                       descriptions:
                           context.tr(
-                            shared.LocaleKeys.menuCategoryDeletedSuccessfullyText,
+                            shared
+                                .LocaleKeys
+                                .menuCategoryDeletedSuccessfullyText,
                             track: shared.TrackConstants.menuCategoryPageTrack,
                           ) ??
                           (context.tr(

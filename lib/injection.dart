@@ -57,4 +57,3 @@ Future<void> initDI() async {
   // Kitchen Management Dependencies
   registerKitchenManagementDependencies(sl);
 }
-

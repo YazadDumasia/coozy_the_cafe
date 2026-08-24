@@ -4,10 +4,7 @@ import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item.dart
 class MenuItemDetailMetadataCard extends StatelessWidget {
   final MenuItem item;
 
-  const MenuItemDetailMetadataCard({
-    super.key,
-    required this.item,
-  });
+  const MenuItemDetailMetadataCard({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +51,9 @@ class MenuItemDetailMetadataCard extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                color: colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.3,
+                ),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Text(

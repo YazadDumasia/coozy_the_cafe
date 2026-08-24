@@ -12,7 +12,8 @@ class KitchenRepositoryImpl implements KitchenRepository {
   KitchenRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<Either<Failure, List<KitchenOrderEntity>>> getActiveKitchenOrders() async {
+  Future<Either<Failure, List<KitchenOrderEntity>>>
+  getActiveKitchenOrders() async {
     try {
       final rawOrders = await localDataSource.getActiveKitchenOrders();
       final orders = rawOrders.map((rawOrder) {
@@ -48,9 +49,7 @@ class KitchenRepositoryImpl implements KitchenRepository {
       return Right(orders);
     } catch (e) {
       return Left(
-        DatabaseFailure(
-          message: 'Failed to fetch kitchen orders: $e',
-        ),
+        DatabaseFailure(message: 'Failed to fetch kitchen orders: $e'),
       );
     }
   }
@@ -90,7 +89,6 @@ class KitchenRepositoryImpl implements KitchenRepository {
     });
   }
 
-
   @override
   Future<Either<Failure, bool>> updateOrderItemStatus({
     required int orderItemId,
@@ -104,9 +102,7 @@ class KitchenRepositoryImpl implements KitchenRepository {
       return Right(success);
     } catch (e) {
       return Left(
-        DatabaseFailure(
-          message: 'Failed to update order item status: $e',
-        ),
+        DatabaseFailure(message: 'Failed to update order item status: $e'),
       );
     }
   }
@@ -124,15 +120,14 @@ class KitchenRepositoryImpl implements KitchenRepository {
       return Right(updatedCount);
     } catch (e) {
       return Left(
-        DatabaseFailure(
-          message: 'Failed to bump all order items: $e',
-        ),
+        DatabaseFailure(message: 'Failed to bump all order items: $e'),
       );
     }
   }
 
   @override
-  Future<Either<Failure, List<KitchenAggregatedItemEntity>>> getAggregatedPendingItems() async {
+  Future<Either<Failure, List<KitchenAggregatedItemEntity>>>
+  getAggregatedPendingItems() async {
     try {
       final rawAggregated = await localDataSource.getAggregatedPendingItems();
       final items = rawAggregated.map((row) {

@@ -260,7 +260,9 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
                   } else if (state is AttendanceErrorState) {
                     return shared.ErrorPage(
                       onPressedRetryButton: () {
-                        context.read<AttendanceBloc>().add(LoadAttendanceEvent());
+                        context.read<AttendanceBloc>().add(
+                          LoadAttendanceEvent(),
+                        );
                       },
                     );
                   } else if (state is AttendanceLoadedState) {

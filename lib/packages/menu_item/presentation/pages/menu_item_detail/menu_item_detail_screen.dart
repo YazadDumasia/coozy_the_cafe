@@ -13,10 +13,7 @@ import 'widget/menu_item_detail_pricing_card.dart';
 class MenuItemDetailScreen extends StatefulWidget {
   final int itemId;
 
-  const MenuItemDetailScreen({
-    super.key,
-    required this.itemId,
-  });
+  const MenuItemDetailScreen({super.key, required this.itemId});
 
   @override
   State<MenuItemDetailScreen> createState() => _MenuItemDetailScreenState();
@@ -54,9 +51,9 @@ class _MenuItemDetailScreenState extends State<MenuItemDetailScreen> {
             );
           case MenuItemLoaded():
             final item = state.items.cast<MenuItem?>().firstWhere(
-                  (element) => element?.id == widget.itemId,
-                  orElse: () => null,
-                );
+              (element) => element?.id == widget.itemId,
+              orElse: () => null,
+            );
 
             if (item == null) {
               return Scaffold(
@@ -122,11 +119,7 @@ class _MenuItemDetailScreenState extends State<MenuItemDetailScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          item.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
+        title: Text(item.name, maxLines: 1, overflow: TextOverflow.ellipsis),
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_outlined),
@@ -156,7 +149,10 @@ class _MenuItemDetailScreenState extends State<MenuItemDetailScreen> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 900),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 20.0,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

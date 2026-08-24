@@ -54,13 +54,13 @@ class KitchenLoadedState extends KitchenState {
   int get totalActiveOrders => orders.length;
 
   int get pendingItemsCount => orders.fold(
-        0,
-        (sum, order) =>
-            sum +
-            order.items
-                .where((i) => i.status == 'pending' || i.status == 'preparing')
-                .length,
-      );
+    0,
+    (sum, order) =>
+        sum +
+        order.items
+            .where((i) => i.status == 'pending' || i.status == 'preparing')
+            .length,
+  );
 
   @override
   List<Object?> get props => [orders, aggregatedItems, viewMode, statusFilter];

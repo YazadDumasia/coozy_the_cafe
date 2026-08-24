@@ -46,8 +46,9 @@ class WaiterOrderPlacementRoutes {
         }
 
         return BlocProvider<MenuItemPickerBloc>(
-          create: (_) => sl<MenuItemPickerBloc>()
-            ..add(LoadMenuCatalogEvent(orderId: orderId)),
+          create: (_) =>
+              sl<MenuItemPickerBloc>()
+                ..add(LoadMenuCatalogEvent(orderId: orderId)),
           child: MenuItemPickerScreen(
             table: table,
             tableId: tableId,

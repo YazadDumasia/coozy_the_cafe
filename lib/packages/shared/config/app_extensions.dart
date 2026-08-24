@@ -34,8 +34,8 @@ extension MilkyBackgroundEffect on Widget {
             color ??
             (isDark
                 ? theme.colorScheme.surfaceContainerHighest.withValues(
-                  alpha: 0.35,
-                )
+                    alpha: 0.35,
+                  )
                 : Colors.grey.shade200.withValues(alpha: 0.5));
 
         final effectiveSigmaX = sigmaX ?? blur;

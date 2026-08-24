@@ -18,7 +18,11 @@ class TablePickerDao {
                     db.ordersTable.isCanceled.equals(false)) &
                 (db.ordersTable.isDeleted.isNull() |
                     db.ordersTable.isDeleted.equals(false)) &
-                db.ordersTable.status.isNotIn(['completed', 'canceled', 'cancelled']),
+                db.ordersTable.status.isNotIn([
+                  'completed',
+                  'canceled',
+                  'cancelled',
+                ]),
           ),
         ])..orderBy([
           OrderingTerm(
@@ -42,8 +46,9 @@ class TablePickerDao {
           sortOrderIndex: table.sortOrderIndex ?? 0,
           nosOfChairs: table.nosOfChairs ?? 0,
           status: status,
-          orderCreationDate:
-              order != null ? DateTime.tryParse(order.creationDate ?? '') : null,
+          orderCreationDate: order != null
+              ? DateTime.tryParse(order.creationDate ?? '')
+              : null,
         );
 
         final existing = tablesById[table.id];
@@ -56,7 +61,9 @@ class TablePickerDao {
             tablesById[table.id] = entity;
           } else if (pNew == pOld && entity.orderCreationDate != null) {
             if (existing.orderCreationDate == null ||
-                entity.orderCreationDate!.isAfter(existing.orderCreationDate!)) {
+                entity.orderCreationDate!.isAfter(
+                  existing.orderCreationDate!,
+                )) {
               tablesById[table.id] = entity;
             }
           }
@@ -76,11 +83,14 @@ class TablePickerDao {
 
     final statusValue = (order.status ?? '').trim().toLowerCase();
 
-    if (statusValue == 'completed' || statusValue == 'canceled' || statusValue == 'cancelled') {
+    if (statusValue == 'completed' ||
+        statusValue == 'canceled' ||
+        statusValue == 'cancelled') {
       return TableStatus.empty;
     }
 
-    if (statusValue.contains('pending_payment') || statusValue.contains('pending_bill')) {
+    if (statusValue.contains('pending_payment') ||
+        statusValue.contains('pending_bill')) {
       return TableStatus.pendingBill;
     }
 

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-
 class KitchenTimerBadge extends StatefulWidget {
   final String? creationDate;
 

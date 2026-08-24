@@ -42,7 +42,6 @@ class AppRoutePath {
       '/waiter-order-placement';
   static const String kitchenScreenRoute = '/kitchen';
 
-
   // Sub-routes for Table Info (Nested under Home -> Table Info)
   static const String addNewTableInfoScreenRoute = 'table-add';
   static const String updateTableInfoScreenRoute = 'table-update';
@@ -256,7 +255,6 @@ class AppRouteName {
       case kitchen:
         return 'Kitchen Display';
       case home:
-
       case mainHome:
         return 'Home';
       case splash:

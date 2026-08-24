@@ -204,7 +204,8 @@ class _TablePickerViewState extends State<TablePickerView> {
                 setState(() {});
               },
               decoration: InputDecoration(
-                hintText: context.tr(
+                hintText:
+                    context.tr(
                       shared.LocaleKeys.searchTableHint,
                       track: shared.TrackConstants.reservationPageTrack,
                     ) ??

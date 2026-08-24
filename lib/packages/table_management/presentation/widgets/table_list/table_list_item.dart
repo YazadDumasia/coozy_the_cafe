@@ -135,9 +135,9 @@ class TableListItem extends StatelessWidget {
                                                   .tablePageTrack,
                                             ) ??
                                             'Enable Status:',
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyMedium,
+                                        style: Theme.of(
+                                          context,
+                                        ).textTheme.bodyMedium,
                                         children: <InlineSpan>[
                                           const TextSpan(text: ' '),
                                           TextSpan(
@@ -164,8 +164,8 @@ class TableListItem extends StatelessWidget {
                                                 .textTheme
                                                 .bodyMedium!
                                                 .copyWith(
-                                                  color: (model.isActive ??
-                                                          false)
+                                                  color:
+                                                      (model.isActive ?? false)
                                                       ? Colors.green
                                                       : Colors.red,
                                                   fontWeight: FontWeight.w600,

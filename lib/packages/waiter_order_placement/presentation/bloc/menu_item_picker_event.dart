@@ -44,10 +44,7 @@ class RemoveItemFromCartEvent extends MenuItemPickerEvent {
   final MenuItem item;
   final MenuItemVariation? variation;
 
-  const RemoveItemFromCartEvent({
-    required this.item,
-    this.variation,
-  });
+  const RemoveItemFromCartEvent({required this.item, this.variation});
 
   @override
   List<Object?> get props => [item, variation];

@@ -221,8 +221,11 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                                 'Success',
                             descriptions:
                                 rootContext.tr(
-                                  shared.LocaleKeys.inventoryAddEditDailogUpdateSuccessfully,
-                                  track: shared.TrackConstants.inventoryPageTrack,
+                                  shared
+                                      .LocaleKeys
+                                      .inventoryAddEditDailogUpdateSuccessfully,
+                                  track:
+                                      shared.TrackConstants.inventoryPageTrack,
                                 ) ??
                                 (rootContext.tr(
                                       shared.LocaleKeys.crudSuccessUpdate,

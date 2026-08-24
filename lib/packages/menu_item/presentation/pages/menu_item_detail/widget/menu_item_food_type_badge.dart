@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class MenuItemFoodTypeBadge extends StatelessWidget {
   final String? foodType;
 
-  const MenuItemFoodTypeBadge({
-    super.key,
-    required this.foodType,
-  });
+  const MenuItemFoodTypeBadge({super.key, required this.foodType});
 
   @override
   Widget build(BuildContext context) {

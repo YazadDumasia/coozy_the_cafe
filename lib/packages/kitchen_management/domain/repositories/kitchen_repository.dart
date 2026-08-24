@@ -15,5 +15,6 @@ abstract class KitchenRepository {
     required int orderId,
     required String status,
   });
-  Future<Either<Failure, List<KitchenAggregatedItemEntity>>> getAggregatedPendingItems();
+  Future<Either<Failure, List<KitchenAggregatedItemEntity>>>
+  getAggregatedPendingItems();
 }

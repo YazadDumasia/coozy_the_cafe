@@ -29,7 +29,6 @@ class KitchenLocalDataSourceImpl implements KitchenLocalDataSource {
     return database.kitchenOrdersDao.watchActiveKitchenOrders();
   }
 
-
   @override
   Future<bool> updateOrderItemStatus({
     required int orderItemId,

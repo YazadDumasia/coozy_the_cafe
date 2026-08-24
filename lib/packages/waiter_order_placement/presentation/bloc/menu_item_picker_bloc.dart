@@ -40,8 +40,10 @@ class MenuItemPickerBloc
     final catalogResult = await getActiveMenuCatalogUseCase();
 
     if (catalogResult.isLeft()) {
-      final failureMessage =
-          catalogResult.fold((l) => l.message, (_) => 'Failed to load menu catalog');
+      final failureMessage = catalogResult.fold(
+        (l) => l.message,
+        (_) => 'Failed to load menu catalog',
+      );
       emit(MenuItemPickerErrorState(message: failureMessage));
       return;
     }
@@ -54,23 +56,20 @@ class MenuItemPickerBloc
 
     if (event.orderId != null) {
       final orderDetailsResult = await getOrderDetailsUseCase(event.orderId!);
-      orderDetailsResult.fold(
-        (failure) {},
-        (details) {
-          initialCartItems = details.cartItems;
-          loadedTableId = details.tableId;
-          loadedTableName = details.tableName;
+      orderDetailsResult.fold((failure) {}, (details) {
+        initialCartItems = details.cartItems;
+        loadedTableId = details.tableId;
+        loadedTableName = details.tableName;
 
-          final itemRemarksSet = initialCartItems
-              .map((i) => i.remarks?.trim())
-              .where((r) => r != null && r.isNotEmpty)
-              .cast<String>()
-              .toSet();
-          if (itemRemarksSet.isNotEmpty) {
-            loadedOverallRemarks = itemRemarksSet.join(', ');
-          }
-        },
-      );
+        final itemRemarksSet = initialCartItems
+            .map((i) => i.remarks?.trim())
+            .where((r) => r != null && r.isNotEmpty)
+            .cast<String>()
+            .toSet();
+        if (itemRemarksSet.isNotEmpty) {
+          loadedOverallRemarks = itemRemarksSet.join(', ');
+        }
+      });
     }
 
     emit(
@@ -104,7 +103,8 @@ class MenuItemPickerBloc
       final currentState = state as MenuItemPickerLoadedState;
       final currentCart = List<OrderCartItem>.from(currentState.cartItems);
 
-      final price = event.variation?.sellingPrice ?? event.item.sellingPrice ?? 0.0;
+      final price =
+          event.variation?.sellingPrice ?? event.item.sellingPrice ?? 0.0;
       final varName = event.variation?.name;
       final varId = event.variation?.id;
 
@@ -242,7 +242,11 @@ class MenuItemPickerBloc
       final currentState = state as MenuItemPickerLoadedState;
 
       if (currentState.cartItems.isEmpty) {
-        emit(currentState.copyWith(errorMessage: 'Cart is empty. Please add items to place order.'));
+        emit(
+          currentState.copyWith(
+            errorMessage: 'Cart is empty. Please add items to place order.',
+          ),
+        );
         return;
       }
 

@@ -35,7 +35,6 @@ class _KitchenScreenState extends State<KitchenScreen> {
               context.tr(shared.LocaleKeys.kitchenDisplaySystem) ??
                   'Kitchen Display System',
             ),
-
           ],
         ),
         actions: [
@@ -77,10 +76,10 @@ class _KitchenScreenState extends State<KitchenScreen> {
           } else if (state is KitchenErrorState) {
             return shared.ErrorPage(
               errorMsg: state.message,
-              onPressedRetryButton: () => KitchenScreenActions.refreshOrders(context),
+              onPressedRetryButton: () =>
+                  KitchenScreenActions.refreshOrders(context),
             );
           } else if (state is KitchenLoadedState) {
-
             if (state.viewMode == KitchenViewMode.aggregated) {
               return KitchenSummaryView(items: state.aggregatedItems);
             }
@@ -113,7 +112,8 @@ class _KitchenScreenState extends State<KitchenScreen> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton.icon(
-                      onPressed: () => KitchenScreenActions.refreshOrders(context),
+                      onPressed: () =>
+                          KitchenScreenActions.refreshOrders(context),
                       icon: const Icon(Icons.refresh),
                       label: const Text('Refresh Kitchen Queue'),
                     ),

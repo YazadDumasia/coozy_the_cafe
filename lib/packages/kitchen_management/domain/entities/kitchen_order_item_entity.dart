@@ -53,15 +53,15 @@ class KitchenOrderItemEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        orderId,
-        itemId,
-        itemName,
-        quantity,
-        status,
-        remarks,
-        isParcel,
-        variationQuantity,
-        variationUnit,
-      ];
+    id,
+    orderId,
+    itemId,
+    itemName,
+    quantity,
+    status,
+    remarks,
+    isParcel,
+    variationQuantity,
+    variationUnit,
+  ];
 }

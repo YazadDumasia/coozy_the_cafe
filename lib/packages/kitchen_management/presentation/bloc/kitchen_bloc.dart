@@ -54,10 +54,12 @@ class KitchenBloc extends Bloc<KitchenEvent, KitchenState> {
     _KitchenOrdersUpdatedEvent event,
     Emitter<KitchenState> emit,
   ) async {
-    final currentViewMode =
-        state is KitchenLoadedState ? (state as KitchenLoadedState).viewMode : KitchenViewMode.tickets;
-    final currentFilter =
-        state is KitchenLoadedState ? (state as KitchenLoadedState).statusFilter : 'all';
+    final currentViewMode = state is KitchenLoadedState
+        ? (state as KitchenLoadedState).viewMode
+        : KitchenViewMode.tickets;
+    final currentFilter = state is KitchenLoadedState
+        ? (state as KitchenLoadedState).statusFilter
+        : 'all';
 
     final aggregatedResult = await getAggregatedPendingItemsUseCase();
 
@@ -80,34 +82,35 @@ class KitchenBloc extends Bloc<KitchenEvent, KitchenState> {
     LoadKitchenOrdersEvent event,
     Emitter<KitchenState> emit,
   ) async {
-    final currentViewMode =
-        state is KitchenLoadedState ? (state as KitchenLoadedState).viewMode : KitchenViewMode.tickets;
-    final currentFilter =
-        state is KitchenLoadedState ? (state as KitchenLoadedState).statusFilter : 'all';
+    final currentViewMode = state is KitchenLoadedState
+        ? (state as KitchenLoadedState).viewMode
+        : KitchenViewMode.tickets;
+    final currentFilter = state is KitchenLoadedState
+        ? (state as KitchenLoadedState).statusFilter
+        : 'all';
 
     emit(const KitchenLoadingState());
 
     final ordersResult = await getActiveKitchenOrdersUseCase();
     final aggregatedResult = await getAggregatedPendingItemsUseCase();
 
-    ordersResult.fold(
-      (failure) => emit(KitchenErrorState(failure.message)),
-      (orders) {
-        aggregatedResult.fold(
-          (failure) => emit(KitchenErrorState(failure.message)),
-          (aggregatedItems) {
-            emit(
-              KitchenLoadedState(
-                orders: orders,
-                aggregatedItems: aggregatedItems,
-                viewMode: currentViewMode,
-                statusFilter: currentFilter,
-              ),
-            );
-          },
-        );
-      },
-    );
+    ordersResult.fold((failure) => emit(KitchenErrorState(failure.message)), (
+      orders,
+    ) {
+      aggregatedResult.fold(
+        (failure) => emit(KitchenErrorState(failure.message)),
+        (aggregatedItems) {
+          emit(
+            KitchenLoadedState(
+              orders: orders,
+              aggregatedItems: aggregatedItems,
+              viewMode: currentViewMode,
+              statusFilter: currentFilter,
+            ),
+          );
+        },
+      );
+    });
   }
 
   void _onToggleViewMode(

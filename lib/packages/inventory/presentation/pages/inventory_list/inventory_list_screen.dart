@@ -264,7 +264,9 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                       } else if (state is InventoryError) {
                         return shared.ErrorPage(
                           onPressedRetryButton: () {
-                            context.read<InventoryBloc>().add(LoadInventoryItems());
+                            context.read<InventoryBloc>().add(
+                              LoadInventoryItems(),
+                            );
                           },
                         );
                       }

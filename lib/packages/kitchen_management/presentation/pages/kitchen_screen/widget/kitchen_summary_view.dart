@@ -17,7 +17,11 @@ class KitchenSummaryView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.restaurant_menu, size: 64, color: theme.colorScheme.outline),
+            Icon(
+              Icons.restaurant_menu,
+              size: 64,
+              color: theme.colorScheme.outline,
+            ),
             const SizedBox(height: 12),
             Text(
               'No items currently pending preparation',
@@ -33,7 +37,8 @@ class KitchenSummaryView extends StatelessWidget {
     // Combine all items by name for top grand-total overview
     final Map<String, int> grandTotals = {};
     for (final item in items) {
-      grandTotals[item.itemName] = (grandTotals[item.itemName] ?? 0) + item.totalQuantity;
+      grandTotals[item.itemName] =
+          (grandTotals[item.itemName] ?? 0) + item.totalQuantity;
     }
 
     // Group items by OrderItemStatus enum
@@ -80,13 +85,19 @@ class KitchenSummaryView extends StatelessWidget {
               elevation: 2,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
-                side: BorderSide(color: theme.colorScheme.primary.withValues(alpha: 0.3), width: 1.5),
+                side: BorderSide(
+                  color: theme.colorScheme.primary.withValues(alpha: 0.3),
+                  width: 1.5,
+                ),
               ),
               child: Theme(
                 data: theme.copyWith(dividerColor: Colors.transparent),
                 child: ExpansionTile(
                   initiallyExpanded: true,
-                  leading: Icon(Icons.analytics_outlined, color: theme.colorScheme.primary),
+                  leading: Icon(
+                    Icons.analytics_outlined,
+                    color: theme.colorScheme.primary,
+                  ),
                   title: Text(
                     'All',
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -111,11 +122,16 @@ class KitchenSummaryView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final entry = grandTotals.entries.elementAt(index);
                           return Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
                             decoration: BoxDecoration(
                               color: theme.colorScheme.surfaceContainerHigh,
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: theme.colorScheme.outlineVariant),
+                              border: Border.all(
+                                color: theme.colorScheme.outlineVariant,
+                              ),
                             ),
                             child: Row(
                               children: [
@@ -125,14 +141,19 @@ class KitchenSummaryView extends StatelessWidget {
                                   foregroundColor: theme.colorScheme.onPrimary,
                                   child: Text(
                                     '${entry.value}x',
-                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
                                     entry.key,
-                                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -232,7 +253,10 @@ class KitchenSummaryView extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 2,
+                  ),
                   decoration: BoxDecoration(
                     color: color.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
@@ -280,11 +304,18 @@ class KitchenSummaryView extends StatelessWidget {
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (item.categoryName != null && item.categoryName!.isNotEmpty)
+                            if (item.categoryName != null &&
+                                item.categoryName!.isNotEmpty)
                               Padding(
-                                padding: const EdgeInsets.only(top: 2, bottom: 2),
+                                padding: const EdgeInsets.only(
+                                  top: 2,
+                                  bottom: 2,
+                                ),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: theme.colorScheme.secondaryContainer,
                                     borderRadius: BorderRadius.circular(4),
@@ -292,7 +323,9 @@ class KitchenSummaryView extends StatelessWidget {
                                   child: Text(
                                     item.categoryName!,
                                     style: theme.textTheme.labelSmall?.copyWith(
-                                      color: theme.colorScheme.onSecondaryContainer,
+                                      color: theme
+                                          .colorScheme
+                                          .onSecondaryContainer,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -300,17 +333,23 @@ class KitchenSummaryView extends StatelessWidget {
                               ),
                             if (item.orderType != null)
                               Text('Type: ${item.orderType}'),
-                            if (item.remarks != null && item.remarks!.isNotEmpty)
+                            if (item.remarks != null &&
+                                item.remarks!.isNotEmpty)
                               Text(
                                 'Notes: ${item.remarks}',
-                                style: TextStyle(color: theme.colorScheme.error),
+                                style: TextStyle(
+                                  color: theme.colorScheme.error,
+                                ),
                               ),
                           ],
                         ),
                         trailing: Chip(
                           label: Text(
                             item.status.toUpperCase(),
-                            style: const TextStyle(fontSize: 10, color: Colors.white),
+                            style: const TextStyle(
+                              fontSize: 10,
+                              color: Colors.white,
+                            ),
                           ),
                           backgroundColor: color,
                         ),

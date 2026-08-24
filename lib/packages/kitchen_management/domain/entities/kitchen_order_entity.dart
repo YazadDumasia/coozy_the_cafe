@@ -22,18 +22,19 @@ class KitchenOrderEntity extends Equatable {
     required this.items,
   });
 
-  bool get hasPendingOrPreparingItems =>
-      items.any((item) => item.status == 'pending' || item.status == 'preparing');
+  bool get hasPendingOrPreparingItems => items.any(
+    (item) => item.status == 'pending' || item.status == 'preparing',
+  );
 
   @override
   List<Object?> get props => [
-        id,
-        tableInfoId,
-        tableNameText,
-        creationDate,
-        status,
-        orderType,
-        customerName,
-        items,
-      ];
+    id,
+    tableInfoId,
+    tableNameText,
+    creationDate,
+    status,
+    orderType,
+    customerName,
+    items,
+  ];
 }

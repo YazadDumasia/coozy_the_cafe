@@ -1099,7 +1099,9 @@ class FakeDataHelper {
             OrdersTableCompanion.insert(
               hashId: Value('$fakePrefix${uuid.v4()}'),
               tableInfoId: Value(table.id),
-              tableNameText: Value(table.tableLabel ?? 'Table ${table.tableNo}'),
+              tableNameText: Value(
+                table.tableLabel ?? 'Table ${table.tableNo}',
+              ),
               creationDate: Value(nowIso),
               isCanceled: const Value(false),
               isDeleted: const Value(false),
@@ -1116,12 +1118,15 @@ class FakeDataHelper {
 
       // Add 2 to 4 items per active order
       final itemBatchCount = 2 + random.nextInt(3);
-      final chosenItems = (List.of(menuItems)..shuffle(random)).take(itemBatchCount);
+      final chosenItems = (List.of(
+        menuItems,
+      )..shuffle(random)).take(itemBatchCount);
       for (final item in chosenItems) {
         final qty = 1 + random.nextInt(2);
         final sPrice = item.sellingPrice ?? 120.0;
         final cPrice = (item.sellingPrice ?? 120.0) * 0.55;
-        final itemStatus = activeItemStatuses[random.nextInt(activeItemStatuses.length)];
+        final itemStatus =
+            activeItemStatuses[random.nextInt(activeItemStatuses.length)];
         final remark = random.nextBool()
             ? activeRemarks[random.nextInt(activeRemarks.length)]
             : null;
@@ -1160,13 +1165,17 @@ class FakeDataHelper {
             OrdersTableCompanion.insert(
               hashId: Value('$fakePrefix${uuid.v4()}'),
               tableInfoId: Value(table.id),
-              tableNameText: Value(table.tableLabel ?? 'Table ${table.tableNo}'),
+              tableNameText: Value(
+                table.tableLabel ?? 'Table ${table.tableNo}',
+              ),
               creationDate: Value(oDate.toIso8601String()),
               isCanceled: const Value(false),
               isDeleted: const Value(false),
               status: const Value('completed'),
               orderType: Value(chosenType),
-              paymentMethodName: Value(o % 3 == 0 ? 'Cash' : (o % 3 == 1 ? 'UPI' : 'Card')),
+              paymentMethodName: Value(
+                o % 3 == 0 ? 'Cash' : (o % 3 == 1 ? 'UPI' : 'Card'),
+              ),
               customerId: Value(cust.id),
               customerName: Value(cust.name ?? 'Customer'),
               phoneNumber: Value(cust.phoneNumber ?? '+91 9876543210'),
@@ -1176,7 +1185,9 @@ class FakeDataHelper {
       inserted++;
 
       final itemBatchCount = 1 + random.nextInt(3);
-      final chosenItems = (List.of(menuItems)..shuffle(random)).take(itemBatchCount);
+      final chosenItems = (List.of(
+        menuItems,
+      )..shuffle(random)).take(itemBatchCount);
       for (final item in chosenItems) {
         final qty = 1 + random.nextInt(2);
         final sPrice = item.sellingPrice ?? 120.0;
@@ -1211,24 +1222,24 @@ class FakeDataHelper {
     DateTime now,
     DateTime Function() getRandomDate,
   ) async {
-    var orders = await (db.select(db.ordersTable)
-          ..where((t) => t.status.equals('completed')))
-        .get();
+    var orders = await (db.select(
+      db.ordersTable,
+    )..where((t) => t.status.equals('completed'))).get();
 
     if (orders.isEmpty) {
       await _generateOrders(db, faker, random, uuid, now, getRandomDate);
-      orders = await (db.select(db.ordersTable)
-            ..where((t) => t.status.equals('completed')))
-          .get();
+      orders = await (db.select(
+        db.ordersTable,
+      )..where((t) => t.status.equals('completed'))).get();
     }
 
     final paymentMethods = ['UPI', 'Cash', 'Credit Card', 'Debit Card'];
     int inserted = 0;
 
     for (final order in orders.take(100)) {
-      final orderItems = await (db.select(db.orderItemsTable)
-            ..where((t) => t.orderId.equals(order.id)))
-          .get();
+      final orderItems = await (db.select(
+        db.orderItemsTable,
+      )..where((t) => t.orderId.equals(order.id))).get();
 
       double subtotal = 0.0;
       final invoiceItemCompanions = <InvoiceItemsTableCompanion>[];

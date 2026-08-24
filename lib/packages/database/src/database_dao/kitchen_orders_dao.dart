@@ -45,9 +45,7 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
         WHERE oi.order_id = ? 
           AND (oi.status IN ('pending', 'preparing', 'placed') OR oi.status IS NULL OR oi.status = '')
         ''',
-        variables: [
-          Variable.withInt(orderId),
-        ],
+        variables: [Variable.withInt(orderId)],
       ).get();
 
       if (itemsQuery.isNotEmpty) {
@@ -86,9 +84,7 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
           WHERE oi.order_id = ? 
             AND (oi.status IN ('pending', 'preparing', 'placed') OR oi.status IS NULL OR oi.status = '')
           ''',
-          variables: [
-            Variable.withInt(orderId),
-          ],
+          variables: [Variable.withInt(orderId)],
         ).get();
 
         if (itemsQuery.isNotEmpty) {

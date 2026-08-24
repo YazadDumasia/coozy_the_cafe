@@ -23,21 +23,11 @@ void registerWaiterOrderPlacementDependencies(GetIt sl) {
   );
 
   // Use Cases
-  sl.registerLazySingleton(
-    () => GetActiveMenuCatalogUseCase(sl()),
-  );
-  sl.registerLazySingleton(
-    () => SubmitOrderUseCase(sl()),
-  );
-  sl.registerLazySingleton(
-    () => GetOrderDetailsUseCase(sl()),
-  );
-  sl.registerLazySingleton(
-    () => GetActiveTableOrdersUseCase(sl()),
-  );
-  sl.registerLazySingleton(
-    () => DeleteTableOrderUseCase(sl()),
-  );
+  sl.registerLazySingleton(() => GetActiveMenuCatalogUseCase(sl()));
+  sl.registerLazySingleton(() => SubmitOrderUseCase(sl()));
+  sl.registerLazySingleton(() => GetOrderDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => GetActiveTableOrdersUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteTableOrderUseCase(sl()));
 
   // BLoC
   sl.registerFactory(

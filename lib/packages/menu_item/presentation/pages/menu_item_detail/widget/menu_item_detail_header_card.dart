@@ -156,17 +156,19 @@ class MenuItemDetailHeaderCard extends StatelessWidget {
                         Text(
                           isAvailable
                               ? (context.tr(
-                                    shared.LocaleKeys.todayAvailable,
-                                    track:
-                                        shared.TrackConstants.menuItemPageTrack,
-                                  ) ??
-                                  'Today Available')
+                                      shared.LocaleKeys.todayAvailable,
+                                      track: shared
+                                          .TrackConstants
+                                          .menuItemPageTrack,
+                                    ) ??
+                                    'Today Available')
                               : (context.tr(
-                                    shared.LocaleKeys.notAvailable,
-                                    track:
-                                        shared.TrackConstants.menuItemPageTrack,
-                                  ) ??
-                                  'Not Available'),
+                                      shared.LocaleKeys.notAvailable,
+                                      track: shared
+                                          .TrackConstants
+                                          .menuItemPageTrack,
+                                    ) ??
+                                    'Not Available'),
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: isAvailable

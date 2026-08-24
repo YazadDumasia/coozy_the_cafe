@@ -312,7 +312,9 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(context).shadowColor.withValues(alpha: 0.05),
+                    color: Theme.of(
+                      context,
+                    ).shadowColor.withValues(alpha: 0.05),
                     blurRadius: 6,
                     offset: const Offset(0, -2),
                   ),
@@ -536,10 +538,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
             IconButton(
               icon: const Icon(Icons.search, size: 20),
               tooltip:
-                  context.tr(
-                    shared.LocaleKeys.searchTableHint,
-                    track: track,
-                  ) ??
+                  context.tr(shared.LocaleKeys.searchTableHint, track: track) ??
                   'Search Tables',
               onPressed: () {
                 TablePickerView.showSearchDialog(

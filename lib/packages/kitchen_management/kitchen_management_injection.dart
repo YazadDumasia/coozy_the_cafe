@@ -22,21 +22,11 @@ void registerKitchenManagementDependencies(GetIt sl) {
   );
 
   // Use Cases
-  sl.registerLazySingleton(
-    () => GetActiveKitchenOrdersUseCase(sl()),
-  );
-  sl.registerLazySingleton(
-    () => WatchActiveKitchenOrdersUseCase(sl()),
-  );
-  sl.registerLazySingleton(
-    () => UpdateOrderItemStatusUseCase(sl()),
-  );
-  sl.registerLazySingleton(
-    () => UpdateAllOrderItemsStatusUseCase(sl()),
-  );
-  sl.registerLazySingleton(
-    () => GetAggregatedPendingItemsUseCase(sl()),
-  );
+  sl.registerLazySingleton(() => GetActiveKitchenOrdersUseCase(sl()));
+  sl.registerLazySingleton(() => WatchActiveKitchenOrdersUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateOrderItemStatusUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateAllOrderItemsStatusUseCase(sl()));
+  sl.registerLazySingleton(() => GetAggregatedPendingItemsUseCase(sl()));
 
   // BLoC
   sl.registerFactory(

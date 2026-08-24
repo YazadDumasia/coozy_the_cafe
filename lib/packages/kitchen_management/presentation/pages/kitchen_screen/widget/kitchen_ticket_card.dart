@@ -18,7 +18,8 @@ class KitchenTicketCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tableTitle = order.tableNameText != null && order.tableNameText!.isNotEmpty
+    final tableTitle =
+        order.tableNameText != null && order.tableNameText!.isNotEmpty
         ? 'Table: ${order.tableNameText}'
         : 'Takeaway / Parcel';
 
@@ -26,10 +27,7 @@ class KitchenTicketCard extends StatelessWidget {
       elevation: 3,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(
-          color: theme.colorScheme.outlineVariant,
-          width: 1,
-        ),
+        side: BorderSide(color: theme.colorScheme.outlineVariant, width: 1),
       ),
       child: Padding(
         padding: const EdgeInsets.all(12),

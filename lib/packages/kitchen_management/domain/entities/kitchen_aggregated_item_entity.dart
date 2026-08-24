@@ -23,13 +23,13 @@ class KitchenAggregatedItemEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        itemName,
-        categoryName,
-        itemId,
-        remarks,
-        isParcel,
-        orderType,
-        totalQuantity,
-        status,
-      ];
+    itemName,
+    categoryName,
+    itemId,
+    remarks,
+    isParcel,
+    orderType,
+    totalQuantity,
+    status,
+  ];
 }

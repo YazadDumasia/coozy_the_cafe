@@ -30,9 +30,7 @@ class OrderPrintBackgroundService {
 
     final prefs = await SharedPreferences.getInstance();
     final bool isAutoPrintEnabled =
-        prefs.getBool(
-          shared.PreferencesKeys.autoPrintKitchenOrderSlip.name,
-        ) ??
+        prefs.getBool(shared.PreferencesKeys.autoPrintKitchenOrderSlip.name) ??
         false;
 
     if (isAutoPrintEnabled) {

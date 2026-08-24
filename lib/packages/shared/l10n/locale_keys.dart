@@ -20,7 +20,6 @@ abstract class LocaleKeys {
   static String kitchenDisplaySystem = 'kitchen_display_system';
   static String homeTabMore = 'home_tab_more';
 
-
   static String deactivate = 'deactivate';
   static String noSubcategoriesFound = 'no_subcategories_found';
   static String selectACategoryHint = 'select_a_category_hint';
@@ -715,8 +714,7 @@ abstract class LocaleKeys {
       'inventory_add_edit_dailog_create_successfully';
   static String inventoryAddEditDailogUpdateSuccessfully =
       'inventory_add_edit_dailog_update_successfully';
-  static String inventoryDeleteSuccessfully =
-      'inventory_delete_successfully';
+  static String inventoryDeleteSuccessfully = 'inventory_delete_successfully';
   static String inventoryAppbar = 'inventory_appbar';
   static String inventoryListPageAddPurchaseForItem =
       'inventory_list_page_add_purchase_for_item';

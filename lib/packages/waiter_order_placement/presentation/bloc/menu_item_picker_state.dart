@@ -97,20 +97,20 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
 
   @override
   List<Object?> get props => [
-        catalogData,
-        selectedTabIndex,
-        cartItems,
-        searchQuery,
-        overallOrderRemarks,
-        isSubmitting,
-        orderSuccessMessage,
-        createdOrderId,
-        submittedTableName,
-        errorMessage,
-        editingOrderId,
-        loadedTableId,
-        loadedTableName,
-      ];
+    catalogData,
+    selectedTabIndex,
+    cartItems,
+    searchQuery,
+    overallOrderRemarks,
+    isSubmitting,
+    orderSuccessMessage,
+    createdOrderId,
+    submittedTableName,
+    errorMessage,
+    editingOrderId,
+    loadedTableId,
+    loadedTableName,
+  ];
 }
 
 class MenuItemPickerErrorState extends MenuItemPickerState {

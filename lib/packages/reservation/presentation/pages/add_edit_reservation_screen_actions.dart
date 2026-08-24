@@ -36,7 +36,9 @@ class AddEditReservationScreenActions {
       tableId: primaryTableId,
       tableReservedName: combinedTableNames,
       preOrderedItems: selectedMenuItems,
-      occasion: (occasion != null && occasion.trim().isNotEmpty) ? occasion.trim() : null,
+      occasion: (occasion != null && occasion.trim().isNotEmpty)
+          ? occasion.trim()
+          : null,
       notes: notes.trim(),
       status: status,
       creationDate: creationDate,

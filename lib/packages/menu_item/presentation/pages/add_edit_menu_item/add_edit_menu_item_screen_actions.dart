@@ -62,7 +62,8 @@ class AddEditMenuItemScreenActions {
         SnackBar(
           content: Text(
             context.tr(
-                  shared.LocaleKeys
+                  shared
+                      .LocaleKeys
                       .menuItemPageAddEditMenuItemPleaseSelectCategory,
                   track: shared.TrackConstants.menuItemPageTrack,
                 ) ??
@@ -79,7 +80,8 @@ class AddEditMenuItemScreenActions {
         SnackBar(
           content: Text(
             context.tr(
-                  shared.LocaleKeys
+                  shared
+                      .LocaleKeys
                       .menuItemPageAddEditMenuItemPleaseSelectFoodType,
                   track: shared.TrackConstants.menuItemPageTrack,
                 ) ??
@@ -146,15 +148,15 @@ class AddEditMenuItemScreenActions {
                     ) ??
                     'Success',
                 descriptions:
-                  context.tr(
-                    shared.LocaleKeys.addEditMenuItemScreenCreateSuccessfully,
-                    track: shared.TrackConstants.menuItemPageTrack,
-                  ) ??
-                  (context.tr(
-                        shared.LocaleKeys.crudSuccessAdd,
-                        track: shared.TrackConstants.commonTrack,
-                      ) ??
-                      'Menu item added successfully.'),
+                    context.tr(
+                      shared.LocaleKeys.addEditMenuItemScreenCreateSuccessfully,
+                      track: shared.TrackConstants.menuItemPageTrack,
+                    ) ??
+                    (context.tr(
+                          shared.LocaleKeys.crudSuccessAdd,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Menu item added successfully.'),
                 titleIcon: Lottie.asset(
                   MediaQuery.of(context).platformBrightness == Brightness.light
                       ? Assets.lottie.doneLightBrownColor

@@ -136,7 +136,9 @@ class InventoryListScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.inventoryAddEditDailogUpdateSuccessfully,
+                      shared
+                          .LocaleKeys
+                          .inventoryAddEditDailogUpdateSuccessfully,
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
                     (context.tr(
@@ -204,7 +206,9 @@ class InventoryListScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.inventoryAddEditDailogUpdateSuccessfully,
+                      shared
+                          .LocaleKeys
+                          .inventoryAddEditDailogUpdateSuccessfully,
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
                     (context.tr(
@@ -325,12 +329,17 @@ class InventoryListScreenActions {
                                   'Success',
                               descriptions:
                                   context.tr(
-                                    shared.LocaleKeys.inventoryDeleteSuccessfully,
-                                    track: shared.TrackConstants.inventoryPageTrack,
+                                    shared
+                                        .LocaleKeys
+                                        .inventoryDeleteSuccessfully,
+                                    track: shared
+                                        .TrackConstants
+                                        .inventoryPageTrack,
                                   ) ??
                                   (context.tr(
                                         shared.LocaleKeys.crudSuccessDelete,
-                                        track: shared.TrackConstants.commonTrack,
+                                        track:
+                                            shared.TrackConstants.commonTrack,
                                       ) ??
                                       'Inventory item deleted successfully.'),
                               titleIcon: Lottie.asset(

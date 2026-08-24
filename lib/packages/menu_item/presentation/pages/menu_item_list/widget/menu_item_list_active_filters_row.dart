@@ -98,10 +98,7 @@ class MenuItemListActiveFiltersRow extends StatelessWidget {
     if (hasSearch) {
       chips.add(
         InputChip(
-          label: Text(
-            '"$searchQuery"',
-            style: const TextStyle(fontSize: 12),
-          ),
+          label: Text('"$searchQuery"', style: const TextStyle(fontSize: 12)),
           selected: true,
           showCheckmark: false,
           avatar: const Icon(Icons.search, size: 14),

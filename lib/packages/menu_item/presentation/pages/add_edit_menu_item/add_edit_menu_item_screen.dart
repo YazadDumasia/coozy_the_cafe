@@ -810,7 +810,8 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                       label: Text(
                         context.tr(
                               shared.LocaleKeys.addMenuSubCategoryBtnText,
-                              track: shared.TrackConstants.menuCategoryPageTrack,
+                              track:
+                                  shared.TrackConstants.menuCategoryPageTrack,
                             ) ??
                             'Add subcategory',
                       ),
@@ -861,7 +862,8 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                     IconButton(
                       tooltip:
                           context.tr(
-                            shared.LocaleKeys
+                            shared
+                                .LocaleKeys
                                 .menuItemPageAddNewSubcategoryTooltip,
                             track: shared.TrackConstants.menuItemPageTrack,
                           ) ??
@@ -1062,7 +1064,8 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                       ),
                       tooltip:
                           context.tr(
-                            shared.LocaleKeys
+                            shared
+                                .LocaleKeys
                                 .menuItemPageRemoveVariationTooltip,
                             track: shared.TrackConstants.menuItemPageTrack,
                           ) ??
@@ -1127,13 +1130,16 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                       decoration: InputDecoration(
                         labelText:
                             context.tr(
-                              shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
+                              shared
+                                  .LocaleKeys
+                                  .menuItemPageAddEditMenuItemSellingUnit,
                               track: shared.TrackConstants.menuItemPageTrack,
                             ) ??
                             'Selling Unit',
                         hintText:
                             context.tr(
-                              shared.LocaleKeys
+                              shared
+                                  .LocaleKeys
                                   .menuItemPageAddEditMenuItemSellingUnitHint,
                               track: shared.TrackConstants.menuItemPageTrack,
                             ) ??
@@ -1162,14 +1168,16 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                         decoration: InputDecoration(
                           labelText:
                               context.tr(
-                                shared.LocaleKeys
+                                shared
+                                    .LocaleKeys
                                     .menuItemPageAddEditMenuItemSellingUnitQuantity,
                                 track: shared.TrackConstants.menuItemPageTrack,
                               ) ??
                               'Selling Unit Quantity',
                           hintText:
                               context.tr(
-                                shared.LocaleKeys
+                                shared
+                                    .LocaleKeys
                                     .menuItemPageAddEditMenuItemSellingUnitQuantityHint,
                                 track: shared.TrackConstants.menuItemPageTrack,
                               ) ??
@@ -1212,7 +1220,9 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                     decoration: InputDecoration(
                       labelText:
                           context.tr(
-                            shared.LocaleKeys.menuItemPageAddEditMenuItemCostPrice,
+                            shared
+                                .LocaleKeys
+                                .menuItemPageAddEditMenuItemCostPrice,
                             track: shared.TrackConstants.menuItemPageTrack,
                           ) ??
                           'Cost Price',
@@ -1246,7 +1256,9 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                     decoration: InputDecoration(
                       labelText:
                           context.tr(
-                            shared.LocaleKeys.menuItemPageAddEditMenuItemSellingPrice,
+                            shared
+                                .LocaleKeys
+                                .menuItemPageAddEditMenuItemSellingPrice,
                             track: shared.TrackConstants.menuItemPageTrack,
                           ) ??
                           'Selling Price',

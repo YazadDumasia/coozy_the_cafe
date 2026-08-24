@@ -62,7 +62,8 @@ class MenuSubcategoryFullListScreenActions {
                       descriptions:
                           context.tr(
                             shared.LocaleKeys.menuSubCategoryUpdateSuccessfully,
-                            track: shared.TrackConstants.menuSubCategoryPageTrack,
+                            track:
+                                shared.TrackConstants.menuSubCategoryPageTrack,
                           ) ??
                           (context.tr(
                                 shared.LocaleKeys.crudSuccessUpdate,
@@ -232,8 +233,12 @@ class MenuSubcategoryFullListScreenActions {
                             'Success',
                         descriptions:
                             context.tr(
-                              shared.LocaleKeys.menuSubCategoryDeletedSuccessfully,
-                              track: shared.TrackConstants.menuSubCategoryPageTrack,
+                              shared
+                                  .LocaleKeys
+                                  .menuSubCategoryDeletedSuccessfully,
+                              track: shared
+                                  .TrackConstants
+                                  .menuSubCategoryPageTrack,
                             ) ??
                             (context.tr(
                                   shared.LocaleKeys.crudSuccessDelete,

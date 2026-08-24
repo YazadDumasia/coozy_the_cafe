@@ -21,11 +21,8 @@ class KitchenScreenActions {
     required String newStatus,
   }) {
     context.read<KitchenBloc>().add(
-          UpdateItemStatusEvent(
-            orderItemId: orderItemId,
-            newStatus: newStatus,
-          ),
-        );
+      UpdateItemStatusEvent(orderItemId: orderItemId, newStatus: newStatus),
+    );
   }
 
   static void bumpOrder(
@@ -34,10 +31,7 @@ class KitchenScreenActions {
     required String newStatus,
   }) {
     context.read<KitchenBloc>().add(
-          BumpAllOrderItemsEvent(
-            orderId: orderId,
-            newStatus: newStatus,
-          ),
-        );
+      BumpAllOrderItemsEvent(orderId: orderId, newStatus: newStatus),
+    );
   }
 }

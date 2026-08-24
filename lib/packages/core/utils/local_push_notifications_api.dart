@@ -406,7 +406,8 @@ class NotificationApi {
       await _notifications.show(
         id: 9999 + orderId,
         title: '🖨️ Auto Print KOT Slip (#ORD-$orderId)',
-        body: 'New order for $tableName ($itemCount items) sent to Kitchen Printer.',
+        body:
+            'New order for $tableName ($itemCount items) sent to Kitchen Printer.',
         notificationDetails: details,
         payload: 'order_kot_$orderId',
       );

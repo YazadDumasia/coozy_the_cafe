@@ -83,12 +83,10 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
               state.orderSuccessMessage!.isNotEmpty) {
             final tName = state.submittedTableName ?? effectiveTableName;
             final oId = state.createdOrderId?.toString() ?? '';
-            final localizedMsg = context.tr(
+            final localizedMsg =
+                context.tr(
                   shared.LocaleKeys.orderPlacedSuccessfullyForTableMsg,
-                  params: {
-                    'tableName': tName,
-                    'orderId': oId,
-                  },
+                  params: {'tableName': tName, 'orderId': oId},
                 ) ??
                 'Order placed successfully for $tName! (ID: #$oId)';
             ScaffoldMessenger.of(context).showSnackBar(
@@ -100,14 +98,14 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
             context.go(core.AppRoutePath.homeRoute);
           } else if (state.errorMessage != null &&
               state.errorMessage!.isNotEmpty) {
-            final errText = (state.errorMessage == 'Cart is empty. Please add items to place order.')
-                ? (context.tr(shared.LocaleKeys.cartIsEmptyMsg) ?? state.errorMessage!)
+            final errText =
+                (state.errorMessage ==
+                    'Cart is empty. Please add items to place order.')
+                ? (context.tr(shared.LocaleKeys.cartIsEmptyMsg) ??
+                      state.errorMessage!)
                 : state.errorMessage!;
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(errText),
-                backgroundColor: Colors.red,
-              ),
+              SnackBar(content: Text(errText), backgroundColor: Colors.red),
             );
           }
 
@@ -166,104 +164,109 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   icon: const Icon(Icons.arrow_back),
                   onPressed: () => context.go(core.AppRoutePath.homeRoute),
                 ),
-              title: isSearchMode
-                  ? TextField(
-                      controller: searchController,
-                      focusNode: searchFocusNode,
-                      decoration: InputDecoration(
-                        hintText: context.tr(shared.LocaleKeys.searchDishNameHint) ??
-                            'Search dish name...',
-                        border: InputBorder.none,
+                title: isSearchMode
+                    ? TextField(
+                        controller: searchController,
+                        focusNode: searchFocusNode,
+                        decoration: InputDecoration(
+                          hintText:
+                              context.tr(
+                                shared.LocaleKeys.searchDishNameHint,
+                              ) ??
+                              'Search dish name...',
+                          border: InputBorder.none,
+                        ),
+                        style: theme.textTheme.titleMedium,
+                      )
+                    : CategoryDropdownAppBarTitle(
+                        categories: categories,
+                        selectedTabIndex: state.selectedTabIndex,
+                        onCategorySelected: (index) {
+                          onTabSelected(_tabController!, index);
+                        },
                       ),
-                      style: theme.textTheme.titleMedium,
-                    )
-                  : CategoryDropdownAppBarTitle(
-                      categories: categories,
-                      selectedTabIndex: state.selectedTabIndex,
-                      onCategorySelected: (index) {
-                        onTabSelected(_tabController!, index);
+                actions: [
+                  // Fast Forward / Order Summary Action Button (>> icon)
+                  IconButton(
+                    tooltip:
+                        context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
+                        'Current Order',
+                    icon: Icon(
+                      Icons.fast_forward_rounded,
+                      color: appBarFgColor,
+                      size: 26,
+                    ),
+                    onPressed: () {
+                      onTabSelected(_tabController!, 0);
+                    },
+                  ),
+
+                  // Search Action Button
+                  IconButton(
+                    tooltip: 'Search',
+                    icon: Icon(isSearchMode ? Icons.close : Icons.search),
+                    onPressed: toggleSearchMode,
+                  ),
+                ],
+                bottom: TabBar(
+                  controller: _tabController,
+                  isScrollable: true,
+                  tabAlignment: TabAlignment.start,
+                  labelColor: appBarFgColor,
+                  unselectedLabelColor: appBarFgColor.withValues(alpha: 0.7),
+                  indicatorColor: appBarFgColor,
+                  indicatorWeight: 3,
+                  labelStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    letterSpacing: 0.5,
+                  ),
+                  unselectedLabelStyle: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 13,
+                    color: appBarFgColor.withValues(alpha: 0.7),
+                  ),
+                  tabs: [
+                    Tab(
+                      text:
+                          (context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
+                                  'CURRENT ORDER')
+                              .toUpperCase(),
+                    ),
+                    for (final cat in categories)
+                      Tab(text: (cat.name ?? '').toUpperCase()),
+                  ],
+                ),
+              ),
+              body: TabBarView(
+                controller: _tabController,
+                children: [
+                  // Tab 0: Current Order Tab
+                  CurrentOrderTabView(
+                    cartItems: state.cartItems,
+                    tableId: state.loadedTableId ?? effectiveTableId,
+                    tableName: state.loadedTableName ?? effectiveTableName,
+                    orderId: widget.orderId ?? state.editingOrderId,
+                    isSubmitting: state.isSubmitting,
+                  ),
+
+                  // Tab 1..N: Category Tabs
+                  for (int i = 0; i < categories.length; i++)
+                    CategoryMenuItemsTabView(
+                      categoryData: catalogData.categoryDataList[i],
+                      searchQuery: state.searchQuery,
+                      onReviewOrder: () {
+                        if (_tabController != null) {
+                          onTabSelected(_tabController!, 0);
+                        }
                       },
                     ),
-              actions: [
-                // Fast Forward / Order Summary Action Button (>> icon)
-                IconButton(
-                  tooltip: context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
-                      'Current Order',
-                  icon: Icon(
-                    Icons.fast_forward_rounded,
-                    color: appBarFgColor,
-                    size: 26,
-                  ),
-                  onPressed: () {
-                    onTabSelected(_tabController!, 0);
-                  },
-                ),
-
-                // Search Action Button
-                IconButton(
-                  tooltip: 'Search',
-                  icon: Icon(isSearchMode ? Icons.close : Icons.search),
-                  onPressed: toggleSearchMode,
-                ),
-              ],
-              bottom: TabBar(
-                controller: _tabController,
-                isScrollable: true,
-                tabAlignment: TabAlignment.start,
-                labelColor: appBarFgColor,
-                unselectedLabelColor: appBarFgColor.withValues(alpha: 0.7),
-                indicatorColor: appBarFgColor,
-                indicatorWeight: 3,
-                labelStyle: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 13,
-                  letterSpacing: 0.5,
-                ),
-                unselectedLabelStyle: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 13,
-                  color: appBarFgColor.withValues(alpha: 0.7),
-                ),
-                tabs: [
-                  Tab(
-                    text: (context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
-                            'CURRENT ORDER')
-                        .toUpperCase(),
-                  ),
-                  for (final cat in categories)
-                    Tab(text: (cat.name ?? '').toUpperCase()),
                 ],
               ),
             ),
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                // Tab 0: Current Order Tab
-                CurrentOrderTabView(
-                  cartItems: state.cartItems,
-                  tableId: state.loadedTableId ?? effectiveTableId,
-                  tableName: state.loadedTableName ?? effectiveTableName,
-                  orderId: widget.orderId ?? state.editingOrderId,
-                  isSubmitting: state.isSubmitting,
-                ),
-
-                // Tab 1..N: Category Tabs
-                for (int i = 0; i < categories.length; i++)
-                  CategoryMenuItemsTabView(
-                    categoryData: catalogData.categoryDataList[i],
-                    searchQuery: state.searchQuery,
-                    onReviewOrder: () {
-                      if (_tabController != null) {
-                        onTabSelected(_tabController!, 0);
-                      }
-                    },
-                  ),
-              ],
-            ),
           ),
-        ),
-      );
-    },
-  );
+        );
+      },
+    );
   }
 }

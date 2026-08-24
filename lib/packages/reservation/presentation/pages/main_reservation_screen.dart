@@ -443,7 +443,8 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                       Text(
                         criteria.isActive
                             ? (context.tr(
-                                    shared.LocaleKeys
+                                    shared
+                                        .LocaleKeys
                                         .noCurrentReservationsFilterMatched,
                                     track: track,
                                   ) ??
@@ -538,7 +539,8 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                       Text(
                         criteria.isActive
                             ? (context.tr(
-                                    shared.LocaleKeys
+                                    shared
+                                        .LocaleKeys
                                         .noUpcomingReservationsFilterMatched,
                                     track: track,
                                   ) ??

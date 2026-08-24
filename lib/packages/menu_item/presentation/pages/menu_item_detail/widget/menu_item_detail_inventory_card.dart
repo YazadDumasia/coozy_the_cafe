@@ -44,7 +44,9 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   context.tr(
-                        shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
+                        shared
+                            .LocaleKeys
+                            .menuItemPageAddEditMenuItemSellingUnit,
                         track: shared.TrackConstants.menuItemPageTrack,
                       ) ??
                       'Inventory & Portion',
@@ -64,7 +66,9 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                     icon: Icons.pie_chart_outline,
                     label:
                         context.tr(
-                          shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnitQuantity,
+                          shared
+                              .LocaleKeys
+                              .menuItemPageAddEditMenuItemSellingUnitQuantity,
                           track: shared.TrackConstants.menuItemPageTrack,
                         ) ??
                         'Stock Quantity',
@@ -79,7 +83,9 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                     icon: Icons.scale_outlined,
                     label:
                         context.tr(
-                          shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
+                          shared
+                              .LocaleKeys
+                              .menuItemPageAddEditMenuItemSellingUnit,
                           track: shared.TrackConstants.menuItemPageTrack,
                         ) ??
                         'Portion Size',
@@ -99,7 +105,9 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
                     icon: Icons.shopping_bag_outlined,
                     label:
                         context.tr(
-                          shared.LocaleKeys.menuItemPageAddEditMenuItemSellingUnit,
+                          shared
+                              .LocaleKeys
+                              .menuItemPageAddEditMenuItemSellingUnit,
                           track: shared.TrackConstants.menuItemPageTrack,
                         ) ??
                         'Purchase Unit',
@@ -146,11 +154,7 @@ class MenuItemDetailInventoryCard extends StatelessWidget {
             color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            icon,
-            size: 18,
-            color: colorScheme.primary,
-          ),
+          child: Icon(icon, size: 18, color: colorScheme.primary),
         ),
         const SizedBox(width: 10),
         Expanded(

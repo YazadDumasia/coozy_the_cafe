@@ -80,12 +80,12 @@ class UpcomingReservationLoaded extends UpcomingReservationState {
 
   @override
   List<Object?> get props => [
-        reservations,
-        hasReachedMax,
-        pageNo,
-        totalCount,
-        searchQuery,
-      ];
+    reservations,
+    hasReachedMax,
+    pageNo,
+    totalCount,
+    searchQuery,
+  ];
 }
 
 class UpcomingReservationError extends UpcomingReservationState {
@@ -126,12 +126,14 @@ class UpcomingReservationBloc
 
       if (newCount == 0) {
         // All upcoming records in database have been deleted
-        emit(currentState.copyWith(
-          reservations: [],
-          totalCount: 0,
-          hasReachedMax: true,
-          pageNo: 1,
-        ));
+        emit(
+          currentState.copyWith(
+            reservations: [],
+            totalCount: 0,
+            hasReachedMax: true,
+            pageNo: 1,
+          ),
+        );
         return;
       }
 
@@ -154,18 +156,27 @@ class UpcomingReservationBloc
             pageNo: 1,
           );
         }
-        final newPageNo = (refetchedItems.length / _limit).ceil().clamp(1, 999999);
-        emit(currentState.copyWith(
-          reservations: refetchedItems,
-          totalCount: newCount,
-          pageNo: newPageNo,
-          hasReachedMax: refetchedItems.length >= newCount || refetchedItems.length < itemsNeeded,
-        ));
+        final newPageNo = (refetchedItems.length / _limit).ceil().clamp(
+          1,
+          999999,
+        );
+        emit(
+          currentState.copyWith(
+            reservations: refetchedItems,
+            totalCount: newCount,
+            pageNo: newPageNo,
+            hasReachedMax:
+                refetchedItems.length >= newCount ||
+                refetchedItems.length < itemsNeeded,
+          ),
+        );
       } catch (_) {
-        emit(currentState.copyWith(
-          reservations: updatedList,
-          totalCount: newCount,
-        ));
+        emit(
+          currentState.copyWith(
+            reservations: updatedList,
+            totalCount: newCount,
+          ),
+        );
       }
     }
   }

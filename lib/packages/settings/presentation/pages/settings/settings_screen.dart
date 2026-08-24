@@ -22,7 +22,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final ValueNotifier<bool> _autoPrintKitchenSlipNotifier = ValueNotifier(
     false,
   );
-  final ValueNotifier<bool> _enableDetailedItemRemarksNotifier = ValueNotifier(true);
+  final ValueNotifier<bool> _enableDetailedItemRemarksNotifier = ValueNotifier(
+    true,
+  );
   final ValueNotifier<bool> _isLoadingNotifier = ValueNotifier(false);
   final ValueNotifier<String> _statusMessageNotifier = ValueNotifier('');
 
@@ -60,14 +62,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final isEnabled = prefs.getBool(_prefKeyFakeData) ?? false;
     _isFakeDataEnabledNotifier.value = isEnabled;
     _autoPrintKitchenSlipNotifier.value =
-        prefs.getBool(
-          shared.PreferencesKeys.autoPrintKitchenOrderSlip.name,
-        ) ??
+        prefs.getBool(shared.PreferencesKeys.autoPrintKitchenOrderSlip.name) ??
         false;
     _enableDetailedItemRemarksNotifier.value =
-        prefs.getBool(
-          shared.PreferencesKeys.enableDetailedItemRemarks.name,
-        ) ??
+        prefs.getBool(shared.PreferencesKeys.enableDetailedItemRemarks.name) ??
         true;
 
     final database = GetIt.instance<CoozyDatabase>();
@@ -432,10 +430,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SizedBox(height: 2),
                         Text(
                           'Enable switches for tables to generate fake data',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey,
-                          ),
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ],
                     ),
@@ -913,7 +908,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Text(
                                     _tr(
                                       context,
-                                      shared.LocaleKeys.settingsAutoPrintKitchenSlipLabel,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsAutoPrintKitchenSlipLabel,
                                       'Auto Print Kitchen Order Slip',
                                     ),
                                     style: const TextStyle(
@@ -925,7 +922,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Text(
                                     _tr(
                                       context,
-                                      shared.LocaleKeys.settingsAutoPrintKitchenSlipSubtitle,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsAutoPrintKitchenSlipSubtitle,
                                       'Automatically print kitchen order items slip when a new order is placed',
                                     ),
                                     style: const TextStyle(
@@ -942,17 +941,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 return Tooltip(
                                   message: _tr(
                                     context,
-                                    shared.LocaleKeys.settingsAutoPrintKitchenSlipTooltip,
+                                    shared
+                                        .LocaleKeys
+                                        .settingsAutoPrintKitchenSlipTooltip,
                                     'Toggle automatic printing of kitchen order slips upon order placement',
                                   ),
                                   child: Switch.adaptive(
                                     value: autoPrint,
                                     activeThumbColor: theme.primaryColor,
                                     onChanged: (value) async {
-                                      _autoPrintKitchenSlipNotifier.value = value;
-                                      final prefs = await SharedPreferences.getInstance();
+                                      _autoPrintKitchenSlipNotifier.value =
+                                          value;
+                                      final prefs =
+                                          await SharedPreferences.getInstance();
                                       await prefs.setBool(
-                                        shared.PreferencesKeys.autoPrintKitchenOrderSlip.name,
+                                        shared
+                                            .PreferencesKeys
+                                            .autoPrintKitchenOrderSlip
+                                            .name,
                                         value,
                                       );
                                     },
@@ -969,7 +975,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Container(
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
-                                color: theme.primaryColor.withValues(alpha: 0.1),
+                                color: theme.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
@@ -986,7 +994,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Text(
                                     _tr(
                                       context,
-                                      shared.LocaleKeys.settingsEnableDetailedItemRemarksLabel,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsEnableDetailedItemRemarksLabel,
                                       'Detailed Item Remarks',
                                     ),
                                     style: const TextStyle(
@@ -998,7 +1008,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   Text(
                                     _tr(
                                       context,
-                                      shared.LocaleKeys.settingsEnableDetailedItemRemarksSubtitle,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsEnableDetailedItemRemarksSubtitle,
                                       'Enable individual item remark input fields & hashtag suggestions when placing orders',
                                     ),
                                     style: const TextStyle(
@@ -1010,16 +1022,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                             ValueListenableBuilder<bool>(
-                              valueListenable: _enableDetailedItemRemarksNotifier,
+                              valueListenable:
+                                  _enableDetailedItemRemarksNotifier,
                               builder: (context, enabled, child) {
                                 return Switch.adaptive(
                                   value: enabled,
                                   activeThumbColor: theme.primaryColor,
                                   onChanged: (value) async {
-                                    _enableDetailedItemRemarksNotifier.value = value;
-                                    final prefs = await SharedPreferences.getInstance();
+                                    _enableDetailedItemRemarksNotifier.value =
+                                        value;
+                                    final prefs =
+                                        await SharedPreferences.getInstance();
                                     await prefs.setBool(
-                                      shared.PreferencesKeys.enableDetailedItemRemarks.name,
+                                      shared
+                                          .PreferencesKeys
+                                          .enableDetailedItemRemarks
+                                          .name,
                                       value,
                                     );
                                   },
@@ -1032,7 +1050,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton.icon(
-                            icon: const Icon(Icons.receipt_long_rounded, size: 18),
+                            icon: const Icon(
+                              Icons.receipt_long_rounded,
+                              size: 18,
+                            ),
                             label: Text(
                               _tr(
                                 context,
@@ -1041,7 +1062,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                             onPressed: () {
-                              ThermalKitchenSlipWidget.showPreviewDialog(context);
+                              ThermalKitchenSlipWidget.showPreviewDialog(
+                                context,
+                              );
                             },
                           ),
                         ),

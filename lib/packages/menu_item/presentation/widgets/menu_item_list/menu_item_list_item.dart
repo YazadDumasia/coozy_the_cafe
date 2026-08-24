@@ -207,19 +207,21 @@ class MenuItemListItem extends StatelessWidget {
                             Text(
                               isMasterAvailable
                                   ? (context.tr(
-                                        shared.LocaleKeys.menuItemPageAvailable,
-                                        track: shared
-                                            .TrackConstants
-                                            .menuItemPageTrack,
-                                      ) ??
-                                      'Available')
+                                          shared
+                                              .LocaleKeys
+                                              .menuItemPageAvailable,
+                                          track: shared
+                                              .TrackConstants
+                                              .menuItemPageTrack,
+                                        ) ??
+                                        'Available')
                                   : (context.tr(
-                                        shared.LocaleKeys.unavailable,
-                                        track: shared
-                                            .TrackConstants
-                                            .menuItemPageTrack,
-                                      ) ??
-                                      'Unavailable'),
+                                          shared.LocaleKeys.unavailable,
+                                          track: shared
+                                              .TrackConstants
+                                              .menuItemPageTrack,
+                                        ) ??
+                                        'Unavailable'),
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
@@ -592,17 +594,19 @@ class MenuItemListItem extends StatelessWidget {
                           child: Text(
                             isAvailable
                                 ? (context.tr(
-                                      shared.LocaleKeys.menuItemPageAvailable,
-                                      track:
-                                          shared.TrackConstants.menuItemPageTrack,
-                                    ) ??
-                                    'Available')
+                                        shared.LocaleKeys.menuItemPageAvailable,
+                                        track: shared
+                                            .TrackConstants
+                                            .menuItemPageTrack,
+                                      ) ??
+                                      'Available')
                                 : (context.tr(
-                                      shared.LocaleKeys.unavailable,
-                                      track:
-                                          shared.TrackConstants.menuItemPageTrack,
-                                    ) ??
-                                    'Unavailable'),
+                                        shared.LocaleKeys.unavailable,
+                                        track: shared
+                                            .TrackConstants
+                                            .menuItemPageTrack,
+                                      ) ??
+                                      'Unavailable'),
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w600,

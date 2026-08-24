@@ -3,7 +3,8 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 void showMenuItemFilterBottomSheet({
   required BuildContext context,
-  required ValueNotifier<List<shared.AppliedFilterModel>> appliedFiltersNotifier,
+  required ValueNotifier<List<shared.AppliedFilterModel>>
+  appliedFiltersNotifier,
 }) {
   showModalBottomSheet(
     context: context,

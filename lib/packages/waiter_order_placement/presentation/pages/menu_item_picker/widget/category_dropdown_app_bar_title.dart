@@ -91,14 +91,18 @@ class CategoryDropdownAppBarTitle extends StatelessWidget {
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
                 letterSpacing: 0.5,
-                color: theme.appBarTheme.foregroundColor ?? theme.colorScheme.onPrimary,
+                color:
+                    theme.appBarTheme.foregroundColor ??
+                    theme.colorScheme.onPrimary,
               ),
             ),
           ),
           const SizedBox(width: 4),
           Icon(
             Icons.arrow_drop_down,
-            color: theme.appBarTheme.foregroundColor ?? theme.colorScheme.onPrimary,
+            color:
+                theme.appBarTheme.foregroundColor ??
+                theme.colorScheme.onPrimary,
           ),
         ],
       ),

@@ -25,14 +25,14 @@ class ActiveTableOrder extends Equatable {
 
   @override
   List<Object?> get props => [
-        orderId,
-        tableId,
-        tableName,
-        tableShape,
-        tableLocationNotes,
-        creationDate,
-        pendingItemCount,
-        cookingItemCount,
-        servedItemCount,
-      ];
+    orderId,
+    tableId,
+    tableName,
+    tableShape,
+    tableLocationNotes,
+    creationDate,
+    pendingItemCount,
+    cookingItemCount,
+    servedItemCount,
+  ];
 }

@@ -51,7 +51,9 @@ class AddEditInventoryScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.inventoryAddEditDailogCreateSuccessfully,
+                      shared
+                          .LocaleKeys
+                          .inventoryAddEditDailogCreateSuccessfully,
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
                     (context.tr(
@@ -118,7 +120,9 @@ class AddEditInventoryScreenActions {
                     'Success',
                 descriptions:
                     context.tr(
-                      shared.LocaleKeys.inventoryAddEditDailogUpdateSuccessfully,
+                      shared
+                          .LocaleKeys
+                          .inventoryAddEditDailogUpdateSuccessfully,
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
                     (context.tr(

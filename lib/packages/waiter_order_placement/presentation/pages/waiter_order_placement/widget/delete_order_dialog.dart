@@ -17,9 +17,7 @@ class DeleteOrderDialog extends StatelessWidget {
     final primaryColor = theme.colorScheme.primary;
 
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(4),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       titlePadding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
       contentPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
       actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),

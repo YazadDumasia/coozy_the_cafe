@@ -63,4 +63,3 @@ class _KitchenOrdersUpdatedEvent extends KitchenEvent {
   @override
   List<Object?> get props => [orders];
 }
-

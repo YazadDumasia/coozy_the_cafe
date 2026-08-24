@@ -30,9 +30,10 @@ class MenuItemDetailActions {
         ),
         content: Text(
           context.tr(
-                shared.LocaleKeys.commonDelete,
-                track: shared.TrackConstants.commonTrack,
-              ) != null
+                    shared.LocaleKeys.commonDelete,
+                    track: shared.TrackConstants.commonTrack,
+                  ) !=
+                  null
               ? 'Are you sure you want to delete this menu item?'
               : 'Are you sure you want to delete this menu item?',
         ),

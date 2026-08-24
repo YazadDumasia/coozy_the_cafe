@@ -93,11 +93,8 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
 
   void _onRemarksChanged(String value) {
     context.read<MenuItemPickerBloc>().add(
-          UpdateCartItemRemarksEvent(
-            cartItem: widget.item,
-            remarks: value.trim(),
-          ),
-        );
+      UpdateCartItemRemarksEvent(cartItem: widget.item, remarks: value.trim()),
+    );
   }
 
   void _toggleSuggestionTag(String tagLabel) {
@@ -105,10 +102,10 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
     List<String> tags = currentText.isEmpty
         ? []
         : currentText
-            .split(',')
-            .map((s) => s.trim())
-            .where((s) => s.isNotEmpty)
-            .toList();
+              .split(',')
+              .map((s) => s.trim())
+              .where((s) => s.isNotEmpty)
+              .toList();
 
     if (tags.contains(tagLabel)) {
       tags.removeWhere((t) => t == tagLabel);
@@ -132,20 +129,17 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
     final activeTags = currentRemarks.isEmpty
         ? <String>{}
         : currentRemarks
-            .split(',')
-            .map((s) => s.trim())
-            .where((s) => s.isNotEmpty)
-            .toSet();
+              .split(',')
+              .map((s) => s.trim())
+              .where((s) => s.isNotEmpty)
+              .toSet();
 
     return Card(
       elevation: 2,
       margin: cardMargin,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color: theme.colorScheme.outlineVariant,
-          width: 1,
-        ),
+        side: BorderSide(color: theme.colorScheme.outlineVariant, width: 1),
       ),
       color: theme.colorScheme.surface,
       child: Padding(
@@ -200,11 +194,11 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
                       constraints: const BoxConstraints(),
                       onPressed: () {
                         context.read<MenuItemPickerBloc>().add(
-                              UpdateCartItemQuantityEvent(
-                                cartItem: widget.item,
-                                newQuantity: widget.item.quantity - 1,
-                              ),
-                            );
+                          UpdateCartItemQuantityEvent(
+                            cartItem: widget.item,
+                            newQuantity: widget.item.quantity - 1,
+                          ),
+                        );
                       },
                     ),
                     const SizedBox(width: 8),
@@ -235,11 +229,11 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
                       constraints: const BoxConstraints(),
                       onPressed: () {
                         context.read<MenuItemPickerBloc>().add(
-                              UpdateCartItemQuantityEvent(
-                                cartItem: widget.item,
-                                newQuantity: widget.item.quantity + 1,
-                              ),
-                            );
+                          UpdateCartItemQuantityEvent(
+                            cartItem: widget.item,
+                            newQuantity: widget.item.quantity + 1,
+                          ),
+                        );
                       },
                     ),
                   ],
@@ -251,105 +245,107 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
               const SizedBox(height: 10),
 
               // Horizontal Suggestion Hashtags Bar
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  for (final key in _suggestionKeys) ...[
-                    Builder(
-                      builder: (context) {
-                        final fallback = _fallbackTagNames[key] ?? key;
-                        final tagText = context.tr(key) ?? fallback;
-                        final isSelected = activeTags.contains(tagText);
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (final key in _suggestionKeys) ...[
+                      Builder(
+                        builder: (context) {
+                          final fallback = _fallbackTagNames[key] ?? key;
+                          final tagText = context.tr(key) ?? fallback;
+                          final isSelected = activeTags.contains(tagText);
 
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 6.0),
-                          child: ChoiceChip(
-                            label: Text(
-                              '#$tagText',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: isSelected
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                                color: isSelected
-                                    ? theme.colorScheme.onPrimary
-                                    : theme.colorScheme.onSurfaceVariant,
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 6.0),
+                            child: ChoiceChip(
+                              label: Text(
+                                '#$tagText',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                  color: isSelected
+                                      ? theme.colorScheme.onPrimary
+                                      : theme.colorScheme.onSurfaceVariant,
+                                ),
                               ),
+                              selected: isSelected,
+                              selectedColor: theme.colorScheme.primary,
+                              backgroundColor: isDark
+                                  ? theme.colorScheme.surfaceContainerHighest
+                                  : const Color(0xFFF0F0F0),
+                              showCheckmark: false,
+                              visualDensity: VisualDensity.compact,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4,
+                              ),
+                              onSelected: (_) => _toggleSuggestionTag(tagText),
                             ),
-                            selected: isSelected,
-                            selectedColor: theme.colorScheme.primary,
-                            backgroundColor: isDark
-                                ? theme.colorScheme.surfaceContainerHighest
-                                : const Color(0xFFF0F0F0),
-                            showCheckmark: false,
-                            visualDensity: VisualDensity.compact,
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            onSelected: (_) => _toggleSuggestionTag(tagText),
-                          ),
-                        );
-                      },
-                    ),
+                          );
+                        },
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 6),
+              const SizedBox(height: 6),
 
-            // Item Remark / Special Instruction Input Field
-            TextField(
-              controller: _remarksController,
-              focusNode: _remarksFocusNode,
-              onChanged: _onRemarksChanged,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontSize: 13,
+              // Item Remark / Special Instruction Input Field
+              TextField(
+                controller: _remarksController,
+                focusNode: _remarksFocusNode,
+                onChanged: _onRemarksChanged,
+                style: theme.textTheme.bodyMedium?.copyWith(fontSize: 13),
+                decoration: InputDecoration(
+                  hintText:
+                      context.tr(shared.LocaleKeys.itemRemarksHint) ??
+                      'Add special instruction or remark...',
+                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                    fontSize: 13,
+                    color: theme.colorScheme.onSurfaceVariant.withValues(
+                      alpha: 0.6,
+                    ),
+                  ),
+                  prefixIcon: const Icon(Icons.edit_note_rounded, size: 20),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  isDense: true,
+                  filled: true,
+                  fillColor: isDark
+                      ? theme.colorScheme.surfaceContainerHighest
+                      : const Color(0xFFF9F9F9),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.outlineVariant,
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.outlineVariant.withValues(
+                        alpha: 0.6,
+                      ),
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(
+                      color: theme.colorScheme.primary,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
               ),
-              decoration: InputDecoration(
-                hintText: context.tr(shared.LocaleKeys.itemRemarksHint) ??
-                    'Add special instruction or remark...',
-                hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                  fontSize: 13,
-                  color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
-                ),
-                prefixIcon: const Icon(
-                  Icons.edit_note_rounded,
-                  size: 20,
-                ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 8,
-                ),
-                isDense: true,
-                filled: true,
-                fillColor: isDark
-                    ? theme.colorScheme.surfaceContainerHighest
-                    : const Color(0xFFF9F9F9),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.outlineVariant,
-                  ),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.outlineVariant.withValues(alpha: 0.6),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(
-                    color: theme.colorScheme.primary,
-                    width: 1.5,
-                  ),
-                ),
-              ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

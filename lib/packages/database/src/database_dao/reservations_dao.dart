@@ -61,7 +61,9 @@ class ReservationsDao extends DatabaseAccessor<CoozyDatabase>
     final todayEndStr = '$y-$m-${d}T23:59:59.999';
     final countExp = reservationsTable.id.count();
     final query = selectOnly(reservationsTable)..addColumns([countExp]);
-    query.where(reservationsTable.reservationDateTime.isBiggerThanValue(todayEndStr));
+    query.where(
+      reservationsTable.reservationDateTime.isBiggerThanValue(todayEndStr),
+    );
     final result = await query.getSingle();
     return result.read(countExp) ?? 0;
   }

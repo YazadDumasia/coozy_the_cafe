@@ -47,7 +47,8 @@ class HomeScreenTabBarView extends StatelessWidget {
         ),
         buildPageTransitionSwitcher(
           screen: BlocProvider<KitchenBloc>(
-            create: (_) => sl<KitchenBloc>()..add(const LoadKitchenOrdersEvent()),
+            create: (_) =>
+                sl<KitchenBloc>()..add(const LoadKitchenOrdersEvent()),
             child: const KitchenScreen(),
           ),
           currentIndex: 2,

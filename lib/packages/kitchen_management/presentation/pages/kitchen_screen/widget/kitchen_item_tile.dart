@@ -34,10 +34,7 @@ class KitchenItemTile extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: statusColor.withValues(alpha: 0.5),
-          width: 1,
-        ),
+        border: Border.all(color: statusColor.withValues(alpha: 0.5), width: 1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,18 +99,12 @@ class KitchenItemTile extends StatelessWidget {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    value: 'pending',
-                    child: Text('Pending'),
-                  ),
+                  const PopupMenuItem(value: 'pending', child: Text('Pending')),
                   const PopupMenuItem(
                     value: 'preparing',
                     child: Text('Preparing'),
                   ),
-                  const PopupMenuItem(
-                    value: 'ready',
-                    child: Text('Ready'),
-                  ),
+                  const PopupMenuItem(value: 'ready', child: Text('Ready')),
                 ],
               ),
             ],
@@ -129,8 +120,11 @@ class KitchenItemTile extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.info_outline,
-                      size: 12, color: theme.colorScheme.error),
+                  Icon(
+                    Icons.info_outline,
+                    size: 12,
+                    color: theme.colorScheme.error,
+                  ),
                   const SizedBox(width: 4),
                   Flexible(
                     child: Text(

@@ -63,7 +63,10 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                   const Expanded(
                     child: Text(
                       'Thermal Printer KOT Slip Preview',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                   IconButton(
@@ -109,7 +112,9 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                     Navigator.of(context).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('KOT Slip sent to Thermal Printer successfully!'),
+                        content: Text(
+                          'KOT Slip sent to Thermal Printer successfully!',
+                        ),
                         backgroundColor: Colors.green,
                       ),
                     );

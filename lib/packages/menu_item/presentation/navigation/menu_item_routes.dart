@@ -13,56 +13,56 @@ import '../../domain/entities/menu_item.dart';
 
 class MenuItemRoutes {
   static List<RouteBase> get routes => [
-        ShellRoute(
-          builder: (context, state, child) => MultiBlocProvider(
-            providers: [
-              BlocProvider<MenuItemBloc>(
-                create: (context) =>
-                    GetIt.instance<MenuItemBloc>()..add(const LoadMenuItems()),
-              ),
-              BlocProvider<MenuCategoryFullListCubit>(
-                create: (context) =>
-                    GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
-              ),
-              BlocProvider<MenuSubcategoryBloc>(
-                create: (context) =>
-                    GetIt.instance<MenuSubcategoryBloc>()
-                      ..add(const LoadMenuSubcategories()),
-              ),
-            ],
-            child: child,
+    ShellRoute(
+      builder: (context, state, child) => MultiBlocProvider(
+        providers: [
+          BlocProvider<MenuItemBloc>(
+            create: (context) =>
+                GetIt.instance<MenuItemBloc>()..add(const LoadMenuItems()),
           ),
+          BlocProvider<MenuCategoryFullListCubit>(
+            create: (context) =>
+                GetIt.instance<MenuCategoryFullListCubit>()..loadData(),
+          ),
+          BlocProvider<MenuSubcategoryBloc>(
+            create: (context) =>
+                GetIt.instance<MenuSubcategoryBloc>()
+                  ..add(const LoadMenuSubcategories()),
+          ),
+        ],
+        child: child,
+      ),
+      routes: [
+        GoRoute(
+          path: AppRoutePath.menuItemFullListScreenRoute,
+          name: AppRouteName.menuItemList,
+          builder: (context, state) => const MenuItemListScreen(),
           routes: [
             GoRoute(
-              path: AppRoutePath.menuItemFullListScreenRoute,
-              name: AppRouteName.menuItemList,
-              builder: (context, state) => const MenuItemListScreen(),
-              routes: [
-                GoRoute(
-                  path: AppRoutePath.addNewMenuItemScreenRoute,
-                  name: AppRouteName.menuItemAdd,
-                  builder: (context, state) => const AddEditMenuItemScreen(),
-                ),
-                GoRoute(
-                  path: AppRoutePath.updateMenuItemScreenRoute,
-                  name: AppRouteName.menuItemUpdate,
-                  builder: (context, state) {
-                    final item = state.extra as MenuItem?;
-                    return AddEditMenuItemScreen(item: item);
-                  },
-                ),
-                GoRoute(
-                  path: AppRoutePath.detailMenuItemScreenRoute,
-                  name: AppRouteName.menuItemDetail,
-                  builder: (context, state) {
-                    final idStr = state.pathParameters['id'];
-                    final itemId = int.tryParse(idStr ?? '') ?? 0;
-                    return MenuItemDetailScreen(itemId: itemId);
-                  },
-                ),
-              ],
+              path: AppRoutePath.addNewMenuItemScreenRoute,
+              name: AppRouteName.menuItemAdd,
+              builder: (context, state) => const AddEditMenuItemScreen(),
+            ),
+            GoRoute(
+              path: AppRoutePath.updateMenuItemScreenRoute,
+              name: AppRouteName.menuItemUpdate,
+              builder: (context, state) {
+                final item = state.extra as MenuItem?;
+                return AddEditMenuItemScreen(item: item);
+              },
+            ),
+            GoRoute(
+              path: AppRoutePath.detailMenuItemScreenRoute,
+              name: AppRouteName.menuItemDetail,
+              builder: (context, state) {
+                final idStr = state.pathParameters['id'];
+                final itemId = int.tryParse(idStr ?? '') ?? 0;
+                return MenuItemDetailScreen(itemId: itemId);
+              },
             ),
           ],
         ),
-      ];
+      ],
+    ),
+  ];
 }
