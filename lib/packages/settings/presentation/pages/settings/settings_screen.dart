@@ -22,6 +22,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final ValueNotifier<bool> _autoPrintKitchenSlipNotifier = ValueNotifier(
     false,
   );
+  final ValueNotifier<bool> _enableDetailedItemRemarksNotifier = ValueNotifier(true);
   final ValueNotifier<bool> _isLoadingNotifier = ValueNotifier(false);
   final ValueNotifier<String> _statusMessageNotifier = ValueNotifier('');
 
@@ -43,6 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void dispose() {
     _isFakeDataEnabledNotifier.dispose();
     _autoPrintKitchenSlipNotifier.dispose();
+    _enableDetailedItemRemarksNotifier.dispose();
     _isLoadingNotifier.dispose();
     _statusMessageNotifier.dispose();
     _activeStageKeyNotifier.dispose();
@@ -62,6 +64,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
           shared.PreferencesKeys.autoPrintKitchenOrderSlip.name,
         ) ??
         false;
+    _enableDetailedItemRemarksNotifier.value =
+        prefs.getBool(
+          shared.PreferencesKeys.enableDetailedItemRemarks.name,
+        ) ??
+        true;
 
     final database = GetIt.instance<CoozyDatabase>();
     final counts = await FakeDataHelper.getDatasetCounts(database);
@@ -950,6 +957,72 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       );
                                     },
                                   ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 24),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: theme.primaryColor.withValues(alpha: 0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.edit_note_rounded,
+                                color: theme.primaryColor,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared.LocaleKeys.settingsEnableDetailedItemRemarksLabel,
+                                      'Detailed Item Remarks',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared.LocaleKeys.settingsEnableDetailedItemRemarksSubtitle,
+                                      'Enable individual item remark input fields & hashtag suggestions when placing orders',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: _enableDetailedItemRemarksNotifier,
+                              builder: (context, enabled, child) {
+                                return Switch.adaptive(
+                                  value: enabled,
+                                  activeThumbColor: theme.primaryColor,
+                                  onChanged: (value) async {
+                                    _enableDetailedItemRemarksNotifier.value = value;
+                                    final prefs = await SharedPreferences.getInstance();
+                                    await prefs.setBool(
+                                      shared.PreferencesKeys.enableDetailedItemRemarks.name,
+                                      value,
+                                    );
+                                  },
                                 );
                               },
                             ),

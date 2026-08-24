@@ -13,4 +13,5 @@ enum PreferencesKeys {
   isSuperUser,
   subcategoryIsGridView,
   autoPrintKitchenOrderSlip,
+  enableDetailedItemRemarks,
 }

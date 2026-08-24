@@ -20,6 +20,7 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
   final int selectedTabIndex;
   final List<OrderCartItem> cartItems;
   final String searchQuery;
+  final String overallOrderRemarks;
   final bool isSubmitting;
   final String? orderSuccessMessage;
   final int? createdOrderId;
@@ -34,6 +35,7 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
     this.selectedTabIndex = 0,
     this.cartItems = const [],
     this.searchQuery = '',
+    this.overallOrderRemarks = '',
     this.isSubmitting = false,
     this.orderSuccessMessage,
     this.createdOrderId,
@@ -49,6 +51,7 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
     int? selectedTabIndex,
     List<OrderCartItem>? cartItems,
     String? searchQuery,
+    String? overallOrderRemarks,
     bool? isSubmitting,
     String? orderSuccessMessage,
     int? createdOrderId,
@@ -63,6 +66,7 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
       selectedTabIndex: selectedTabIndex ?? this.selectedTabIndex,
       cartItems: cartItems ?? this.cartItems,
       searchQuery: searchQuery ?? this.searchQuery,
+      overallOrderRemarks: overallOrderRemarks ?? this.overallOrderRemarks,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       orderSuccessMessage: orderSuccessMessage,
       createdOrderId: createdOrderId ?? this.createdOrderId,
@@ -97,6 +101,7 @@ class MenuItemPickerLoadedState extends MenuItemPickerState {
         selectedTabIndex,
         cartItems,
         searchQuery,
+        overallOrderRemarks,
         isSubmitting,
         orderSuccessMessage,
         createdOrderId,

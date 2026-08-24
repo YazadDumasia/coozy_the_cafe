@@ -311,6 +311,36 @@ abstract class LocaleKeys {
   static String selectCategoryTitle = 'select_category_title';
   static String noItemsAvailableInCategoryMsg =
       'no_items_available_in_category_msg';
+  static String itemRemarksHint = 'item_remarks_hint';
+  static String suggestedRemarksLabel = 'suggested_remarks_label';
+  static String remarkJain = 'remark_jain';
+  static String remarkVegan = 'remark_vegan';
+  static String remarkGlutenFree = 'remark_gluten_free';
+  static String remarkNoOnionGarlic = 'remark_no_onion_garlic';
+  static String remarkLessChilli = 'remark_less_chilli';
+  static String remarkLessOily = 'remark_less_oily';
+  static String remarkSpicy = 'remark_spicy';
+  static String remarkExtraSpicy = 'remark_extra_spicy';
+  static String remarkMediumSpicy = 'remark_medium_spicy';
+  static String remarkNoSpice = 'remark_no_spice';
+  static String remarkLessSalt = 'remark_less_salt';
+  static String remarkLessSugar = 'remark_less_sugar';
+  static String remarkExtraGravy = 'remark_extra_gravy';
+  static String remarkExtraCheese = 'remark_extra_cheese';
+  static String remarkNoOnion = 'remark_no_onion';
+  static String remarkCrispy = 'remark_crispy';
+  static String remarkServeHot = 'remark_serve_hot';
+  static String remarkSeparateSauce = 'remark_separate_sauce';
+  static String remarkLessIce = 'remark_less_ice';
+  static String remarkNoIce = 'remark_no_ice';
+  static String overallOrderRemarksHint = 'overall_order_remarks_hint';
+  static String overallOrderRemarksLabel = 'overall_order_remarks_label';
+  static String settingsOrderPlacementSection =
+      'settings_order_placement_section';
+  static String settingsEnableDetailedItemRemarksLabel =
+      'settings_enable_detailed_item_remarks_label';
+  static String settingsEnableDetailedItemRemarksSubtitle =
+      'settings_enable_detailed_item_remarks_subtitle';
 
   // menu_category_page
   static String menuCategoryAppbarTitle = 'menu_category_appbar_title';

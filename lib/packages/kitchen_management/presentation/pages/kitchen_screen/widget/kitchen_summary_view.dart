@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../../../domain/entities/kitchen_aggregated_item_entity.dart';
@@ -35,13 +36,30 @@ class KitchenSummaryView extends StatelessWidget {
       grandTotals[item.itemName] = (grandTotals[item.itemName] ?? 0) + item.totalQuantity;
     }
 
-    // Group items by order status
-    final preparingItems = items.where((i) => i.status.toLowerCase() == 'preparing' || i.status.toLowerCase() == 'in_progress').toList();
-    final pendingItems = items.where((i) => i.status.toLowerCase() == 'pending' || i.status.toLowerCase() == 'placed').toList();
-    final readyItems = items.where((i) => i.status.toLowerCase() == 'ready').toList();
-    final otherItems = items.where((i) =>
-      !['preparing', 'in_progress', 'pending', 'placed', 'ready'].contains(i.status.toLowerCase())
-    ).toList();
+    // Group items by OrderItemStatus enum
+    final preparingItems = <KitchenAggregatedItemEntity>[];
+    final pendingItems = <KitchenAggregatedItemEntity>[];
+    final readyItems = <KitchenAggregatedItemEntity>[];
+    final otherItems = <KitchenAggregatedItemEntity>[];
+
+    for (final item in items) {
+      final statusEnum = OrderItemStatus.fromString(item.status);
+      switch (statusEnum) {
+        case OrderItemStatus.preparing:
+          preparingItems.add(item);
+          break;
+        case OrderItemStatus.pending:
+          pendingItems.add(item);
+          break;
+        case OrderItemStatus.ready:
+          readyItems.add(item);
+          break;
+        case OrderItemStatus.served:
+        case OrderItemStatus.cancelled:
+          otherItems.add(item);
+          break;
+      }
+    }
 
     return LayoutBuilder(
       builder: (context, constraints) {

@@ -26,6 +26,8 @@ class MenuItemPickerBloc
     on<AddItemToCartEvent>(_onAddItemToCart);
     on<RemoveItemFromCartEvent>(_onRemoveItemFromCart);
     on<UpdateCartItemQuantityEvent>(_onUpdateCartItemQuantity);
+    on<UpdateCartItemRemarksEvent>(_onUpdateCartItemRemarks);
+    on<UpdateOverallOrderRemarksEvent>(_onUpdateOverallOrderRemarks);
     on<FilterSearchQueryEvent>(_onFilterSearchQuery);
     on<SubmitOrderEvent>(_onSubmitOrder);
   }
@@ -48,6 +50,7 @@ class MenuItemPickerBloc
     List<OrderCartItem> initialCartItems = const [];
     int? loadedTableId;
     String? loadedTableName;
+    String loadedOverallRemarks = '';
 
     if (event.orderId != null) {
       final orderDetailsResult = await getOrderDetailsUseCase(event.orderId!);
@@ -57,6 +60,15 @@ class MenuItemPickerBloc
           initialCartItems = details.cartItems;
           loadedTableId = details.tableId;
           loadedTableName = details.tableName;
+
+          final itemRemarksSet = initialCartItems
+              .map((i) => i.remarks?.trim())
+              .where((r) => r != null && r.isNotEmpty)
+              .cast<String>()
+              .toSet();
+          if (itemRemarksSet.isNotEmpty) {
+            loadedOverallRemarks = itemRemarksSet.join(', ');
+          }
         },
       );
     }
@@ -66,6 +78,7 @@ class MenuItemPickerBloc
         catalogData: catalogData,
         selectedTabIndex: 0,
         cartItems: initialCartItems,
+        overallOrderRemarks: loadedOverallRemarks,
         editingOrderId: event.orderId,
         loadedTableId: loadedTableId,
         loadedTableName: loadedTableName,
@@ -178,6 +191,39 @@ class MenuItemPickerBloc
     }
   }
 
+  void _onUpdateCartItemRemarks(
+    UpdateCartItemRemarksEvent event,
+    Emitter<MenuItemPickerState> emit,
+  ) {
+    if (state is MenuItemPickerLoadedState) {
+      final currentState = state as MenuItemPickerLoadedState;
+      final currentCart = List<OrderCartItem>.from(currentState.cartItems);
+
+      final existingIndex = currentCart.indexWhere(
+        (ci) =>
+            ci.menuItemId == event.cartItem.menuItemId &&
+            ci.variationId == event.cartItem.variationId,
+      );
+
+      if (existingIndex >= 0) {
+        currentCart[existingIndex] = currentCart[existingIndex].copyWith(
+          remarks: event.remarks,
+        );
+        emit(currentState.copyWith(cartItems: currentCart));
+      }
+    }
+  }
+
+  void _onUpdateOverallOrderRemarks(
+    UpdateOverallOrderRemarksEvent event,
+    Emitter<MenuItemPickerState> emit,
+  ) {
+    if (state is MenuItemPickerLoadedState) {
+      final currentState = state as MenuItemPickerLoadedState;
+      emit(currentState.copyWith(overallOrderRemarks: event.overallRemarks));
+    }
+  }
+
   void _onFilterSearchQuery(
     FilterSearchQueryEvent event,
     Emitter<MenuItemPickerState> emit,
@@ -203,10 +249,21 @@ class MenuItemPickerBloc
       emit(currentState.copyWith(isSubmitting: true));
 
       final targetOrderId = event.orderId ?? currentState.editingOrderId;
+      final overallRemarks = currentState.overallOrderRemarks.trim();
+
+      // Apply overall remarks as default to items without item-specific remarks
+      final finalCartItems = currentState.cartItems.map((item) {
+        if ((item.remarks == null || item.remarks!.trim().isEmpty) &&
+            overallRemarks.isNotEmpty) {
+          return item.copyWith(remarks: overallRemarks);
+        }
+        return item;
+      }).toList();
+
       final result = await submitOrderUseCase(
         tableId: event.tableId,
         tableName: event.tableName,
-        cartItems: currentState.cartItems,
+        cartItems: finalCartItems,
         orderId: targetOrderId,
       );
 

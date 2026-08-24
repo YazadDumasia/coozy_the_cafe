@@ -66,6 +66,28 @@ class UpdateCartItemQuantityEvent extends MenuItemPickerEvent {
   List<Object?> get props => [cartItem, newQuantity];
 }
 
+class UpdateCartItemRemarksEvent extends MenuItemPickerEvent {
+  final OrderCartItem cartItem;
+  final String remarks;
+
+  const UpdateCartItemRemarksEvent({
+    required this.cartItem,
+    required this.remarks,
+  });
+
+  @override
+  List<Object?> get props => [cartItem, remarks];
+}
+
+class UpdateOverallOrderRemarksEvent extends MenuItemPickerEvent {
+  final String overallRemarks;
+
+  const UpdateOverallOrderRemarksEvent(this.overallRemarks);
+
+  @override
+  List<Object?> get props => [overallRemarks];
+}
+
 class FilterSearchQueryEvent extends MenuItemPickerEvent {
   final String query;
   const FilterSearchQueryEvent(this.query);

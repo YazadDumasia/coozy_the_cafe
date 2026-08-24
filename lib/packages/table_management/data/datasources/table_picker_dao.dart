@@ -14,8 +14,11 @@ class TablePickerDao {
           leftOuterJoin(
             db.ordersTable,
             db.ordersTable.tableInfoId.equalsExp(db.tableInfoTable.id) &
-                db.ordersTable.isCanceled.equals(false) &
-                db.ordersTable.isDeleted.equals(false),
+                (db.ordersTable.isCanceled.isNull() |
+                    db.ordersTable.isCanceled.equals(false)) &
+                (db.ordersTable.isDeleted.isNull() |
+                    db.ordersTable.isDeleted.equals(false)) &
+                db.ordersTable.status.isNotIn(['completed', 'canceled', 'cancelled']),
           ),
         ])..orderBy([
           OrderingTerm(
@@ -44,9 +47,19 @@ class TablePickerDao {
         );
 
         final existing = tablesById[table.id];
-        if (existing == null ||
-            _priority(entity.status) > _priority(existing.status)) {
+        if (existing == null) {
           tablesById[table.id] = entity;
+        } else {
+          final pNew = _priority(entity.status);
+          final pOld = _priority(existing.status);
+          if (pNew > pOld) {
+            tablesById[table.id] = entity;
+          } else if (pNew == pOld && entity.orderCreationDate != null) {
+            if (existing.orderCreationDate == null ||
+                entity.orderCreationDate!.isAfter(existing.orderCreationDate!)) {
+              tablesById[table.id] = entity;
+            }
+          }
         }
       }
 
@@ -63,16 +76,12 @@ class TablePickerDao {
 
     final statusValue = (order.status ?? '').trim().toLowerCase();
 
-    if (statusValue.contains('pending_payment')) {
-      return TableStatus.pendingBill;
+    if (statusValue == 'completed' || statusValue == 'canceled' || statusValue == 'cancelled') {
+      return TableStatus.empty;
     }
 
-    if (statusValue.isEmpty ||
-        statusValue == 'in_progress' ||
-        statusValue == 'active' ||
-        statusValue == 'in-progress' ||
-        statusValue == 'in progress') {
-      return TableStatus.occupied;
+    if (statusValue.contains('pending_payment') || statusValue.contains('pending_bill')) {
+      return TableStatus.pendingBill;
     }
 
     return TableStatus.occupied;
