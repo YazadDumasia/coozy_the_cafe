@@ -40,6 +40,8 @@ class AppRoutePath {
   static const String settingsScreenRoute = '/settings';
   static const String waiterOrderPlacementScreenRoute =
       '/waiter-order-placement';
+  static const String kitchenScreenRoute = '/kitchen';
+
 
   // Sub-routes for Table Info (Nested under Home -> Table Info)
   static const String addNewTableInfoScreenRoute = 'table-add';
@@ -247,10 +249,14 @@ class AppRouteName {
   static const String reservationList = 'reservation-list';
 
   static const String settings = 'settings';
+  static const String kitchen = 'kitchen';
 
   static String getTitleForRouteName(String? name) {
     switch (name) {
+      case kitchen:
+        return 'Kitchen Display';
       case home:
+
       case mainHome:
         return 'Home';
       case splash:

@@ -12,4 +12,5 @@ enum PreferencesKeys {
   currentBusinessId,
   isSuperUser,
   subcategoryIsGridView,
+  autoPrintKitchenOrderSlip,
 }

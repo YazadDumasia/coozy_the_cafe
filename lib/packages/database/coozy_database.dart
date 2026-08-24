@@ -4,6 +4,8 @@ export 'src/tables.dart';
 
 // src/constants
 export 'src/constants/db_constants.dart';
+export 'src/constants/order_status_enum.dart';
+
 
 // src/database_dao
 export 'src/database_dao/categories_dao.dart';

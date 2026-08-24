@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../database/coozy_database.dart';
+import '../../../../kitchen_management/presentation/widgets/thermal_kitchen_slip_widget/thermal_kitchen_slip_widget.dart';
 import '../../../../core/coozy_core.dart' as core;
 import '../../../../shared/coozy_shared.dart' as shared;
 
@@ -18,6 +19,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   static const String _prefKeyFakeData = 'is_fake_data_enabled';
 
   final ValueNotifier<bool> _isFakeDataEnabledNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _autoPrintKitchenSlipNotifier = ValueNotifier(
+    false,
+  );
   final ValueNotifier<bool> _isLoadingNotifier = ValueNotifier(false);
   final ValueNotifier<String> _statusMessageNotifier = ValueNotifier('');
 
@@ -38,6 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void dispose() {
     _isFakeDataEnabledNotifier.dispose();
+    _autoPrintKitchenSlipNotifier.dispose();
     _isLoadingNotifier.dispose();
     _statusMessageNotifier.dispose();
     _activeStageKeyNotifier.dispose();
@@ -52,6 +57,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final prefs = await SharedPreferences.getInstance();
     final isEnabled = prefs.getBool(_prefKeyFakeData) ?? false;
     _isFakeDataEnabledNotifier.value = isEnabled;
+    _autoPrintKitchenSlipNotifier.value =
+        prefs.getBool(
+          shared.PreferencesKeys.autoPrintKitchenOrderSlip.name,
+        ) ??
+        false;
 
     final database = GetIt.instance<CoozyDatabase>();
     final counts = await FakeDataHelper.getDatasetCounts(database);
@@ -844,6 +854,125 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         );
                       },
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Kitchen & Printing Section
+                Text(
+                  _tr(
+                    context,
+                    shared.LocaleKeys.settingsKitchenPrintingSection,
+                    'Kitchen & Printing',
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: theme.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.print_rounded,
+                                color: theme.primaryColor,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared.LocaleKeys.settingsAutoPrintKitchenSlipLabel,
+                                      'Auto Print Kitchen Order Slip',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared.LocaleKeys.settingsAutoPrintKitchenSlipSubtitle,
+                                      'Automatically print kitchen order items slip when a new order is placed',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: _autoPrintKitchenSlipNotifier,
+                              builder: (context, autoPrint, child) {
+                                return Tooltip(
+                                  message: _tr(
+                                    context,
+                                    shared.LocaleKeys.settingsAutoPrintKitchenSlipTooltip,
+                                    'Toggle automatic printing of kitchen order slips upon order placement',
+                                  ),
+                                  child: Switch.adaptive(
+                                    value: autoPrint,
+                                    activeThumbColor: theme.primaryColor,
+                                    onChanged: (value) async {
+                                      _autoPrintKitchenSlipNotifier.value = value;
+                                      final prefs = await SharedPreferences.getInstance();
+                                      await prefs.setBool(
+                                        shared.PreferencesKeys.autoPrintKitchenOrderSlip.name,
+                                        value,
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            icon: const Icon(Icons.receipt_long_rounded, size: 18),
+                            label: Text(
+                              _tr(
+                                context,
+                                shared.LocaleKeys.settingsPreviewThermalSlipBtn,
+                                'Preview Thermal Printer Slip (80mm/58mm)',
+                              ),
+                            ),
+                            onPressed: () {
+                              ThermalKitchenSlipWidget.showPreviewDialog(context);
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

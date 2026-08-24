@@ -21,7 +21,9 @@
         "common_confirm": "Confirm",
         "common_dismiss": "Dismiss",
         "common_retry": "Retry",
+        "kitchen_display_system": "Kitchen Display System",
         "common_search_label": "Search",
+
         "common_search_hint": "Search...",
         "common_please_wait": "Please wait...",
         "common_no_data_found_msg": "No data Found.",
@@ -415,6 +417,13 @@
     "settings_page": {
         "settings_title": "Settings",
         "settings_appearance_section": "Appearance",
+        "settings_kitchen_printing_section": "Kitchen & Printing",
+        "settings_auto_print_kitchen_slip_label": "Auto Print Kitchen Order Slip",
+        "settings_auto_print_kitchen_slip_subtitle": "Automatically print kitchen order items slip when a new order is placed",
+        "settings_auto_print_kitchen_slip_tooltip": "Toggle automatic printing of kitchen order slips upon order placement",
+        "settings_auto_print_kitchen_slip_enabled": "Auto printing on new order enabled",
+        "settings_auto_print_kitchen_slip_disabled": "Auto printing on new order disabled",
+        "settings_preview_thermal_slip_btn": "Preview Thermal Printer Slip (80mm/58mm)",
         "settings_dark_theme_label": "Dark Theme",
         "settings_dark_theme_enabled": "Dark theme enabled",
         "settings_dark_theme_disabled": "Light theme enabled",

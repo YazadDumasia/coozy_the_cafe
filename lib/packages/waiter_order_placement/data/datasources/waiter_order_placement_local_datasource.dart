@@ -1,4 +1,5 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:coozy_the_cafe/packages/kitchen_management/services/order_print_background_service.dart';
 import 'package:drift/drift.dart';
 import '../../domain/entities/menu_catalog_data.dart';
 import '../../domain/entities/order_cart_item.dart';
@@ -45,8 +46,8 @@ class _TempOrderData {
     final tableNameDisplay = order.tableNameText?.isNotEmpty == true
         ? order.tableNameText!
         : (tableInfo?.tableNo != null
-            ? 'TABLE ${tableInfo!.tableNo}'
-            : 'TABLE ${order.id}');
+              ? 'TABLE ${tableInfo!.tableNo}'
+              : 'TABLE ${order.id}');
 
     return ActiveTableOrder(
       orderId: order.id,
@@ -81,10 +82,9 @@ class WaiterOrderPlacementLocalDataSourceImpl
   Future<MenuCatalogData> getActiveMenuCatalog() async {
     // 1. Fetch active categories ordered by position
     final allCategories = await _categoriesDao.getCategories();
-    final activeCategories = allCategories
-        .where((c) => c.isActive == true)
-        .toList()
-      ..sort((a, b) => (a.position ?? 0).compareTo(b.position ?? 0));
+    final activeCategories =
+        allCategories.where((c) => c.isActive == true).toList()
+          ..sort((a, b) => (a.position ?? 0).compareTo(b.position ?? 0));
 
     // 2. Fetch all active menu items with variations
     final availableMenuItems = await _menuItemsDao.getAvailableMenuItems();
@@ -93,11 +93,12 @@ class WaiterOrderPlacementLocalDataSourceImpl
     final categoryDataList = <MenuCatalogCategoryData>[];
 
     for (final category in activeCategories) {
-      final subcategories = await _categoriesDao.getSubcategoryBaseCategoryId(category.id);
-      final activeSubcategories = (subcategories ?? [])
-          .where((s) => s.isActive == true)
-          .toList()
-        ..sort((a, b) => (a.position ?? 0).compareTo(b.position ?? 0));
+      final subcategories = await _categoriesDao.getSubcategoryBaseCategoryId(
+        category.id,
+      );
+      final activeSubcategories =
+          (subcategories ?? []).where((s) => s.isActive == true).toList()
+            ..sort((a, b) => (a.position ?? 0).compareTo(b.position ?? 0));
 
       final itemsForCategory = availableMenuItems.where((itemWithVar) {
         return itemWithVar.item.categoryId == category.id;
@@ -147,7 +148,9 @@ class WaiterOrderPlacementLocalDataSourceImpl
 
       if (orderId != null) {
         targetOrderId = orderId;
-        await (db.update(db.ordersTable)..where((t) => t.id.equals(orderId))).write(
+        await (db.update(
+          db.ordersTable,
+        )..where((t) => t.id.equals(orderId))).write(
           OrdersTableCompanion(
             tableInfoId: Value(tableId),
             tableNameText: Value(tableName),
@@ -155,9 +158,13 @@ class WaiterOrderPlacementLocalDataSourceImpl
             status: const Value('placed'),
           ),
         );
-        await (db.delete(db.orderItemsTable)..where((t) => t.orderId.equals(orderId))).go();
+        await (db.delete(
+          db.orderItemsTable,
+        )..where((t) => t.orderId.equals(orderId))).go();
       } else {
-        targetOrderId = await db.into(db.ordersTable).insert(
+        targetOrderId = await db
+            .into(db.ordersTable)
+            .insert(
               OrdersTableCompanion.insert(
                 tableInfoId: Value(tableId),
                 tableNameText: Value(tableName),
@@ -170,7 +177,9 @@ class WaiterOrderPlacementLocalDataSourceImpl
       }
 
       for (final cartItem in cartItems) {
-        await db.into(db.orderItemsTable).insert(
+        await db
+            .into(db.orderItemsTable)
+            .insert(
               OrderItemsTableCompanion.insert(
                 orderId: Value(targetOrderId),
                 itemId: Value(cartItem.menuItemId),
@@ -180,9 +189,18 @@ class WaiterOrderPlacementLocalDataSourceImpl
                 sellingPrice: Value(cartItem.price),
                 remarks: Value(cartItem.remarks),
                 creationDate: Value(nowStr),
+                status: Value(OrderItemStatus.pending.value),
               ),
             );
       }
+
+      // Trigger background processing for KOT auto printing & notification
+      OrderPrintBackgroundService.instance.processNewOrderPlaced(
+        orderId: targetOrderId,
+        tableName: tableName,
+        cartItems: cartItems,
+      );
+
       return targetOrderId;
     });
   }
@@ -199,35 +217,40 @@ class WaiterOrderPlacementLocalDataSourceImpl
 
     TableInfoData? tableInfo;
     if (order.tableInfoId != null) {
-      tableInfo = await (db.select(db.tableInfoTable)
-            ..where((t) => t.id.equals(order.tableInfoId!)))
-          .getSingleOrNull();
+      tableInfo = await (db.select(
+        db.tableInfoTable,
+      )..where((t) => t.id.equals(order.tableInfoId!))).getSingleOrNull();
     }
 
     final tableNameDisplay = order.tableNameText?.isNotEmpty == true
         ? order.tableNameText!
         : (tableInfo?.tableNo != null
-            ? 'TABLE ${tableInfo!.tableNo}'
-            : 'TABLE ${order.id}');
+              ? 'TABLE ${tableInfo!.tableNo}'
+              : 'TABLE ${order.id}');
 
     final cartItems = <OrderCartItem>[];
     for (final item in items) {
       final menuItemId = item.menuItemId ?? item.itemId;
       if (menuItemId == null) continue;
 
-      final menuItem = await (db.select(db.menuItemsTable)
-            ..where((m) => m.id.equals(menuItemId)))
-          .getSingleOrNull();
+      final menuItem = await (db.select(
+        db.menuItemsTable,
+      )..where((m) => m.id.equals(menuItemId))).getSingleOrNull();
 
       MenuItemVariation? variation;
       if (item.selectedVariationId != null) {
-        variation = await (db.select(db.menuItemVariationsTable)
-              ..where((v) => v.id.equals(item.selectedVariationId!)))
-            .getSingleOrNull();
+        variation =
+            await (db.select(db.menuItemVariationsTable)
+                  ..where((v) => v.id.equals(item.selectedVariationId!)))
+                .getSingleOrNull();
       }
 
       final itemName = menuItem?.name ?? 'Item #$menuItemId';
-      final price = item.sellingPrice ?? variation?.sellingPrice ?? menuItem?.sellingPrice ?? 0.0;
+      final price =
+          item.sellingPrice ??
+          variation?.sellingPrice ??
+          menuItem?.sellingPrice ??
+          0.0;
 
       cartItems.add(
         OrderCartItem(
@@ -258,7 +281,8 @@ class WaiterOrderPlacementLocalDataSourceImpl
     final unpaidOrders = activeOrdersWithItems.where((o) {
       final isNotCanceled = o.order.isCanceled != true;
       final isNotDeleted = o.order.isDeleted != true;
-      final isNotPaid = o.order.status != 'paid' && o.order.status != 'completed';
+      final isNotPaid =
+          o.order.status != 'paid' && o.order.status != 'completed';
       return isNotCanceled && isNotDeleted && isNotPaid;
     }).toList();
 
@@ -270,9 +294,9 @@ class WaiterOrderPlacementLocalDataSourceImpl
 
       TableInfoData? tableInfo;
       if (order.tableInfoId != null) {
-        tableInfo = await (db.select(db.tableInfoTable)
-              ..where((t) => t.id.equals(order.tableInfoId!)))
-            .getSingleOrNull();
+        tableInfo = await (db.select(
+          db.tableInfoTable,
+        )..where((t) => t.id.equals(order.tableInfoId!))).getSingleOrNull();
       }
 
       int pendingCount = 0;
@@ -290,12 +314,14 @@ class WaiterOrderPlacementLocalDataSourceImpl
         }
       }
 
-      final creationTime = DateTime.tryParse(order.creationDate ?? '')?.toLocal();
+      final creationTime = DateTime.tryParse(
+        order.creationDate ?? '',
+      )?.toLocal();
       final tableNameDisplay = order.tableNameText?.isNotEmpty == true
           ? order.tableNameText!
           : (tableInfo?.tableNo != null
-              ? 'TABLE ${tableInfo!.tableNo}'
-              : 'TABLE ${order.id}');
+                ? 'TABLE ${tableInfo!.tableNo}'
+                : 'TABLE ${order.id}');
 
       result.add(
         ActiveTableOrder(
@@ -319,30 +345,31 @@ class WaiterOrderPlacementLocalDataSourceImpl
 
   @override
   Stream<List<ActiveTableOrder>> watchActiveTableOrders() {
-    final query = db.select(db.ordersTable).join([
-      leftOuterJoin(
-        db.tableInfoTable,
-        db.tableInfoTable.id.equalsExp(db.ordersTable.tableInfoId),
-      ),
-      leftOuterJoin(
-        db.orderItemsTable,
-        db.orderItemsTable.orderId.equalsExp(db.ordersTable.id),
-      ),
-    ])
-      ..where(
-        (db.ordersTable.isCanceled.equals(false) |
-            db.ordersTable.isCanceled.isNull()) &
-            (db.ordersTable.isDeleted.equals(false) |
-                db.ordersTable.isDeleted.isNull()) &
-            db.ordersTable.status.equals('paid').not() &
-            db.ordersTable.status.equals('completed').not(),
-      )
-      ..orderBy([
-        OrderingTerm(
-          expression: db.ordersTable.creationDate,
-          mode: OrderingMode.desc,
-        ),
-      ]);
+    final query =
+        db.select(db.ordersTable).join([
+            leftOuterJoin(
+              db.tableInfoTable,
+              db.tableInfoTable.id.equalsExp(db.ordersTable.tableInfoId),
+            ),
+            leftOuterJoin(
+              db.orderItemsTable,
+              db.orderItemsTable.orderId.equalsExp(db.ordersTable.id),
+            ),
+          ])
+          ..where(
+            (db.ordersTable.isCanceled.equals(false) |
+                    db.ordersTable.isCanceled.isNull()) &
+                (db.ordersTable.isDeleted.equals(false) |
+                    db.ordersTable.isDeleted.isNull()) &
+                db.ordersTable.status.equals('paid').not() &
+                db.ordersTable.status.equals('completed').not(),
+          )
+          ..orderBy([
+            OrderingTerm(
+              expression: db.ordersTable.creationDate,
+              mode: OrderingMode.desc,
+            ),
+          ]);
 
     return query.watch().map((rows) {
       final ordersMap = <int, _TempOrderData>{};

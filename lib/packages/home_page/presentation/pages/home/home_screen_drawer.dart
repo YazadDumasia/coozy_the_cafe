@@ -121,7 +121,34 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                     ),
                     _buildDrawerItem(
                       context,
+                      icon: Icons.kitchen_outlined,
+                      title:
+                          context.tr(
+                            shared.LocaleKeys.kitchenDisplaySystem,
+                            track: shared.TrackConstants.homePageTrack,
+                          ) ??
+                          'Kitchen Display System',
+
+                      isSelected: _isRouteActive(
+                        currentLocation,
+                        core.AppRoutePath.kitchenScreenRoute,
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        if (!_isRouteActive(
+                          currentLocation,
+                          core.AppRoutePath.kitchenScreenRoute,
+                        )) {
+                          context.push(
+                            core.AppRoutePath.kitchenScreenRoute,
+                          );
+                        }
+                      },
+                    ),
+                    _buildDrawerItem(
+                      context,
                       icon: Icons.category,
+
                       title:
                           context.tr(
                             shared.LocaleKeys.homeDrawerCategoriesLabel,

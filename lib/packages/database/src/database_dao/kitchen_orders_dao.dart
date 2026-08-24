@@ -42,12 +42,11 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
         FROM order_items oi
         LEFT JOIN menu_items mi ON oi.item_id = mi.id
         LEFT JOIN menu_item_variations miv ON oi.selected_variation_id = miv.id
-        WHERE oi.order_id = ? AND oi.status IN (?, ?)
+        WHERE oi.order_id = ? 
+          AND (oi.status IN ('pending', 'preparing', 'placed') OR oi.status IS NULL OR oi.status = '')
         ''',
         variables: [
           Variable.withInt(orderId),
-          Variable.withString('pending'),
-          Variable.withString('preparing'),
         ],
       ).get();
 
@@ -57,6 +56,48 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
       }
     }
     return result;
+  }
+
+  /// Watches all active orders with pending/preparing items in real-time.
+  Stream<List<Map<String, dynamic>>> watchActiveKitchenOrders() {
+    String sql =
+        "SELECT * FROM orders WHERE (is_canceled = 0 OR is_canceled IS NULL) AND (is_deleted = 0 OR is_deleted IS NULL) AND status NOT IN ('completed', 'served') ORDER BY creation_date ASC";
+
+    return customSelect(
+      sql,
+      readsFrom: {ordersTable, orderItemsTable},
+    ).watch().asyncMap((ordersQuery) async {
+      final result = <Map<String, dynamic>>[];
+
+      for (final orderRow in ordersQuery) {
+        final orderMap = Map<String, dynamic>.from(orderRow.data);
+        final orderId = orderRow.read<int>('id');
+
+        final itemsQuery = await customSelect(
+          '''
+          SELECT 
+            oi.*,
+            mi.name as itemName,
+            miv.quantity as variationQuantity,
+            miv.purchase_unit as variationUnit
+          FROM order_items oi
+          LEFT JOIN menu_items mi ON oi.item_id = mi.id
+          LEFT JOIN menu_item_variations miv ON oi.selected_variation_id = miv.id
+          WHERE oi.order_id = ? 
+            AND (oi.status IN ('pending', 'preparing', 'placed') OR oi.status IS NULL OR oi.status = '')
+          ''',
+          variables: [
+            Variable.withInt(orderId),
+          ],
+        ).get();
+
+        if (itemsQuery.isNotEmpty) {
+          orderMap['orderItems'] = itemsQuery.map((row) => row.data).toList();
+          result.add(orderMap);
+        }
+      }
+      return result;
+    });
   }
 
   /// Updates the status of a specific order item (e.g., 'pending' -> 'preparing' -> 'ready').
@@ -72,7 +113,8 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
     return await (update(orderItemsTable)..where(
           (t) =>
               t.orderId.equals(orderId) &
-              t.status.isIn(['pending', 'preparing']),
+              (t.status.isIn(['pending', 'preparing', 'placed']) |
+                  t.status.isNull()),
         ))
         .write(OrderItemsTableCompanion(status: Value(status)));
   }
@@ -82,23 +124,33 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
     String sql = '''
       SELECT 
         mi.name as itemName,
+        mc.name as categoryName,
         oi.item_id as itemId,
         oi.remarks,
         oi.is_parcel as isParcel,
         o.order_type as orderType,
         SUM(oi.quantity) as totalQuantity,
-        oi.status
+        COALESCE(oi.status, 'pending') as status
       FROM order_items oi
       JOIN menu_items mi ON oi.item_id = mi.id
+      LEFT JOIN menu_categories mc ON mi.category_id = mc.id
       JOIN orders o ON oi.order_id = o.id
-      WHERE oi.status IN ('pending', 'preparing')
+      WHERE (oi.status IN ('pending', 'preparing', 'placed', 'ready') OR oi.status IS NULL OR oi.status = '')
         AND (o.is_canceled = 0 OR o.is_canceled IS NULL)
         AND (o.is_deleted = 0 OR o.is_deleted IS NULL)
     ''';
     List<Variable> vars = [];
     sql += '''
-      GROUP BY oi.item_id, oi.selected_variation_id, oi.remarks, oi.is_parcel, o.order_type, oi.status, mi.name
-      ORDER BY oi.status DESC, o.order_type ASC, oi.is_parcel DESC, mi.name ASC
+      GROUP BY oi.item_id, oi.selected_variation_id, oi.remarks, oi.is_parcel, o.order_type, COALESCE(oi.status, 'pending'), mi.name, mc.name
+      ORDER BY 
+        CASE COALESCE(oi.status, 'pending')
+          WHEN 'preparing' THEN 1
+          WHEN 'pending' THEN 2
+          WHEN 'placed' THEN 3
+          ELSE 4
+        END ASC,
+        COALESCE(mc.name, 'Uncategorized') ASC,
+        mi.name ASC
       ''';
 
     final rows = await customSelect(sql, variables: vars).get();
@@ -109,7 +161,7 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
   /// Checks if an entire order is ready (all items are marked 'ready' or 'served').
   Future<bool> isEntireOrderReady(int orderId) async {
     final row = await customSelect(
-      "SELECT COUNT(*) as pendingCount FROM order_items WHERE order_id = ? AND status IN ('pending', 'preparing')",
+      "SELECT COUNT(*) as pendingCount FROM order_items WHERE order_id = ? AND (status IN ('pending', 'preparing', 'placed') OR status IS NULL OR status = '')",
       variables: [Variable.withInt(orderId)],
     ).getSingle();
 

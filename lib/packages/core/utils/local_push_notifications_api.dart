@@ -396,6 +396,28 @@ class NotificationApi {
     );
   }
 
+  static Future<void> showOrderPlacedNotification({
+    required int orderId,
+    required String tableName,
+    required int itemCount,
+  }) async {
+    try {
+      final details = await _notificationDetails();
+      await _notifications.show(
+        id: 9999 + orderId,
+        title: '🖨️ Auto Print KOT Slip (#ORD-$orderId)',
+        body: 'New order for $tableName ($itemCount items) sent to Kitchen Printer.',
+        notificationDetails: details,
+        payload: 'order_kot_$orderId',
+      );
+    } catch (e, st) {
+      PlatformUtils.debugLog(
+        NotificationApi,
+        'showOrderPlacedNotification error: $e\n$st',
+      );
+    }
+  }
+
   static Future<void> cancel(int id) async {
     try {
       await _notifications.cancel(id: id);

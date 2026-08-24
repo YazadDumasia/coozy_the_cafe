@@ -17,7 +17,10 @@ abstract class LocaleKeys {
   static String homeTabToday = 'home_tab_today';
   static String homeTabWaiter = 'home_tab_waiter';
   static String homeTabKitchen = 'home_tab_kitchen';
+  static String kitchenDisplaySystem = 'kitchen_display_system';
   static String homeTabMore = 'home_tab_more';
+
+
   static String deactivate = 'deactivate';
   static String noSubcategoriesFound = 'no_subcategories_found';
   static String selectACategoryHint = 'select_a_category_hint';
@@ -974,6 +977,20 @@ abstract class LocaleKeys {
   // settings page
   static const String settingsTitle = 'settings_title';
   static const String settingsAppearanceSection = 'settings_appearance_section';
+  static const String settingsKitchenPrintingSection =
+      'settings_kitchen_printing_section';
+  static const String settingsAutoPrintKitchenSlipLabel =
+      'settings_auto_print_kitchen_slip_label';
+  static const String settingsAutoPrintKitchenSlipSubtitle =
+      'settings_auto_print_kitchen_slip_subtitle';
+  static const String settingsAutoPrintKitchenSlipTooltip =
+      'settings_auto_print_kitchen_slip_tooltip';
+  static const String settingsAutoPrintKitchenSlipEnabled =
+      'settings_auto_print_kitchen_slip_enabled';
+  static const String settingsAutoPrintKitchenSlipDisabled =
+      'settings_auto_print_kitchen_slip_disabled';
+  static const String settingsPreviewThermalSlipBtn =
+      'settings_preview_thermal_slip_btn';
   static const String settingsDarkThemeLabel = 'settings_dark_theme_label';
   static const String settingsDarkThemeEnabled = 'settings_dark_theme_enabled';
   static const String settingsDarkThemeDisabled =
