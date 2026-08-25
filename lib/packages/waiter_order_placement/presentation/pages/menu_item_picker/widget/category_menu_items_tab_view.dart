@@ -36,10 +36,18 @@ class CategoryMenuItemsTabView extends StatelessWidget {
 
     // Filter items based on search query
     bool matchesSearch(MenuItemWithVariations itemWithVar) {
-      if (searchQuery.isEmpty) return true;
-      return itemWithVar.item.name.toLowerCase().contains(
-        searchQuery.toLowerCase(),
+      final q = searchQuery.trim().toLowerCase();
+      if (q.isEmpty) return true;
+
+      final item = itemWithVar.item;
+      final nameMatch = item.name.toLowerCase().contains(q);
+      final descMatch = item.description.toLowerCase().contains(q);
+      final codeMatch = (item.quantity ?? '').toLowerCase().contains(q);
+      final variationMatch = itemWithVar.variations.any(
+        (v) => (v.name ?? '').toLowerCase().contains(q),
       );
+
+      return nameMatch || descMatch || codeMatch || variationMatch;
     }
 
     final filteredUncategorized = uncategorizedItems

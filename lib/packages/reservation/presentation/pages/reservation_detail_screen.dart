@@ -208,7 +208,7 @@ class ReservationDetailScreen extends StatelessWidget {
                               ),
                               Expanded(child: Text(item.itemName)),
                               Text(
-                                '\$${(item.price * item.quantity).toStringAsFixed(2)}',
+                                (item.price * item.quantity).toStringAsFixed(2),
                                 style: const TextStyle(color: Colors.grey),
                               ),
                             ],

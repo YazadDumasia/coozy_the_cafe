@@ -12,9 +12,9 @@ class TablePickerBloc extends Bloc<TablePickerEvent, TablePickerState> {
 
   TablePickerBloc({required this.watchTablesUseCase})
     : super(TablePickerInitial()) {
-    on<LoadTablesEvent>((event, emit) {
+    on<LoadTablesEvent>((event, emit) async {
       emit(TablePickerLoading());
-      emit.forEach<List<TableEntity>>(
+      await emit.forEach<List<TableEntity>>(
         watchTablesUseCase(),
         onData: (tables) => TablePickerLoaded(tables: tables),
         onError: (error, stackTrace) => TablePickerError(error.toString()),

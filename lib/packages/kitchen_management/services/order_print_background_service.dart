@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/entities/order_cart_item.dart';
+import 'package:shared_preferences/shared_preferences.dart' as shared_prefs;
+import '../../waiter_order_placement/domain/entities/order_cart_item.dart'
+    as cart;
 import '../../core/coozy_core.dart' as core;
 import '../../shared/coozy_shared.dart' as shared;
 
@@ -14,7 +15,7 @@ class OrderPrintBackgroundService {
   Future<void> processNewOrderPlaced({
     required int orderId,
     required String tableName,
-    required List<OrderCartItem> cartItems,
+    required List<cart.OrderCartItem> cartItems,
   }) async {
     // Offload preference check and slip formatting to isolate / background job
     compute(_bgProcessOrderTask, {
@@ -28,7 +29,7 @@ class OrderPrintBackgroundService {
       );
     });
 
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await shared_prefs.SharedPreferences.getInstance();
     final bool isAutoPrintEnabled =
         prefs.getBool(shared.PreferencesKeys.autoPrintKitchenOrderSlip.name) ??
         false;
@@ -55,7 +56,7 @@ class OrderPrintBackgroundService {
     final tableName = data['tableName'];
     final count = data['cartItemsCount'];
     debugPrint(
-      '[BackgroundIsolate] Prepared KOT print buffer for Order #$orderId ($tableName, $count items)',
+      '[ComputeWorker] Prepared KOT print buffer for Order #$orderId ($tableName, $count items)',
     );
   }
 }

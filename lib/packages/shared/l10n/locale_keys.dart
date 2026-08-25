@@ -18,6 +18,39 @@ abstract class LocaleKeys {
   static String homeTabWaiter = 'home_tab_waiter';
   static String homeTabKitchen = 'home_tab_kitchen';
   static String kitchenDisplaySystem = 'kitchen_display_system';
+  static String kitchenRefreshOrders = 'kitchen_refresh_orders';
+  static String kitchenViewTickets = 'kitchen_view_tickets';
+  static String kitchenViewSummary = 'kitchen_view_summary';
+  static String kitchenAllOrdersPreparedTitle =
+      'kitchen_all_orders_prepared_title';
+  static String kitchenNoPendingOrdersSubtitle =
+      'kitchen_no_pending_orders_subtitle';
+  static String kitchenRefreshQueueBtn = 'kitchen_refresh_queue_btn';
+  static String kitchenTicketNumber = 'kitchen_ticket_number';
+  static String kitchenTakeawayParcel = 'kitchen_takeaway_parcel';
+  static String kitchenTableLabel = 'kitchen_table_label';
+  static String kitchenBumpAllReadyBtn = 'kitchen_bump_all_ready_btn';
+  static String kitchenStatusPending = 'kitchen_status_pending';
+  static String kitchenStatusPreparing = 'kitchen_status_preparing';
+  static String kitchenStatusReady = 'kitchen_status_ready';
+  static String kitchenNotePrefix = 'kitchen_note_prefix';
+  static String kitchenNoItemsPendingSummary =
+      'kitchen_no_items_pending_summary';
+  static String kitchenSummaryAllHeader = 'kitchen_summary_all_header';
+  static String kitchenSummaryGrandTotal = 'kitchen_summary_grand_total';
+  static String kitchenSummaryPreparingHeader =
+      'kitchen_summary_preparing_header';
+  static String kitchenSummaryPendingHeader = 'kitchen_summary_pending_header';
+  static String kitchenSummaryReadyHeader = 'kitchen_summary_ready_header';
+  static String kitchenSummaryOtherHeader = 'kitchen_summary_other_header';
+  static String kitchenSummaryItemsCount = 'kitchen_summary_items_count';
+  static String kitchenSummaryOrderType = 'kitchen_summary_order_type';
+  static String kitchenSummaryNotesPrefix = 'kitchen_summary_notes_prefix';
+  static String thermalKotDialogTitle = 'thermal_kot_dialog_title';
+  static String thermalKot80mmWidth = 'thermal_kot_80mm_width';
+  static String thermalKot58mmWidth = 'thermal_kot_58mm_width';
+  static String thermalKotSimulatePrintBtn = 'thermal_kot_simulate_print_btn';
+  static String thermalKotPrintSuccessMsg = 'thermal_kot_print_success_msg';
   static String homeTabMore = 'home_tab_more';
 
   static String deactivate = 'deactivate';

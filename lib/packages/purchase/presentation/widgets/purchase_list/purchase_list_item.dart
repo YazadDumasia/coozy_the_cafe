@@ -43,7 +43,7 @@ class PurchaseListItem extends StatelessWidget {
               '${context.tr(shared.LocaleKeys.purchaseQuantityLabelText, track: shared.TrackConstants.purchasePageTrack) ?? "Quantity"}: ${qty.abs()} ${record.purchaseUnit ?? ""}',
             ).inExpandedRow(),
             Text(
-              '${context.tr(shared.LocaleKeys.purchaseTotalPrice, track: shared.TrackConstants.purchasePageTrack) ?? "Total Price"}: \$${record.purchasePrice?.toStringAsFixed(2) ?? "0.00"}',
+              '${context.tr(shared.LocaleKeys.purchaseTotalPrice, track: shared.TrackConstants.purchasePageTrack) ?? "Total Price"}: ${record.purchasePrice?.toStringAsFixed(2) ?? "0.00"}',
             ).inExpandedRow(),
             Text(
               '${context.tr(shared.LocaleKeys.purchaseDate, track: shared.TrackConstants.purchasePageTrack) ?? "Date"}: $dateStr',

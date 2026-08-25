@@ -604,7 +604,7 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
               Flexible(
                 child: Chip(
                   label: Text(
-                    '${selectedMenuItems.fold(0, (sum, i) => sum + i.quantity)} items (\$${selectedMenuItems.fold(0.0, (sum, i) => sum + (i.price * i.quantity)).toStringAsFixed(2)})',
+                    '${selectedMenuItems.fold(0, (sum, i) => sum + i.quantity)} items (${selectedMenuItems.fold(0.0, (sum, i) => sum + (i.price * i.quantity)).toStringAsFixed(2)})',
                     overflow: TextOverflow.ellipsis,
                   ),
                   visualDensity: VisualDensity.compact,

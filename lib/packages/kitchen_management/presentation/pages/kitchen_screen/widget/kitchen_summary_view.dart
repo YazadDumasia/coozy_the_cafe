@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../../../domain/entities/kitchen_aggregated_item_entity.dart';
 
@@ -7,6 +8,19 @@ class KitchenSummaryView extends StatelessWidget {
   final List<KitchenAggregatedItemEntity> items;
 
   const KitchenSummaryView({super.key, required this.items});
+
+  String _getStatusLabel(BuildContext context, String status) {
+    switch (status.toLowerCase()) {
+      case 'preparing':
+        return context.tr(shared.LocaleKeys.kitchenStatusPreparing) ??
+            'Preparing';
+      case 'ready':
+        return context.tr(shared.LocaleKeys.kitchenStatusReady) ?? 'Ready';
+      case 'pending':
+      default:
+        return context.tr(shared.LocaleKeys.kitchenStatusPending) ?? 'Pending';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +38,8 @@ class KitchenSummaryView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'No items currently pending preparation',
+              context.tr(shared.LocaleKeys.kitchenNoItemsPendingSummary) ??
+                  'No items currently pending preparation',
               style: theme.textTheme.titleMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -77,6 +92,8 @@ class KitchenSummaryView extends StatelessWidget {
           crossAxisCount = 2;
         }
 
+        final grandTotalQty = grandTotals.values.fold(0, (a, b) => a + b);
+
         return ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -99,14 +116,22 @@ class KitchenSummaryView extends StatelessWidget {
                     color: theme.colorScheme.primary,
                   ),
                   title: Text(
-                    'All',
+                    context.tr(shared.LocaleKeys.kitchenSummaryAllHeader) ??
+                        'All',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.primary,
                     ),
                   ),
                   subtitle: Text(
-                    'Grand Total: ${grandTotals.values.fold(0, (a, b) => a + b)} items across ${grandTotals.length} unique dishes',
+                    context.tr(
+                          shared.LocaleKeys.kitchenSummaryGrandTotal,
+                          params: {
+                            'totalQty': '$grandTotalQty',
+                            'uniqueCount': '${grandTotals.length}',
+                          },
+                        ) ??
+                        'Grand Total: $grandTotalQty items across ${grandTotals.length} unique dishes',
                     style: theme.textTheme.bodySmall,
                   ),
                   children: [
@@ -173,7 +198,11 @@ class KitchenSummaryView extends StatelessWidget {
             if (preparingItems.isNotEmpty)
               _buildStatusSection(
                 context,
-                title: 'Preparing',
+                title:
+                    context.tr(
+                      shared.LocaleKeys.kitchenSummaryPreparingHeader,
+                    ) ??
+                    'Preparing',
                 icon: Icons.soup_kitchen_outlined,
                 color: Colors.blue,
                 items: preparingItems,
@@ -184,7 +213,9 @@ class KitchenSummaryView extends StatelessWidget {
             if (pendingItems.isNotEmpty)
               _buildStatusSection(
                 context,
-                title: 'Pending',
+                title:
+                    context.tr(shared.LocaleKeys.kitchenSummaryPendingHeader) ??
+                    'Pending',
                 icon: Icons.hourglass_top_outlined,
                 color: Colors.orange,
                 items: pendingItems,
@@ -195,7 +226,9 @@ class KitchenSummaryView extends StatelessWidget {
             if (readyItems.isNotEmpty)
               _buildStatusSection(
                 context,
-                title: 'Ready to Serve',
+                title:
+                    context.tr(shared.LocaleKeys.kitchenSummaryReadyHeader) ??
+                    'Ready to Serve',
                 icon: Icons.check_circle_outline,
                 color: Colors.green,
                 items: readyItems,
@@ -206,7 +239,9 @@ class KitchenSummaryView extends StatelessWidget {
             if (otherItems.isNotEmpty)
               _buildStatusSection(
                 context,
-                title: 'Other',
+                title:
+                    context.tr(shared.LocaleKeys.kitchenSummaryOtherHeader) ??
+                    'Other',
                 icon: Icons.list_alt,
                 color: Colors.grey,
                 items: otherItems,
@@ -262,7 +297,11 @@ class KitchenSummaryView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    '$totalQty items',
+                    context.tr(
+                          shared.LocaleKeys.kitchenSummaryItemsCount,
+                          params: {'count': '$totalQty'},
+                        ) ??
+                        '$totalQty items',
                     style: TextStyle(
                       color: color,
                       fontSize: 12,
@@ -279,11 +318,13 @@ class KitchenSummaryView extends StatelessWidget {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final item = items[index];
+                    final statusLabel = _getStatusLabel(context, item.status);
+
                     return Card(
                       elevation: 1,
                       child: ListTile(
@@ -332,11 +373,23 @@ class KitchenSummaryView extends StatelessWidget {
                                 ),
                               ),
                             if (item.orderType != null)
-                              Text('Type: ${item.orderType}'),
+                              Text(
+                                context.tr(
+                                      shared.LocaleKeys.kitchenSummaryOrderType,
+                                      params: {'type': item.orderType!},
+                                    ) ??
+                                    'Type: ${item.orderType}',
+                              ),
                             if (item.remarks != null &&
                                 item.remarks!.isNotEmpty)
                               Text(
-                                'Notes: ${item.remarks}',
+                                context.tr(
+                                      shared
+                                          .LocaleKeys
+                                          .kitchenSummaryNotesPrefix,
+                                      params: {'notes': item.remarks!},
+                                    ) ??
+                                    'Notes: ${item.remarks}',
                                 style: TextStyle(
                                   color: theme.colorScheme.error,
                                 ),
@@ -345,7 +398,7 @@ class KitchenSummaryView extends StatelessWidget {
                         ),
                         trailing: Chip(
                           label: Text(
-                            item.status.toUpperCase(),
+                            statusLabel.toUpperCase(),
                             style: const TextStyle(
                               fontSize: 10,
                               color: Colors.white,

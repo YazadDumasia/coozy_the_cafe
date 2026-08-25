@@ -1,6 +1,7 @@
 import 'package:coozy_the_cafe/packages/waiter_order_placement/presentation/bloc/menu_item_picker_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'widget/menu_item_search_screen.dart';
 
 mixin MenuItemPickerScreenActions<T extends StatefulWidget> on State<T> {
   late TextEditingController searchController;
@@ -31,9 +32,17 @@ mixin MenuItemPickerScreenActions<T extends StatefulWidget> on State<T> {
           const FilterSearchQueryEvent(''),
         );
       } else {
-        searchFocusNode.requestFocus();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            searchFocusNode.requestFocus();
+          }
+        });
       }
     });
+  }
+
+  void openSearchScreen(BuildContext context) {
+    MenuItemSearchScreen.push(context);
   }
 
   void onTabSelected(TabController tabController, int index) {

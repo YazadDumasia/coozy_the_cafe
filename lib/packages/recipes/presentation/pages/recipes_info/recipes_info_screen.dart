@@ -283,9 +283,11 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          Icon(shared.MenuIcons.servingTime, size: 30),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: RichText(
                               text: TextSpan(
@@ -329,9 +331,11 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          Icon(shared.MenuIcons.totalCookingTime, size: 24),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: RichText(
                               text: TextSpan(
@@ -375,9 +379,11 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          Icon(shared.MenuIcons.coookingTime, size: 24),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: RichText(
                               text: TextSpan(
@@ -421,9 +427,11 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          Icon(shared.MenuIcons.servingTime, size: 24),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: RichText(
                               text: TextSpan(

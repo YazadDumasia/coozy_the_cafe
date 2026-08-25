@@ -131,7 +131,8 @@ class _MenuItemPickerViewState extends State<MenuItemPickerView> {
       _filteredItemsNotifier.value = _allItemsNotifier.value.where((item) {
         final name = item.name.toLowerCase();
         final desc = item.description.toLowerCase();
-        return name.contains(q) || desc.contains(q);
+        final code = (item.quantity ?? '').toLowerCase();
+        return name.contains(q) || desc.contains(q) || code.contains(q);
       }).toList();
     }
   }
@@ -307,7 +308,7 @@ class _MenuItemPickerViewState extends State<MenuItemPickerView> {
                           dense: true,
                           title: Text(item.name),
                           subtitle: Text(
-                            '\$${(item.sellingPrice ?? 0.0).toStringAsFixed(2)}',
+                            (item.sellingPrice ?? 0.0).toStringAsFixed(2),
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
@@ -366,7 +367,7 @@ class _MenuItemPickerViewState extends State<MenuItemPickerView> {
                       ),
                     ),
                     Text(
-                      'Pre-order Total: \$${widget.selectedItems.fold(0.0, (sum, i) => sum + (i.price * i.quantity)).toStringAsFixed(2)}',
+                      'Pre-order Total: ${widget.selectedItems.fold(0.0, (sum, i) => sum + (i.price * i.quantity)).toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.primary,

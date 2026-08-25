@@ -29,44 +29,25 @@ class _KitchenScreenState extends State<KitchenScreen> {
       appBar: AppBar(
         title: Row(
           children: [
-            const Icon(Icons.kitchen_outlined),
-            const SizedBox(width: 8),
-            Text(
-              context.tr(shared.LocaleKeys.kitchenDisplaySystem) ??
-                  'Kitchen Display System',
+            // const Icon(Icons.kitchen_outlined),
+            // const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                context.tr(shared.LocaleKeys.kitchenDisplaySystem) ??
+                    'Kitchen Display System',
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh Orders',
+            tooltip:
+                context.tr(shared.LocaleKeys.kitchenRefreshOrders) ??
+                'Refresh Orders',
             onPressed: () => KitchenScreenActions.refreshOrders(context),
           ),
-          BlocBuilder<KitchenBloc, KitchenState>(
-            builder: (context, state) {
-              if (state is! KitchenLoadedState) return const SizedBox.shrink();
-              return SegmentedButton<KitchenViewMode>(
-                segments: const [
-                  ButtonSegment(
-                    value: KitchenViewMode.tickets,
-                    icon: Icon(Icons.receipt_long),
-                    label: Text('Tickets'),
-                  ),
-                  ButtonSegment(
-                    value: KitchenViewMode.aggregated,
-                    icon: Icon(Icons.restaurant_menu),
-                    label: Text('Summary'),
-                  ),
-                ],
-                selected: {state.viewMode},
-                onSelectionChanged: (selection) {
-                  KitchenScreenActions.changeViewMode(context, selection.first);
-                },
-              );
-            },
-          ),
-          const SizedBox(width: 16),
         ],
       ),
       body: BlocBuilder<KitchenBloc, KitchenState>(
@@ -80,87 +61,173 @@ class _KitchenScreenState extends State<KitchenScreen> {
                   KitchenScreenActions.refreshOrders(context),
             );
           } else if (state is KitchenLoadedState) {
-            if (state.viewMode == KitchenViewMode.aggregated) {
-              return KitchenSummaryView(items: state.aggregatedItems);
-            }
-
-            final orders = state.filteredOrders;
-
-            if (orders.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.check_circle_outline,
-                      size: 72,
-                      color: theme.colorScheme.primary.withValues(alpha: 0.5),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'All Kitchen Orders Prepared!',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 8.0,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SegmentedButton<KitchenViewMode>(
+                          segments: [
+                            ButtonSegment(
+                              value: KitchenViewMode.tickets,
+                              icon: const Icon(Icons.receipt_long),
+                              label: Text(
+                                context.tr(
+                                      shared.LocaleKeys.kitchenViewTickets,
+                                    ) ??
+                                    'Tickets',
+                              ),
+                            ),
+                            ButtonSegment(
+                              value: KitchenViewMode.aggregated,
+                              icon: const Icon(Icons.restaurant),
+                              label: Text(
+                                context.tr(
+                                      shared.LocaleKeys.kitchenViewSummary,
+                                    ) ??
+                                    'Summary',
+                              ),
+                            ),
+                          ],
+                          selected: {state.viewMode},
+                          onSelectionChanged: (selected) {
+                            if (selected.isNotEmpty) {
+                              KitchenScreenActions.changeViewMode(
+                                context,
+                                selected.first,
+                              );
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'No pending orders in queue.',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton.icon(
-                      onPressed: () =>
-                          KitchenScreenActions.refreshOrders(context),
-                      icon: const Icon(Icons.refresh),
-                      label: const Text('Refresh Kitchen Queue'),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              );
-            }
+                Expanded(
+                  child: state.viewMode == KitchenViewMode.aggregated
+                      ? KitchenSummaryView(items: state.aggregatedItems)
+                      : (state.filteredOrders.isEmpty
+                            ? Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.check_circle_outline,
+                                      size: 72,
+                                      color: theme.colorScheme.primary
+                                          .withValues(alpha: 0.5),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Text(
+                                          context.tr(
+                                                shared
+                                                    .LocaleKeys
+                                                    .kitchenAllOrdersPreparedTitle,
+                                              ) ??
+                                              'All Kitchen Orders Prepared!',
+                                          style: theme.textTheme.headlineSmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        )
+                                        .inExpandedRow(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                        )
+                                        .paddingSymmetric(horizontal: 10),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                          context.tr(
+                                                shared
+                                                    .LocaleKeys
+                                                    .kitchenNoPendingOrdersSubtitle,
+                                              ) ??
+                                              'No pending orders in queue.',
+                                          style: theme.textTheme.bodyMedium
+                                              ?.copyWith(
+                                                color: theme
+                                                    .colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
+                                          textAlign: TextAlign.center,
+                                        )
+                                        .inExpandedRow(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                        )
+                                        .paddingSymmetric(horizontal: 10),
+                                    const SizedBox(height: 16),
+                                    ElevatedButton.icon(
+                                      onPressed: () =>
+                                          KitchenScreenActions.refreshOrders(
+                                            context,
+                                          ),
+                                      icon: const Icon(Icons.refresh),
+                                      label: Text(
+                                        context.tr(
+                                              shared
+                                                  .LocaleKeys
+                                                  .kitchenRefreshQueueBtn,
+                                            ) ??
+                                            'Refresh Kitchen Queue',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : LayoutBuilder(
+                                builder: (context, constraints) {
+                                  int crossAxisCount = 1;
+                                  if (constraints.maxWidth > 1200) {
+                                    crossAxisCount = 4;
+                                  } else if (constraints.maxWidth > 800) {
+                                    crossAxisCount = 3;
+                                  } else if (constraints.maxWidth > 550) {
+                                    crossAxisCount = 2;
+                                  }
 
-            return LayoutBuilder(
-              builder: (context, constraints) {
-                int crossAxisCount = 1;
-                if (constraints.maxWidth > 1200) {
-                  crossAxisCount = 4;
-                } else if (constraints.maxWidth > 800) {
-                  crossAxisCount = 3;
-                } else if (constraints.maxWidth > 550) {
-                  crossAxisCount = 2;
-                }
-
-                return MasonryGridView.count(
-                  padding: const EdgeInsets.all(16),
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 12,
-                  mainAxisSpacing: 12,
-                  itemCount: orders.length,
-                  itemBuilder: (context, index) {
-                    final order = orders[index];
-                    return KitchenTicketCard(
-                      order: order,
-                      onItemStatusChanged: (orderItemId, newStatus) {
-                        KitchenScreenActions.updateItemStatus(
-                          context,
-                          orderItemId: orderItemId,
-                          newStatus: newStatus,
-                        );
-                      },
-                      onBumpOrder: (orderId, newStatus) {
-                        KitchenScreenActions.bumpOrder(
-                          context,
-                          orderId: orderId,
-                          newStatus: newStatus,
-                        );
-                      },
-                    );
-                  },
-                );
-              },
+                                  return MasonryGridView.count(
+                                    padding: const EdgeInsets.all(16),
+                                    crossAxisCount: crossAxisCount,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                    itemCount: state.filteredOrders.length,
+                                    itemBuilder: (context, index) {
+                                      final order = state.filteredOrders[index];
+                                      return KitchenTicketCard(
+                                        order: order,
+                                        onItemStatusChanged:
+                                            (orderItemId, newStatus) {
+                                              KitchenScreenActions.updateItemStatus(
+                                                context,
+                                                orderItemId: orderItemId,
+                                                newStatus: newStatus,
+                                              );
+                                            },
+                                        onBumpOrder: (orderId, newStatus) {
+                                          KitchenScreenActions.bumpOrder(
+                                            context,
+                                            orderId: orderId,
+                                            newStatus: newStatus,
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                              )),
+                ),
+              ],
             );
           }
           return const SizedBox.shrink();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class ThermalKitchenSlipWidget extends StatelessWidget {
   final int orderId;
@@ -60,10 +61,11 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                 children: [
                   const Icon(Icons.print_rounded, color: Colors.amber),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: Text(
-                      'Thermal Printer KOT Slip Preview',
-                      style: TextStyle(
+                      context.tr(shared.LocaleKeys.thermalKotDialogTitle) ??
+                          'Thermal Printer KOT Slip Preview',
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -83,7 +85,10 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ChoiceChip(
-                          label: const Text('80mm Width'),
+                          label: Text(
+                            context.tr(shared.LocaleKeys.thermalKot80mmWidth) ??
+                                '80mm Width',
+                          ),
                           selected: !isWidth58mm,
                           onSelected: (val) {
                             if (val) setState(() => isWidth58mm = false);
@@ -91,7 +96,10 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                         ),
                         const SizedBox(width: 10),
                         ChoiceChip(
-                          label: const Text('58mm Width'),
+                          label: Text(
+                            context.tr(shared.LocaleKeys.thermalKot58mmWidth) ??
+                                '58mm Width',
+                          ),
                           selected: isWidth58mm,
                           onSelected: (val) {
                             if (val) setState(() => isWidth58mm = true);
@@ -107,13 +115,19 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
               actions: [
                 TextButton.icon(
                   icon: const Icon(Icons.print_rounded),
-                  label: const Text('Simulate Print Job'),
+                  label: Text(
+                    context.tr(shared.LocaleKeys.thermalKotSimulatePrintBtn) ??
+                        'Simulate Print Job',
+                  ),
                   onPressed: () {
                     Navigator.of(context).pop();
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
+                      SnackBar(
                         content: Text(
-                          'KOT Slip sent to Thermal Printer successfully!',
+                          context.tr(
+                                shared.LocaleKeys.thermalKotPrintSuccessMsg,
+                              ) ??
+                              'KOT Slip sent to Thermal Printer successfully!',
                         ),
                         backgroundColor: Colors.green,
                       ),

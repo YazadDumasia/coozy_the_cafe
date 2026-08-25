@@ -221,7 +221,7 @@ class _TableScreenState extends State<TableScreen>
         crossAxisCount: crossAxisCount,
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
-        mainAxisExtent: 220,
+        mainAxisExtent: 270,
       ),
     );
   }

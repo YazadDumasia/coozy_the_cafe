@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../../../domain/entities/kitchen_order_item_entity.dart';
 
 class KitchenItemTile extends StatelessWidget {
@@ -23,10 +24,24 @@ class KitchenItemTile extends StatelessWidget {
     }
   }
 
+  String _getStatusLabel(BuildContext context, String status) {
+    switch (status.toLowerCase()) {
+      case 'preparing':
+        return context.tr(shared.LocaleKeys.kitchenStatusPreparing) ??
+            'Preparing';
+      case 'ready':
+        return context.tr(shared.LocaleKeys.kitchenStatusReady) ?? 'Ready';
+      case 'pending':
+      default:
+        return context.tr(shared.LocaleKeys.kitchenStatusPending) ?? 'Pending';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final statusColor = _getStatusColor(context, item.status);
+    final statusLabel = _getStatusLabel(context, item.status);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -87,7 +102,7 @@ class KitchenItemTile extends StatelessWidget {
                 onSelected: onStatusChanged,
                 child: Chip(
                   label: Text(
-                    item.status.toUpperCase(),
+                    statusLabel.toUpperCase(),
                     style: const TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -99,12 +114,27 @@ class KitchenItemTile extends StatelessWidget {
                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 itemBuilder: (context) => [
-                  const PopupMenuItem(value: 'pending', child: Text('Pending')),
-                  const PopupMenuItem(
-                    value: 'preparing',
-                    child: Text('Preparing'),
+                  PopupMenuItem(
+                    value: 'pending',
+                    child: Text(
+                      context.tr(shared.LocaleKeys.kitchenStatusPending) ??
+                          'Pending',
+                    ),
                   ),
-                  const PopupMenuItem(value: 'ready', child: Text('Ready')),
+                  PopupMenuItem(
+                    value: 'preparing',
+                    child: Text(
+                      context.tr(shared.LocaleKeys.kitchenStatusPreparing) ??
+                          'Preparing',
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'ready',
+                    child: Text(
+                      context.tr(shared.LocaleKeys.kitchenStatusReady) ??
+                          'Ready',
+                    ),
+                  ),
                 ],
               ),
             ],
@@ -128,7 +158,11 @@ class KitchenItemTile extends StatelessWidget {
                   const SizedBox(width: 4),
                   Flexible(
                     child: Text(
-                      'Note: ${item.remarks}',
+                      context.tr(
+                            shared.LocaleKeys.kitchenNotePrefix,
+                            params: {'note': item.remarks!},
+                          ) ??
+                          'Note: ${item.remarks}',
                       style: theme.textTheme.bodySmall?.copyWith(
                         color: theme.colorScheme.error,
                         fontWeight: FontWeight.w600,

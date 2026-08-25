@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../../../domain/entities/kitchen_order_entity.dart';
 import 'kitchen_item_tile.dart';
 import 'kitchen_timer_badge.dart';
@@ -20,8 +21,13 @@ class KitchenTicketCard extends StatelessWidget {
     final theme = Theme.of(context);
     final tableTitle =
         order.tableNameText != null && order.tableNameText!.isNotEmpty
-        ? 'Table: ${order.tableNameText}'
-        : 'Takeaway / Parcel';
+        ? context.tr(
+                shared.LocaleKeys.kitchenTableLabel,
+                params: {'name': order.tableNameText!},
+              ) ??
+              'Table: ${order.tableNameText}'
+        : context.tr(shared.LocaleKeys.kitchenTakeawayParcel) ??
+              'Takeaway / Parcel';
 
     return Card(
       elevation: 3,
@@ -51,7 +57,11 @@ class KitchenTicketCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Ticket #${order.id}',
+                        context.tr(
+                              shared.LocaleKeys.kitchenTicketNumber,
+                              params: {'id': '${order.id}'},
+                            ) ??
+                            'Ticket #${order.id}',
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,
                         ),
@@ -83,7 +93,10 @@ class KitchenTicketCard extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: () => onBumpOrder(order.id, 'ready'),
                 icon: const Icon(Icons.check_circle_outline, size: 18),
-                label: const Text('BUMP (ALL READY)'),
+                label: Text(
+                  context.tr(shared.LocaleKeys.kitchenBumpAllReadyBtn) ??
+                      'BUMP (ALL READY)',
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.colorScheme.primaryContainer,
                   foregroundColor: theme.colorScheme.onPrimaryContainer,

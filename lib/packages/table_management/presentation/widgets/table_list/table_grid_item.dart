@@ -91,42 +91,51 @@ class TableGridItem extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          RichText(
-                            text: TextSpan(
-                              text:
-                                  context.tr(
-                                    shared.LocaleKeys.tableInfoEnableStatusText,
-                                    track: shared.TrackConstants.tablePageTrack,
-                                  ) ??
-                                  'Enable Status:',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                              children: <InlineSpan>[
-                                const TextSpan(text: ' '),
-                                TextSpan(
-                                  text: (model.isActive ?? false)
-                                      ? context.tr(
-                                              shared.LocaleKeys.commonActive,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .commonTrack,
-                                            ) ??
-                                            'Active'
-                                      : context.tr(
-                                              shared.LocaleKeys.commonInactive,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .commonTrack,
-                                            ) ??
-                                            'Inactive',
-                                  style: Theme.of(context).textTheme.bodyMedium!
-                                      .copyWith(
-                                        color: (model.isActive ?? false)
-                                            ? Colors.green
-                                            : Colors.red,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                ),
-                              ],
+                          Expanded(
+                            child: RichText(
+                              text: TextSpan(
+                                text:
+                                    context.tr(
+                                      shared
+                                          .LocaleKeys
+                                          .tableInfoEnableStatusText,
+                                      track:
+                                          shared.TrackConstants.tablePageTrack,
+                                    ) ??
+                                    'Enable Status:',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                children: <InlineSpan>[
+                                  const TextSpan(text: ' '),
+                                  TextSpan(
+                                    text: (model.isActive ?? false)
+                                        ? context.tr(
+                                                shared.LocaleKeys.commonActive,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .commonTrack,
+                                              ) ??
+                                              'Active'
+                                        : context.tr(
+                                                shared
+                                                    .LocaleKeys
+                                                    .commonInactive,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .commonTrack,
+                                              ) ??
+                                              'Inactive',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: (model.isActive ?? false)
+                                              ? Colors.green
+                                              : Colors.red,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],

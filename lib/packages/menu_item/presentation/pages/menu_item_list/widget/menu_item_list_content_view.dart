@@ -35,8 +35,8 @@ class MenuItemListContentView extends StatelessWidget {
         child: MasonryGridView.count(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
+          mainAxisSpacing: 10,
+          crossAxisSpacing: 10,
           itemCount: filteredItems.length,
           addRepaintBoundaries: true,
           addAutomaticKeepAlives: false,

@@ -96,8 +96,10 @@ class RecipeListItem extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
+                              Icon(shared.MenuIcons.servingTime, size: 30),
+                              const SizedBox(width: 5),
                               Expanded(
                                 child: RichText(
                                   text: TextSpan(

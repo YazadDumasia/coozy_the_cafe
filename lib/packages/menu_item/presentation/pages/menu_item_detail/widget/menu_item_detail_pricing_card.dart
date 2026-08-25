@@ -238,7 +238,7 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                   context,
                   label: 'Selling Price',
                   value: v.sellingPrice != null
-                      ? '\$${v.sellingPrice!.toStringAsFixed(2)}'
+                      ? v.sellingPrice!.toStringAsFixed(2)
                       : 'N/A',
                   valueColor: colorScheme.primary,
                   isBold: true,
@@ -249,7 +249,7 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                   context,
                   label: 'Cost Price',
                   value: v.costPrice != null
-                      ? '\$${v.costPrice!.toStringAsFixed(2)}'
+                      ? v.costPrice!.toStringAsFixed(2)
                       : 'N/A',
                   valueColor: colorScheme.secondary,
                 ),

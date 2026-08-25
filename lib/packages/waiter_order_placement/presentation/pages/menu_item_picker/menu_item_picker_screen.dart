@@ -204,8 +204,8 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   // Search Action Button
                   IconButton(
                     tooltip: 'Search',
-                    icon: Icon(isSearchMode ? Icons.close : Icons.search),
-                    onPressed: toggleSearchMode,
+                    icon: const Icon(Icons.search),
+                    onPressed: () => openSearchScreen(context),
                   ),
                 ],
                 bottom: TabBar(

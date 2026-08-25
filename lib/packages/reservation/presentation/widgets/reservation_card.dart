@@ -237,7 +237,7 @@ class ReservationCard extends StatelessWidget {
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        'Pre-ordered (${reservation.preOrderedItems.fold(0, (sum, i) => sum + i.quantity)} items - \$${reservation.preOrderedItems.fold(0.0, (sum, i) => sum + (i.price * i.quantity)).toStringAsFixed(2)}): ${reservation.preOrderedItems.map((e) => '${e.itemName} x${e.quantity}').join(', ')}',
+                        'Pre-ordered (${reservation.preOrderedItems.fold(0, (sum, i) => sum + i.quantity)} items - ${reservation.preOrderedItems.fold(0.0, (sum, i) => sum + (i.price * i.quantity)).toStringAsFixed(2)}): ${reservation.preOrderedItems.map((e) => '${e.itemName} x${e.quantity}').join(', ')}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                           fontStyle: FontStyle.italic,
                         ),

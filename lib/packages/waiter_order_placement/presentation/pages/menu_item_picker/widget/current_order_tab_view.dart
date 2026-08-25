@@ -160,20 +160,32 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
             ),
             const SizedBox(height: 12),
             Text(
-              context.tr(shared.LocaleKeys.noItemsAddedToCurrentOrderMsg) ??
-                  'No items added to current order yet',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
+                  context.tr(shared.LocaleKeys.noItemsAddedToCurrentOrderMsg) ??
+                      'No items added to current order yet',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                )
+                .inExpandedRow(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                )
+                .paddingSymmetric(horizontal: 10),
             const SizedBox(height: 6),
             Text(
-              context.tr(shared.LocaleKeys.selectCategoryTabToBrowseMsg) ??
-                  'Select a category tab above to browse and add items',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
+                  context.tr(shared.LocaleKeys.selectCategoryTabToBrowseMsg) ??
+                      'Select a category tab above to browse and add items',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                )
+                .inExpandedRow(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                )
+                .paddingSymmetric(horizontal: 10),
           ],
         ),
       );

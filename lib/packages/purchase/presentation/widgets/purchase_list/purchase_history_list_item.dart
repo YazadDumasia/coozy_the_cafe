@@ -36,7 +36,7 @@ class PurchaseHistoryListItem extends StatelessWidget {
               track: shared.TrackConstants.purchasePageTrack,
               params: {"purchasePrice": " ${record.purchasePrice}"},
             ) ??
-            'Price: \$${record.purchasePrice}',
+            'Price: ${record.purchasePrice}',
       ),
     );
   }
