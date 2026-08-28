@@ -35,7 +35,6 @@ class SocialMediaLoginRowWidget extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   elevation: 3,
                   padding: EdgeInsets.only(left: 8),
-                  backgroundColor: Theme.of(context).primaryColorLight,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -44,7 +43,7 @@ class SocialMediaLoginRowWidget extends StatelessWidget {
                   child: Icon(
                     faf.FontAwesomeIcons.facebookF.data,
                     size: 24,
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Colors.white,
                   ),
                 ),
                 label: Text(''),
@@ -70,13 +69,16 @@ class SocialMediaLoginRowWidget extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   elevation: 3,
                   padding: EdgeInsets.only(left: 8),
-                  backgroundColor: Theme.of(context).primaryColorLight,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
                 icon: Center(
-                  child: Icon(faf.FontAwesomeIcons.google.data, size: 24),
+                  child: Icon(
+                    faf.FontAwesomeIcons.google.data,
+                    size: 24,
+                    color: Colors.white,
+                  ),
                 ),
                 label: Text(''),
               ),
@@ -106,12 +108,18 @@ class SocialMediaLoginRowWidget extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   elevation: 3,
                   padding: EdgeInsets.only(left: 8),
-                  backgroundColor: Theme.of(context).primaryColorLight,
+
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                 ),
-                icon: Center(child: Icon(Icons.smartphone, size: 26)),
+                icon: Center(
+                  child: Icon(
+                    Icons.smartphone_sharp,
+                    size: 26,
+                    color: Colors.white,
+                  ),
+                ),
                 label: Text(''),
               ),
             ),

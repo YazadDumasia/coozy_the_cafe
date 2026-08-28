@@ -18412,6 +18412,2059 @@ class RolePermissionsTableCompanion extends UpdateCompanion<RolePermission> {
   }
 }
 
+class $TaxesTableTable extends TaxesTable
+    with TableInfo<$TaxesTableTable, TaxTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaxesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ratePercentMeta = const VerificationMeta(
+    'ratePercent',
+  );
+  @override
+  late final GeneratedColumn<double> ratePercent = GeneratedColumn<double>(
+    'rate_percent',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isDefaultAddMeta = const VerificationMeta(
+    'isDefaultAdd',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefaultAdd = GeneratedColumn<bool>(
+    'is_default_add',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default_add" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    ratePercent,
+    isDefaultAdd,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'taxes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TaxTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('rate_percent')) {
+      context.handle(
+        _ratePercentMeta,
+        ratePercent.isAcceptableOrUnknown(
+          data['rate_percent']!,
+          _ratePercentMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_ratePercentMeta);
+    }
+    if (data.containsKey('is_default_add')) {
+      context.handle(
+        _isDefaultAddMeta,
+        isDefaultAdd.isAcceptableOrUnknown(
+          data['is_default_add']!,
+          _isDefaultAddMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaxTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaxTableData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      ratePercent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}rate_percent'],
+      )!,
+      isDefaultAdd: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default_add'],
+      )!,
+    );
+  }
+
+  @override
+  $TaxesTableTable createAlias(String alias) {
+    return $TaxesTableTable(attachedDatabase, alias);
+  }
+}
+
+class TaxTableData extends DataClass implements Insertable<TaxTableData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final String name;
+  final double ratePercent;
+  final bool isDefaultAdd;
+  const TaxTableData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.name,
+    required this.ratePercent,
+    required this.isDefaultAdd,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['name'] = Variable<String>(name);
+    map['rate_percent'] = Variable<double>(ratePercent);
+    map['is_default_add'] = Variable<bool>(isDefaultAdd);
+    return map;
+  }
+
+  TaxesTableCompanion toCompanion(bool nullToAbsent) {
+    return TaxesTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      name: Value(name),
+      ratePercent: Value(ratePercent),
+      isDefaultAdd: Value(isDefaultAdd),
+    );
+  }
+
+  factory TaxTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaxTableData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      name: serializer.fromJson<String>(json['name']),
+      ratePercent: serializer.fromJson<double>(json['ratePercent']),
+      isDefaultAdd: serializer.fromJson<bool>(json['isDefaultAdd']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'name': serializer.toJson<String>(name),
+      'ratePercent': serializer.toJson<double>(ratePercent),
+      'isDefaultAdd': serializer.toJson<bool>(isDefaultAdd),
+    };
+  }
+
+  TaxTableData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    String? name,
+    double? ratePercent,
+    bool? isDefaultAdd,
+  }) => TaxTableData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    name: name ?? this.name,
+    ratePercent: ratePercent ?? this.ratePercent,
+    isDefaultAdd: isDefaultAdd ?? this.isDefaultAdd,
+  );
+  TaxTableData copyWithCompanion(TaxesTableCompanion data) {
+    return TaxTableData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      name: data.name.present ? data.name.value : this.name,
+      ratePercent: data.ratePercent.present
+          ? data.ratePercent.value
+          : this.ratePercent,
+      isDefaultAdd: data.isDefaultAdd.present
+          ? data.isDefaultAdd.value
+          : this.isDefaultAdd,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaxTableData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('ratePercent: $ratePercent, ')
+          ..write('isDefaultAdd: $isDefaultAdd')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    ratePercent,
+    isDefaultAdd,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaxTableData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.name == this.name &&
+          other.ratePercent == this.ratePercent &&
+          other.isDefaultAdd == this.isDefaultAdd);
+}
+
+class TaxesTableCompanion extends UpdateCompanion<TaxTableData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<String> name;
+  final Value<double> ratePercent;
+  final Value<bool> isDefaultAdd;
+  const TaxesTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.ratePercent = const Value.absent(),
+    this.isDefaultAdd = const Value.absent(),
+  });
+  TaxesTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required String name,
+    required double ratePercent,
+    this.isDefaultAdd = const Value.absent(),
+  }) : name = Value(name),
+       ratePercent = Value(ratePercent);
+  static Insertable<TaxTableData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<String>? name,
+    Expression<double>? ratePercent,
+    Expression<bool>? isDefaultAdd,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (name != null) 'name': name,
+      if (ratePercent != null) 'rate_percent': ratePercent,
+      if (isDefaultAdd != null) 'is_default_add': isDefaultAdd,
+    });
+  }
+
+  TaxesTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<String>? name,
+    Value<double>? ratePercent,
+    Value<bool>? isDefaultAdd,
+  }) {
+    return TaxesTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      name: name ?? this.name,
+      ratePercent: ratePercent ?? this.ratePercent,
+      isDefaultAdd: isDefaultAdd ?? this.isDefaultAdd,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (ratePercent.present) {
+      map['rate_percent'] = Variable<double>(ratePercent.value);
+    }
+    if (isDefaultAdd.present) {
+      map['is_default_add'] = Variable<bool>(isDefaultAdd.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaxesTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('ratePercent: $ratePercent, ')
+          ..write('isDefaultAdd: $isDefaultAdd')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DiscountsTableTable extends DiscountsTable
+    with TableInfo<$DiscountsTableTable, DiscountTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DiscountsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isPercentageMeta = const VerificationMeta(
+    'isPercentage',
+  );
+  @override
+  late final GeneratedColumn<bool> isPercentage = GeneratedColumn<bool>(
+    'is_percentage',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_percentage" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isDefaultAddMeta = const VerificationMeta(
+    'isDefaultAdd',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefaultAdd = GeneratedColumn<bool>(
+    'is_default_add',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default_add" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    value,
+    isPercentage,
+    isDefaultAdd,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'discounts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DiscountTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('is_percentage')) {
+      context.handle(
+        _isPercentageMeta,
+        isPercentage.isAcceptableOrUnknown(
+          data['is_percentage']!,
+          _isPercentageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_default_add')) {
+      context.handle(
+        _isDefaultAddMeta,
+        isDefaultAdd.isAcceptableOrUnknown(
+          data['is_default_add']!,
+          _isDefaultAddMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DiscountTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DiscountTableData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+      isPercentage: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_percentage'],
+      )!,
+      isDefaultAdd: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default_add'],
+      )!,
+    );
+  }
+
+  @override
+  $DiscountsTableTable createAlias(String alias) {
+    return $DiscountsTableTable(attachedDatabase, alias);
+  }
+}
+
+class DiscountTableData extends DataClass
+    implements Insertable<DiscountTableData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final String name;
+  final double value;
+  final bool isPercentage;
+  final bool isDefaultAdd;
+  const DiscountTableData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.name,
+    required this.value,
+    required this.isPercentage,
+    required this.isDefaultAdd,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['name'] = Variable<String>(name);
+    map['value'] = Variable<double>(value);
+    map['is_percentage'] = Variable<bool>(isPercentage);
+    map['is_default_add'] = Variable<bool>(isDefaultAdd);
+    return map;
+  }
+
+  DiscountsTableCompanion toCompanion(bool nullToAbsent) {
+    return DiscountsTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      name: Value(name),
+      value: Value(value),
+      isPercentage: Value(isPercentage),
+      isDefaultAdd: Value(isDefaultAdd),
+    );
+  }
+
+  factory DiscountTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DiscountTableData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      name: serializer.fromJson<String>(json['name']),
+      value: serializer.fromJson<double>(json['value']),
+      isPercentage: serializer.fromJson<bool>(json['isPercentage']),
+      isDefaultAdd: serializer.fromJson<bool>(json['isDefaultAdd']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'name': serializer.toJson<String>(name),
+      'value': serializer.toJson<double>(value),
+      'isPercentage': serializer.toJson<bool>(isPercentage),
+      'isDefaultAdd': serializer.toJson<bool>(isDefaultAdd),
+    };
+  }
+
+  DiscountTableData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    String? name,
+    double? value,
+    bool? isPercentage,
+    bool? isDefaultAdd,
+  }) => DiscountTableData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    name: name ?? this.name,
+    value: value ?? this.value,
+    isPercentage: isPercentage ?? this.isPercentage,
+    isDefaultAdd: isDefaultAdd ?? this.isDefaultAdd,
+  );
+  DiscountTableData copyWithCompanion(DiscountsTableCompanion data) {
+    return DiscountTableData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      name: data.name.present ? data.name.value : this.name,
+      value: data.value.present ? data.value.value : this.value,
+      isPercentage: data.isPercentage.present
+          ? data.isPercentage.value
+          : this.isPercentage,
+      isDefaultAdd: data.isDefaultAdd.present
+          ? data.isDefaultAdd.value
+          : this.isDefaultAdd,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiscountTableData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('value: $value, ')
+          ..write('isPercentage: $isPercentage, ')
+          ..write('isDefaultAdd: $isDefaultAdd')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    value,
+    isPercentage,
+    isDefaultAdd,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DiscountTableData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.name == this.name &&
+          other.value == this.value &&
+          other.isPercentage == this.isPercentage &&
+          other.isDefaultAdd == this.isDefaultAdd);
+}
+
+class DiscountsTableCompanion extends UpdateCompanion<DiscountTableData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<String> name;
+  final Value<double> value;
+  final Value<bool> isPercentage;
+  final Value<bool> isDefaultAdd;
+  const DiscountsTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.value = const Value.absent(),
+    this.isPercentage = const Value.absent(),
+    this.isDefaultAdd = const Value.absent(),
+  });
+  DiscountsTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required String name,
+    required double value,
+    this.isPercentage = const Value.absent(),
+    this.isDefaultAdd = const Value.absent(),
+  }) : name = Value(name),
+       value = Value(value);
+  static Insertable<DiscountTableData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<String>? name,
+    Expression<double>? value,
+    Expression<bool>? isPercentage,
+    Expression<bool>? isDefaultAdd,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (name != null) 'name': name,
+      if (value != null) 'value': value,
+      if (isPercentage != null) 'is_percentage': isPercentage,
+      if (isDefaultAdd != null) 'is_default_add': isDefaultAdd,
+    });
+  }
+
+  DiscountsTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<String>? name,
+    Value<double>? value,
+    Value<bool>? isPercentage,
+    Value<bool>? isDefaultAdd,
+  }) {
+    return DiscountsTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      name: name ?? this.name,
+      value: value ?? this.value,
+      isPercentage: isPercentage ?? this.isPercentage,
+      isDefaultAdd: isDefaultAdd ?? this.isDefaultAdd,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (isPercentage.present) {
+      map['is_percentage'] = Variable<bool>(isPercentage.value);
+    }
+    if (isDefaultAdd.present) {
+      map['is_default_add'] = Variable<bool>(isDefaultAdd.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DiscountsTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('value: $value, ')
+          ..write('isPercentage: $isPercentage, ')
+          ..write('isDefaultAdd: $isDefaultAdd')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ExtraChargesTableTable extends ExtraChargesTable
+    with TableInfo<$ExtraChargesTableTable, ExtraChargeTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExtraChargesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<double> value = GeneratedColumn<double>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isPercentageMeta = const VerificationMeta(
+    'isPercentage',
+  );
+  @override
+  late final GeneratedColumn<bool> isPercentage = GeneratedColumn<bool>(
+    'is_percentage',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_percentage" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isDefaultAddMeta = const VerificationMeta(
+    'isDefaultAdd',
+  );
+  @override
+  late final GeneratedColumn<bool> isDefaultAdd = GeneratedColumn<bool>(
+    'is_default_add',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_default_add" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    value,
+    isPercentage,
+    isDefaultAdd,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'extra_charges';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExtraChargeTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('is_percentage')) {
+      context.handle(
+        _isPercentageMeta,
+        isPercentage.isAcceptableOrUnknown(
+          data['is_percentage']!,
+          _isPercentageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_default_add')) {
+      context.handle(
+        _isDefaultAddMeta,
+        isDefaultAdd.isAcceptableOrUnknown(
+          data['is_default_add']!,
+          _isDefaultAddMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExtraChargeTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExtraChargeTableData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}value'],
+      )!,
+      isPercentage: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_percentage'],
+      )!,
+      isDefaultAdd: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_default_add'],
+      )!,
+    );
+  }
+
+  @override
+  $ExtraChargesTableTable createAlias(String alias) {
+    return $ExtraChargesTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExtraChargeTableData extends DataClass
+    implements Insertable<ExtraChargeTableData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final String name;
+  final double value;
+  final bool isPercentage;
+  final bool isDefaultAdd;
+  const ExtraChargeTableData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.name,
+    required this.value,
+    required this.isPercentage,
+    required this.isDefaultAdd,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['name'] = Variable<String>(name);
+    map['value'] = Variable<double>(value);
+    map['is_percentage'] = Variable<bool>(isPercentage);
+    map['is_default_add'] = Variable<bool>(isDefaultAdd);
+    return map;
+  }
+
+  ExtraChargesTableCompanion toCompanion(bool nullToAbsent) {
+    return ExtraChargesTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      name: Value(name),
+      value: Value(value),
+      isPercentage: Value(isPercentage),
+      isDefaultAdd: Value(isDefaultAdd),
+    );
+  }
+
+  factory ExtraChargeTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExtraChargeTableData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      name: serializer.fromJson<String>(json['name']),
+      value: serializer.fromJson<double>(json['value']),
+      isPercentage: serializer.fromJson<bool>(json['isPercentage']),
+      isDefaultAdd: serializer.fromJson<bool>(json['isDefaultAdd']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'name': serializer.toJson<String>(name),
+      'value': serializer.toJson<double>(value),
+      'isPercentage': serializer.toJson<bool>(isPercentage),
+      'isDefaultAdd': serializer.toJson<bool>(isDefaultAdd),
+    };
+  }
+
+  ExtraChargeTableData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    String? name,
+    double? value,
+    bool? isPercentage,
+    bool? isDefaultAdd,
+  }) => ExtraChargeTableData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    name: name ?? this.name,
+    value: value ?? this.value,
+    isPercentage: isPercentage ?? this.isPercentage,
+    isDefaultAdd: isDefaultAdd ?? this.isDefaultAdd,
+  );
+  ExtraChargeTableData copyWithCompanion(ExtraChargesTableCompanion data) {
+    return ExtraChargeTableData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      name: data.name.present ? data.name.value : this.name,
+      value: data.value.present ? data.value.value : this.value,
+      isPercentage: data.isPercentage.present
+          ? data.isPercentage.value
+          : this.isPercentage,
+      isDefaultAdd: data.isDefaultAdd.present
+          ? data.isDefaultAdd.value
+          : this.isDefaultAdd,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExtraChargeTableData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('value: $value, ')
+          ..write('isPercentage: $isPercentage, ')
+          ..write('isDefaultAdd: $isDefaultAdd')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    value,
+    isPercentage,
+    isDefaultAdd,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExtraChargeTableData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.name == this.name &&
+          other.value == this.value &&
+          other.isPercentage == this.isPercentage &&
+          other.isDefaultAdd == this.isDefaultAdd);
+}
+
+class ExtraChargesTableCompanion extends UpdateCompanion<ExtraChargeTableData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<String> name;
+  final Value<double> value;
+  final Value<bool> isPercentage;
+  final Value<bool> isDefaultAdd;
+  const ExtraChargesTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.value = const Value.absent(),
+    this.isPercentage = const Value.absent(),
+    this.isDefaultAdd = const Value.absent(),
+  });
+  ExtraChargesTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required String name,
+    required double value,
+    this.isPercentage = const Value.absent(),
+    this.isDefaultAdd = const Value.absent(),
+  }) : name = Value(name),
+       value = Value(value);
+  static Insertable<ExtraChargeTableData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<String>? name,
+    Expression<double>? value,
+    Expression<bool>? isPercentage,
+    Expression<bool>? isDefaultAdd,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (name != null) 'name': name,
+      if (value != null) 'value': value,
+      if (isPercentage != null) 'is_percentage': isPercentage,
+      if (isDefaultAdd != null) 'is_default_add': isDefaultAdd,
+    });
+  }
+
+  ExtraChargesTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<String>? name,
+    Value<double>? value,
+    Value<bool>? isPercentage,
+    Value<bool>? isDefaultAdd,
+  }) {
+    return ExtraChargesTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      name: name ?? this.name,
+      value: value ?? this.value,
+      isPercentage: isPercentage ?? this.isPercentage,
+      isDefaultAdd: isDefaultAdd ?? this.isDefaultAdd,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<double>(value.value);
+    }
+    if (isPercentage.present) {
+      map['is_percentage'] = Variable<bool>(isPercentage.value);
+    }
+    if (isDefaultAdd.present) {
+      map['is_default_add'] = Variable<bool>(isDefaultAdd.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExtraChargesTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('value: $value, ')
+          ..write('isPercentage: $isPercentage, ')
+          ..write('isDefaultAdd: $isDefaultAdd')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PaymentMethodsTableTable extends PaymentMethodsTable
+    with TableInfo<$PaymentMethodsTableTable, PaymentMethodTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PaymentMethodsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _iconCodePointMeta = const VerificationMeta(
+    'iconCodePoint',
+  );
+  @override
+  late final GeneratedColumn<int> iconCodePoint = GeneratedColumn<int>(
+    'icon_code_point',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _iconFontFamilyMeta = const VerificationMeta(
+    'iconFontFamily',
+  );
+  @override
+  late final GeneratedColumn<String> iconFontFamily = GeneratedColumn<String>(
+    'icon_font_family',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _iconFontPackageMeta = const VerificationMeta(
+    'iconFontPackage',
+  );
+  @override
+  late final GeneratedColumn<String> iconFontPackage = GeneratedColumn<String>(
+    'icon_font_package',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isEnabledMeta = const VerificationMeta(
+    'isEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> isEnabled = GeneratedColumn<bool>(
+    'is_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    iconCodePoint,
+    iconFontFamily,
+    iconFontPackage,
+    isEnabled,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'payment_methods';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PaymentMethodTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('icon_code_point')) {
+      context.handle(
+        _iconCodePointMeta,
+        iconCodePoint.isAcceptableOrUnknown(
+          data['icon_code_point']!,
+          _iconCodePointMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_iconCodePointMeta);
+    }
+    if (data.containsKey('icon_font_family')) {
+      context.handle(
+        _iconFontFamilyMeta,
+        iconFontFamily.isAcceptableOrUnknown(
+          data['icon_font_family']!,
+          _iconFontFamilyMeta,
+        ),
+      );
+    }
+    if (data.containsKey('icon_font_package')) {
+      context.handle(
+        _iconFontPackageMeta,
+        iconFontPackage.isAcceptableOrUnknown(
+          data['icon_font_package']!,
+          _iconFontPackageMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_enabled')) {
+      context.handle(
+        _isEnabledMeta,
+        isEnabled.isAcceptableOrUnknown(data['is_enabled']!, _isEnabledMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PaymentMethodTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PaymentMethodTableData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      iconCodePoint: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}icon_code_point'],
+      )!,
+      iconFontFamily: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon_font_family'],
+      ),
+      iconFontPackage: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon_font_package'],
+      ),
+      isEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_enabled'],
+      )!,
+    );
+  }
+
+  @override
+  $PaymentMethodsTableTable createAlias(String alias) {
+    return $PaymentMethodsTableTable(attachedDatabase, alias);
+  }
+}
+
+class PaymentMethodTableData extends DataClass
+    implements Insertable<PaymentMethodTableData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final String name;
+  final int iconCodePoint;
+  final String? iconFontFamily;
+  final String? iconFontPackage;
+  final bool isEnabled;
+  const PaymentMethodTableData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.name,
+    required this.iconCodePoint,
+    this.iconFontFamily,
+    this.iconFontPackage,
+    required this.isEnabled,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['name'] = Variable<String>(name);
+    map['icon_code_point'] = Variable<int>(iconCodePoint);
+    if (!nullToAbsent || iconFontFamily != null) {
+      map['icon_font_family'] = Variable<String>(iconFontFamily);
+    }
+    if (!nullToAbsent || iconFontPackage != null) {
+      map['icon_font_package'] = Variable<String>(iconFontPackage);
+    }
+    map['is_enabled'] = Variable<bool>(isEnabled);
+    return map;
+  }
+
+  PaymentMethodsTableCompanion toCompanion(bool nullToAbsent) {
+    return PaymentMethodsTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      name: Value(name),
+      iconCodePoint: Value(iconCodePoint),
+      iconFontFamily: iconFontFamily == null && nullToAbsent
+          ? const Value.absent()
+          : Value(iconFontFamily),
+      iconFontPackage: iconFontPackage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(iconFontPackage),
+      isEnabled: Value(isEnabled),
+    );
+  }
+
+  factory PaymentMethodTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PaymentMethodTableData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      name: serializer.fromJson<String>(json['name']),
+      iconCodePoint: serializer.fromJson<int>(json['iconCodePoint']),
+      iconFontFamily: serializer.fromJson<String?>(json['iconFontFamily']),
+      iconFontPackage: serializer.fromJson<String?>(json['iconFontPackage']),
+      isEnabled: serializer.fromJson<bool>(json['isEnabled']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'name': serializer.toJson<String>(name),
+      'iconCodePoint': serializer.toJson<int>(iconCodePoint),
+      'iconFontFamily': serializer.toJson<String?>(iconFontFamily),
+      'iconFontPackage': serializer.toJson<String?>(iconFontPackage),
+      'isEnabled': serializer.toJson<bool>(isEnabled),
+    };
+  }
+
+  PaymentMethodTableData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    String? name,
+    int? iconCodePoint,
+    Value<String?> iconFontFamily = const Value.absent(),
+    Value<String?> iconFontPackage = const Value.absent(),
+    bool? isEnabled,
+  }) => PaymentMethodTableData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    name: name ?? this.name,
+    iconCodePoint: iconCodePoint ?? this.iconCodePoint,
+    iconFontFamily: iconFontFamily.present
+        ? iconFontFamily.value
+        : this.iconFontFamily,
+    iconFontPackage: iconFontPackage.present
+        ? iconFontPackage.value
+        : this.iconFontPackage,
+    isEnabled: isEnabled ?? this.isEnabled,
+  );
+  PaymentMethodTableData copyWithCompanion(PaymentMethodsTableCompanion data) {
+    return PaymentMethodTableData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      name: data.name.present ? data.name.value : this.name,
+      iconCodePoint: data.iconCodePoint.present
+          ? data.iconCodePoint.value
+          : this.iconCodePoint,
+      iconFontFamily: data.iconFontFamily.present
+          ? data.iconFontFamily.value
+          : this.iconFontFamily,
+      iconFontPackage: data.iconFontPackage.present
+          ? data.iconFontPackage.value
+          : this.iconFontPackage,
+      isEnabled: data.isEnabled.present ? data.isEnabled.value : this.isEnabled,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentMethodTableData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('iconCodePoint: $iconCodePoint, ')
+          ..write('iconFontFamily: $iconFontFamily, ')
+          ..write('iconFontPackage: $iconFontPackage, ')
+          ..write('isEnabled: $isEnabled')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    iconCodePoint,
+    iconFontFamily,
+    iconFontPackage,
+    isEnabled,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PaymentMethodTableData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.name == this.name &&
+          other.iconCodePoint == this.iconCodePoint &&
+          other.iconFontFamily == this.iconFontFamily &&
+          other.iconFontPackage == this.iconFontPackage &&
+          other.isEnabled == this.isEnabled);
+}
+
+class PaymentMethodsTableCompanion
+    extends UpdateCompanion<PaymentMethodTableData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<String> name;
+  final Value<int> iconCodePoint;
+  final Value<String?> iconFontFamily;
+  final Value<String?> iconFontPackage;
+  final Value<bool> isEnabled;
+  const PaymentMethodsTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.iconCodePoint = const Value.absent(),
+    this.iconFontFamily = const Value.absent(),
+    this.iconFontPackage = const Value.absent(),
+    this.isEnabled = const Value.absent(),
+  });
+  PaymentMethodsTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required String name,
+    required int iconCodePoint,
+    this.iconFontFamily = const Value.absent(),
+    this.iconFontPackage = const Value.absent(),
+    this.isEnabled = const Value.absent(),
+  }) : name = Value(name),
+       iconCodePoint = Value(iconCodePoint);
+  static Insertable<PaymentMethodTableData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<String>? name,
+    Expression<int>? iconCodePoint,
+    Expression<String>? iconFontFamily,
+    Expression<String>? iconFontPackage,
+    Expression<bool>? isEnabled,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (name != null) 'name': name,
+      if (iconCodePoint != null) 'icon_code_point': iconCodePoint,
+      if (iconFontFamily != null) 'icon_font_family': iconFontFamily,
+      if (iconFontPackage != null) 'icon_font_package': iconFontPackage,
+      if (isEnabled != null) 'is_enabled': isEnabled,
+    });
+  }
+
+  PaymentMethodsTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<String>? name,
+    Value<int>? iconCodePoint,
+    Value<String?>? iconFontFamily,
+    Value<String?>? iconFontPackage,
+    Value<bool>? isEnabled,
+  }) {
+    return PaymentMethodsTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      name: name ?? this.name,
+      iconCodePoint: iconCodePoint ?? this.iconCodePoint,
+      iconFontFamily: iconFontFamily ?? this.iconFontFamily,
+      iconFontPackage: iconFontPackage ?? this.iconFontPackage,
+      isEnabled: isEnabled ?? this.isEnabled,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (iconCodePoint.present) {
+      map['icon_code_point'] = Variable<int>(iconCodePoint.value);
+    }
+    if (iconFontFamily.present) {
+      map['icon_font_family'] = Variable<String>(iconFontFamily.value);
+    }
+    if (iconFontPackage.present) {
+      map['icon_font_package'] = Variable<String>(iconFontPackage.value);
+    }
+    if (isEnabled.present) {
+      map['is_enabled'] = Variable<bool>(isEnabled.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PaymentMethodsTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('iconCodePoint: $iconCodePoint, ')
+          ..write('iconFontFamily: $iconFontFamily, ')
+          ..write('iconFontPackage: $iconFontPackage, ')
+          ..write('isEnabled: $isEnabled')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$CoozyDatabase extends GeneratedDatabase {
   _$CoozyDatabase(QueryExecutor e) : super(e);
   $CoozyDatabaseManager get managers => $CoozyDatabaseManager(this);
@@ -18457,6 +20510,12 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
   );
   late final $RolePermissionsTableTable rolePermissionsTable =
       $RolePermissionsTableTable(this);
+  late final $TaxesTableTable taxesTable = $TaxesTableTable(this);
+  late final $DiscountsTableTable discountsTable = $DiscountsTableTable(this);
+  late final $ExtraChargesTableTable extraChargesTable =
+      $ExtraChargesTableTable(this);
+  late final $PaymentMethodsTableTable paymentMethodsTable =
+      $PaymentMethodsTableTable(this);
   late final Index idxTableInfoSortOrder = Index(
     'idx_table_info_sort_order',
     'CREATE INDEX idx_table_info_sort_order ON table_info (sort_order_index)',
@@ -18737,6 +20796,22 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     'idx_role_permissions_permission_id',
     'CREATE INDEX idx_role_permissions_permission_id ON role_permissions (permission_id)',
   );
+  late final Index idxTaxesName = Index(
+    'idx_taxes_name',
+    'CREATE INDEX idx_taxes_name ON taxes (name)',
+  );
+  late final Index idxDiscountsName = Index(
+    'idx_discounts_name',
+    'CREATE INDEX idx_discounts_name ON discounts (name)',
+  );
+  late final Index idxExtraChargesName = Index(
+    'idx_extra_charges_name',
+    'CREATE INDEX idx_extra_charges_name ON extra_charges (name)',
+  );
+  late final Index idxPaymentMethodsName = Index(
+    'idx_payment_methods_name',
+    'CREATE INDEX idx_payment_methods_name ON payment_methods (name)',
+  );
   late final CategoriesDao categoriesDao = CategoriesDao(this as CoozyDatabase);
   late final CustomersDao customersDao = CustomersDao(this as CoozyDatabase);
   late final StaffManagementDao staffManagementDao = StaffManagementDao(
@@ -18784,6 +20859,10 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     userLoginsTable,
     permissionsTable,
     rolePermissionsTable,
+    taxesTable,
+    discountsTable,
+    extraChargesTable,
+    paymentMethodsTable,
     idxTableInfoSortOrder,
     idxCategoriesPosition,
     idxCategoriesName,
@@ -18854,6 +20933,10 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     idxPermissionsName,
     idxRolePermissionsRoleId,
     idxRolePermissionsPermissionId,
+    idxTaxesName,
+    idxDiscountsName,
+    idxExtraChargesName,
+    idxPaymentMethodsName,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -32363,6 +34446,1067 @@ typedef $$RolePermissionsTableTableProcessedTableManager =
       RolePermission,
       PrefetchHooks Function({bool roleId, bool permissionId})
     >;
+typedef $$TaxesTableTableCreateCompanionBuilder =
+    TaxesTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required String name,
+      required double ratePercent,
+      Value<bool> isDefaultAdd,
+    });
+typedef $$TaxesTableTableUpdateCompanionBuilder =
+    TaxesTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<String> name,
+      Value<double> ratePercent,
+      Value<bool> isDefaultAdd,
+    });
+
+class $$TaxesTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $TaxesTableTable> {
+  $$TaxesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get ratePercent => $composableBuilder(
+    column: $table.ratePercent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TaxesTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $TaxesTableTable> {
+  $$TaxesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get ratePercent => $composableBuilder(
+    column: $table.ratePercent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TaxesTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $TaxesTableTable> {
+  $$TaxesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get ratePercent => $composableBuilder(
+    column: $table.ratePercent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => column,
+  );
+}
+
+class $$TaxesTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $TaxesTableTable,
+          TaxTableData,
+          $$TaxesTableTableFilterComposer,
+          $$TaxesTableTableOrderingComposer,
+          $$TaxesTableTableAnnotationComposer,
+          $$TaxesTableTableCreateCompanionBuilder,
+          $$TaxesTableTableUpdateCompanionBuilder,
+          (
+            TaxTableData,
+            BaseReferences<_$CoozyDatabase, $TaxesTableTable, TaxTableData>,
+          ),
+          TaxTableData,
+          PrefetchHooks Function()
+        > {
+  $$TaxesTableTableTableManager(_$CoozyDatabase db, $TaxesTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaxesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaxesTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaxesTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> ratePercent = const Value.absent(),
+                Value<bool> isDefaultAdd = const Value.absent(),
+              }) => TaxesTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                ratePercent: ratePercent,
+                isDefaultAdd: isDefaultAdd,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required String name,
+                required double ratePercent,
+                Value<bool> isDefaultAdd = const Value.absent(),
+              }) => TaxesTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                ratePercent: ratePercent,
+                isDefaultAdd: isDefaultAdd,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TaxesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $TaxesTableTable,
+      TaxTableData,
+      $$TaxesTableTableFilterComposer,
+      $$TaxesTableTableOrderingComposer,
+      $$TaxesTableTableAnnotationComposer,
+      $$TaxesTableTableCreateCompanionBuilder,
+      $$TaxesTableTableUpdateCompanionBuilder,
+      (
+        TaxTableData,
+        BaseReferences<_$CoozyDatabase, $TaxesTableTable, TaxTableData>,
+      ),
+      TaxTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$DiscountsTableTableCreateCompanionBuilder =
+    DiscountsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required String name,
+      required double value,
+      Value<bool> isPercentage,
+      Value<bool> isDefaultAdd,
+    });
+typedef $$DiscountsTableTableUpdateCompanionBuilder =
+    DiscountsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<String> name,
+      Value<double> value,
+      Value<bool> isPercentage,
+      Value<bool> isDefaultAdd,
+    });
+
+class $$DiscountsTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $DiscountsTableTable> {
+  $$DiscountsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPercentage => $composableBuilder(
+    column: $table.isPercentage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DiscountsTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $DiscountsTableTable> {
+  $$DiscountsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPercentage => $composableBuilder(
+    column: $table.isPercentage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DiscountsTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $DiscountsTableTable> {
+  $$DiscountsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<bool> get isPercentage => $composableBuilder(
+    column: $table.isPercentage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => column,
+  );
+}
+
+class $$DiscountsTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $DiscountsTableTable,
+          DiscountTableData,
+          $$DiscountsTableTableFilterComposer,
+          $$DiscountsTableTableOrderingComposer,
+          $$DiscountsTableTableAnnotationComposer,
+          $$DiscountsTableTableCreateCompanionBuilder,
+          $$DiscountsTableTableUpdateCompanionBuilder,
+          (
+            DiscountTableData,
+            BaseReferences<
+              _$CoozyDatabase,
+              $DiscountsTableTable,
+              DiscountTableData
+            >,
+          ),
+          DiscountTableData,
+          PrefetchHooks Function()
+        > {
+  $$DiscountsTableTableTableManager(
+    _$CoozyDatabase db,
+    $DiscountsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DiscountsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DiscountsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DiscountsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<bool> isPercentage = const Value.absent(),
+                Value<bool> isDefaultAdd = const Value.absent(),
+              }) => DiscountsTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                value: value,
+                isPercentage: isPercentage,
+                isDefaultAdd: isDefaultAdd,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required String name,
+                required double value,
+                Value<bool> isPercentage = const Value.absent(),
+                Value<bool> isDefaultAdd = const Value.absent(),
+              }) => DiscountsTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                value: value,
+                isPercentage: isPercentage,
+                isDefaultAdd: isDefaultAdd,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DiscountsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $DiscountsTableTable,
+      DiscountTableData,
+      $$DiscountsTableTableFilterComposer,
+      $$DiscountsTableTableOrderingComposer,
+      $$DiscountsTableTableAnnotationComposer,
+      $$DiscountsTableTableCreateCompanionBuilder,
+      $$DiscountsTableTableUpdateCompanionBuilder,
+      (
+        DiscountTableData,
+        BaseReferences<
+          _$CoozyDatabase,
+          $DiscountsTableTable,
+          DiscountTableData
+        >,
+      ),
+      DiscountTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$ExtraChargesTableTableCreateCompanionBuilder =
+    ExtraChargesTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required String name,
+      required double value,
+      Value<bool> isPercentage,
+      Value<bool> isDefaultAdd,
+    });
+typedef $$ExtraChargesTableTableUpdateCompanionBuilder =
+    ExtraChargesTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<String> name,
+      Value<double> value,
+      Value<bool> isPercentage,
+      Value<bool> isDefaultAdd,
+    });
+
+class $$ExtraChargesTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $ExtraChargesTableTable> {
+  $$ExtraChargesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPercentage => $composableBuilder(
+    column: $table.isPercentage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ExtraChargesTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $ExtraChargesTableTable> {
+  $$ExtraChargesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPercentage => $composableBuilder(
+    column: $table.isPercentage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ExtraChargesTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $ExtraChargesTableTable> {
+  $$ExtraChargesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<bool> get isPercentage => $composableBuilder(
+    column: $table.isPercentage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDefaultAdd => $composableBuilder(
+    column: $table.isDefaultAdd,
+    builder: (column) => column,
+  );
+}
+
+class $$ExtraChargesTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $ExtraChargesTableTable,
+          ExtraChargeTableData,
+          $$ExtraChargesTableTableFilterComposer,
+          $$ExtraChargesTableTableOrderingComposer,
+          $$ExtraChargesTableTableAnnotationComposer,
+          $$ExtraChargesTableTableCreateCompanionBuilder,
+          $$ExtraChargesTableTableUpdateCompanionBuilder,
+          (
+            ExtraChargeTableData,
+            BaseReferences<
+              _$CoozyDatabase,
+              $ExtraChargesTableTable,
+              ExtraChargeTableData
+            >,
+          ),
+          ExtraChargeTableData,
+          PrefetchHooks Function()
+        > {
+  $$ExtraChargesTableTableTableManager(
+    _$CoozyDatabase db,
+    $ExtraChargesTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExtraChargesTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExtraChargesTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ExtraChargesTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> value = const Value.absent(),
+                Value<bool> isPercentage = const Value.absent(),
+                Value<bool> isDefaultAdd = const Value.absent(),
+              }) => ExtraChargesTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                value: value,
+                isPercentage: isPercentage,
+                isDefaultAdd: isDefaultAdd,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required String name,
+                required double value,
+                Value<bool> isPercentage = const Value.absent(),
+                Value<bool> isDefaultAdd = const Value.absent(),
+              }) => ExtraChargesTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                value: value,
+                isPercentage: isPercentage,
+                isDefaultAdd: isDefaultAdd,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ExtraChargesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $ExtraChargesTableTable,
+      ExtraChargeTableData,
+      $$ExtraChargesTableTableFilterComposer,
+      $$ExtraChargesTableTableOrderingComposer,
+      $$ExtraChargesTableTableAnnotationComposer,
+      $$ExtraChargesTableTableCreateCompanionBuilder,
+      $$ExtraChargesTableTableUpdateCompanionBuilder,
+      (
+        ExtraChargeTableData,
+        BaseReferences<
+          _$CoozyDatabase,
+          $ExtraChargesTableTable,
+          ExtraChargeTableData
+        >,
+      ),
+      ExtraChargeTableData,
+      PrefetchHooks Function()
+    >;
+typedef $$PaymentMethodsTableTableCreateCompanionBuilder =
+    PaymentMethodsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required String name,
+      required int iconCodePoint,
+      Value<String?> iconFontFamily,
+      Value<String?> iconFontPackage,
+      Value<bool> isEnabled,
+    });
+typedef $$PaymentMethodsTableTableUpdateCompanionBuilder =
+    PaymentMethodsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<String> name,
+      Value<int> iconCodePoint,
+      Value<String?> iconFontFamily,
+      Value<String?> iconFontPackage,
+      Value<bool> isEnabled,
+    });
+
+class $$PaymentMethodsTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $PaymentMethodsTableTable> {
+  $$PaymentMethodsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get iconCodePoint => $composableBuilder(
+    column: $table.iconCodePoint,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get iconFontFamily => $composableBuilder(
+    column: $table.iconFontFamily,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get iconFontPackage => $composableBuilder(
+    column: $table.iconFontPackage,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PaymentMethodsTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $PaymentMethodsTableTable> {
+  $$PaymentMethodsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get iconCodePoint => $composableBuilder(
+    column: $table.iconCodePoint,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get iconFontFamily => $composableBuilder(
+    column: $table.iconFontFamily,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get iconFontPackage => $composableBuilder(
+    column: $table.iconFontPackage,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PaymentMethodsTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $PaymentMethodsTableTable> {
+  $$PaymentMethodsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get iconCodePoint => $composableBuilder(
+    column: $table.iconCodePoint,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get iconFontFamily => $composableBuilder(
+    column: $table.iconFontFamily,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get iconFontPackage => $composableBuilder(
+    column: $table.iconFontPackage,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isEnabled =>
+      $composableBuilder(column: $table.isEnabled, builder: (column) => column);
+}
+
+class $$PaymentMethodsTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $PaymentMethodsTableTable,
+          PaymentMethodTableData,
+          $$PaymentMethodsTableTableFilterComposer,
+          $$PaymentMethodsTableTableOrderingComposer,
+          $$PaymentMethodsTableTableAnnotationComposer,
+          $$PaymentMethodsTableTableCreateCompanionBuilder,
+          $$PaymentMethodsTableTableUpdateCompanionBuilder,
+          (
+            PaymentMethodTableData,
+            BaseReferences<
+              _$CoozyDatabase,
+              $PaymentMethodsTableTable,
+              PaymentMethodTableData
+            >,
+          ),
+          PaymentMethodTableData,
+          PrefetchHooks Function()
+        > {
+  $$PaymentMethodsTableTableTableManager(
+    _$CoozyDatabase db,
+    $PaymentMethodsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PaymentMethodsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PaymentMethodsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$PaymentMethodsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> iconCodePoint = const Value.absent(),
+                Value<String?> iconFontFamily = const Value.absent(),
+                Value<String?> iconFontPackage = const Value.absent(),
+                Value<bool> isEnabled = const Value.absent(),
+              }) => PaymentMethodsTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                iconCodePoint: iconCodePoint,
+                iconFontFamily: iconFontFamily,
+                iconFontPackage: iconFontPackage,
+                isEnabled: isEnabled,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required String name,
+                required int iconCodePoint,
+                Value<String?> iconFontFamily = const Value.absent(),
+                Value<String?> iconFontPackage = const Value.absent(),
+                Value<bool> isEnabled = const Value.absent(),
+              }) => PaymentMethodsTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                iconCodePoint: iconCodePoint,
+                iconFontFamily: iconFontFamily,
+                iconFontPackage: iconFontPackage,
+                isEnabled: isEnabled,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PaymentMethodsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $PaymentMethodsTableTable,
+      PaymentMethodTableData,
+      $$PaymentMethodsTableTableFilterComposer,
+      $$PaymentMethodsTableTableOrderingComposer,
+      $$PaymentMethodsTableTableAnnotationComposer,
+      $$PaymentMethodsTableTableCreateCompanionBuilder,
+      $$PaymentMethodsTableTableUpdateCompanionBuilder,
+      (
+        PaymentMethodTableData,
+        BaseReferences<
+          _$CoozyDatabase,
+          $PaymentMethodsTableTable,
+          PaymentMethodTableData
+        >,
+      ),
+      PaymentMethodTableData,
+      PrefetchHooks Function()
+    >;
 
 class $CoozyDatabaseManager {
   final _$CoozyDatabase _db;
@@ -32421,4 +35565,12 @@ class $CoozyDatabaseManager {
       $$PermissionsTableTableTableManager(_db, _db.permissionsTable);
   $$RolePermissionsTableTableTableManager get rolePermissionsTable =>
       $$RolePermissionsTableTableTableManager(_db, _db.rolePermissionsTable);
+  $$TaxesTableTableTableManager get taxesTable =>
+      $$TaxesTableTableTableManager(_db, _db.taxesTable);
+  $$DiscountsTableTableTableManager get discountsTable =>
+      $$DiscountsTableTableTableManager(_db, _db.discountsTable);
+  $$ExtraChargesTableTableTableManager get extraChargesTable =>
+      $$ExtraChargesTableTableTableManager(_db, _db.extraChargesTable);
+  $$PaymentMethodsTableTableTableManager get paymentMethodsTable =>
+      $$PaymentMethodsTableTableTableManager(_db, _db.paymentMethodsTable);
 }

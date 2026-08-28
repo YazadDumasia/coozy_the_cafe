@@ -51,6 +51,14 @@ abstract class LocaleKeys {
   static String thermalKot58mmWidth = 'thermal_kot_58mm_width';
   static String thermalKotSimulatePrintBtn = 'thermal_kot_simulate_print_btn';
   static String thermalKotPrintSuccessMsg = 'thermal_kot_print_success_msg';
+  static String printTableQrCardsTooltip = 'print_table_qr_cards_tooltip';
+  static String scanTableQrTooltip = 'scan_table_qr_tooltip';
+  static String tableQrDialogTitle = 'table_qr_dialog_title';
+  static String scanQrCodeToPlaceOrder = 'scan_qr_code_to_place_order';
+  static String scanQrCodeInstruction = 'scan_qr_code_instruction';
+  static String qrScanOrderFoundMsg = 'qr_scan_order_found_msg';
+  static String qrScanNewOrderMsg = 'qr_scan_new_order_msg';
+  static String qrScanInvalidFormatMsg = 'qr_scan_invalid_format_msg';
   static String homeTabMore = 'home_tab_more';
 
   static String deactivate = 'deactivate';

@@ -180,11 +180,27 @@ class TableGridItem extends StatelessWidget {
           PositionedDirectional(
             top: 5.0,
             end: 5.0,
-            child: GestureDetector(
-              onTap: () async {
-                TableScreenActions.onDeleteTable(context, model);
-              },
-              child: const Icon(Icons.delete, color: Colors.red, size: 24.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () async {
+                    TableScreenActions.showTableQrDialog(context, model);
+                  },
+                  child: Icon(
+                    Icons.qr_code_2_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                    size: 24.0,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                GestureDetector(
+                  onTap: () async {
+                    TableScreenActions.onDeleteTable(context, model);
+                  },
+                  child: const Icon(Icons.delete, color: Colors.red, size: 24.0),
+                ),
+              ],
             ),
           ),
         ],

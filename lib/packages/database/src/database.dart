@@ -52,6 +52,10 @@ part 'database.g.dart';
     UserLoginsTable,
     PermissionsTable,
     RolePermissionsTable,
+    TaxesTable,
+    DiscountsTable,
+    ExtraChargesTable,
+    PaymentMethodsTable,
   ],
   daos: [
     CategoriesDao,

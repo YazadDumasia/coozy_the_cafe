@@ -112,6 +112,40 @@ class _TableScreenState extends State<TableScreen>
               ),
               BlocBuilder<TableCubit, TableState>(
                 builder: (context, state) {
+                  if (state is TableLoaded && state.tables.isNotEmpty) {
+                    return IconButton(
+                      onPressed: () async {
+                        TableScreenActions.printAllTableQrCards(
+                          context,
+                          state.tables,
+                        );
+                      },
+                      icon: const Icon(Icons.qr_code_2_rounded),
+                      tooltip:
+                          context.tr(
+                            shared.LocaleKeys.printTableQrCardsTooltip,
+                            track: shared.TrackConstants.tablePageTrack,
+                          ) ??
+                          'Print Table QR Cards PDF',
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+              IconButton(
+                onPressed: () async {
+                  TableScreenActions.openQrScanner(context);
+                },
+                icon: const Icon(Icons.qr_code_scanner_rounded),
+                tooltip:
+                    context.tr(
+                      shared.LocaleKeys.scanTableQrTooltip,
+                      track: shared.TrackConstants.tablePageTrack,
+                    ) ??
+                    'Scan Table QR Code',
+              ),
+              BlocBuilder<TableCubit, TableState>(
+                builder: (context, state) {
                   if (state is TableLoaded) {
                     return IconButton(
                       onPressed: () async {

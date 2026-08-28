@@ -198,6 +198,12 @@ class TableListItem extends StatelessWidget {
                             if (value == 'edit') {
                               TableScreenActions.onUpdateModel(context, model);
                             }
+                            if (value == 'qr_card') {
+                              TableScreenActions.showTableQrDialog(
+                                context,
+                                model,
+                              );
+                            }
                             if (value == 'toggle_status') {
                               TableScreenActions.handleToggleTableStatus(
                                 context,
@@ -211,6 +217,16 @@ class TableListItem extends StatelessWidget {
                           },
                           itemBuilder: (BuildContext bc) {
                             return <PopupMenuItem<String>>[
+                              const PopupMenuItem(
+                                value: 'qr_card',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.qr_code_2_rounded, size: 20),
+                                    SizedBox(width: 8),
+                                    Text('QR Card PDF'),
+                                  ],
+                                ),
+                              ),
                               PopupMenuItem(
                                 value: 'edit',
                                 child: Text(

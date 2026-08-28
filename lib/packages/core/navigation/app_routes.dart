@@ -41,6 +41,8 @@ class AppRoutePath {
   static const String waiterOrderPlacementScreenRoute =
       '/waiter-order-placement';
   static const String kitchenScreenRoute = '/kitchen';
+  static const String checkoutScreenRoute = '/checkout';
+
 
   // Sub-routes for Table Info (Nested under Home -> Table Info)
   static const String addNewTableInfoScreenRoute = 'table-add';

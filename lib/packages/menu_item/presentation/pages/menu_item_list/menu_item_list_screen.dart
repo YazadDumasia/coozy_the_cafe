@@ -7,6 +7,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../widgets/menu_item_list/menu_item_category_filter_header.dart';
 import '../../widgets/menu_item_list/menu_item_empty_view.dart';
 import 'menu_item_list_screen_actions.dart';
+import '../menu_item_barcode_dialog/menu_item_barcode_dialog.dart';
 import 'widget/menu_item_list_active_filters_row.dart';
 import 'widget/menu_item_list_content_view.dart';
 import 'widget/menu_item_list_filter_bottom_sheet.dart';
@@ -62,6 +63,16 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                 'Menu Items',
           ),
           actions: [
+            IconButton(
+              icon: const Icon(Icons.qr_code_2_rounded),
+              tooltip: 'Print Menu Item Barcodes PDF',
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (_) => const MenuItemBarcodeDialog(),
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.add),
               tooltip:

@@ -605,3 +605,60 @@ class RolePermissionsTable extends Table {
   TextColumn get createdAt =>
       text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
 }
+
+@DataClassName('TaxTableData')
+@TableIndex(name: 'idx_taxes_name', columns: {#name})
+class TaxesTable extends BaseTable {
+  @override
+  String get tableName => 'taxes';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  TextColumn get name => text()();
+  RealColumn get ratePercent => real()();
+  BoolColumn get isDefaultAdd => boolean().withDefault(const Constant(false))();
+}
+
+@DataClassName('DiscountTableData')
+@TableIndex(name: 'idx_discounts_name', columns: {#name})
+class DiscountsTable extends BaseTable {
+  @override
+  String get tableName => 'discounts';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  TextColumn get name => text()();
+  RealColumn get value => real()();
+  BoolColumn get isPercentage => boolean().withDefault(const Constant(false))();
+  BoolColumn get isDefaultAdd => boolean().withDefault(const Constant(false))();
+}
+
+@DataClassName('ExtraChargeTableData')
+@TableIndex(name: 'idx_extra_charges_name', columns: {#name})
+class ExtraChargesTable extends BaseTable {
+  @override
+  String get tableName => 'extra_charges';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  TextColumn get name => text()();
+  RealColumn get value => real()();
+  BoolColumn get isPercentage => boolean().withDefault(const Constant(false))();
+  BoolColumn get isDefaultAdd => boolean().withDefault(const Constant(false))();
+}
+
+@DataClassName('PaymentMethodTableData')
+@TableIndex(name: 'idx_payment_methods_name', columns: {#name})
+class PaymentMethodsTable extends BaseTable {
+  @override
+  String get tableName => 'payment_methods';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  TextColumn get name => text()();
+  IntColumn get iconCodePoint => integer()();
+  TextColumn get iconFontFamily => text().nullable()();
+  TextColumn get iconFontPackage => text().nullable()();
+  BoolColumn get isEnabled => boolean().withDefault(const Constant(true))();
+}
+

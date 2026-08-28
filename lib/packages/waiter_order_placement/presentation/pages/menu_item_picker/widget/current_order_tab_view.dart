@@ -1,10 +1,13 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/entities/order_cart_item.dart';
 import 'package:coozy_the_cafe/packages/waiter_order_placement/presentation/bloc/menu_item_picker_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'order_cart_item_card.dart';
+
 
 class CurrentOrderTabView extends StatefulWidget {
   final List<OrderCartItem> cartItems;
@@ -372,17 +375,14 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
                           ),
                           elevation: 2,
                         ),
-                        onPressed: widget.isSubmitting
-                            ? null
-                            : () {
-                                context.read<MenuItemPickerBloc>().add(
-                                  SubmitOrderEvent(
-                                    tableId: widget.tableId,
-                                    tableName: widget.tableName,
-                                    orderId: widget.orderId,
-                                  ),
-                                );
-                              },
+                        onPressed: () {
+                          final currentOrderId = widget.orderId?.toString() ?? '1';
+                          context.push(
+                            core.AppRoutePath.checkoutScreenRoute,
+                            extra: currentOrderId,
+                          );
+                        },
+
                         child: Text(
                           context.tr(shared.LocaleKeys.billNowBtnText) ??
                               'Bill Now',

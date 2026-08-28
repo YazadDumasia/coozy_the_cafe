@@ -11,7 +11,34 @@ import 'package:coozy_the_cafe/packages/table_management/presentation/cubit/tabl
 import 'package:coozy_the_cafe/packages/table_management/presentation/pages/new_table_info_dialog/new_table_info_dialog.dart';
 import 'package:coozy_the_cafe/packages/table_management/presentation/pages/table_update_dialog/table_update_dialog.dart';
 
+import 'package:go_router/go_router.dart';
+import '../table_qr_dialog/table_qr_dialog.dart';
+
 class TableScreenActions {
+  static Future<void> printAllTableQrCards(
+    BuildContext context,
+    List<TableInfo> tables,
+  ) async {
+    if (tables.isEmpty) return;
+    showDialog(
+      context: context,
+      builder: (_) => TableQrDialog(tables: tables),
+    );
+  }
+
+  static Future<void> showTableQrDialog(
+    BuildContext context,
+    TableInfo table,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (_) => TableQrDialog(table: table),
+    );
+  }
+
+  static Future<void> openQrScanner(BuildContext context) async {
+    context.push('/table-qr-scanner');
+  }
   static Future<void> onReorder(
     BuildContext context,
     int oldIndex,

@@ -7,6 +7,8 @@ import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item_vari
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/presentation/bloc/menu_subcategory_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
+import '../../../domain/services/menu_item_barcode_pdf_generator.dart';
+import '../../pages/menu_item_barcode_dialog/menu_item_barcode_dialog.dart';
 import '../../pages/menu_item_list/menu_item_list_screen_actions.dart';
 import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/core/navigation/app_routes.dart';
@@ -138,6 +140,35 @@ class MenuItemListItem extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.qr_code_2_rounded, size: 20),
+                    tooltip: 'Print Item Barcode',
+                    onPressed: () {
+                      final catName = categoryName ?? 'Category';
+                      final subName = subcategoryName;
+
+                      final singleInfo = MenuItemBarcodeInfo(
+                        id: item.id ?? 0,
+                        name: item.name,
+                        variationName: null,
+                        categoryName: catName,
+                        subcategoryName: subName,
+                        price: item.sellingPrice ?? 0.0,
+                        barcodePayload:
+                            item.hashId?.isNotEmpty == true
+                                ? item.hashId!
+                                : 'ITEM_${item.id}',
+                      );
+
+                      showDialog(
+                        context: context,
+                        builder:
+                            (_) => MenuItemBarcodeDialog(
+                              singleBarcodeInfo: singleInfo,
+                            ),
+                      );
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.info_outline, size: 20),

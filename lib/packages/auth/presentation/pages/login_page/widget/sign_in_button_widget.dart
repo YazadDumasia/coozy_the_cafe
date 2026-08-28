@@ -51,7 +51,6 @@ class _SignInButtonWidgetState extends State<SignInButtonWidget> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).primaryColorLight,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

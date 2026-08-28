@@ -100,9 +100,16 @@ class _MyAppState extends State<MyApp> {
                         ],
                         elevatedButtonTheme: ElevatedButtonThemeData(
                           style: ElevatedButton.styleFrom(
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.primary,
+                            foregroundColor: Theme.of(
+                              context,
+                            ).colorScheme.onPrimary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
+                            elevation: 5,
                           ),
                         ),
                         outlinedButtonTheme: OutlinedButtonThemeData(
