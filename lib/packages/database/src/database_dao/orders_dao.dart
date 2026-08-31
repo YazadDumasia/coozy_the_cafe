@@ -49,6 +49,24 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
     }
   }
 
+  /// Marks an order and its items as completed upon successful payment.
+  Future<void> markOrderCompleted(int orderId) async {
+    final currentDate = DateTime.now().toUtc().toIso8601String();
+    await transaction(() async {
+      await (update(ordersTable)..where((t) => t.id.equals(orderId))).write(
+        OrdersTableCompanion(
+          status: const Value('completed'),
+          modificationDate: Value(currentDate),
+        ),
+      );
+      await (update(orderItemsTable)..where((t) => t.orderId.equals(orderId))).write(
+        const OrderItemsTableCompanion(
+          status: Value('completed'),
+        ),
+      );
+    });
+  }
+
   Future<int> createNewOrder({
     required OrdersTableCompanion order,
     required List<OrderItemsTableCompanion> orderItems,
@@ -153,7 +171,7 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
   }
 
   Future<int> updateOrderIsCanceled(int orderId, bool isCanceled) async {
-    final currentStatus = isCanceled ? 'canceled' : 'newOrder';
+    final currentStatus = isCanceled ? 'cancelled' : 'newOrder';
     final currentDate = DateTime.now().toUtc().toIso8601String();
 
     return transaction(() async {
@@ -177,7 +195,7 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
         );
       } else {
         await (update(orderItemsTable)..where((t) => t.orderId.equals(orderId)))
-            .write(const OrderItemsTableCompanion(status: Value('canceled')));
+            .write(const OrderItemsTableCompanion(status: Value('cancelled')));
       }
 
       final countExpr = orderItemsTable.id.count();

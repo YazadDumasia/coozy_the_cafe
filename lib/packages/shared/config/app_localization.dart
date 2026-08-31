@@ -3,6 +3,7 @@ import 'language_preferences.dart' as prefs;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../core/coozy_core.dart' as core;
 import '../coozy_shared.dart';
 
 class AppLocalizations {
@@ -54,7 +55,10 @@ class AppLocalizations {
     final String? track,
   }) {
     if (_localizedStrings == null) {
-      // Constants.debugLog(AppLocalizations, 'Please check json file path.');
+      core.PlatformUtils.debugLog(
+        AppLocalizations,
+        'Please check json file path or localizedStrings map is null.',
+      );
       return null;
     }
 
@@ -67,6 +71,10 @@ class AppLocalizations {
     }
 
     if (translated == null) {
+      core.PlatformUtils.debugLog(
+        AppLocalizations,
+        'Localization key missing: ${track != null ? "$track.$key" : key}',
+      );
       return null;
     }
 

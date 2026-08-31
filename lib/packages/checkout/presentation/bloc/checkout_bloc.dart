@@ -46,6 +46,7 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     on<CheckoutPaymentMethodAdded>(_onPaymentMethodAdded);
     on<CheckoutPaymentMethodToggled>(_onPaymentMethodToggled);
     on<CheckoutPaymentSelected>(_onPaymentSelected);
+    on<CheckoutPaymentConfirmed>(_onPaymentConfirmed);
   }
 
   void _onStarted(CheckoutStarted event, Emitter<CheckoutState> emit) {
@@ -234,6 +235,22 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
   void _onPaymentSelected(CheckoutPaymentSelected event, Emitter<CheckoutState> emit) {
     emit(state.copyWith(selectedPaymentMethod: event.method));
+  }
+
+  Future<void> _onPaymentConfirmed(
+    CheckoutPaymentConfirmed event,
+    Emitter<CheckoutState> emit,
+  ) async {
+    final orderIdStr = state.orderId;
+    if (orderIdStr != null && orderIdStr.isNotEmpty) {
+      final orderId = int.tryParse(orderIdStr);
+      if (orderId != null) {
+        try {
+          final db = sl<CoozyDatabase>();
+          await db.ordersDao.markOrderCompleted(orderId);
+        } catch (_) {}
+      }
+    }
   }
 
   void _recalculateAndEmit(Emitter<CheckoutState> emit, CheckoutState newState) {

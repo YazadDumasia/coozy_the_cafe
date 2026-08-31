@@ -475,9 +475,11 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          const Icon(Icons.restaurant, size: 24),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: RichText(
                               text: TextSpan(
@@ -521,9 +523,11 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          const Icon(Icons.dinner_dining, size: 24),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: RichText(
                               text: TextSpan(
@@ -566,9 +570,11 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
+                          const Icon(Icons.eco, size: 24),
+                          const SizedBox(width: 8),
                           Expanded(
                             child: RichText(
                               text: TextSpan(

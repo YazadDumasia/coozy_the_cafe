@@ -120,7 +120,7 @@ class _CheckoutBarcodeScannerDialogState
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('✓ Added "$displayName" (₹${unitPrice.toStringAsFixed(2)})'),
+            content: Text('✓ Added "$displayName" (${unitPrice.toStringAsFixed(2)})'),
             backgroundColor: Colors.green[800],
             duration: const Duration(seconds: 2),
           ),

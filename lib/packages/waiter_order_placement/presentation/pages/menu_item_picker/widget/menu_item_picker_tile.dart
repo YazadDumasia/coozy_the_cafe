@@ -33,8 +33,8 @@ class MenuItemPickerTile extends StatelessWidget {
     final isMultiVariation = variations.isNotEmpty;
 
     final priceDisplay = isMultiVariation
-        ? '₹${variations.first.sellingPrice?.toStringAsFixed(0) ?? "0"}+'
-        : '₹${item.sellingPrice?.toStringAsFixed(0) ?? "0"}';
+        ? '${variations.first.sellingPrice?.toStringAsFixed(0) ?? "0"}+'
+        : item.sellingPrice?.toStringAsFixed(0) ?? "0";
 
     final isSelected = quantityInCart > 0;
     final cardBorderColor = isSelected

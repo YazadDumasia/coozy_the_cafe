@@ -1,10 +1,16 @@
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import '../../../../domain/entities/extra_charge.dart';
 
 class AddOtherChargeDialog extends StatefulWidget {
+  final String? initialName;
   final Function(ExtraCharge) onChargeAdded;
 
-  const AddOtherChargeDialog({super.key, required this.onChargeAdded});
+  const AddOtherChargeDialog({
+    super.key,
+    this.initialName,
+    required this.onChargeAdded,
+  });
 
   @override
   State<AddOtherChargeDialog> createState() => _AddOtherChargeDialogState();
@@ -22,7 +28,7 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
+    _nameController = TextEditingController(text: widget.initialName ?? '');
     _valueController = TextEditingController();
     _nameFocusNode = FocusNode();
     _valueFocusNode = FocusNode();
@@ -64,7 +70,11 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Add Other Fee',
+              context.tr(
+                    shared.LocaleKeys.checkoutAddOtherFee,
+                    track: shared.TrackConstants.checkoutPageTrack,
+                  ) ??
+                  'Add Other Fee',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -73,12 +83,22 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
             TextFormField(
               controller: _nameController,
               focusNode: _nameFocusNode,
-              decoration: const InputDecoration(
-                labelText: 'Other Name',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: context.tr(
+                      shared.LocaleKeys.checkoutOtherName,
+                      track: shared.TrackConstants.checkoutPageTrack,
+                    ) ??
+                    'Other Name',
+                border: const OutlineInputBorder(),
               ),
               textInputAction: TextInputAction.next,
-              validator: (v) => v == null || v.trim().isEmpty ? 'Enter fee name' : null,
+              validator: (v) => v == null || v.trim().isEmpty
+                  ? (context.tr(
+                        shared.LocaleKeys.checkoutEnterFeeName,
+                        track: shared.TrackConstants.checkoutPageTrack,
+                      ) ??
+                      'Enter fee name')
+                  : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
@@ -86,13 +106,29 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
               focusNode: _valueFocusNode,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
-                labelText: _isPercentage ? 'Other Value in %' : 'Other Value in ₹',
+                labelText: _isPercentage
+                    ? (context.tr(
+                          shared.LocaleKeys.checkoutOtherValuePercent,
+                          track: shared.TrackConstants.checkoutPageTrack,
+                        ) ??
+                        'Other Value in %')
+                    : (context.tr(
+                          shared.LocaleKeys.checkoutOtherValue,
+                          track: shared.TrackConstants.checkoutPageTrack,
+                        ) ??
+                        'Other Value'),
                 border: const OutlineInputBorder(),
-                suffixText: _isPercentage ? '%' : '₹',
+                suffixText: _isPercentage ? '%' : null,
               ),
               textInputAction: TextInputAction.done,
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Enter fee value';
+                if (v == null || v.trim().isEmpty) {
+                  return context.tr(
+                        shared.LocaleKeys.checkoutEnterFeeValue,
+                        track: shared.TrackConstants.checkoutPageTrack,
+                      ) ??
+                      'Enter fee value';
+                }
                 if (double.tryParse(v.trim()) == null) return 'Enter valid number';
                 return null;
               },
@@ -100,7 +136,13 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
             ),
             const SizedBox(height: 8),
             CheckboxListTile(
-              title: const Text('Percentage (%) ?'),
+              title: Text(
+                context.tr(
+                      shared.LocaleKeys.checkoutPercentageQuestion,
+                      track: shared.TrackConstants.checkoutPageTrack,
+                    ) ??
+                    'Percentage (%) ?',
+              ),
               value: _isPercentage,
               onChanged: (val) {
                 setState(() {
@@ -111,7 +153,13 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
               controlAffinity: ListTileControlAffinity.leading,
             ),
             CheckboxListTile(
-              title: const Text('Default Add to Bill'),
+              title: Text(
+                context.tr(
+                      shared.LocaleKeys.checkoutDefaultAddToBill,
+                      track: shared.TrackConstants.checkoutPageTrack,
+                    ) ??
+                    'Default Add to Bill',
+              ),
               value: _isDefaultAdd,
               onChanged: (val) {
                 setState(() {
@@ -127,12 +175,24 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.commonCancel,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Cancel',
+                  ),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _submit,
-                  child: const Text('Add Fee'),
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.checkoutAddFee,
+                          track: shared.TrackConstants.checkoutPageTrack,
+                        ) ??
+                        'Add Fee',
+                  ),
                 ),
               ],
             ),

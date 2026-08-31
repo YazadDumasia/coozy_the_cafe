@@ -1,11 +1,19 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../../../bloc/checkout_bloc.dart';
 import '../../../../domain/entities/customer_details.dart';
 import '../../../utils/responsive_modal.dart';
 import 'add_payment_method_dialog.dart';
+import 'card_or_other_payment_view.dart';
+import 'cash_payment_view.dart';
 import 'payment_settings_modal.dart';
+import 'payment_success_view.dart';
+
+enum _PaymentStep { details, cash, other, success }
 
 class PaymentSheetModal extends StatefulWidget {
   const PaymentSheetModal({super.key});
@@ -26,6 +34,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
   late final FocusNode _addressFocusNode;
 
   bool _isExpanderOpen = false;
+  _PaymentStep _activeStep = _PaymentStep.details;
 
   @override
   void initState() {
@@ -91,12 +100,68 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(symbol: '₹', decimalDigits: 2);
+    final currencyFormatter = NumberFormat.currency(symbol: '', decimalDigits: 2);
     final theme = Theme.of(context);
 
     return BlocBuilder<CheckoutBloc, CheckoutState>(
       builder: (context, state) {
         final enabledMethods = state.availablePaymentMethods.where((m) => m.isEnabled).toList();
+        final selectedMethod = state.selectedPaymentMethod;
+
+        if (_activeStep == _PaymentStep.success) {
+          return PaymentSuccessView(
+            grandTotal: state.summary.grandTotal,
+            itemCount: state.totalItemCount,
+            receiptId: state.orderId != null ? 'EN-${state.orderId}' : 'EN-11196',
+            onGetReceipt: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Receipt downloaded successfully')),
+              );
+            },
+            onNewSale: () {
+              context.read<CheckoutBloc>().add(const CheckoutCleared());
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+              context.go(core.AppRoutePath.homeRoute);
+            },
+          );
+        }
+
+        if (_activeStep == _PaymentStep.cash) {
+          return CashPaymentView(
+            grandTotal: state.summary.grandTotal,
+            onBack: () {
+              setState(() {
+                _activeStep = _PaymentStep.details;
+              });
+            },
+            onPaymentConfirmed: () {
+              context.read<CheckoutBloc>().add(const CheckoutPaymentConfirmed());
+              setState(() {
+                _activeStep = _PaymentStep.success;
+              });
+            },
+          );
+        }
+
+        if (_activeStep == _PaymentStep.other && selectedMethod != null) {
+          return CardOrOtherPaymentView(
+            paymentModeName: selectedMethod.name,
+            grandTotal: state.summary.grandTotal,
+            onBack: () {
+              setState(() {
+                _activeStep = _PaymentStep.details;
+              });
+            },
+            onPaymentConfirmed: () {
+              context.read<CheckoutBloc>().add(const CheckoutPaymentConfirmed());
+              setState(() {
+                _activeStep = _PaymentStep.success;
+              });
+            },
+          );
+        }
 
         return Padding(
           padding: const EdgeInsets.all(20.0),
@@ -106,7 +171,11 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
             children: [
               // Header
               Text(
-                'CUSTOMER DETAILS (OPTIONAL)',
+                context.tr(
+                      shared.LocaleKeys.checkoutCustomerDetailsOptional,
+                      track: shared.TrackConstants.checkoutPageTrack,
+                    ) ??
+                    'CUSTOMER DETAILS (OPTIONAL)',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Colors.purple,
@@ -122,7 +191,11 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                 keyboardType: TextInputType.phone,
                 onChanged: (_) => _updateCustomer(),
                 decoration: InputDecoration(
-                  labelText: 'Mobile Number',
+                  labelText: context.tr(
+                        shared.LocaleKeys.commonPhoneNumberLabel,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Mobile Number',
                   prefixIcon: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                     child: Text(
@@ -148,9 +221,13 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                 controller: _nameController,
                 focusNode: _nameFocusNode,
                 onChanged: (_) => _updateCustomer(),
-                decoration: const InputDecoration(
-                  labelText: 'Customer Name',
-                  border: OutlineInputBorder(),
+                decoration: InputDecoration(
+                  labelText: context.tr(
+                        shared.LocaleKeys.commonName,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Customer Name',
+                  border: const OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 8),
@@ -191,9 +268,13 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                   focusNode: _emailFocusNode,
                   keyboardType: TextInputType.emailAddress,
                   onChanged: (_) => _updateCustomer(),
-                  decoration: const InputDecoration(
-                    labelText: 'Email Address',
-                    border: OutlineInputBorder(),
+                  decoration: InputDecoration(
+                    labelText: context.tr(
+                          shared.LocaleKeys.commonEmailLabel,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Email Address',
+                    border: const OutlineInputBorder(),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -215,7 +296,11 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
 
               // Select Payment Mode Header
               Text(
-                'SELECT PAYMENT MODE',
+                context.tr(
+                      shared.LocaleKeys.checkoutSelectPaymentMode,
+                      track: shared.TrackConstants.checkoutPageTrack,
+                    ) ??
+                    'SELECT PAYMENT MODE',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   letterSpacing: 0.5,
@@ -244,7 +329,6 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                         decoration: BoxDecoration(
                           color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(12),
-
                           border: Border.all(
                             color: theme.colorScheme.outlineVariant,
                             style: BorderStyle.solid,
@@ -256,7 +340,11 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                             Icon(Icons.add_circle_outline, color: theme.colorScheme.primary),
                             const SizedBox(width: 8),
                             Text(
-                              '+ Add New',
+                              context.tr(
+                                    shared.LocaleKeys.checkoutAddNew,
+                                    track: shared.TrackConstants.checkoutPageTrack,
+                                  ) ??
+                                  '+ Add New',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: theme.colorScheme.primary,
@@ -269,7 +357,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                   }
 
                   final method = enabledMethods[index];
-                  final isSelected = state.selectedPaymentMethod?.id == method.id;
+                  final isSelected = selectedMethod?.id == method.id;
 
                   return InkWell(
                     onTap: () {
@@ -332,20 +420,26 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: () {
-                  final method = state.selectedPaymentMethod;
+                  final method = selectedMethod;
                   if (method == null) return;
-                  Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        'Payment Completed! ${currencyFormatter.format(state.summary.grandTotal)} via ${method.name}',
-                      ),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
+
+                  if (method.name.toLowerCase().contains('cash')) {
+                    setState(() {
+                      _activeStep = _PaymentStep.cash;
+                    });
+                  } else {
+                    setState(() {
+                      _activeStep = _PaymentStep.other;
+                    });
+                  }
                 },
                 child: Text(
-                  'CONFIRM PAYMENT (${currencyFormatter.format(state.summary.grandTotal)})',
+                  context.tr(
+                        shared.LocaleKeys.checkoutConfirmPayment,
+                        track: shared.TrackConstants.checkoutPageTrack,
+                        params: {'amount': currencyFormatter.format(state.summary.grandTotal)},
+                      ) ??
+                      'CONFIRM PAYMENT (${currencyFormatter.format(state.summary.grandTotal)})',
                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                 ),
               ),

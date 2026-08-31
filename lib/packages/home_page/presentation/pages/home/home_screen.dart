@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   ScrollController? _scrollController;
   bool _isAppBarVisible = true;
   late TabController _tabController;
-  final ValueNotifier<int> currentTabIndex = ValueNotifier<int>(0);
+  final ValueNotifier<int> currentTabIndex = ValueNotifier<int>(1);
 
   DateTime? currentBackPressTime;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 4, vsync: this, initialIndex: 1);
 
     _tabController.addListener(() {
       currentTabIndex.value = _tabController.index;

@@ -1,19 +1,19 @@
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import '../../../bloc/checkout_bloc.dart';
 import '../../../utils/responsive_modal.dart';
-import 'add_discount_dialog.dart';
-
-import 'add_other_charge_dialog.dart';
-import 'add_tax_dialog.dart';
+import 'select_charge_dialog.dart';
+import 'select_discount_dialog.dart';
+import 'select_tax_dialog.dart';
 
 class CheckoutSummaryCard extends StatelessWidget {
   const CheckoutSummaryCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(symbol: '₹', decimalDigits: 2);
+    final currencyFormatter = NumberFormat.currency(symbol: '', decimalDigits: 2);
     final theme = Theme.of(context);
 
     return BlocBuilder<CheckoutBloc, CheckoutState>(
@@ -33,7 +33,14 @@ class CheckoutSummaryCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('Subtotal', style: theme.textTheme.bodyMedium),
+                    Text(
+                      context.tr(
+                            shared.LocaleKeys.checkoutSubtotal,
+                            track: shared.TrackConstants.checkoutPageTrack,
+                          ) ??
+                          'Subtotal',
+                      style: theme.textTheme.bodyMedium,
+                    ),
                     Text(
                       currencyFormatter.format(summary.subtotal),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
@@ -57,7 +64,7 @@ class CheckoutSummaryCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            '${tax.name} - ($formattedRate% of ₹$formattedBase)',
+                            '${tax.name} - ($formattedRate% of $formattedBase)',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.colorScheme.onSurfaceVariant,
                             ),
@@ -72,11 +79,11 @@ class CheckoutSummaryCard extends StatelessWidget {
                   );
                 }),
 
-                // Applied Discounts Lines (Formatted negative values in red e.g. YHU (₹6) -> -6)
+                // Applied Discounts Lines
                 ...summary.discountDetails.map((discount) {
                   final displayVal = discount.isPercentage
                       ? '${discount.value}%'
-                      : '₹${discount.value % 1 == 0 ? discount.value.toInt() : discount.value.toStringAsFixed(2)}';
+                      : '${discount.value % 1 == 0 ? discount.value.toInt() : discount.value.toStringAsFixed(2)}';
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 6.0),
                     child: Row(
@@ -107,7 +114,7 @@ class CheckoutSummaryCard extends StatelessWidget {
                 ...summary.chargeDetails.map((charge) {
                   final displayVal = charge.isPercentage
                       ? '${charge.value}%'
-                      : '₹${charge.value % 1 == 0 ? charge.value.toInt() : charge.value.toStringAsFixed(2)}';
+                      : '${charge.value % 1 == 0 ? charge.value.toInt() : charge.value.toStringAsFixed(2)}';
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 6.0),
                     child: Row(
@@ -151,9 +158,14 @@ class CheckoutSummaryCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          'Round Off ',
+                          context.tr(
+                                shared.LocaleKeys.checkoutRoundOff,
+                                track: shared.TrackConstants.checkoutPageTrack,
+                              ) ??
+                              'Round Off',
                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                         ),
+                        const SizedBox(width: 4),
                         Text(
                           '(Click here to ${state.isRoundOffEnabled ? "Disable" : "Enable"})',
                           style: theme.textTheme.bodySmall?.copyWith(
@@ -184,7 +196,11 @@ class CheckoutSummaryCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Grand Total',
+                      context.tr(
+                            shared.LocaleKeys.checkoutGrandTotal,
+                            track: shared.TrackConstants.checkoutPageTrack,
+                          ) ??
+                          'Grand Total',
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
@@ -208,11 +224,17 @@ class CheckoutSummaryCard extends StatelessWidget {
                   children: [
                     ActionChip(
                       avatar: const Icon(Icons.add, size: 16),
-                      label: const Text('Add Tax'),
+                      label: Text(
+                        context.tr(
+                              shared.LocaleKeys.checkoutAddTax,
+                              track: shared.TrackConstants.checkoutPageTrack,
+                            ) ??
+                            'Add Tax',
+                      ),
                       onPressed: () {
                         showResponsiveModal(
                           context: context,
-                          child: AddTaxDialog(
+                          child: SelectTaxDialog(
                             onTaxAdded: (tax) {
                               context.read<CheckoutBloc>().add(CheckoutTaxAdded(tax));
                             },
@@ -222,11 +244,17 @@ class CheckoutSummaryCard extends StatelessWidget {
                     ),
                     ActionChip(
                       avatar: const Icon(Icons.add, size: 16),
-                      label: const Text('Add Discount'),
+                      label: Text(
+                        context.tr(
+                              shared.LocaleKeys.checkoutAddDiscount,
+                              track: shared.TrackConstants.checkoutPageTrack,
+                            ) ??
+                            'Add Discount',
+                      ),
                       onPressed: () {
                         showResponsiveModal(
                           context: context,
-                          child: AddDiscountDialog(
+                          child: SelectDiscountDialog(
                             onDiscountAdded: (discount) {
                               context.read<CheckoutBloc>().add(CheckoutDiscountAdded(discount));
                             },
@@ -236,11 +264,17 @@ class CheckoutSummaryCard extends StatelessWidget {
                     ),
                     ActionChip(
                       avatar: const Icon(Icons.add, size: 16),
-                      label: const Text('Add Other Charges'),
+                      label: Text(
+                        context.tr(
+                              shared.LocaleKeys.checkoutAddOtherCharges,
+                              track: shared.TrackConstants.checkoutPageTrack,
+                            ) ??
+                            'Add Other Charges',
+                      ),
                       onPressed: () {
                         showResponsiveModal(
                           context: context,
-                          child: AddOtherChargeDialog(
+                          child: SelectChargeDialog(
                             onChargeAdded: (charge) {
                               context.read<CheckoutBloc>().add(CheckoutOtherChargeAdded(charge));
                             },

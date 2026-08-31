@@ -26,7 +26,7 @@ dependencies:
   path_provider: ^2.1.0
   path: ^1.9.0
 #
-  go_router: ^17.5.0
+  go_router: ^18.0.0
 #
   platform: ^3.1.6
   platform_info: ^5.0.0
@@ -76,7 +76,7 @@ dependencies:
   pdf: ^3.11.1
   printing: ^5.13.2
   pdfrx: ^2.4.8
-  mobile_scanner: ^6.0.0
+  mobile_scanner: ^7.4.0
 #
   cached_network_image_ce: ^4.9.0
   flutter_cache_manager: ^3.4.1
@@ -95,6 +95,7 @@ dependencies:
   animate_to: ^0.1.0
   animated_text_kit: ^4.2.3
   flutter_neumorphism_ui: ^1.0.2
+  flutter_floating_particles: ^1.0.2
   #
   permission_handler: ^13.0.1
   http: ^1.2.2

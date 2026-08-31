@@ -169,7 +169,7 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        '₹${(widget.item.price * widget.item.quantity).toStringAsFixed(0)}',
+                        (widget.item.price * widget.item.quantity).toStringAsFixed(0),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.w600,

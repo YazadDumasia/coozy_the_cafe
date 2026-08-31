@@ -1204,4 +1204,54 @@ abstract class LocaleKeys {
   static const String deleteTableOrderConfirmMessage =
       'delete_table_order_confirm_message';
   static const String shapeLabel = 'shape_label';
+
+  // checkout page
+  static const String checkoutAddDiscount = 'checkout_add_discount';
+  static const String checkoutAddFee = 'checkout_add_fee';
+  static const String checkoutAddNew = 'checkout_add_new';
+  static const String checkoutAddOtherCharges = 'checkout_add_other_charges';
+  static const String checkoutAddOtherFee = 'checkout_add_other_fee';
+  static const String checkoutAddTax = 'checkout_add_tax';
+  static const String checkoutCash = 'checkout_cash';
+  static const String checkoutCashReceivedOptional = 'checkout_cash_received_optional';
+  static const String checkoutCgst = 'checkout_cgst';
+  static const String checkoutChange = 'checkout_change';
+  static const String checkoutConfirmPayment = 'checkout_confirm_payment';
+  static const String checkoutCustomerDetailsOptional = 'checkout_customer_details_optional';
+  static const String checkoutDefaultAddToBill = 'checkout_default_add_to_bill';
+  static const String checkoutDeliveryCharge = 'checkout_delivery_charge';
+  static const String checkoutEnterFeeName = 'checkout_enter_fee_name';
+  static const String checkoutEnterFeeValue = 'checkout_enter_fee_value';
+  static const String checkoutFestivalOffer = 'checkout_festival_offer';
+  static const String checkoutFlatDiscount = 'checkout_flat_discount';
+  static const String checkoutGetReceipt = 'checkout_get_receipt';
+  static const String checkoutGrandTotal = 'checkout_grand_total';
+  static const String checkoutIgst = 'checkout_igst';
+  static const String checkoutItemCount = 'checkout_item_count';
+  static const String checkoutNewSale = 'checkout_new_sale';
+  static const String checkoutOtherCharge = 'checkout_other_charge';
+  static const String checkoutOtherDiscount = 'checkout_other_discount';
+  static const String checkoutOtherName = 'checkout_other_name';
+  static const String checkoutOtherTax = 'checkout_other_tax';
+  static const String checkoutOtherValue = 'checkout_other_value';
+  static const String checkoutOtherValuePercent = 'checkout_other_value_percent';
+  static const String checkoutPackingCharge = 'checkout_packing_charge';
+  static const String checkoutPercentageDiscount = 'checkout_percentage_discount';
+  static const String checkoutPercentageQuestion = 'checkout_percentage_question';
+  static const String checkoutReceiptId = 'checkout_receipt_id';
+  static const String checkoutReceiptNoteOptional = 'checkout_receipt_note_optional';
+  static const String checkoutReceivedByCash = 'checkout_received_by_cash';
+  static const String checkoutReceivedByMode = 'checkout_received_by_mode';
+  static const String checkoutRoundOff = 'checkout_round_off';
+  static const String checkoutSelectCharge = 'checkout_select_charge';
+  static const String checkoutSelectDiscount = 'checkout_select_discount';
+  static const String checkoutSelectPaymentMode = 'checkout_select_payment_mode';
+  static const String checkoutSelectTax = 'checkout_select_tax';
+  static const String checkoutSendTransactionSms = 'checkout_send_transaction_sms';
+  static const String checkoutServiceChargeFee = 'checkout_service_charge_fee';
+  static const String checkoutSgst = 'checkout_sgst';
+  static const String checkoutSmsLeftZero = 'checkout_sms_left_zero';
+  static const String checkoutStaffDiscount = 'checkout_staff_discount';
+  static const String checkoutSubtotal = 'checkout_subtotal';
+  static const String checkoutVat = 'checkout_vat';
 }

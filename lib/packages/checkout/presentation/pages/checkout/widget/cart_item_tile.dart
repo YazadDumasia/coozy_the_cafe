@@ -14,7 +14,7 @@ class CartItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(symbol: '₹', decimalDigits: 2);
+    final currencyFormatter = NumberFormat.currency(symbol: '', decimalDigits: 2);
     final theme = Theme.of(context);
 
     return Padding(

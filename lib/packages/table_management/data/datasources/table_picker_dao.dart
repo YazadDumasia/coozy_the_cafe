@@ -20,7 +20,7 @@ class TablePickerDao {
                     db.ordersTable.isDeleted.equals(false)) &
                 db.ordersTable.status.isNotIn([
                   'completed',
-                  'canceled',
+                  'paid',
                   'cancelled',
                 ]),
           ),
@@ -84,7 +84,7 @@ class TablePickerDao {
     final statusValue = (order.status ?? '').trim().toLowerCase();
 
     if (statusValue == 'completed' ||
-        statusValue == 'canceled' ||
+        statusValue == 'paid' ||
         statusValue == 'cancelled') {
       return TableStatus.empty;
     }

@@ -131,3 +131,7 @@ final class CheckoutPaymentSelected extends CheckoutEvent {
   @override
   List<Object?> get props => [method];
 }
+
+final class CheckoutPaymentConfirmed extends CheckoutEvent {
+  const CheckoutPaymentConfirmed();
+}

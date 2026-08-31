@@ -1,10 +1,16 @@
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import '../../../../domain/entities/tax.dart';
 
 class AddTaxDialog extends StatefulWidget {
+  final String? initialName;
   final Function(Tax) onTaxAdded;
 
-  const AddTaxDialog({super.key, required this.onTaxAdded});
+  const AddTaxDialog({
+    super.key,
+    this.initialName,
+    required this.onTaxAdded,
+  });
 
   @override
   State<AddTaxDialog> createState() => _AddTaxDialogState();
@@ -21,7 +27,7 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
+    _nameController = TextEditingController(text: widget.initialName ?? '');
     _rateController = TextEditingController();
     _nameFocusNode = FocusNode();
     _rateFocusNode = FocusNode();
@@ -62,7 +68,11 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Add Tax Value',
+              context.tr(
+                    shared.LocaleKeys.checkoutAddTax,
+                    track: shared.TrackConstants.checkoutPageTrack,
+                  ) ??
+                  'Add Tax Value',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -98,7 +108,13 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
             ),
             const SizedBox(height: 8),
             CheckboxListTile(
-              title: const Text('Default Add to Bill'),
+              title: Text(
+                context.tr(
+                      shared.LocaleKeys.checkoutDefaultAddToBill,
+                      track: shared.TrackConstants.checkoutPageTrack,
+                    ) ??
+                    'Default Add to Bill',
+              ),
               value: _isDefaultAdd,
               onChanged: (val) {
                 setState(() {
@@ -114,12 +130,24 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.commonCancel,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Cancel',
+                  ),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _submit,
-                  child: const Text('Add Tax'),
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.checkoutAddTax,
+                          track: shared.TrackConstants.checkoutPageTrack,
+                        ) ??
+                        'Add Tax',
+                  ),
                 ),
               ],
             ),

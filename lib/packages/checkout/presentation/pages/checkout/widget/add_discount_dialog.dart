@@ -1,10 +1,16 @@
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import '../../../../domain/entities/discount.dart';
 
 class AddDiscountDialog extends StatefulWidget {
+  final String? initialName;
   final Function(Discount) onDiscountAdded;
 
-  const AddDiscountDialog({super.key, required this.onDiscountAdded});
+  const AddDiscountDialog({
+    super.key,
+    this.initialName,
+    required this.onDiscountAdded,
+  });
 
   @override
   State<AddDiscountDialog> createState() => _AddDiscountDialogState();
@@ -22,7 +28,7 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController();
+    _nameController = TextEditingController(text: widget.initialName ?? '');
     _valueController = TextEditingController();
     _nameFocusNode = FocusNode();
     _valueFocusNode = FocusNode();
@@ -64,7 +70,11 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Add Discount Value',
+              context.tr(
+                    shared.LocaleKeys.checkoutAddDiscount,
+                    track: shared.TrackConstants.checkoutPageTrack,
+                  ) ??
+                  'Add Discount Value',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
@@ -86,9 +96,9 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
               focusNode: _valueFocusNode,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: InputDecoration(
-                labelText: _isPercentage ? 'Discount Value in %' : 'Discount Value in ₹',
+                labelText: _isPercentage ? 'Discount Value in %' : 'Discount Value',
                 border: const OutlineInputBorder(),
-                suffixText: _isPercentage ? '%' : '₹',
+                suffixText: _isPercentage ? '%' : null,
               ),
               textInputAction: TextInputAction.done,
               validator: (v) {
@@ -100,7 +110,13 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
             ),
             const SizedBox(height: 8),
             CheckboxListTile(
-              title: const Text('Percentage (%) ?'),
+              title: Text(
+                context.tr(
+                      shared.LocaleKeys.checkoutPercentageQuestion,
+                      track: shared.TrackConstants.checkoutPageTrack,
+                    ) ??
+                    'Percentage (%) ?',
+              ),
               value: _isPercentage,
               onChanged: (val) {
                 setState(() {
@@ -111,7 +127,13 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
               controlAffinity: ListTileControlAffinity.leading,
             ),
             CheckboxListTile(
-              title: const Text('Default Add to Bill'),
+              title: Text(
+                context.tr(
+                      shared.LocaleKeys.checkoutDefaultAddToBill,
+                      track: shared.TrackConstants.checkoutPageTrack,
+                    ) ??
+                    'Default Add to Bill',
+              ),
               value: _isDefaultAdd,
               onChanged: (val) {
                 setState(() {
@@ -127,12 +149,24 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: const Text('Cancel'),
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.commonCancel,
+                          track: shared.TrackConstants.commonTrack,
+                        ) ??
+                        'Cancel',
+                  ),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
                   onPressed: _submit,
-                  child: const Text('Add Discount'),
+                  child: Text(
+                    context.tr(
+                          shared.LocaleKeys.checkoutAddDiscount,
+                          track: shared.TrackConstants.checkoutPageTrack,
+                        ) ??
+                        'Add Discount',
+                  ),
                 ),
               ],
             ),
