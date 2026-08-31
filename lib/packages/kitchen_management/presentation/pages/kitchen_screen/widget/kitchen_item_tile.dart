@@ -27,13 +27,13 @@ class KitchenItemTile extends StatelessWidget {
   String _getStatusLabel(BuildContext context, String status) {
     switch (status.toLowerCase()) {
       case 'preparing':
-        return context.tr(shared.LocaleKeys.kitchenStatusPreparing) ??
+        return context.tr(shared.LocaleKeys.kitchenStatusPreparing, track: shared.TrackConstants.orderPageTrack) ??
             'Preparing';
       case 'ready':
-        return context.tr(shared.LocaleKeys.kitchenStatusReady) ?? 'Ready';
+        return context.tr(shared.LocaleKeys.kitchenStatusReady, track: shared.TrackConstants.orderPageTrack) ?? 'Ready';
       case 'pending':
       default:
-        return context.tr(shared.LocaleKeys.kitchenStatusPending) ?? 'Pending';
+        return context.tr(shared.LocaleKeys.kitchenStatusPending, track: shared.TrackConstants.orderPageTrack) ?? 'Pending';
     }
   }
 
@@ -117,21 +117,21 @@ class KitchenItemTile extends StatelessWidget {
                   PopupMenuItem(
                     value: 'pending',
                     child: Text(
-                      context.tr(shared.LocaleKeys.kitchenStatusPending) ??
+                      context.tr(shared.LocaleKeys.kitchenStatusPending, track: shared.TrackConstants.orderPageTrack) ??
                           'Pending',
                     ),
                   ),
                   PopupMenuItem(
                     value: 'preparing',
                     child: Text(
-                      context.tr(shared.LocaleKeys.kitchenStatusPreparing) ??
+                      context.tr(shared.LocaleKeys.kitchenStatusPreparing, track: shared.TrackConstants.orderPageTrack) ??
                           'Preparing',
                     ),
                   ),
                   PopupMenuItem(
                     value: 'ready',
                     child: Text(
-                      context.tr(shared.LocaleKeys.kitchenStatusReady) ??
+                      context.tr(shared.LocaleKeys.kitchenStatusReady, track: shared.TrackConstants.orderPageTrack) ??
                           'Ready',
                     ),
                   ),

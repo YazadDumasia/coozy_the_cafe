@@ -97,7 +97,7 @@ class _MenuItemSearchScreenState extends State<MenuItemSearchScreen> {
             autofocus: true,
             decoration: InputDecoration(
               hintText:
-                  context.tr(shared.LocaleKeys.searchDishNameHint) ??
+                  context.tr(shared.LocaleKeys.searchDishNameHint, track: shared.TrackConstants.tablePageTrack) ??
                   'Search dish name...',
               hintStyle: theme.textTheme.titleMedium?.copyWith(
                 color: appBarFgColor,
@@ -180,7 +180,7 @@ class _MenuItemSearchScreenState extends State<MenuItemSearchScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        context.tr(shared.LocaleKeys.searchDishNameHint) ??
+                        context.tr(shared.LocaleKeys.searchDishNameHint, track: shared.TrackConstants.tablePageTrack) ??
                             'Type dish name to search...',
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: theme.colorScheme.onSurfaceVariant,

@@ -61,7 +61,7 @@ class _SignInButtonWidgetState extends State<SignInButtonWidget> {
                   ),
                   child: (snapshot.data == null || snapshot.data == false)
                       ? Text(
-                          context.tr(shared.LocaleKeys.loginInactiveBtn) ??
+                          context.tr(shared.LocaleKeys.loginInactiveBtn, track: shared.TrackConstants.loginPageTrack) ??
                               'Login',
                         )
                       : Row(

@@ -101,7 +101,7 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
             final errText =
                 (state.errorMessage ==
                     'Cart is empty. Please add items to place order.')
-                ? (context.tr(shared.LocaleKeys.cartIsEmptyMsg) ??
+                ? (context.tr(shared.LocaleKeys.cartIsEmptyMsg, track: shared.TrackConstants.tablePageTrack) ??
                       state.errorMessage!)
                 : state.errorMessage!;
             ScaffoldMessenger.of(context).showSnackBar(
@@ -189,7 +189,7 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   // Fast Forward / Order Summary Action Button (>> icon)
                   IconButton(
                     tooltip:
-                        context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
+                        context.tr(shared.LocaleKeys.currentOrderTabTitle, track: shared.TrackConstants.tablePageTrack) ??
                         'Current Order',
                     icon: Icon(
                       Icons.fast_forward_rounded,
@@ -229,7 +229,7 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   tabs: [
                     Tab(
                       text:
-                          (context.tr(shared.LocaleKeys.currentOrderTabTitle) ??
+                          (context.tr(shared.LocaleKeys.currentOrderTabTitle, track: shared.TrackConstants.tablePageTrack) ??
                                   'CURRENT ORDER')
                               .toUpperCase(),
                     ),

@@ -66,7 +66,7 @@ class WaiterOrderPlacementView extends StatelessWidget {
                         color: Colors.green,
                       ),
                       Text(
-                        context.tr(shared.LocaleKeys.addNewOrderBtnText) ??
+                        context.tr(shared.LocaleKeys.addNewOrderBtnText, track: shared.TrackConstants.tablePageTrack) ??
                             'Add New Order',
                         textAlign: TextAlign.center,
                         style: theme.textTheme.titleMedium?.copyWith(
@@ -96,7 +96,7 @@ class WaiterOrderPlacementView extends StatelessWidget {
                   } else if (state is ActiveTableOrdersLoaded) {
                     final orders = state.orders;
                     final totalText =
-                        context.tr(shared.LocaleKeys.totalTableOrders) ??
+                        context.tr(shared.LocaleKeys.totalTableOrders, track: shared.TrackConstants.staffManagementPageTrack) ??
                         'Total Table Orders: ${orders.length}';
                     final displayText = totalText.contains('{count}')
                         ? totalText.replaceAll('{count}', '${orders.length}')

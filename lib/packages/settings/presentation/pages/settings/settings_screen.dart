@@ -1474,15 +1474,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.people_alt_outlined,
                   stageKeys: ['customers'],
                   title: 'Customers Table',
-                  subtitle:
-                      '250+ Fake Customers with contact info & phone numbers',
+                  subtitle: _tr(
+                    context,
+                    shared.LocaleKeys.settingsCustomersSetSubtitle,
+                    '120+ Fake Customers with names & phone numbers',
+                  ),
                 ),
                 _buildDataSetTile(
                   icon: Icons.badge_outlined,
                   stageKeys: ['employees'],
                   title: 'Employees / Staff Table',
-                  subtitle:
-                      '100 Staff Profiles (Managers, Chefs, Baristas, Waiters, Cashiers)',
+                  subtitle: _tr(
+                    context,
+                    shared.LocaleKeys.settingsStaffSetSubtitle,
+                    '20 Employees, 300+ Attendance & 60+ Leave records',
+                  ),
                 ),
                 _buildDataSetTile(
                   icon: Icons.co_present_outlined,
@@ -1536,8 +1542,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.inventory_2_outlined,
                   stageKeys: ['inventory'],
                   title: 'Inventory Raw Stock Table',
-                  subtitle:
-                      '10 Kitchen Raw Material Stock Items with live stock levels',
+                  subtitle: _tr(
+                    context,
+                    shared.LocaleKeys.settingsInventorySetSubtitle,
+                    '20 Inventory Items & 150+ Purchase records',
+                  ),
                 ),
                 _buildDataSetTile(
                   icon: Icons.shopping_cart_outlined,
@@ -1550,15 +1559,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.event_seat_outlined,
                   stageKeys: ['reservations'],
                   title: 'Table Reservations Table',
-                  subtitle:
-                      '215 Table Reservations (15 Current for Today + 200 Upcoming over next 2 weeks)',
+                  subtitle: _tr(
+                    context,
+                    shared.LocaleKeys.settingsReservationsSetSubtitle,
+                    '80+ Booked Table Reservations',
+                  ),
                 ),
                 _buildDataSetTile(
                   icon: Icons.receipt_long_outlined,
                   stageKeys: ['orders'],
                   title: 'Orders & Kitchen Items Table',
-                  subtitle:
-                      '150+ Customer Orders (Dine-In, Takeaway, Delivery)',
+                  subtitle: _tr(
+                    context,
+                    shared.LocaleKeys.settingsOrdersSetSubtitle,
+                    '250+ Orders & Invoices (1.5 Years history)',
+                  ),
                 ),
                 _buildDataSetTile(
                   icon: Icons.point_of_sale_outlined,
@@ -2575,7 +2590,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         : Icons.add_rounded,
                                   ),
                                   label: Text(
-                                    isActive ? 'Remove Data' : 'Populate Data',
+                                    isActive
+                                        ? _tr(
+                                            context,
+                                            shared.LocaleKeys.removeDataButton,
+                                            'Remove Data',
+                                          )
+                                        : _tr(
+                                            context,
+                                            shared.LocaleKeys.populateDataButton,
+                                            'Populate Data',
+                                          ),
                                   ),
                                 );
                               },

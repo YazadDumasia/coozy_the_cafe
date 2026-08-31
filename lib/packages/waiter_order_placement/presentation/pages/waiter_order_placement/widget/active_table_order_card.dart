@@ -79,7 +79,7 @@ class ActiveTableOrderCard extends StatelessWidget {
                             ),
                           ),
                         Text(
-                          context.tr(shared.LocaleKeys.shapeLabel) ?? 'Shape',
+                          context.tr(shared.LocaleKeys.shapeLabel, track: shared.TrackConstants.staffManagementPageTrack) ?? 'Shape',
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: theme.textTheme.bodySmall?.color?.withValues(
                               alpha: 0.6,

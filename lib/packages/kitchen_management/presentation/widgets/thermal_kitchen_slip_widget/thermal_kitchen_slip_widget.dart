@@ -63,7 +63,7 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      context.tr(shared.LocaleKeys.thermalKotDialogTitle) ??
+                      context.tr(shared.LocaleKeys.thermalKotDialogTitle, track: shared.TrackConstants.tablePageTrack) ??
                           'Thermal Printer KOT Slip Preview',
                       style: const TextStyle(
                         fontSize: 16,
@@ -116,7 +116,7 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                 TextButton.icon(
                   icon: const Icon(Icons.print_rounded),
                   label: Text(
-                    context.tr(shared.LocaleKeys.thermalKotSimulatePrintBtn) ??
+                    context.tr(shared.LocaleKeys.thermalKotSimulatePrintBtn, track: shared.TrackConstants.tablePageTrack) ??
                         'Simulate Print Job',
                   ),
                   onPressed: () {

@@ -147,7 +147,7 @@ class CategoryMenuItemsTabView extends StatelessWidget {
                       ),
                       onPressed: onReviewOrder,
                       child: Text(
-                        context.tr(shared.LocaleKeys.reviewOrderBtnText) ??
+                        context.tr(shared.LocaleKeys.reviewOrderBtnText, track: shared.TrackConstants.tablePageTrack) ??
                             'Review Order',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onPrimary,

@@ -22,7 +22,7 @@ class DeleteOrderDialog extends StatelessWidget {
       contentPadding: const EdgeInsets.fromLTRB(24, 8, 24, 20),
       actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
       title: Text(
-        context.tr(shared.LocaleKeys.deleteTableOrderTitle) ??
+        context.tr(shared.LocaleKeys.deleteTableOrderTitle, track: shared.TrackConstants.staffManagementPageTrack) ??
             'Delete Table Order',
         style: theme.textTheme.titleMedium?.copyWith(
           color: primaryColor,
@@ -31,7 +31,7 @@ class DeleteOrderDialog extends StatelessWidget {
         ),
       ),
       content: Text(
-        context.tr(shared.LocaleKeys.deleteTableOrderConfirmMessage) ??
+        context.tr(shared.LocaleKeys.deleteTableOrderConfirmMessage, track: shared.TrackConstants.staffManagementPageTrack) ??
             'Are you Sure? It will be deleted Permanently',
         style: theme.textTheme.bodyMedium?.copyWith(
           color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
@@ -42,7 +42,7 @@ class DeleteOrderDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.of(context).pop(false),
           child: Text(
-            context.tr(shared.LocaleKeys.commonNo) ?? 'NO',
+            context.tr(shared.LocaleKeys.commonNo, track: shared.TrackConstants.commonTrack) ?? 'NO',
             style: theme.textTheme.labelLarge?.copyWith(
               color: primaryColor,
               fontWeight: FontWeight.bold,
@@ -52,7 +52,7 @@ class DeleteOrderDialog extends StatelessWidget {
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),
           child: Text(
-            context.tr(shared.LocaleKeys.commonDelete) ?? 'DELETE',
+            context.tr(shared.LocaleKeys.commonDelete, track: shared.TrackConstants.commonTrack) ?? 'DELETE',
             style: theme.textTheme.labelLarge?.copyWith(
               color: primaryColor,
               fontWeight: FontWeight.bold,
