@@ -35,12 +35,15 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
   Future<void> handleReservationArrival({
     required int reservationId,
     required int tableInfoId,
+    String? tableNameText,
   }) async {
     final order = await getOrderByReservationId(reservationId);
     if (order != null) {
       await (update(ordersTable)..where((t) => t.id.equals(order.id))).write(
         OrdersTableCompanion(
           tableInfoId: Value(tableInfoId),
+          tableNameText:
+              tableNameText != null ? Value(tableNameText) : const Value.absent(),
           status: const Value('inProgress'),
           orderType: const Value('Dine-In'),
           modificationDate: Value(DateTime.now().toUtc().toIso8601String()),

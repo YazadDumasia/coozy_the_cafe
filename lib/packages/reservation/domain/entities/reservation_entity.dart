@@ -22,8 +22,9 @@ class PreOrderedMenuItemEntity extends Equatable {
 
   factory PreOrderedMenuItemEntity.fromJson(Map<String, dynamic> json) {
     return PreOrderedMenuItemEntity(
-      itemId: json['itemId'] as int? ?? 0,
-      itemName: json['itemName'] as String? ?? '',
+      itemId: json['itemId'] as int? ?? json['id'] as int? ?? 0,
+      itemName:
+          json['itemName'] as String? ?? json['item_name'] as String? ?? '',
       quantity: json['quantity'] as int? ?? 1,
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
     );

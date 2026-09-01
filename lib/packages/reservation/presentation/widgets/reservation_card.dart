@@ -9,6 +9,7 @@ class ReservationCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
+  final VoidCallback? onCustomerArrived;
 
   const ReservationCard({
     super.key,
@@ -16,6 +17,7 @@ class ReservationCard extends StatelessWidget {
     required this.onTap,
     required this.onEdit,
     required this.onDelete,
+    this.onCustomerArrived,
   });
 
   Future<void> _makePhoneCall(String? phoneNumber) async {
@@ -103,6 +105,7 @@ class ReservationCard extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: onTap,
+        onLongPress: onCustomerArrived,
         child: Padding(
           padding: const EdgeInsets.all(14),
           child: Column(
@@ -252,6 +255,25 @@ class ReservationCard extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  if (onCustomerArrived != null && reservation.status != 2) ...[
+                    IconButton(
+                      icon: const Icon(
+                        Icons.event_seat,
+                        size: 20,
+                        color: Colors.orange,
+                      ),
+                      tooltip:
+                          context.tr(
+                            shared.LocaleKeys.customerShowUpButton,
+                            track: shared.TrackConstants.reservationPageTrack,
+                          ) ??
+                          'Guest Arrived / Seat & Order',
+                      onPressed: onCustomerArrived,
+                      constraints: const BoxConstraints(),
+                      padding: const EdgeInsets.all(6),
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   if (hasPhone) ...[
                     IconButton(
                       icon: const Icon(

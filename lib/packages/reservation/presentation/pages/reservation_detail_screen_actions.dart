@@ -96,7 +96,30 @@ class ReservationDetailScreenActions {
     ReservationActionState state,
   ) {
     final track = shared.TrackConstants.reservationPageTrack;
-    if (state is ReservationActionSuccess) {
+    if (state is ReservationConvertedToOrderSuccess) {
+      Navigator.pop(context, true);
+      shared.DialogUtils.showAutoDismissDialog(
+        context: context,
+        title:
+            context.tr(
+              shared.LocaleKeys.commonSuccess,
+              track: shared.TrackConstants.commonTrack,
+            ) ??
+            'Success',
+        descriptions:
+            context.tr(
+              shared.LocaleKeys.customerShowUpSuccess,
+              track: track,
+            ) ??
+            'Reservation converted to active order successfully!',
+        titleIcon: Lottie.asset(
+          MediaQuery.of(context).platformBrightness == Brightness.light
+              ? Assets.lottie.doneLightBrownColor
+              : Assets.lottie.doneBrownColor,
+          repeat: false,
+        ),
+      );
+    } else if (state is ReservationActionSuccess) {
       Navigator.pop(context, true);
       shared.DialogUtils.showAutoDismissDialog(
         context: context,

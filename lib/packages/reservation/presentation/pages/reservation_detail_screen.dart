@@ -5,6 +5,7 @@ import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../domain/entities/reservation_entity.dart';
 import '../bloc/reservation_action_cubit.dart';
+import 'main_reservation_screen_actions.dart';
 import 'reservation_detail_screen_actions.dart';
 
 class ReservationDetailScreen extends StatelessWidget {
@@ -38,6 +39,21 @@ class ReservationDetailScreen extends StatelessWidget {
                 'Reservation Details',
           ),
           actions: [
+            if (reservation.status != 2)
+              IconButton(
+                icon: const Icon(Icons.event_seat, color: Colors.orange),
+                tooltip:
+                    context.tr(
+                      shared.LocaleKeys.customerShowUpButton,
+                      track: track,
+                    ) ??
+                    'Guest Arrived / Seat & Order',
+                onPressed: () =>
+                    MainReservationScreenActions.confirmCustomerArrival(
+                      context,
+                      reservation,
+                    ),
+              ),
             IconButton(
               icon: const Icon(Icons.edit),
               onPressed: () => ReservationDetailScreenActions.onEditPressed(

@@ -8,6 +8,8 @@ import 'presentation/bloc/current_reservation_cubit.dart';
 import 'presentation/bloc/upcoming_reservation_bloc.dart';
 import 'presentation/bloc/reservation_action_cubit.dart';
 
+import 'domain/usecases/convert_reservation_to_order_usecase.dart';
+
 void registerReservationDependencies(GetIt sl) {
   // Data Source
   sl.registerLazySingleton<ReservationLocalDataSource>(
@@ -28,6 +30,7 @@ void registerReservationDependencies(GetIt sl) {
   sl.registerLazySingleton(() => UpdateReservationUseCase(sl()));
   sl.registerLazySingleton(() => DeleteReservationUseCase(sl()));
   sl.registerLazySingleton(() => UpdateReservationStatusUseCase(sl()));
+  sl.registerLazySingleton(() => ConvertReservationToOrderUseCase(sl()));
 
   // BLoC / Cubits
   sl.registerFactory(
@@ -48,6 +51,7 @@ void registerReservationDependencies(GetIt sl) {
       updateReservationUseCase: sl(),
       deleteReservationUseCase: sl(),
       updateReservationStatusUseCase: sl(),
+      convertReservationToOrderUseCase: sl(),
     ),
   );
 }

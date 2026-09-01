@@ -65,4 +65,9 @@ class ReservationRepositoryImpl implements ReservationRepository {
   Future<int> deleteReservation(int id) {
     return localDataSource.deleteReservation(id);
   }
+
+  @override
+  Future<int> convertReservationToOrder(ReservationEntity reservation) {
+    return localDataSource.convertReservationToOrder(reservation);
+  }
 }

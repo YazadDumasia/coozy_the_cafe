@@ -25,4 +25,6 @@ abstract class ReservationRepository {
   Future<bool> updateReservationStatus({required int id, required int status});
 
   Future<int> deleteReservation(int id);
+
+  Future<int> convertReservationToOrder(ReservationEntity reservation);
 }

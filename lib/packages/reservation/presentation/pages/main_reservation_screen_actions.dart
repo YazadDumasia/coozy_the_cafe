@@ -188,4 +188,71 @@ class MainReservationScreenActions {
       },
     );
   }
+
+  static void confirmCustomerArrival(
+    BuildContext context,
+    ReservationEntity item,
+  ) {
+    final track = shared.TrackConstants.reservationPageTrack;
+    final customerName = item.customerName ??
+        (context.tr(shared.LocaleKeys.guestLabel, track: track) ?? 'Guest');
+
+    showDialog(
+      context: context,
+      builder: (dialogCtx) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(
+              Icons.event_seat,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                context.tr(
+                      shared.LocaleKeys.customerShowUpTitle,
+                      track: track,
+                    ) ??
+                    'Customer Arrived?',
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          context.tr(
+                shared.LocaleKeys.customerShowUpSubtitle,
+                track: track,
+                params: {'customerName': customerName},
+              ) ??
+              'Would you like to seat $customerName and convert this reservation into an active Dine-In order?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogCtx),
+            child: Text(
+              context.tr(
+                    shared.LocaleKeys.commonCancel,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Cancel',
+            ),
+          ),
+          ElevatedButton.icon(
+            icon: const Icon(Icons.check_circle_outline, size: 18),
+            label: Text(
+              context.tr(
+                    shared.LocaleKeys.confirmSeatAndOrder,
+                    track: track,
+                  ) ??
+                  'Seat & Create Order',
+            ),
+            onPressed: () {
+              Navigator.pop(dialogCtx);
+              context.read<ReservationActionCubit>().convertReservationToOrder(item);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }

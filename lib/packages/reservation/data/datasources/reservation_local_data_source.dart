@@ -28,6 +28,8 @@ abstract class ReservationLocalDataSource {
   Future<bool> updateReservationStatus({required int id, required int status});
 
   Future<int> deleteReservation(int id);
+
+  Future<int> convertReservationToOrder(ReservationEntity reservation);
 }
 
 class ReservationLocalDataSourceImpl implements ReservationLocalDataSource {
@@ -167,5 +169,60 @@ class ReservationLocalDataSourceImpl implements ReservationLocalDataSource {
   @override
   Future<int> deleteReservation(int id) {
     return reservationsDao.deleteReservation(id);
+  }
+
+  @override
+  Future<int> convertReservationToOrder(ReservationEntity reservation) async {
+    if (reservation.id == null) return -1;
+    final db = reservationsDao.attachedDatabase;
+    final existingOrder =
+        await db.ordersDao.getOrderByReservationId(reservation.id!);
+
+    int orderId = -1;
+    final nowIso = DateTime.now().toUtc().toIso8601String();
+
+    if (existingOrder != null) {
+      await db.ordersDao.handleReservationArrival(
+        reservationId: reservation.id!,
+        tableInfoId: reservation.tableId ?? 1,
+        tableNameText: reservation.tableReservedName,
+      );
+      orderId = existingOrder.id;
+    } else {
+      final orderCompanion = OrdersTableCompanion.insert(
+        reservationId: Value(reservation.id),
+        tableInfoId: Value(reservation.tableId ?? 1),
+        customerId: Value(reservation.customerId),
+        customerName: Value(reservation.customerName),
+        phoneNumber: Value(reservation.phoneNumber),
+        isoCode: Value(reservation.isoCode),
+        tableNameText: Value(reservation.tableReservedName),
+        orderType: const Value('Dine-In'),
+        status: const Value('inProgress'),
+        creationDate: Value(nowIso),
+        modificationDate: Value(nowIso),
+      );
+
+      final itemsCompanions = reservation.preOrderedItems.map((item) {
+        return OrderItemsTableCompanion.insert(
+          itemId: Value(item.itemId),
+          menuItemId: Value(item.itemId),
+          quantity: Value(item.quantity),
+          sellingPrice: Value(item.price),
+          isMenuItem: const Value(true),
+          status: const Value('inProgress'),
+          creationDate: Value(nowIso),
+        );
+      }).toList();
+
+      orderId = await db.ordersDao.createNewOrder(
+        order: orderCompanion,
+        orderItems: itemsCompanions,
+      );
+    }
+
+    // Update reservation status to 2 (Completed/Seated)
+    await reservationsDao.updateReservationStatus(reservation.id!, 2);
+    return orderId;
   }
 }

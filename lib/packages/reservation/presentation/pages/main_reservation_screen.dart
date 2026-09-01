@@ -59,7 +59,28 @@ class _MainReservationScreenState extends State<MainReservationScreen>
   Widget build(BuildContext context) {
     final track = shared.TrackConstants.reservationPageTrack;
 
-    return Scaffold(
+    return BlocListener<ReservationActionCubit, ReservationActionState>(
+      listener: (context, state) {
+        if (state is ReservationConvertedToOrderSuccess) {
+          MainReservationScreenActions.refreshAll(context);
+          shared.DialogUtils.showAutoDismissDialog(
+            context: context,
+            title:
+                context.tr(
+                  shared.LocaleKeys.commonSuccess,
+                  track: shared.TrackConstants.commonTrack,
+                ) ??
+                'Success',
+            descriptions:
+                context.tr(
+                  shared.LocaleKeys.customerShowUpSuccess,
+                  track: track,
+                ) ??
+                'Reservation converted to active order successfully!',
+          );
+        }
+      },
+      child: Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(
           kToolbarHeight + kTextTabBarHeight,
@@ -357,6 +378,7 @@ class _MainReservationScreenState extends State<MainReservationScreen>
           );
         },
       ),
+    ),
     );
   }
 
@@ -473,6 +495,11 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                     final item = filteredList[index];
                     return ReservationCard(
                       reservation: item,
+                      onCustomerArrived: () =>
+                          MainReservationScreenActions.confirmCustomerArrival(
+                            context,
+                            item,
+                          ),
                       onTap: () =>
                           MainReservationScreenActions.onTapReservation(
                             context,
@@ -578,6 +605,11 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                     final item = filteredList[index];
                     return ReservationCard(
                       reservation: item,
+                      onCustomerArrived: () =>
+                          MainReservationScreenActions.confirmCustomerArrival(
+                            context,
+                            item,
+                          ),
                       onTap: () =>
                           MainReservationScreenActions.onTapReservation(
                             context,

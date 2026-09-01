@@ -1142,6 +1142,11 @@ abstract class LocaleKeys {
   static const String reservationAppBarTitle = 'reservation_app_bar_title';
   static const String currentTab = 'current_tab';
   static const String upcomingTab = 'upcoming_tab';
+  static const String customerShowUpTitle = 'customer_show_up_title';
+  static const String customerShowUpSubtitle = 'customer_show_up_subtitle';
+  static const String customerShowUpButton = 'customer_show_up_button';
+  static const String customerShowUpSuccess = 'customer_show_up_success';
+  static const String confirmSeatAndOrder = 'confirm_seat_and_order';
   static const String addReservationTooltip = 'add_reservation_tooltip';
   static const String searchReservationHint = 'search_reservation_hint';
   static const String searchTableHint = 'search_table_hint';

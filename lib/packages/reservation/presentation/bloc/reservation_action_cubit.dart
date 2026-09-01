@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import '../../domain/entities/reservation_entity.dart';
 import '../../domain/usecases/reservation_usecases.dart';
 
+import '../../domain/usecases/convert_reservation_to_order_usecase.dart';
+
 abstract class ReservationActionState extends Equatable {
   const ReservationActionState();
   @override
@@ -20,6 +22,17 @@ class ReservationActionSuccess extends ReservationActionState {
   List<Object?> get props => [message];
 }
 
+class ReservationConvertedToOrderSuccess extends ReservationActionState {
+  final int orderId;
+  final String message;
+  const ReservationConvertedToOrderSuccess({
+    required this.orderId,
+    required this.message,
+  });
+  @override
+  List<Object?> get props => [orderId, message];
+}
+
 class ReservationActionError extends ReservationActionState {
   final String message;
   const ReservationActionError(this.message);
@@ -32,12 +45,14 @@ class ReservationActionCubit extends Cubit<ReservationActionState> {
   final UpdateReservationUseCase updateReservationUseCase;
   final DeleteReservationUseCase deleteReservationUseCase;
   final UpdateReservationStatusUseCase updateReservationStatusUseCase;
+  final ConvertReservationToOrderUseCase convertReservationToOrderUseCase;
 
   ReservationActionCubit({
     required this.createReservationUseCase,
     required this.updateReservationUseCase,
     required this.deleteReservationUseCase,
     required this.updateReservationStatusUseCase,
+    required this.convertReservationToOrderUseCase,
   }) : super(ReservationActionInitial());
 
   Future<void> createReservation(ReservationEntity reservation) async {
@@ -78,6 +93,19 @@ class ReservationActionCubit extends Cubit<ReservationActionState> {
     try {
       await deleteReservationUseCase(id);
       emit(const ReservationActionSuccess('Reservation deleted successfully'));
+    } catch (e) {
+      emit(ReservationActionError(e.toString()));
+    }
+  }
+
+  Future<void> convertReservationToOrder(ReservationEntity reservation) async {
+    emit(ReservationActionLoading());
+    try {
+      final orderId = await convertReservationToOrderUseCase(reservation);
+      emit(ReservationConvertedToOrderSuccess(
+        orderId: orderId,
+        message: 'Reservation converted to active order successfully!',
+      ));
     } catch (e) {
       emit(ReservationActionError(e.toString()));
     }
