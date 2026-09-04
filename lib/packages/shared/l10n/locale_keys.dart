@@ -1259,4 +1259,34 @@ abstract class LocaleKeys {
   static const String checkoutStaffDiscount = 'checkout_staff_discount';
   static const String checkoutSubtotal = 'checkout_subtotal';
   static const String checkoutVat = 'checkout_vat';
+
+  // order_management keys
+  static const String orderManagementAllStatuses = 'all_statuses';
+  static const String orderManagementClearDateRange = 'clear_date_range';
+  static const String orderManagementCustomerNameLabel = 'customer_name_label';
+  static const String orderManagementDateRangePickerTitle = 'date_range_picker_title';
+  static const String orderManagementFilterByStatus = 'filter_by_status';
+  static const String orderManagementInvoiceInfoButton = 'invoice_info_button';
+  static const String orderManagementNoOrdersFound = 'no_orders_found';
+  static const String orderManagementNoOrdersFoundSubtitle = 'no_orders_found_subtitle';
+  static const String orderManagementOrderAmount = 'order_amount';
+  static const String orderManagementOrderCreatedAt = 'order_created_at';
+  static const String orderManagementOrderDetailsTitle = 'order_details_title';
+  static const String orderManagementOrderIdPrefix = 'order_id_prefix';
+  static const String orderManagementOrderInfoAppbarTitle = 'order_info_appbar_title';
+  static const String orderManagementOrderItemsCount = 'order_items_count';
+  static const String orderManagementOrderItemsSectionHeader = 'order_items_section_header';
+  static const String orderManagementOrderListTitle = 'order_list_title';
+  static const String orderManagementOrderStatusCancelled = 'order_status_cancelled';
+  static const String orderManagementOrderStatusCompleted = 'order_status_completed';
+  static const String orderManagementOrderStatusInProgress = 'order_status_in_progress';
+  static const String orderManagementOrderStatusNew = 'order_status_new';
+  static const String orderManagementOrderTableLabel = 'order_table_label';
+  static const String orderManagementOrderTypeLabel = 'order_type_label';
+  static const String orderManagementPaymentMethodLabel = 'payment_method_label';
+  static const String orderManagementPhoneNumberLabel = 'phone_number_label';
+  static const String orderManagementRefreshOrders = 'refresh_orders';
+  static const String orderManagementSearchOrdersHint = 'search_orders_hint';
+  static const String orderManagementSelectDateRange = 'select_date_range';
 }
+

@@ -18,6 +18,7 @@ export 'usecases/usecase.dart';
 
 // utils
 export 'utils/app_constants.dart';
+export 'utils/currency_formatter.dart';
 export 'utils/date_util.dart';
 export 'utils/feature_flags.dart';
 export 'utils/hash_id_generator.dart';

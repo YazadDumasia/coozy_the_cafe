@@ -32,4 +32,6 @@ class TrackConstants {
   static const String settingsPageTrack = 'settings_page';
   static const String recipesTrack = 'recipes';
   static const String checkoutPageTrack = 'checkout_page';
+  static const String orderManagementPageTrack = 'order_management';
 }
+

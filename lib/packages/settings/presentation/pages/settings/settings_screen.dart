@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:world_countries/world_countries.dart';
 
+import '../../../../auth/data/datasources/ip_location_remote_data_source.dart';
 import '../../../../database/coozy_database.dart';
 import '../../../../kitchen_management/presentation/widgets/thermal_kitchen_slip_widget/thermal_kitchen_slip_widget.dart';
 import '../../../../core/coozy_core.dart' as core;
@@ -25,6 +28,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final ValueNotifier<bool> _enableDetailedItemRemarksNotifier = ValueNotifier(
     true,
   );
+  final ValueNotifier<String> _selectedCurrencySymbolNotifier = ValueNotifier(
+    '₹',
+  );
+  final ValueNotifier<String> _selectedSecondaryCurrencySymbolNotifier =
+      ValueNotifier('€');
+  final ValueNotifier<bool> _enableSecondaryCurrencyNotifier = ValueNotifier(
+    false,
+  );
   final ValueNotifier<bool> _isLoadingNotifier = ValueNotifier(false);
   final ValueNotifier<String> _statusMessageNotifier = ValueNotifier('');
 
@@ -46,7 +57,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void dispose() {
     _isFakeDataEnabledNotifier.dispose();
     _autoPrintKitchenSlipNotifier.dispose();
-    _enableDetailedItemRemarksNotifier.dispose();
+    _selectedCurrencySymbolNotifier.dispose();
+    _selectedSecondaryCurrencySymbolNotifier.dispose();
+    _enableSecondaryCurrencyNotifier.dispose();
     _isLoadingNotifier.dispose();
     _statusMessageNotifier.dispose();
     _activeStageKeyNotifier.dispose();
@@ -64,9 +77,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _autoPrintKitchenSlipNotifier.value =
         prefs.getBool(shared.PreferencesKeys.autoPrintKitchenOrderSlip.name) ??
         false;
-    _enableDetailedItemRemarksNotifier.value =
-        prefs.getBool(shared.PreferencesKeys.enableDetailedItemRemarks.name) ??
-        true;
+
+    // Load saved currency preferences
+    final savedPrimarySymbol = prefs.getString(
+      shared.PreferencesKeys.appCurrencySymbol.name,
+    );
+    final savedSecondarySymbol = prefs.getString(
+      shared.PreferencesKeys.appSecondaryCurrencySymbol.name,
+    );
+    final enableSecondary =
+        prefs.getBool(shared.PreferencesKeys.enableSecondaryCurrency.name) ??
+        false;
+
+    _enableSecondaryCurrencyNotifier.value = enableSecondary;
+
+    // Check if we need to call IP location API (only if primary is missing OR (secondary is enabled AND secondary is missing))
+    final needsPrimaryFromIp = savedPrimarySymbol == null || savedPrimarySymbol.isEmpty;
+    final needsSecondaryFromIp = enableSecondary && (savedSecondarySymbol == null || savedSecondarySymbol.isEmpty);
+
+    if (needsPrimaryFromIp || needsSecondaryFromIp) {
+      // Fetch IP location once to fill missing currencies
+      final ipDetectedSymbol = await _fetchCurrencySymbolFromIpLocation();
+      final fallbackSymbol = ipDetectedSymbol ?? _detectDefaultCurrencySymbolFromLocale() ?? '₹';
+
+      if (needsPrimaryFromIp) {
+        _selectedCurrencySymbolNotifier.value = fallbackSymbol;
+        await prefs.setString(
+          shared.PreferencesKeys.appCurrencySymbol.name,
+          fallbackSymbol,
+        );
+      } else {
+        _selectedCurrencySymbolNotifier.value = savedPrimarySymbol;
+      }
+
+      if (needsSecondaryFromIp) {
+        _selectedSecondaryCurrencySymbolNotifier.value = fallbackSymbol;
+        await prefs.setString(
+          shared.PreferencesKeys.appSecondaryCurrencySymbol.name,
+          fallbackSymbol,
+        );
+      } else {
+        _selectedSecondaryCurrencySymbolNotifier.value = savedSecondarySymbol ?? '₹';
+      }
+    } else {
+      // Both existing settings exist in preferences; load directly without any API call
+      _selectedCurrencySymbolNotifier.value = savedPrimarySymbol;
+      _selectedSecondaryCurrencySymbolNotifier.value = savedSecondarySymbol ?? '₹';
+    }
+
+    core.CurrencyFormatter.updateSymbols(
+      primary: _selectedCurrencySymbolNotifier.value,
+      secondary: _selectedSecondaryCurrencySymbolNotifier.value,
+      enableSecondary: _enableSecondaryCurrencyNotifier.value,
+    );
 
     final database = GetIt.instance<CoozyDatabase>();
     final counts = await FakeDataHelper.getDatasetCounts(database);
@@ -81,6 +144,55 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _statusMessageNotifier.value = completed.isNotEmpty
         ? 'Fake data active (${completed.length} table datasets populated)'
         : 'Fake data inactive';
+  }
+
+  String? _detectDefaultCurrencySymbolFromLocale() {
+    try {
+      final locale = WidgetsBinding.instance.platformDispatcher.locale;
+      final countryCode = locale.countryCode;
+      if (countryCode != null && countryCode.isNotEmpty) {
+        final country = WorldCountry.maybeFromCode(countryCode.toUpperCase());
+        final currencies = country?.currencies;
+        if (currencies != null && currencies.isNotEmpty) {
+          final symbol = currencies.first.symbol;
+          if (symbol != null && symbol.isNotEmpty) {
+            return symbol;
+          }
+        }
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  Future<String?> _fetchCurrencySymbolFromIpLocation() async {
+    try {
+      if (!GetIt.instance.isRegistered<IpLocationRemoteDataSource>()) {
+        return null;
+      }
+      final dataSource = GetIt.instance<IpLocationRemoteDataSource>();
+      final ip = await dataSource.getPublicIp4();
+      if (ip == null || ip.isEmpty) return null;
+
+      final ipInfo = await dataSource.getIpInfo(ip);
+      if (ipInfo == null || ipInfo is! Map) return null;
+
+      String? countryCode = ipInfo['country_code'] as String?;
+      countryCode ??= ipInfo['country'] as String?;
+
+      if (countryCode != null && countryCode.isNotEmpty) {
+        final country = WorldCountry.maybeFromCode(countryCode.toUpperCase());
+        final currencySymbol = country?.currencies?.firstOrNull?.symbol;
+        if (currencySymbol != null && currencySymbol.isNotEmpty) {
+          return currencySymbol;
+        }
+      }
+    } catch (e) {
+      core.PlatformUtils.debugLog(
+        SettingsScreen,
+        'Error auto-detecting currency from IP: $e',
+      );
+    }
+    return null;
   }
 
   String _tr(BuildContext context, String key, String fallback) {
@@ -1193,6 +1305,373 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         );
                       },
                     ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Currency Configuration Section
+                const Text(
+                  'Currency & Pricing',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Primary Currency Card
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ValueListenableBuilder<String>(
+                      valueListenable: _selectedCurrencySymbolNotifier,
+                      builder: (context, selectedSymbol, child) {
+                        final currenciesList = FiatCurrency.list
+                            .where(
+                              (fiat) =>
+                                  fiat.symbol != null &&
+                                  fiat.symbol!.isNotEmpty,
+                            )
+                            .toList();
+
+                        FiatCurrency selectedFiat = currenciesList.firstWhere(
+                          (fiat) =>
+                              fiat.symbol == selectedSymbol ||
+                              fiat.code == selectedSymbol,
+                          orElse: () => FiatCurrency.list.firstWhere(
+                            (f) => f.code == 'USD',
+                          ),
+                        );
+
+                        final isDesktopWeb =
+                            MediaQuery.of(context).size.width > 600;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: theme.primaryColor.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.attach_money_rounded,
+                                    color: theme.primaryColor,
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Default Global Currency (Primary)',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        '${selectedFiat.name} (${selectedFiat.symbol ?? selectedFiat.code})',
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: theme.primaryColor,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxWidth: isDesktopWeb ? 500 : double.infinity,
+                              ),
+                              child: DropdownButtonFormField<FiatCurrency>(
+                                initialValue: selectedFiat,
+                                isExpanded: true,
+                                menuMaxHeight: 350,
+                                decoration: InputDecoration(
+                                  labelText: 'Select Primary World Currency',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 14,
+                                    vertical: 12,
+                                  ),
+                                ),
+                                items: currenciesList.map((fiat) {
+                                  return DropdownMenuItem<FiatCurrency>(
+                                    value: fiat,
+                                    child: Text(
+                                      '${fiat.code} • ${fiat.name} (${fiat.symbol ?? ""})',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(fontSize: 14),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (newFiat) async {
+                                  if (newFiat != null &&
+                                      newFiat.symbol != null) {
+                                    _selectedCurrencySymbolNotifier.value =
+                                        newFiat.symbol!;
+                                    final prefs =
+                                        await SharedPreferences.getInstance();
+                                    await prefs.setString(
+                                      shared
+                                          .PreferencesKeys
+                                          .appCurrencySymbol
+                                          .name,
+                                      newFiat.symbol!,
+                                    );
+                                    core.CurrencyFormatter.updateSymbols(
+                                      primary: newFiat.symbol!,
+                                      secondary:
+                                          _selectedSecondaryCurrencySymbolNotifier
+                                              .value,
+                                      enableSecondary:
+                                          _enableSecondaryCurrencyNotifier
+                                              .value,
+                                    );
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // Secondary Viewing Currency Card
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _enableSecondaryCurrencyNotifier,
+                          builder: (context, isEnabled, child) {
+                            return SwitchListTile(
+                              contentPadding: EdgeInsets.zero,
+                              title: const Text(
+                                'Enable Secondary Viewing Currency',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: const Text(
+                                'Display secondary currency alongside primary prices e.g. \$ 100.00 (€ 92.50)',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              value: isEnabled,
+                              onChanged: (val) async {
+                                _enableSecondaryCurrencyNotifier.value = val;
+                                final prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setBool(
+                                  shared
+                                      .PreferencesKeys
+                                      .enableSecondaryCurrency
+                                      .name,
+                                  val,
+                                );
+                                core.CurrencyFormatter.updateSymbols(
+                                  primary:
+                                      _selectedCurrencySymbolNotifier.value,
+                                  secondary:
+                                      _selectedSecondaryCurrencySymbolNotifier
+                                          .value,
+                                  enableSecondary: val,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _enableSecondaryCurrencyNotifier,
+                          builder: (context, isEnabled, child) {
+                            if (!isEnabled) return const SizedBox.shrink();
+
+                            return ValueListenableBuilder<String>(
+                              valueListenable:
+                                  _selectedSecondaryCurrencySymbolNotifier,
+                              builder: (context, selectedSecSymbol, child) {
+                                final currenciesList = FiatCurrency.list
+                                    .where(
+                                      (fiat) =>
+                                          fiat.symbol != null &&
+                                          fiat.symbol!.isNotEmpty,
+                                    )
+                                    .toList();
+
+                                FiatCurrency selectedSecFiat = currenciesList
+                                    .firstWhere(
+                                      (fiat) =>
+                                          fiat.symbol == selectedSecSymbol ||
+                                          fiat.code == selectedSecSymbol,
+                                      orElse: () => FiatCurrency.list
+                                          .firstWhere((f) => f.code == 'EUR'),
+                                    );
+
+                                final isDesktopWeb =
+                                    MediaQuery.of(context).size.width > 600;
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Divider(height: 20),
+                                    Text(
+                                      '${selectedSecFiat.name} (${selectedSecFiat.symbol ?? selectedSecFiat.code})',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: theme.primaryColor,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: isDesktopWeb
+                                            ? 500
+                                            : double.infinity,
+                                      ),
+                                      child: DropdownButtonFormField<FiatCurrency>(
+                                        initialValue: selectedSecFiat,
+                                        isExpanded: true,
+                                        menuMaxHeight: 350,
+                                        decoration: InputDecoration(
+                                          labelText:
+                                              'Select Secondary World Currency',
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              10,
+                                            ),
+                                          ),
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                horizontal: 14,
+                                                vertical: 12,
+                                              ),
+                                        ),
+                                        items: currenciesList.map((fiat) {
+                                          return DropdownMenuItem<FiatCurrency>(
+                                            value: fiat,
+                                            child: Text(
+                                              '${fiat.code} • ${fiat.name} (${fiat.symbol ?? ""})',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          );
+                                        }).toList(),
+                                        onChanged: (newFiat) async {
+                                          if (newFiat != null &&
+                                              newFiat.symbol != null) {
+                                            _selectedSecondaryCurrencySymbolNotifier
+                                                    .value =
+                                                newFiat.symbol!;
+                                            final prefs =
+                                                await SharedPreferences.getInstance();
+                                            await prefs.setString(
+                                              shared
+                                                  .PreferencesKeys
+                                                  .appSecondaryCurrencySymbol
+                                                  .name,
+                                              newFiat.symbol!,
+                                            );
+                                            core.CurrencyFormatter.updateSymbols(
+                                              primary:
+                                                  _selectedCurrencySymbolNotifier
+                                                      .value,
+                                              secondary: newFiat.symbol!,
+                                              enableSecondary:
+                                                  _enableSecondaryCurrencyNotifier
+                                                      .value,
+                                            );
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // Currency Exchange Rates Navigation Card
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.currency_exchange_rounded,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                    title: const Text(
+                      'Currency Exchange Rates',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: const Text(
+                      'View live Fawaz Ahmed exchange rates, calculator & spread rates',
+                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                    onTap: () {
+                      context.push(core.AppRoutePath.currencyExchangeScreenRoute);
+                    },
                   ),
                 ),
 
@@ -2598,7 +3077,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           )
                                         : _tr(
                                             context,
-                                            shared.LocaleKeys.populateDataButton,
+                                            shared
+                                                .LocaleKeys
+                                                .populateDataButton,
                                             'Populate Data',
                                           ),
                                   ),

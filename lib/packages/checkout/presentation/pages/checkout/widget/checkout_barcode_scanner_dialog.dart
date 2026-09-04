@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
@@ -120,7 +121,7 @@ class _CheckoutBarcodeScannerDialogState
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('✓ Added "$displayName" (${unitPrice.toStringAsFixed(2)})'),
+            content: Text('✓ Added "$displayName" (${core.CurrencyFormatter.format(value: unitPrice)})'),
             backgroundColor: Colors.green[800],
             duration: const Duration(seconds: 2),
           ),

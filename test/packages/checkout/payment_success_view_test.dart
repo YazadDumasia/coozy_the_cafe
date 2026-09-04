@@ -24,6 +24,6 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.byType(PaymentSuccessView), findsOneWidget);
-    expect(find.text('150.00'), findsOneWidget);
+    expect(find.textContaining('150.00'), findsOneWidget);
   });
 }

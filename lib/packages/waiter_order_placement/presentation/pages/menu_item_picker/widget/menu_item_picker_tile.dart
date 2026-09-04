@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/database/src/database_dao/menu_items_dao.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +33,11 @@ class MenuItemPickerTile extends StatelessWidget {
     final variations = itemWithVariations.variations;
     final isMultiVariation = variations.isNotEmpty;
 
-    final priceDisplay = isMultiVariation
-        ? '${variations.first.sellingPrice?.toStringAsFixed(0) ?? "0"}+'
-        : item.sellingPrice?.toStringAsFixed(0) ?? "0";
+    final basePrice = isMultiVariation
+        ? (variations.first.sellingPrice ?? 0.0)
+        : (item.sellingPrice ?? 0.0);
+    final formattedPrice = core.CurrencyFormatter.format(value: basePrice);
+    final priceDisplay = isMultiVariation ? '$formattedPrice+' : formattedPrice;
 
     final isSelected = quantityInCart > 0;
     final cardBorderColor = isSelected

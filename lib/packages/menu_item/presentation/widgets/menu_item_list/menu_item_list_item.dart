@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -493,7 +494,9 @@ class MenuItemListItem extends StatelessWidget {
                     : (portionLabel.isNotEmpty
                           ? portionLabel
                           : 'Standard Portion');
-                final priceLabel = v.sellingPrice?.toStringAsFixed(2);
+                final priceLabel = v.sellingPrice != null
+                    ? core.CurrencyFormatter.format(value: v.sellingPrice!)
+                    : null;
                 final isAvailable = v.isTodayAvailable ?? true;
 
                 return Container(

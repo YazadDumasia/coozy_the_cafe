@@ -18,8 +18,8 @@ import '../../settings/presentation/navigation/settings_routes.dart';
 import '../../waiter_order_placement/presentation/navigation/waiter_order_placement_routes.dart';
 import '../../kitchen_management/presentation/navigation/kitchen_routes.dart';
 import '../../checkout/presentation/navigation/checkout_routes.dart';
+import '../../order_management/presentation/navigation/order_management_routes.dart';
 import 'app_routes.dart';
-
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
   debugLabel: 'root',
@@ -76,7 +76,9 @@ class AppRouter {
       ...WaiterOrderPlacementRoutes.routes,
       ...KitchenRoutes.routes,
       ...CheckoutRoutes.routes,
+      ...OrderManagementRoutes.routes,
     ],
+
 
 
     errorBuilder: (context, state) => Scaffold(

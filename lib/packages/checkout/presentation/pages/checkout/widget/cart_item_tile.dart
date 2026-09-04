@@ -1,5 +1,5 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../../../../domain/entities/cart_item.dart';
 
 class CartItemTile extends StatelessWidget {
@@ -14,7 +14,6 @@ class CartItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(symbol: '', decimalDigits: 2);
     final theme = Theme.of(context);
 
     return Padding(
@@ -36,7 +35,7 @@ class CartItemTile extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${item.quantity} x ${currencyFormatter.format(item.unitPrice)}',
+                  '${item.quantity} x ${core.CurrencyFormatter.format(value: item.unitPrice)}',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -46,7 +45,7 @@ class CartItemTile extends StatelessWidget {
           ),
           const SizedBox(width: 8),
           Text(
-            currencyFormatter.format(item.lineTotal),
+            core.CurrencyFormatter.format(value: item.lineTotal),
             style: theme.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.bold,
               color: theme.colorScheme.primary,

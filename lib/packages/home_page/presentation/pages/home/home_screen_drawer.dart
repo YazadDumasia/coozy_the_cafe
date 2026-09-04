@@ -297,8 +297,13 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                     ),
                     _buildDrawerItem(
                       context,
-                      icon: Icons.sort,
+                      icon: Icons.receipt_long,
                       title:
+                          context.tr(
+                            shared.LocaleKeys.orderManagementOrderListTitle,
+                            track:
+                                shared.TrackConstants.orderManagementPageTrack,
+                          ) ??
                           context.tr(
                             shared.LocaleKeys.homeDrawerOrderListLabel,
                             track: shared.TrackConstants.homePageTrack,
@@ -318,6 +323,7 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         }
                       },
                     ),
+
                     _buildDrawerItem(
                       context,
                       icon: Icons.sort,

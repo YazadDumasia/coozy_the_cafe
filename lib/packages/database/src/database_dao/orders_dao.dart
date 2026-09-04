@@ -507,4 +507,100 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
     }
     return allResults;
   }
+
+  Expression<bool> _buildOrderFilterExpression({
+    DateTime? startDate,
+    DateTime? endDate,
+    String? searchQuery,
+    String? status,
+  }) {
+    Expression<bool> expr = ordersTable.isDeleted.equals(false) | ordersTable.isDeleted.isNull();
+
+    if (startDate != null) {
+      expr = expr & ordersTable.creationDate.isBiggerOrEqualValue(startDate.toUtc().toIso8601String());
+    }
+    if (endDate != null) {
+      expr = expr & ordersTable.creationDate.isSmallerOrEqualValue(endDate.toUtc().toIso8601String());
+    }
+
+    if (status != null && status.isNotEmpty && status.toLowerCase() != 'all') {
+      expr = expr & ordersTable.status.equals(status);
+    }
+    if (searchQuery != null && searchQuery.trim().isNotEmpty) {
+      final cleanQuery = '%${searchQuery.trim()}%';
+      expr = expr & (
+        ordersTable.tableNameText.like(cleanQuery) |
+        ordersTable.customerName.like(cleanQuery) |
+        ordersTable.phoneNumber.like(cleanQuery) |
+        ordersTable.hashId.like(cleanQuery)
+      );
+    }
+    return expr;
+  }
+
+  Future<List<OrderWithItems>> getPaginatedOrdersWithFilters({
+    required int limit,
+    required int pageNo,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? searchQuery,
+    String? status,
+  }) async {
+    final offset = (pageNo - 1) * limit;
+    return transaction(() async {
+      final query = select(ordersTable)
+        ..where((t) => _buildOrderFilterExpression(
+              startDate: startDate,
+              endDate: endDate,
+              searchQuery: searchQuery,
+              status: status,
+            ))
+        ..orderBy([
+          (t) => OrderingTerm(
+                expression: t.creationDate,
+                mode: OrderingMode.desc,
+              ),
+        ])
+        ..limit(limit, offset: offset);
+
+      final orders = await query.get();
+      if (orders.isEmpty) return [];
+
+      final orderIds = orders.map((o) => o.id).toList();
+      final allItems = await (select(orderItemsTable)
+            ..where((t) => t.orderId.isIn(orderIds)))
+          .get();
+
+      final itemsMap = <int, List<OrderItem>>{};
+      for (final item in allItems) {
+        if (item.orderId != null) {
+          itemsMap.putIfAbsent(item.orderId!, () => []).add(item);
+        }
+      }
+
+      return orders
+          .map((o) => OrderWithItems(order: o, items: itemsMap[o.id] ?? []))
+          .toList();
+    });
+  }
+
+  Future<int> getOrdersCountWithFilters({
+    DateTime? startDate,
+    DateTime? endDate,
+    String? searchQuery,
+    String? status,
+  }) async {
+    final countExpr = ordersTable.id.count();
+    final query = selectOnly(ordersTable)
+      ..addColumns([countExpr])
+      ..where(_buildOrderFilterExpression(
+        startDate: startDate,
+        endDate: endDate,
+        searchQuery: searchQuery,
+        status: status,
+      ));
+    final result = await query.getSingle();
+    return result.read(countExpr) ?? 0;
+  }
 }
+

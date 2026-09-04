@@ -11,6 +11,9 @@ void registerCheckoutDependencies(GetIt sl) {
   if (!sl.isRegistered<OrdersDao>()) {
     sl.registerLazySingleton(() => OrdersDao(sl()));
   }
+  if (!sl.isRegistered<CustomersDao>()) {
+    sl.registerLazySingleton(() => CustomersDao(sl()));
+  }
 
   // Repository
   sl.registerLazySingleton<CheckoutRepository>(

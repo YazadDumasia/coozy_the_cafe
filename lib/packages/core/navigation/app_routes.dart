@@ -38,6 +38,7 @@ class AppRoutePath {
   static const String reportScreenRoute = '/reports';
   static const String staffManagementScreenRoute = '/staff';
   static const String settingsScreenRoute = '/settings';
+  static const String currencyExchangeScreenRoute = '/settings/currency-exchange';
   static const String waiterOrderPlacementScreenRoute =
       '/waiter-order-placement';
   static const String kitchenScreenRoute = '/kitchen';
@@ -84,9 +85,12 @@ class AppRoutePath {
   static const String recipesAddOrEditScreenRoute = 'recipe-edit';
 
   // Sub-routes for Orders
-  static const String orderInfoScreenRoute = 'order-info';
+  static const String orderInfoScreenRoute = 'info/:id';
+  static String orderInfoRoute(dynamic id) =>
+      '$orderListScreenRoute/info/$id';
   static const String orderPickerPageRoute = 'order-picker';
   static const String orderStatusUpdateScreenRoute = 'order-status-update';
+
 
   // Sub-routes for Invoices
   static const String invoiceInfoScreenRoute = 'invoice-info';
@@ -250,12 +254,17 @@ class AppRouteName {
   static const String reservationList = 'reservation-list';
 
   static const String settings = 'settings';
+  static const String currencyExchange = 'currency-exchange';
   static const String kitchen = 'kitchen';
+  static const String orders = 'orders';
 
   static String getTitleForRouteName(String? name) {
     switch (name) {
+      case orders:
+        return 'Orders';
       case kitchen:
         return 'Kitchen Display';
+
       case home:
       case mainHome:
         return 'Home';

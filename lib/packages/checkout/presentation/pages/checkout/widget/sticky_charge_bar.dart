@@ -3,7 +3,6 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import '../../../bloc/checkout_bloc.dart';
 import '../../../utils/responsive_modal.dart';
 import 'payment_sheet_modal.dart';
@@ -13,10 +12,6 @@ class StickyChargeBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(
-      symbol: '',
-      decimalDigits: 2,
-    );
     final theme = Theme.of(context);
 
     return BlocBuilder<CheckoutBloc, CheckoutState>(
@@ -48,7 +43,7 @@ class StickyChargeBar extends StatelessWidget {
                 }
               },
               child: Text(
-                'Charge: ${currencyFormatter.format(grandTotal)}',
+                'Charge: ${core.CurrencyFormatter.format(value: grandTotal)}',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: theme.colorScheme.onPrimary,

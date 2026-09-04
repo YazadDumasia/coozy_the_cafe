@@ -17,6 +17,7 @@ import 'package:coozy_the_cafe/packages/settings/settings_injection.dart';
 import 'package:coozy_the_cafe/packages/waiter_order_placement/waiter_order_placement.dart';
 import 'package:coozy_the_cafe/packages/kitchen_management/kitchen_management.dart';
 import 'package:coozy_the_cafe/packages/checkout/checkout.dart';
+import 'package:coozy_the_cafe/packages/order_management/order_management.dart';
 
 Future<void> initDI() async {
   // Auth Package Dependencies
@@ -60,5 +61,9 @@ Future<void> initDI() async {
 
   // Checkout Package Dependencies
   registerCheckoutDependencies(sl);
+
+  // Order Management Package Dependencies
+  registerOrderManagementDependencies(sl);
 }
+
 

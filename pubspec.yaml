@@ -139,6 +139,7 @@ dependencies:
   flutter_slidable: ^4.0.0
   flutter_localizations:
     sdk: flutter
+  world_countries: ^4.4.0
   # easy_localization: ^3.0.8
 dependency_overrides:
   intl: ^0.20.3

@@ -4,7 +4,6 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_floating_particles/flutter_floating_particles.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 class PaymentSuccessView extends StatefulWidget {
@@ -117,11 +116,7 @@ class _PaymentSuccessViewState extends State<PaymentSuccessView>
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final currencyFormatter = NumberFormat.currency(
-      symbol: '',
-      decimalDigits: 2,
-    );
-    final formattedAmount = currencyFormatter.format(widget.grandTotal);
+    final formattedAmount = core.CurrencyFormatter.format(value: widget.grandTotal);
 
     final lottieAssetPath = isDark
         ? 'assets/lottie/success_dark.json'

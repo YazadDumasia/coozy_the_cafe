@@ -14,4 +14,7 @@ enum PreferencesKeys {
   subcategoryIsGridView,
   autoPrintKitchenOrderSlip,
   enableDetailedItemRemarks,
+  appCurrencySymbol,
+  appSecondaryCurrencySymbol,
+  enableSecondaryCurrency,
 }

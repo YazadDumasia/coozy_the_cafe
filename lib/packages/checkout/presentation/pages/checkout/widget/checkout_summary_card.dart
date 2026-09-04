@@ -1,7 +1,7 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import '../../../bloc/checkout_bloc.dart';
 import '../../../utils/responsive_modal.dart';
 import 'select_charge_dialog.dart';
@@ -13,7 +13,6 @@ class CheckoutSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormatter = NumberFormat.currency(symbol: '', decimalDigits: 2);
     final theme = Theme.of(context);
 
     return BlocBuilder<CheckoutBloc, CheckoutState>(
@@ -42,7 +41,7 @@ class CheckoutSummaryCard extends StatelessWidget {
                       style: theme.textTheme.bodyMedium,
                     ),
                     Text(
-                      currencyFormatter.format(summary.subtotal),
+                      core.CurrencyFormatter.format(value: summary.subtotal),
                       style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -206,7 +205,7 @@ class CheckoutSummaryCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      currencyFormatter.format(summary.grandTotal),
+                      core.CurrencyFormatter.format(value: summary.grandTotal),
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.primary,

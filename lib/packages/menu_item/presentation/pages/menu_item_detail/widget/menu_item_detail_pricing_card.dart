@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
@@ -238,7 +239,7 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                   context,
                   label: 'Selling Price',
                   value: v.sellingPrice != null
-                      ? v.sellingPrice!.toStringAsFixed(2)
+                      ? core.CurrencyFormatter.format(value: v.sellingPrice!)
                       : 'N/A',
                   valueColor: colorScheme.primary,
                   isBold: true,
@@ -249,7 +250,7 @@ class MenuItemDetailPricingCard extends StatelessWidget {
                   context,
                   label: 'Cost Price',
                   value: v.costPrice != null
-                      ? v.costPrice!.toStringAsFixed(2)
+                      ? core.CurrencyFormatter.format(value: v.costPrice!)
                       : 'N/A',
                   valueColor: colorScheme.secondary,
                 ),
