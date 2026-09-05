@@ -93,10 +93,14 @@ class AppRoutePath {
 
 
   // Sub-routes for Invoices
-  static const String invoiceInfoScreenRoute = 'invoice-info';
+  static const String invoiceInfoScreenRoute = 'info/:id';
+  static String invoiceDetailRoute(dynamic id, {bool fromCheckout = false}) =>
+      '$invoiceListScreenRoute/info/$id${fromCheckout ? '?fromCheckout=true' : ''}';
   static const String invoicePickerPageRoute = 'invoice-picker';
   static const String invoiceStatusUpdateScreenRoute = 'invoice-status-update';
   static const String invoiceAddOrEditScreenRoute = 'invoice-edit';
+  static String invoiceEditRoute(dynamic id) =>
+      '$invoiceListScreenRoute/invoice-edit';
 
   // Sub-routes for Invoice Payments
   static const String invoicePaymentScreenRoute = 'payment';

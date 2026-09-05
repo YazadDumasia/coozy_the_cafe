@@ -1288,5 +1288,42 @@ abstract class LocaleKeys {
   static const String orderManagementRefreshOrders = 'refresh_orders';
   static const String orderManagementSearchOrdersHint = 'search_orders_hint';
   static const String orderManagementSelectDateRange = 'select_date_range';
+
+  // invoice_page keys
+  static const String invoiceActionDelete = 'invoice_action_delete';
+  static const String invoiceActionEdit = 'invoice_action_edit';
+  static const String invoiceActionReturn = 'invoice_action_return';
+  static const String invoiceActionSave = 'invoice_action_save';
+  static const String invoiceAddDiscount = 'invoice_add_discount';
+  static const String invoiceAddItem = 'invoice_add_item';
+  static const String invoiceAddOtherCharges = 'invoice_add_other_charges';
+  static const String invoiceAddTax = 'invoice_add_tax';
+  static const String invoiceAmountPaid = 'invoice_amount_paid';
+  static const String invoiceCashReceived = 'invoice_cash_received';
+  static const String invoiceChangeAmount = 'invoice_change_amount';
+  static const String invoiceCustomerDetailsTitle = 'invoice_customer_details_title';
+  static const String invoiceCustomerNameHint = 'invoice_customer_name_hint';
+  static const String invoiceCustomerPhoneHint = 'invoice_customer_phone_hint';
+  static const String invoiceDateFrom = 'invoice_date_from';
+  static const String invoiceDateTo = 'invoice_date_to';
+  static const String invoiceDetailTitle = 'invoice_detail_title';
+  static const String invoiceEditTitle = 'invoice_edit_title';
+  static const String invoiceFilterAll = 'invoice_filter_all';
+  static const String invoiceFooterPoweredBy = 'invoice_footer_powered_by';
+  static const String invoiceFooterThankYou = 'invoice_footer_thank_you';
+  static const String invoiceGrandTotal = 'invoice_grand_total';
+  static const String invoiceItemCountUnit = 'invoice_item_count_unit';
+  static const String invoiceItemCountUnitsShort = 'invoice_item_count_units_short';
+  static const String invoiceListTitle = 'invoice_list_title';
+  static const String invoiceTableAmount = 'invoice_table_amount';
+  static const String invoiceTableItemsCount = 'invoice_table_items_count';
+  static const String invoiceTableName = 'invoice_table_name';
+  static const String invoiceTablePMode = 'invoice_table_p_mode';
+  static const String invoiceTablePrice = 'invoice_table_price';
+  static const String invoiceTableQty = 'invoice_table_qty';
+  static const String invoiceTableTotal = 'invoice_table_total';
+  static const String invoiceTableUnitsCount = 'invoice_table_units_count';
+  static const String invoiceSubtotal = 'invoice_subtotal';
 }
+
 

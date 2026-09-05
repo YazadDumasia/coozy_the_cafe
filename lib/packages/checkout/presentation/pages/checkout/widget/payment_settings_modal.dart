@@ -40,15 +40,25 @@ class PaymentSettingsModal extends StatelessWidget {
                 constraints: const BoxConstraints(maxHeight: 300),
                 child: ListView.builder(
                   shrinkWrap: true,
+                  addAutomaticKeepAlives: false,
+                  addRepaintBoundaries: true,
                   itemCount: state.availablePaymentMethods.length,
                   itemBuilder: (context, index) {
                     final method = state.availablePaymentMethods[index];
                     return SwitchListTile(
-                      secondary: Icon(method.icon, color: theme.colorScheme.primary),
-                      title: Text(method.name, style: const TextStyle(fontWeight: FontWeight.w600)),
+                      secondary: Icon(
+                        method.icon,
+                        color: theme.colorScheme.primary,
+                      ),
+                      title: Text(
+                        method.name,
+                        style: const TextStyle(fontWeight: FontWeight.w600),
+                      ),
                       value: method.isEnabled,
                       onChanged: (_) {
-                        context.read<CheckoutBloc>().add(CheckoutPaymentMethodToggled(method.id));
+                        context.read<CheckoutBloc>().add(
+                          CheckoutPaymentMethodToggled(method.id),
+                        );
                       },
                     );
                   },
@@ -58,8 +68,13 @@ class PaymentSettingsModal extends StatelessWidget {
               OutlinedButton.icon(
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
-                  side: BorderSide(color: theme.colorScheme.primary, width: 1.5),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  side: BorderSide(
+                    color: theme.colorScheme.primary,
+                    width: 1.5,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
                 icon: const Icon(Icons.add),
                 label: const Text(

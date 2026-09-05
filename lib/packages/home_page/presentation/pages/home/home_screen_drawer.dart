@@ -67,6 +67,8 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                 interactive: true,
                 child: ListView(
                   primary: true,
+                  addAutomaticKeepAlives: false,
+                  addRepaintBoundaries: true,
                   key: const PageStorageKey<String>('drawer_list_scroll_key'),
                   physics: const ClampingScrollPhysics(
                     parent: AlwaysScrollableScrollPhysics(),

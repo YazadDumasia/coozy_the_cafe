@@ -18,14 +18,14 @@ class CheckoutScreen extends StatefulWidget {
   State<CheckoutScreen> createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> with CheckoutScreenActions {
+class _CheckoutScreenState extends State<CheckoutScreen>
+    with CheckoutScreenActions {
   @override
   void initState() {
     super.initState();
     // Fetch order details automatically on initial load using the provided orderId
     context.read<CheckoutBloc>().add(CheckoutFetchStarted(widget.orderId));
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -50,22 +50,32 @@ class _CheckoutScreenState extends State<CheckoutScreen> with CheckoutScreenActi
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.error_outline, size: 48, color: theme.colorScheme.error),
+                    Icon(
+                      Icons.error_outline,
+                      size: 48,
+                      color: theme.colorScheme.error,
+                    ),
                     const SizedBox(height: 12),
                     Text(
                       'Error loading order details',
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       state.errorMessage!,
                       textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        context.read<CheckoutBloc>().add(CheckoutFetchStarted(widget.orderId));
+                        context.read<CheckoutBloc>().add(
+                          CheckoutFetchStarted(widget.orderId),
+                        );
                       },
                       child: const Text('Retry'),
                     ),
@@ -94,14 +104,18 @@ class _CheckoutScreenState extends State<CheckoutScreen> with CheckoutScreenActi
                                   Icon(
                                     Icons.remove_shopping_cart_outlined,
                                     size: 48,
-                                    color: theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                                    color: theme.colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.5),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
                                     'Cart is Empty',
-                                    style: theme.textTheme.titleMedium?.copyWith(
-                                      color: theme.colorScheme.onSurfaceVariant,
-                                    ),
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(
+                                          color: theme
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -111,8 +125,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> with CheckoutScreenActi
                           return ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
+                            addAutomaticKeepAlives: false,
+                            addRepaintBoundaries: true,
                             itemCount: state.cartItems.length,
-                            separatorBuilder: (context, index) => const Divider(height: 1, indent: 16, endIndent: 16),
+                            separatorBuilder: (context, index) => const Divider(
+                              height: 1,
+                              indent: 16,
+                              endIndent: 16,
+                            ),
                             itemBuilder: (context, index) {
                               final item = state.cartItems[index];
                               return CartItemTile(
@@ -126,13 +146,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> with CheckoutScreenActi
                                       initialUnitPrice: item.unitPrice,
                                       onSave: (newQty, newPrice) {
                                         context.read<CheckoutBloc>().add(
-                                              CheckoutItemUpdated(
-                                                item.copyWith(
-                                                  quantity: newQty,
-                                                  unitPrice: newPrice,
-                                                ),
-                                              ),
-                                            );
+                                          CheckoutItemUpdated(
+                                            item.copyWith(
+                                              quantity: newQty,
+                                              unitPrice: newPrice,
+                                            ),
+                                          ),
+                                        );
                                       },
                                     ),
                                   );
@@ -153,7 +173,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> with CheckoutScreenActi
                             Expanded(
                               child: OutlinedButton.icon(
                                 style: OutlinedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
@@ -200,6 +222,5 @@ class _CheckoutScreenState extends State<CheckoutScreen> with CheckoutScreenActi
         },
       ),
     );
-
   }
 }

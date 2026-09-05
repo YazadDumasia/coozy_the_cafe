@@ -124,6 +124,8 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
             padding: EdgeInsets.zero,
             shrinkWrap: true,
             itemCount: options.length,
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: true,
             separatorBuilder: (context, index) => const Divider(height: 1),
             itemBuilder: (BuildContext context, int index) {
               final db.Customer option = options.elementAt(index);
@@ -242,9 +244,14 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                 ? 'EN-${state.orderId}'
                 : 'EN-11196',
             onGetReceipt: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Receipt downloaded successfully'),
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+              final invoiceId = state.orderId ?? 1;
+              context.push(
+                core.AppRoutePath.invoiceDetailRoute(
+                  invoiceId,
+                  fromCheckout: true,
                 ),
               );
             },
@@ -266,22 +273,19 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                 _activeStep = _PaymentStep.details;
               });
             },
-            onPaymentConfirmed: ({
-              required cashReceived,
-              required changeAmount,
-              note,
-            }) {
-              context.read<CheckoutBloc>().add(
-                CheckoutPaymentConfirmed(
-                  note: note,
-                  cashReceived: cashReceived,
-                  changeAmount: changeAmount,
-                ),
-              );
-              setState(() {
-                _activeStep = _PaymentStep.success;
-              });
-            },
+            onPaymentConfirmed:
+                ({required cashReceived, required changeAmount, note}) {
+                  context.read<CheckoutBloc>().add(
+                    CheckoutPaymentConfirmed(
+                      note: note,
+                      cashReceived: cashReceived,
+                      changeAmount: changeAmount,
+                    ),
+                  );
+                  setState(() {
+                    _activeStep = _PaymentStep.success;
+                  });
+                },
           );
         }
 
@@ -773,6 +777,8 @@ class _CustomerSearchDialogState extends State<CustomerSearchDialog> {
                     ),
                   )
                 : ListView.separated(
+                    addAutomaticKeepAlives: false,
+                    addRepaintBoundaries: true,
                     itemCount: _filteredList.length,
                     separatorBuilder: (context, index) =>
                         const Divider(height: 1),

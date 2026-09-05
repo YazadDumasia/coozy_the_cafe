@@ -154,6 +154,7 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                     child: shared.AzListView(
                       key: const PageStorageKey('customerListView'),
                       data: state.customers,
+
                       itemCount: state.customers.length,
                       susItemHeight: 46,
                       indexBarData: isSearching
