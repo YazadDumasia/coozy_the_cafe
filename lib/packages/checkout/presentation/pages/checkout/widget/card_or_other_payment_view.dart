@@ -5,7 +5,7 @@ class CardOrOtherPaymentView extends StatefulWidget {
   final String paymentModeName;
   final double grandTotal;
   final VoidCallback onBack;
-  final VoidCallback onPaymentConfirmed;
+  final ValueChanged<String> onPaymentConfirmed;
 
   const CardOrOtherPaymentView({
     super.key,
@@ -252,7 +252,9 @@ class _CardOrOtherPaymentViewState extends State<CardOrOtherPaymentView> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: widget.onPaymentConfirmed,
+                onPressed: () {
+                  widget.onPaymentConfirmed(_receiptNoteController.text.trim());
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF5CB85C),
                   foregroundColor: Colors.white,

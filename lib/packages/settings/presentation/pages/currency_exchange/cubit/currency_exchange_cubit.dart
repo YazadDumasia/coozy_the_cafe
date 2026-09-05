@@ -47,22 +47,27 @@ class CurrencyExchangeCubit extends Cubit<CurrencyExchangeState> {
     }
   }
 
-  Future<void> changeBaseCurrency(String newBase) async {
+  Future<void> changeBaseCurrency(String newBase, {bool forceRefresh = true}) async {
     if (state is! CurrencyExchangeLoaded) return;
     final currentState = state as CurrencyExchangeLoaded;
 
-    emit(const CurrencyExchangeLoading());
+    emit(currentState.copyWith(isChangingBase: true));
     try {
-      final ratesData = await apiService.fetchRates(newBase);
+      final ratesData = await apiService.fetchRates(
+        newBase,
+        forceRefresh: forceRefresh,
+      );
       emit(
         currentState.copyWith(
           baseCurrency: newBase.toLowerCase(),
           rates: ratesData.rates,
           date: ratesData.date,
           isOffline: ratesData.isOffline,
+          isChangingBase: false,
         ),
       );
     } catch (e) {
+      emit(currentState.copyWith(isChangingBase: false));
       emit(CurrencyExchangeError(e.toString()));
     }
   }

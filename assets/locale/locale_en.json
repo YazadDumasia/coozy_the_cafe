@@ -386,7 +386,8 @@
         "please_select_or_create_a_category_msg": "Please select or create a category.",
         "simple_variation": "Simple",
         "today_available": "Today Available",
-        "unavailable": "Unavailable"
+        "unavailable": "Unavailable",
+        "total_table_orders": "Total Table Orders: ${count}"
     },
     "menu_main_page": {},
     "menu_sub_category_page": {
@@ -439,7 +440,6 @@
         "select_date_range": "Date Range"
     },
     "order_page": {
-
         "kitchen_all_orders_prepared_title": "All Kitchen Orders Prepared!",
         "kitchen_bump_all_ready_btn": "BUMP (ALL READY)",
         "kitchen_display_system": "Kitchen Display System",
@@ -871,7 +871,6 @@
         "total_active_staff_kpi": "Total Active Staff",
         "total_leaves_hint": "Enter total leaves allocated",
         "total_leaves_label": "Total Number of Leaves",
-        "total_table_orders": "Total Table Orders: ${count}",
         "total_working_time_label": "Total Working time: ",
         "unpaid_leave": "Unpaid Leave",
         "working_hours_vs_target_subtitle": "Tracked staff working hours against standard targets",

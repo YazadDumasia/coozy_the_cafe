@@ -25,4 +25,11 @@ class OrderInfoScreenActions {
   }) {
     // Action handler for Invoice Info navigation / details for later development
   }
+
+  static void onShareOrder(
+    BuildContext context, {
+    required int orderId,
+  }) {
+    // Action handler for Share Order functionality for later development
+  }
 }

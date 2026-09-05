@@ -133,5 +133,16 @@ final class CheckoutPaymentSelected extends CheckoutEvent {
 }
 
 final class CheckoutPaymentConfirmed extends CheckoutEvent {
-  const CheckoutPaymentConfirmed();
+  final String? note;
+  final double? cashReceived;
+  final double? changeAmount;
+
+  const CheckoutPaymentConfirmed({
+    this.note,
+    this.cashReceived,
+    this.changeAmount,
+  });
+
+  @override
+  List<Object?> get props => [note, cashReceived, changeAmount];
 }

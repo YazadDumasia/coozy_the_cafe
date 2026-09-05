@@ -26,19 +26,14 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
   @override
   void initState() {
     super.initState();
-    _amountController = TextEditingController(text: '1.0');
+    _amountController = TextEditingController(text: '1');
     _searchController = TextEditingController();
     _amountFocusNode = FocusNode();
     _searchFocusNode = FocusNode();
-
-    _amountController.addListener(_onAmountChanged);
-    _searchController.addListener(_onSearchChanged);
   }
 
   @override
   void dispose() {
-    _amountController.removeListener(_onAmountChanged);
-    _searchController.removeListener(_onSearchChanged);
     _amountController.dispose();
     _searchController.dispose();
     _amountFocusNode.dispose();
@@ -46,19 +41,7 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
     super.dispose();
   }
 
-  void _onAmountChanged() {
-    final text = _amountController.text.trim();
-    final parsed = double.tryParse(text);
-    if (parsed != null && parsed >= 0) {
-      context.read<CurrencyExchangeCubit>().updateAmount(parsed);
-    }
-  }
 
-  void _onSearchChanged() {
-    context.read<CurrencyExchangeCubit>().updateSearchQuery(
-      _searchController.text.trim(),
-    );
-  }
 
   /// Resolve FiatCurrency symbol and flag using world_countries package
   FiatCurrency? _resolveFiatCurrency(String code) {
@@ -209,6 +192,8 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (state.isChangingBase)
+                      const LinearProgressIndicator(minHeight: 3),
                     shared.ResponsiveLayout(
                       mobile: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,6 +309,12 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
                           RegExp(r'^\d*\.?\d*'),
                         ),
                       ],
+                      onChanged: (val) {
+                        final parsed = double.tryParse(val.trim());
+                        if (parsed != null && parsed >= 0) {
+                          context.read<CurrencyExchangeCubit>().updateAmount(parsed);
+                        }
+                      },
                       decoration: InputDecoration(
                         labelText: 'Enter Amount',
                         prefixIcon: Icon(
@@ -402,52 +393,71 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '${_formatMoney(state.amount, state.baseCurrency)} =',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.copy_rounded, size: 18),
-                                tooltip: 'Copy converted amount',
-                                onPressed: () => copyToClipboard(
-                                  context,
-                                  _formatMoney(
-                                    state.convertedAmount,
-                                    state.targetCurrency,
+                          if (!state.hasTargetRate) ...[
+                            Row(
+                              children: [
+                                const Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 20),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Rate for ${state.targetCurrency.toUpperCase()} is not available in the ${state.baseCurrency.toUpperCase()} JSON response.',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.orange.shade900,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
-                                  'Converted Amount',
                                 ),
+                              ],
+                            ),
+                          ] else ...[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${_formatMoney(state.amount, state.baseCurrency)} =',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.copy_rounded, size: 18),
+                                  tooltip: 'Copy converted amount',
+                                  onPressed: () => copyToClipboard(
+                                    context,
+                                    _formatMoney(
+                                      state.convertedAmount,
+                                      state.targetCurrency,
+                                    ),
+                                    'Converted Amount',
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            SelectableText(
+                              _formatMoney(
+                                state.convertedAmount,
+                                state.targetCurrency,
                               ),
-                            ],
-                          ),
-                          const SizedBox(height: 4),
-                          SelectableText(
-                            _formatMoney(
-                              state.convertedAmount,
-                              state.targetCurrency,
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.w800,
+                                color: theme.primaryColor,
+                              ),
                             ),
-                            style: TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w800,
-                              color: theme.primaryColor,
+                            const SizedBox(height: 6),
+                            Text(
+                              '1 ${state.baseCurrency.toUpperCase()} = ${_formatMoney(state.targetRate, state.targetCurrency)}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: isDark ? Colors.white70 : Colors.black87,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Text(
-                            '1 ${state.baseCurrency.toUpperCase()} = ${_formatMoney(state.targetRate, state.targetCurrency)}',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: isDark ? Colors.white70 : Colors.black87,
-                            ),
-                          ),
+                          ],
                         ],
                       ),
                     ),

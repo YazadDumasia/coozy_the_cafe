@@ -7368,6 +7368,90 @@ class $OrdersTableTable extends OrdersTable
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _cashReceivedMeta = const VerificationMeta(
+    'cashReceived',
+  );
+  @override
+  late final GeneratedColumn<double> cashReceived = GeneratedColumn<double>(
+    'cash_received',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _changeAmountMeta = const VerificationMeta(
+    'changeAmount',
+  );
+  @override
+  late final GeneratedColumn<double> changeAmount = GeneratedColumn<double>(
+    'change_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _subtotalAmountMeta = const VerificationMeta(
+    'subtotalAmount',
+  );
+  @override
+  late final GeneratedColumn<double> subtotalAmount = GeneratedColumn<double>(
+    'subtotal_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _discountAmountMeta = const VerificationMeta(
+    'discountAmount',
+  );
+  @override
+  late final GeneratedColumn<double> discountAmount = GeneratedColumn<double>(
+    'discount_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _taxAmountMeta = const VerificationMeta(
+    'taxAmount',
+  );
+  @override
+  late final GeneratedColumn<double> taxAmount = GeneratedColumn<double>(
+    'tax_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _otherChargesAmountMeta =
+      const VerificationMeta('otherChargesAmount');
+  @override
+  late final GeneratedColumn<double> otherChargesAmount =
+      GeneratedColumn<double>(
+        'other_charges_amount',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0.0),
+      );
+  static const VerificationMeta _grandTotalMeta = const VerificationMeta(
+    'grandTotal',
+  );
+  @override
+  late final GeneratedColumn<double> grandTotal = GeneratedColumn<double>(
+    'grand_total',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
   static const VerificationMeta _deliveryAddressMeta = const VerificationMeta(
     'deliveryAddress',
   );
@@ -7456,6 +7540,13 @@ class $OrdersTableTable extends OrdersTable
     orderType,
     paymentMethodName,
     paymentMethodDetails,
+    cashReceived,
+    changeAmount,
+    subtotalAmount,
+    discountAmount,
+    taxAmount,
+    otherChargesAmount,
+    grandTotal,
     deliveryAddress,
     customerId,
     customerName,
@@ -7574,6 +7665,63 @@ class $OrdersTableTable extends OrdersTable
         ),
       );
     }
+    if (data.containsKey('cash_received')) {
+      context.handle(
+        _cashReceivedMeta,
+        cashReceived.isAcceptableOrUnknown(
+          data['cash_received']!,
+          _cashReceivedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('change_amount')) {
+      context.handle(
+        _changeAmountMeta,
+        changeAmount.isAcceptableOrUnknown(
+          data['change_amount']!,
+          _changeAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('subtotal_amount')) {
+      context.handle(
+        _subtotalAmountMeta,
+        subtotalAmount.isAcceptableOrUnknown(
+          data['subtotal_amount']!,
+          _subtotalAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('discount_amount')) {
+      context.handle(
+        _discountAmountMeta,
+        discountAmount.isAcceptableOrUnknown(
+          data['discount_amount']!,
+          _discountAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tax_amount')) {
+      context.handle(
+        _taxAmountMeta,
+        taxAmount.isAcceptableOrUnknown(data['tax_amount']!, _taxAmountMeta),
+      );
+    }
+    if (data.containsKey('other_charges_amount')) {
+      context.handle(
+        _otherChargesAmountMeta,
+        otherChargesAmount.isAcceptableOrUnknown(
+          data['other_charges_amount']!,
+          _otherChargesAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('grand_total')) {
+      context.handle(
+        _grandTotalMeta,
+        grandTotal.isAcceptableOrUnknown(data['grand_total']!, _grandTotalMeta),
+      );
+    }
     if (data.containsKey('delivery_address')) {
       context.handle(
         _deliveryAddressMeta,
@@ -7687,6 +7835,34 @@ class $OrdersTableTable extends OrdersTable
         DriftSqlType.string,
         data['${effectivePrefix}payment_method_details'],
       ),
+      cashReceived: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}cash_received'],
+      ),
+      changeAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}change_amount'],
+      ),
+      subtotalAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}subtotal_amount'],
+      ),
+      discountAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}discount_amount'],
+      ),
+      taxAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}tax_amount'],
+      ),
+      otherChargesAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}other_charges_amount'],
+      ),
+      grandTotal: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}grand_total'],
+      ),
       deliveryAddress: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}delivery_address'],
@@ -7735,6 +7911,13 @@ class Order extends DataClass implements Insertable<Order> {
   final String? orderType;
   final String? paymentMethodName;
   final String? paymentMethodDetails;
+  final double? cashReceived;
+  final double? changeAmount;
+  final double? subtotalAmount;
+  final double? discountAmount;
+  final double? taxAmount;
+  final double? otherChargesAmount;
+  final double? grandTotal;
   final String? deliveryAddress;
   final int? customerId;
   final String? customerName;
@@ -7756,6 +7939,13 @@ class Order extends DataClass implements Insertable<Order> {
     this.orderType,
     this.paymentMethodName,
     this.paymentMethodDetails,
+    this.cashReceived,
+    this.changeAmount,
+    this.subtotalAmount,
+    this.discountAmount,
+    this.taxAmount,
+    this.otherChargesAmount,
+    this.grandTotal,
     this.deliveryAddress,
     this.customerId,
     this.customerName,
@@ -7803,6 +7993,27 @@ class Order extends DataClass implements Insertable<Order> {
     }
     if (!nullToAbsent || paymentMethodDetails != null) {
       map['payment_method_details'] = Variable<String>(paymentMethodDetails);
+    }
+    if (!nullToAbsent || cashReceived != null) {
+      map['cash_received'] = Variable<double>(cashReceived);
+    }
+    if (!nullToAbsent || changeAmount != null) {
+      map['change_amount'] = Variable<double>(changeAmount);
+    }
+    if (!nullToAbsent || subtotalAmount != null) {
+      map['subtotal_amount'] = Variable<double>(subtotalAmount);
+    }
+    if (!nullToAbsent || discountAmount != null) {
+      map['discount_amount'] = Variable<double>(discountAmount);
+    }
+    if (!nullToAbsent || taxAmount != null) {
+      map['tax_amount'] = Variable<double>(taxAmount);
+    }
+    if (!nullToAbsent || otherChargesAmount != null) {
+      map['other_charges_amount'] = Variable<double>(otherChargesAmount);
+    }
+    if (!nullToAbsent || grandTotal != null) {
+      map['grand_total'] = Variable<double>(grandTotal);
     }
     if (!nullToAbsent || deliveryAddress != null) {
       map['delivery_address'] = Variable<String>(deliveryAddress);
@@ -7865,6 +8076,27 @@ class Order extends DataClass implements Insertable<Order> {
       paymentMethodDetails: paymentMethodDetails == null && nullToAbsent
           ? const Value.absent()
           : Value(paymentMethodDetails),
+      cashReceived: cashReceived == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cashReceived),
+      changeAmount: changeAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(changeAmount),
+      subtotalAmount: subtotalAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(subtotalAmount),
+      discountAmount: discountAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(discountAmount),
+      taxAmount: taxAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(taxAmount),
+      otherChargesAmount: otherChargesAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(otherChargesAmount),
+      grandTotal: grandTotal == null && nullToAbsent
+          ? const Value.absent()
+          : Value(grandTotal),
       deliveryAddress: deliveryAddress == null && nullToAbsent
           ? const Value.absent()
           : Value(deliveryAddress),
@@ -7910,6 +8142,15 @@ class Order extends DataClass implements Insertable<Order> {
       paymentMethodDetails: serializer.fromJson<String?>(
         json['paymentMethodDetails'],
       ),
+      cashReceived: serializer.fromJson<double?>(json['cashReceived']),
+      changeAmount: serializer.fromJson<double?>(json['changeAmount']),
+      subtotalAmount: serializer.fromJson<double?>(json['subtotalAmount']),
+      discountAmount: serializer.fromJson<double?>(json['discountAmount']),
+      taxAmount: serializer.fromJson<double?>(json['taxAmount']),
+      otherChargesAmount: serializer.fromJson<double?>(
+        json['otherChargesAmount'],
+      ),
+      grandTotal: serializer.fromJson<double?>(json['grandTotal']),
       deliveryAddress: serializer.fromJson<String?>(json['deliveryAddress']),
       customerId: serializer.fromJson<int?>(json['customerId']),
       customerName: serializer.fromJson<String?>(json['customerName']),
@@ -7936,6 +8177,13 @@ class Order extends DataClass implements Insertable<Order> {
       'orderType': serializer.toJson<String?>(orderType),
       'paymentMethodName': serializer.toJson<String?>(paymentMethodName),
       'paymentMethodDetails': serializer.toJson<String?>(paymentMethodDetails),
+      'cashReceived': serializer.toJson<double?>(cashReceived),
+      'changeAmount': serializer.toJson<double?>(changeAmount),
+      'subtotalAmount': serializer.toJson<double?>(subtotalAmount),
+      'discountAmount': serializer.toJson<double?>(discountAmount),
+      'taxAmount': serializer.toJson<double?>(taxAmount),
+      'otherChargesAmount': serializer.toJson<double?>(otherChargesAmount),
+      'grandTotal': serializer.toJson<double?>(grandTotal),
       'deliveryAddress': serializer.toJson<String?>(deliveryAddress),
       'customerId': serializer.toJson<int?>(customerId),
       'customerName': serializer.toJson<String?>(customerName),
@@ -7960,6 +8208,13 @@ class Order extends DataClass implements Insertable<Order> {
     Value<String?> orderType = const Value.absent(),
     Value<String?> paymentMethodName = const Value.absent(),
     Value<String?> paymentMethodDetails = const Value.absent(),
+    Value<double?> cashReceived = const Value.absent(),
+    Value<double?> changeAmount = const Value.absent(),
+    Value<double?> subtotalAmount = const Value.absent(),
+    Value<double?> discountAmount = const Value.absent(),
+    Value<double?> taxAmount = const Value.absent(),
+    Value<double?> otherChargesAmount = const Value.absent(),
+    Value<double?> grandTotal = const Value.absent(),
     Value<String?> deliveryAddress = const Value.absent(),
     Value<int?> customerId = const Value.absent(),
     Value<String?> customerName = const Value.absent(),
@@ -7989,6 +8244,19 @@ class Order extends DataClass implements Insertable<Order> {
     paymentMethodDetails: paymentMethodDetails.present
         ? paymentMethodDetails.value
         : this.paymentMethodDetails,
+    cashReceived: cashReceived.present ? cashReceived.value : this.cashReceived,
+    changeAmount: changeAmount.present ? changeAmount.value : this.changeAmount,
+    subtotalAmount: subtotalAmount.present
+        ? subtotalAmount.value
+        : this.subtotalAmount,
+    discountAmount: discountAmount.present
+        ? discountAmount.value
+        : this.discountAmount,
+    taxAmount: taxAmount.present ? taxAmount.value : this.taxAmount,
+    otherChargesAmount: otherChargesAmount.present
+        ? otherChargesAmount.value
+        : this.otherChargesAmount,
+    grandTotal: grandTotal.present ? grandTotal.value : this.grandTotal,
     deliveryAddress: deliveryAddress.present
         ? deliveryAddress.value
         : this.deliveryAddress,
@@ -8030,6 +8298,25 @@ class Order extends DataClass implements Insertable<Order> {
       paymentMethodDetails: data.paymentMethodDetails.present
           ? data.paymentMethodDetails.value
           : this.paymentMethodDetails,
+      cashReceived: data.cashReceived.present
+          ? data.cashReceived.value
+          : this.cashReceived,
+      changeAmount: data.changeAmount.present
+          ? data.changeAmount.value
+          : this.changeAmount,
+      subtotalAmount: data.subtotalAmount.present
+          ? data.subtotalAmount.value
+          : this.subtotalAmount,
+      discountAmount: data.discountAmount.present
+          ? data.discountAmount.value
+          : this.discountAmount,
+      taxAmount: data.taxAmount.present ? data.taxAmount.value : this.taxAmount,
+      otherChargesAmount: data.otherChargesAmount.present
+          ? data.otherChargesAmount.value
+          : this.otherChargesAmount,
+      grandTotal: data.grandTotal.present
+          ? data.grandTotal.value
+          : this.grandTotal,
       deliveryAddress: data.deliveryAddress.present
           ? data.deliveryAddress.value
           : this.deliveryAddress,
@@ -8066,6 +8353,13 @@ class Order extends DataClass implements Insertable<Order> {
           ..write('orderType: $orderType, ')
           ..write('paymentMethodName: $paymentMethodName, ')
           ..write('paymentMethodDetails: $paymentMethodDetails, ')
+          ..write('cashReceived: $cashReceived, ')
+          ..write('changeAmount: $changeAmount, ')
+          ..write('subtotalAmount: $subtotalAmount, ')
+          ..write('discountAmount: $discountAmount, ')
+          ..write('taxAmount: $taxAmount, ')
+          ..write('otherChargesAmount: $otherChargesAmount, ')
+          ..write('grandTotal: $grandTotal, ')
           ..write('deliveryAddress: $deliveryAddress, ')
           ..write('customerId: $customerId, ')
           ..write('customerName: $customerName, ')
@@ -8077,7 +8371,7 @@ class Order extends DataClass implements Insertable<Order> {
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     createdBy,
     updatedBy,
     id,
@@ -8092,13 +8386,20 @@ class Order extends DataClass implements Insertable<Order> {
     orderType,
     paymentMethodName,
     paymentMethodDetails,
+    cashReceived,
+    changeAmount,
+    subtotalAmount,
+    discountAmount,
+    taxAmount,
+    otherChargesAmount,
+    grandTotal,
     deliveryAddress,
     customerId,
     customerName,
     phoneNumber,
     isoCode,
     reservationId,
-  );
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8117,6 +8418,13 @@ class Order extends DataClass implements Insertable<Order> {
           other.orderType == this.orderType &&
           other.paymentMethodName == this.paymentMethodName &&
           other.paymentMethodDetails == this.paymentMethodDetails &&
+          other.cashReceived == this.cashReceived &&
+          other.changeAmount == this.changeAmount &&
+          other.subtotalAmount == this.subtotalAmount &&
+          other.discountAmount == this.discountAmount &&
+          other.taxAmount == this.taxAmount &&
+          other.otherChargesAmount == this.otherChargesAmount &&
+          other.grandTotal == this.grandTotal &&
           other.deliveryAddress == this.deliveryAddress &&
           other.customerId == this.customerId &&
           other.customerName == this.customerName &&
@@ -8140,6 +8448,13 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
   final Value<String?> orderType;
   final Value<String?> paymentMethodName;
   final Value<String?> paymentMethodDetails;
+  final Value<double?> cashReceived;
+  final Value<double?> changeAmount;
+  final Value<double?> subtotalAmount;
+  final Value<double?> discountAmount;
+  final Value<double?> taxAmount;
+  final Value<double?> otherChargesAmount;
+  final Value<double?> grandTotal;
   final Value<String?> deliveryAddress;
   final Value<int?> customerId;
   final Value<String?> customerName;
@@ -8161,6 +8476,13 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     this.orderType = const Value.absent(),
     this.paymentMethodName = const Value.absent(),
     this.paymentMethodDetails = const Value.absent(),
+    this.cashReceived = const Value.absent(),
+    this.changeAmount = const Value.absent(),
+    this.subtotalAmount = const Value.absent(),
+    this.discountAmount = const Value.absent(),
+    this.taxAmount = const Value.absent(),
+    this.otherChargesAmount = const Value.absent(),
+    this.grandTotal = const Value.absent(),
     this.deliveryAddress = const Value.absent(),
     this.customerId = const Value.absent(),
     this.customerName = const Value.absent(),
@@ -8183,6 +8505,13 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     this.orderType = const Value.absent(),
     this.paymentMethodName = const Value.absent(),
     this.paymentMethodDetails = const Value.absent(),
+    this.cashReceived = const Value.absent(),
+    this.changeAmount = const Value.absent(),
+    this.subtotalAmount = const Value.absent(),
+    this.discountAmount = const Value.absent(),
+    this.taxAmount = const Value.absent(),
+    this.otherChargesAmount = const Value.absent(),
+    this.grandTotal = const Value.absent(),
     this.deliveryAddress = const Value.absent(),
     this.customerId = const Value.absent(),
     this.customerName = const Value.absent(),
@@ -8205,6 +8534,13 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     Expression<String>? orderType,
     Expression<String>? paymentMethodName,
     Expression<String>? paymentMethodDetails,
+    Expression<double>? cashReceived,
+    Expression<double>? changeAmount,
+    Expression<double>? subtotalAmount,
+    Expression<double>? discountAmount,
+    Expression<double>? taxAmount,
+    Expression<double>? otherChargesAmount,
+    Expression<double>? grandTotal,
     Expression<String>? deliveryAddress,
     Expression<int>? customerId,
     Expression<String>? customerName,
@@ -8228,6 +8564,14 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
       if (paymentMethodName != null) 'payment_method_name': paymentMethodName,
       if (paymentMethodDetails != null)
         'payment_method_details': paymentMethodDetails,
+      if (cashReceived != null) 'cash_received': cashReceived,
+      if (changeAmount != null) 'change_amount': changeAmount,
+      if (subtotalAmount != null) 'subtotal_amount': subtotalAmount,
+      if (discountAmount != null) 'discount_amount': discountAmount,
+      if (taxAmount != null) 'tax_amount': taxAmount,
+      if (otherChargesAmount != null)
+        'other_charges_amount': otherChargesAmount,
+      if (grandTotal != null) 'grand_total': grandTotal,
       if (deliveryAddress != null) 'delivery_address': deliveryAddress,
       if (customerId != null) 'customer_id': customerId,
       if (customerName != null) 'customer_name': customerName,
@@ -8252,6 +8596,13 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     Value<String?>? orderType,
     Value<String?>? paymentMethodName,
     Value<String?>? paymentMethodDetails,
+    Value<double?>? cashReceived,
+    Value<double?>? changeAmount,
+    Value<double?>? subtotalAmount,
+    Value<double?>? discountAmount,
+    Value<double?>? taxAmount,
+    Value<double?>? otherChargesAmount,
+    Value<double?>? grandTotal,
     Value<String?>? deliveryAddress,
     Value<int?>? customerId,
     Value<String?>? customerName,
@@ -8274,6 +8625,13 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
       orderType: orderType ?? this.orderType,
       paymentMethodName: paymentMethodName ?? this.paymentMethodName,
       paymentMethodDetails: paymentMethodDetails ?? this.paymentMethodDetails,
+      cashReceived: cashReceived ?? this.cashReceived,
+      changeAmount: changeAmount ?? this.changeAmount,
+      subtotalAmount: subtotalAmount ?? this.subtotalAmount,
+      discountAmount: discountAmount ?? this.discountAmount,
+      taxAmount: taxAmount ?? this.taxAmount,
+      otherChargesAmount: otherChargesAmount ?? this.otherChargesAmount,
+      grandTotal: grandTotal ?? this.grandTotal,
       deliveryAddress: deliveryAddress ?? this.deliveryAddress,
       customerId: customerId ?? this.customerId,
       customerName: customerName ?? this.customerName,
@@ -8330,6 +8688,27 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
         paymentMethodDetails.value,
       );
     }
+    if (cashReceived.present) {
+      map['cash_received'] = Variable<double>(cashReceived.value);
+    }
+    if (changeAmount.present) {
+      map['change_amount'] = Variable<double>(changeAmount.value);
+    }
+    if (subtotalAmount.present) {
+      map['subtotal_amount'] = Variable<double>(subtotalAmount.value);
+    }
+    if (discountAmount.present) {
+      map['discount_amount'] = Variable<double>(discountAmount.value);
+    }
+    if (taxAmount.present) {
+      map['tax_amount'] = Variable<double>(taxAmount.value);
+    }
+    if (otherChargesAmount.present) {
+      map['other_charges_amount'] = Variable<double>(otherChargesAmount.value);
+    }
+    if (grandTotal.present) {
+      map['grand_total'] = Variable<double>(grandTotal.value);
+    }
     if (deliveryAddress.present) {
       map['delivery_address'] = Variable<String>(deliveryAddress.value);
     }
@@ -8368,6 +8747,13 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
           ..write('orderType: $orderType, ')
           ..write('paymentMethodName: $paymentMethodName, ')
           ..write('paymentMethodDetails: $paymentMethodDetails, ')
+          ..write('cashReceived: $cashReceived, ')
+          ..write('changeAmount: $changeAmount, ')
+          ..write('subtotalAmount: $subtotalAmount, ')
+          ..write('discountAmount: $discountAmount, ')
+          ..write('taxAmount: $taxAmount, ')
+          ..write('otherChargesAmount: $otherChargesAmount, ')
+          ..write('grandTotal: $grandTotal, ')
           ..write('deliveryAddress: $deliveryAddress, ')
           ..write('customerId: $customerId, ')
           ..write('customerName: $customerName, ')
@@ -9898,6 +10284,30 @@ class $InvoicesTableTable extends InvoicesTable
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _cashReceivedMeta = const VerificationMeta(
+    'cashReceived',
+  );
+  @override
+  late final GeneratedColumn<double> cashReceived = GeneratedColumn<double>(
+    'cash_received',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _changeAmountMeta = const VerificationMeta(
+    'changeAmount',
+  );
+  @override
+  late final GeneratedColumn<double> changeAmount = GeneratedColumn<double>(
+    'change_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     createdBy,
@@ -9922,6 +10332,8 @@ class $InvoicesTableTable extends InvoicesTable
     paymentMethodName,
     recordAmountPaid,
     paymentMethodDetails,
+    cashReceived,
+    changeAmount,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -10103,6 +10515,24 @@ class $InvoicesTableTable extends InvoicesTable
         ),
       );
     }
+    if (data.containsKey('cash_received')) {
+      context.handle(
+        _cashReceivedMeta,
+        cashReceived.isAcceptableOrUnknown(
+          data['cash_received']!,
+          _cashReceivedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('change_amount')) {
+      context.handle(
+        _changeAmountMeta,
+        changeAmount.isAcceptableOrUnknown(
+          data['change_amount']!,
+          _changeAmountMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -10200,6 +10630,14 @@ class $InvoicesTableTable extends InvoicesTable
         DriftSqlType.string,
         data['${effectivePrefix}payment_method_details'],
       ),
+      cashReceived: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}cash_received'],
+      ),
+      changeAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}change_amount'],
+      ),
     );
   }
 
@@ -10232,6 +10670,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
   final String? paymentMethodName;
   final double recordAmountPaid;
   final String? paymentMethodDetails;
+  final double? cashReceived;
+  final double? changeAmount;
   const Invoice({
     this.createdBy,
     this.updatedBy,
@@ -10255,6 +10695,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     this.paymentMethodName,
     required this.recordAmountPaid,
     this.paymentMethodDetails,
+    this.cashReceived,
+    this.changeAmount,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -10304,6 +10746,12 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     map['record_amount_paid'] = Variable<double>(recordAmountPaid);
     if (!nullToAbsent || paymentMethodDetails != null) {
       map['payment_method_details'] = Variable<String>(paymentMethodDetails);
+    }
+    if (!nullToAbsent || cashReceived != null) {
+      map['cash_received'] = Variable<double>(cashReceived);
+    }
+    if (!nullToAbsent || changeAmount != null) {
+      map['change_amount'] = Variable<double>(changeAmount);
     }
     return map;
   }
@@ -10356,6 +10804,12 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       paymentMethodDetails: paymentMethodDetails == null && nullToAbsent
           ? const Value.absent()
           : Value(paymentMethodDetails),
+      cashReceived: cashReceived == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cashReceived),
+      changeAmount: changeAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(changeAmount),
     );
   }
 
@@ -10391,6 +10845,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       paymentMethodDetails: serializer.fromJson<String?>(
         json['paymentMethodDetails'],
       ),
+      cashReceived: serializer.fromJson<double?>(json['cashReceived']),
+      changeAmount: serializer.fromJson<double?>(json['changeAmount']),
     );
   }
   @override
@@ -10419,6 +10875,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       'paymentMethodName': serializer.toJson<String?>(paymentMethodName),
       'recordAmountPaid': serializer.toJson<double>(recordAmountPaid),
       'paymentMethodDetails': serializer.toJson<String?>(paymentMethodDetails),
+      'cashReceived': serializer.toJson<double?>(cashReceived),
+      'changeAmount': serializer.toJson<double?>(changeAmount),
     };
   }
 
@@ -10445,6 +10903,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     Value<String?> paymentMethodName = const Value.absent(),
     double? recordAmountPaid,
     Value<String?> paymentMethodDetails = const Value.absent(),
+    Value<double?> cashReceived = const Value.absent(),
+    Value<double?> changeAmount = const Value.absent(),
   }) => Invoice(
     createdBy: createdBy.present ? createdBy.value : this.createdBy,
     updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
@@ -10474,6 +10934,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     paymentMethodDetails: paymentMethodDetails.present
         ? paymentMethodDetails.value
         : this.paymentMethodDetails,
+    cashReceived: cashReceived.present ? cashReceived.value : this.cashReceived,
+    changeAmount: changeAmount.present ? changeAmount.value : this.changeAmount,
   );
   Invoice copyWithCompanion(InvoicesTableCompanion data) {
     return Invoice(
@@ -10527,6 +10989,12 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       paymentMethodDetails: data.paymentMethodDetails.present
           ? data.paymentMethodDetails.value
           : this.paymentMethodDetails,
+      cashReceived: data.cashReceived.present
+          ? data.cashReceived.value
+          : this.cashReceived,
+      changeAmount: data.changeAmount.present
+          ? data.changeAmount.value
+          : this.changeAmount,
     );
   }
 
@@ -10554,7 +11022,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           ..write('paymentModeId: $paymentModeId, ')
           ..write('paymentMethodName: $paymentMethodName, ')
           ..write('recordAmountPaid: $recordAmountPaid, ')
-          ..write('paymentMethodDetails: $paymentMethodDetails')
+          ..write('paymentMethodDetails: $paymentMethodDetails, ')
+          ..write('cashReceived: $cashReceived, ')
+          ..write('changeAmount: $changeAmount')
           ..write(')'))
         .toString();
   }
@@ -10583,6 +11053,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     paymentMethodName,
     recordAmountPaid,
     paymentMethodDetails,
+    cashReceived,
+    changeAmount,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -10609,7 +11081,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           other.paymentModeId == this.paymentModeId &&
           other.paymentMethodName == this.paymentMethodName &&
           other.recordAmountPaid == this.recordAmountPaid &&
-          other.paymentMethodDetails == this.paymentMethodDetails);
+          other.paymentMethodDetails == this.paymentMethodDetails &&
+          other.cashReceived == this.cashReceived &&
+          other.changeAmount == this.changeAmount);
 }
 
 class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
@@ -10635,6 +11109,8 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
   final Value<String?> paymentMethodName;
   final Value<double> recordAmountPaid;
   final Value<String?> paymentMethodDetails;
+  final Value<double?> cashReceived;
+  final Value<double?> changeAmount;
   const InvoicesTableCompanion({
     this.createdBy = const Value.absent(),
     this.updatedBy = const Value.absent(),
@@ -10658,6 +11134,8 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     this.paymentMethodName = const Value.absent(),
     this.recordAmountPaid = const Value.absent(),
     this.paymentMethodDetails = const Value.absent(),
+    this.cashReceived = const Value.absent(),
+    this.changeAmount = const Value.absent(),
   });
   InvoicesTableCompanion.insert({
     this.createdBy = const Value.absent(),
@@ -10682,6 +11160,8 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     this.paymentMethodName = const Value.absent(),
     this.recordAmountPaid = const Value.absent(),
     this.paymentMethodDetails = const Value.absent(),
+    this.cashReceived = const Value.absent(),
+    this.changeAmount = const Value.absent(),
   });
   static Insertable<Invoice> custom({
     Expression<int>? createdBy,
@@ -10706,6 +11186,8 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     Expression<String>? paymentMethodName,
     Expression<double>? recordAmountPaid,
     Expression<String>? paymentMethodDetails,
+    Expression<double>? cashReceived,
+    Expression<double>? changeAmount,
   }) {
     return RawValuesInsertable({
       if (createdBy != null) 'created_by': createdBy,
@@ -10731,6 +11213,8 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
       if (recordAmountPaid != null) 'record_amount_paid': recordAmountPaid,
       if (paymentMethodDetails != null)
         'payment_method_details': paymentMethodDetails,
+      if (cashReceived != null) 'cash_received': cashReceived,
+      if (changeAmount != null) 'change_amount': changeAmount,
     });
   }
 
@@ -10757,6 +11241,8 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     Value<String?>? paymentMethodName,
     Value<double>? recordAmountPaid,
     Value<String?>? paymentMethodDetails,
+    Value<double?>? cashReceived,
+    Value<double?>? changeAmount,
   }) {
     return InvoicesTableCompanion(
       createdBy: createdBy ?? this.createdBy,
@@ -10781,6 +11267,8 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
       paymentMethodName: paymentMethodName ?? this.paymentMethodName,
       recordAmountPaid: recordAmountPaid ?? this.recordAmountPaid,
       paymentMethodDetails: paymentMethodDetails ?? this.paymentMethodDetails,
+      cashReceived: cashReceived ?? this.cashReceived,
+      changeAmount: changeAmount ?? this.changeAmount,
     );
   }
 
@@ -10855,6 +11343,12 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
         paymentMethodDetails.value,
       );
     }
+    if (cashReceived.present) {
+      map['cash_received'] = Variable<double>(cashReceived.value);
+    }
+    if (changeAmount.present) {
+      map['change_amount'] = Variable<double>(changeAmount.value);
+    }
     return map;
   }
 
@@ -10882,7 +11376,9 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
           ..write('paymentModeId: $paymentModeId, ')
           ..write('paymentMethodName: $paymentMethodName, ')
           ..write('recordAmountPaid: $recordAmountPaid, ')
-          ..write('paymentMethodDetails: $paymentMethodDetails')
+          ..write('paymentMethodDetails: $paymentMethodDetails, ')
+          ..write('cashReceived: $cashReceived, ')
+          ..write('changeAmount: $changeAmount')
           ..write(')'))
         .toString();
   }
@@ -21475,7 +21971,7 @@ class $$TableInfoTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$TableInfoTableTable, TableInfoData>(table),
                   $$TableInfoTableTableReferences(db, table, e),
                 ),
               )
@@ -21866,7 +22362,7 @@ class $$CategoriesTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$CategoriesTableTable, Category>(table),
                   $$CategoriesTableTableReferences(db, table, e),
                 ),
               )
@@ -22257,7 +22753,7 @@ class $$SubcategoriesTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$SubcategoriesTableTable, Subcategory>(table),
                   $$SubcategoriesTableTableReferences(db, table, e),
                 ),
               )
@@ -23031,7 +23527,7 @@ class $$MenuItemsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MenuItemsTableTable, MenuItem>(table),
                   $$MenuItemsTableTableReferences(db, table, e),
                 ),
               )
@@ -23685,7 +24181,9 @@ class $$MenuItemVariationsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$MenuItemVariationsTableTable, MenuItemVariation>(
+                    table,
+                  ),
                   $$MenuItemVariationsTableTableReferences(db, table, e),
                 ),
               )
@@ -24022,7 +24520,18 @@ class $$MenuItemReviewsTableTableTableManager
                 reviewDate: reviewDate,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$MenuItemReviewsTableTable, MenuItemReview>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$CoozyDatabase,
+                    $MenuItemReviewsTableTable,
+                    MenuItemReview
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -24423,7 +24932,7 @@ class $$InventoryTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$InventoryTableTable, InventoryItem>(table),
                   $$InventoryTableTableReferences(db, table, e),
                 ),
               )
@@ -24879,7 +25388,7 @@ class $$PurchaseTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PurchaseTableTable, PurchaseRecord>(table),
                   $$PurchaseTableTableReferences(db, table, e),
                 ),
               )
@@ -25396,7 +25905,7 @@ class $$CustomersTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$CustomersTableTable, Customer>(table),
                   $$CustomersTableTableReferences(db, table, e),
                 ),
               )
@@ -26150,7 +26659,7 @@ class $$ReservationsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$ReservationsTableTable, Reservation>(table),
                   $$ReservationsTableTableReferences(db, table, e),
                 ),
               )
@@ -26276,6 +26785,13 @@ typedef $$OrdersTableTableCreateCompanionBuilder =
       Value<String?> orderType,
       Value<String?> paymentMethodName,
       Value<String?> paymentMethodDetails,
+      Value<double?> cashReceived,
+      Value<double?> changeAmount,
+      Value<double?> subtotalAmount,
+      Value<double?> discountAmount,
+      Value<double?> taxAmount,
+      Value<double?> otherChargesAmount,
+      Value<double?> grandTotal,
       Value<String?> deliveryAddress,
       Value<int?> customerId,
       Value<String?> customerName,
@@ -26299,6 +26815,13 @@ typedef $$OrdersTableTableUpdateCompanionBuilder =
       Value<String?> orderType,
       Value<String?> paymentMethodName,
       Value<String?> paymentMethodDetails,
+      Value<double?> cashReceived,
+      Value<double?> changeAmount,
+      Value<double?> subtotalAmount,
+      Value<double?> discountAmount,
+      Value<double?> taxAmount,
+      Value<double?> otherChargesAmount,
+      Value<double?> grandTotal,
       Value<String?> deliveryAddress,
       Value<int?> customerId,
       Value<String?> customerName,
@@ -26474,6 +26997,41 @@ class $$OrdersTableTableFilterComposer
 
   ColumnFilters<String> get paymentMethodDetails => $composableBuilder(
     column: $table.paymentMethodDetails,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get changeAmount => $composableBuilder(
+    column: $table.changeAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get subtotalAmount => $composableBuilder(
+    column: $table.subtotalAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get discountAmount => $composableBuilder(
+    column: $table.discountAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get taxAmount => $composableBuilder(
+    column: $table.taxAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get otherChargesAmount => $composableBuilder(
+    column: $table.otherChargesAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -26691,6 +27249,41 @@ class $$OrdersTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get changeAmount => $composableBuilder(
+    column: $table.changeAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get subtotalAmount => $composableBuilder(
+    column: $table.subtotalAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get discountAmount => $composableBuilder(
+    column: $table.discountAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get taxAmount => $composableBuilder(
+    column: $table.taxAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get otherChargesAmount => $composableBuilder(
+    column: $table.otherChargesAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get deliveryAddress => $composableBuilder(
     column: $table.deliveryAddress,
     builder: (column) => ColumnOrderings(column),
@@ -26838,6 +27431,39 @@ class $$OrdersTableTableAnnotationComposer
 
   GeneratedColumn<String> get paymentMethodDetails => $composableBuilder(
     column: $table.paymentMethodDetails,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get changeAmount => $composableBuilder(
+    column: $table.changeAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get subtotalAmount => $composableBuilder(
+    column: $table.subtotalAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get discountAmount => $composableBuilder(
+    column: $table.discountAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get taxAmount =>
+      $composableBuilder(column: $table.taxAmount, builder: (column) => column);
+
+  GeneratedColumn<double> get otherChargesAmount => $composableBuilder(
+    column: $table.otherChargesAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get grandTotal => $composableBuilder(
+    column: $table.grandTotal,
     builder: (column) => column,
   );
 
@@ -27028,6 +27654,13 @@ class $$OrdersTableTableTableManager
                 Value<String?> orderType = const Value.absent(),
                 Value<String?> paymentMethodName = const Value.absent(),
                 Value<String?> paymentMethodDetails = const Value.absent(),
+                Value<double?> cashReceived = const Value.absent(),
+                Value<double?> changeAmount = const Value.absent(),
+                Value<double?> subtotalAmount = const Value.absent(),
+                Value<double?> discountAmount = const Value.absent(),
+                Value<double?> taxAmount = const Value.absent(),
+                Value<double?> otherChargesAmount = const Value.absent(),
+                Value<double?> grandTotal = const Value.absent(),
                 Value<String?> deliveryAddress = const Value.absent(),
                 Value<int?> customerId = const Value.absent(),
                 Value<String?> customerName = const Value.absent(),
@@ -27049,6 +27682,13 @@ class $$OrdersTableTableTableManager
                 orderType: orderType,
                 paymentMethodName: paymentMethodName,
                 paymentMethodDetails: paymentMethodDetails,
+                cashReceived: cashReceived,
+                changeAmount: changeAmount,
+                subtotalAmount: subtotalAmount,
+                discountAmount: discountAmount,
+                taxAmount: taxAmount,
+                otherChargesAmount: otherChargesAmount,
+                grandTotal: grandTotal,
                 deliveryAddress: deliveryAddress,
                 customerId: customerId,
                 customerName: customerName,
@@ -27072,6 +27712,13 @@ class $$OrdersTableTableTableManager
                 Value<String?> orderType = const Value.absent(),
                 Value<String?> paymentMethodName = const Value.absent(),
                 Value<String?> paymentMethodDetails = const Value.absent(),
+                Value<double?> cashReceived = const Value.absent(),
+                Value<double?> changeAmount = const Value.absent(),
+                Value<double?> subtotalAmount = const Value.absent(),
+                Value<double?> discountAmount = const Value.absent(),
+                Value<double?> taxAmount = const Value.absent(),
+                Value<double?> otherChargesAmount = const Value.absent(),
+                Value<double?> grandTotal = const Value.absent(),
                 Value<String?> deliveryAddress = const Value.absent(),
                 Value<int?> customerId = const Value.absent(),
                 Value<String?> customerName = const Value.absent(),
@@ -27093,6 +27740,13 @@ class $$OrdersTableTableTableManager
                 orderType: orderType,
                 paymentMethodName: paymentMethodName,
                 paymentMethodDetails: paymentMethodDetails,
+                cashReceived: cashReceived,
+                changeAmount: changeAmount,
+                subtotalAmount: subtotalAmount,
+                discountAmount: discountAmount,
+                taxAmount: taxAmount,
+                otherChargesAmount: otherChargesAmount,
+                grandTotal: grandTotal,
                 deliveryAddress: deliveryAddress,
                 customerId: customerId,
                 customerName: customerName,
@@ -27103,7 +27757,7 @@ class $$OrdersTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$OrdersTableTable, Order>(table),
                   $$OrdersTableTableReferences(db, table, e),
                 ),
               )
@@ -27938,7 +28592,7 @@ class $$OrderItemsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$OrderItemsTableTable, OrderItem>(table),
                   $$OrderItemsTableTableReferences(db, table, e),
                 ),
               )
@@ -28396,7 +29050,7 @@ class $$PaymentModesTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PaymentModesTableTable, PaymentMode>(table),
                   $$PaymentModesTableTableReferences(db, table, e),
                 ),
               )
@@ -28507,6 +29161,8 @@ typedef $$InvoicesTableTableCreateCompanionBuilder =
       Value<String?> paymentMethodName,
       Value<double> recordAmountPaid,
       Value<String?> paymentMethodDetails,
+      Value<double?> cashReceived,
+      Value<double?> changeAmount,
     });
 typedef $$InvoicesTableTableUpdateCompanionBuilder =
     InvoicesTableCompanion Function({
@@ -28532,6 +29188,8 @@ typedef $$InvoicesTableTableUpdateCompanionBuilder =
       Value<String?> paymentMethodName,
       Value<double> recordAmountPaid,
       Value<String?> paymentMethodDetails,
+      Value<double?> cashReceived,
+      Value<double?> changeAmount,
     });
 
 final class $$InvoicesTableTableReferences
@@ -28742,6 +29400,16 @@ class $$InvoicesTableTableFilterComposer
 
   ColumnFilters<String> get paymentMethodDetails => $composableBuilder(
     column: $table.paymentMethodDetails,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get changeAmount => $composableBuilder(
+    column: $table.changeAmount,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -28971,6 +29639,16 @@ class $$InvoicesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get changeAmount => $composableBuilder(
+    column: $table.changeAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$OrdersTableTableOrderingComposer get orderId {
     final $$OrdersTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -29128,6 +29806,16 @@ class $$InvoicesTableTableAnnotationComposer
 
   GeneratedColumn<String> get paymentMethodDetails => $composableBuilder(
     column: $table.paymentMethodDetails,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get cashReceived => $composableBuilder(
+    column: $table.cashReceived,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get changeAmount => $composableBuilder(
+    column: $table.changeAmount,
     builder: (column) => column,
   );
 
@@ -29313,6 +30001,8 @@ class $$InvoicesTableTableTableManager
                 Value<String?> paymentMethodName = const Value.absent(),
                 Value<double> recordAmountPaid = const Value.absent(),
                 Value<String?> paymentMethodDetails = const Value.absent(),
+                Value<double?> cashReceived = const Value.absent(),
+                Value<double?> changeAmount = const Value.absent(),
               }) => InvoicesTableCompanion(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -29336,6 +30026,8 @@ class $$InvoicesTableTableTableManager
                 paymentMethodName: paymentMethodName,
                 recordAmountPaid: recordAmountPaid,
                 paymentMethodDetails: paymentMethodDetails,
+                cashReceived: cashReceived,
+                changeAmount: changeAmount,
               ),
           createCompanionCallback:
               ({
@@ -29361,6 +30053,8 @@ class $$InvoicesTableTableTableManager
                 Value<String?> paymentMethodName = const Value.absent(),
                 Value<double> recordAmountPaid = const Value.absent(),
                 Value<String?> paymentMethodDetails = const Value.absent(),
+                Value<double?> cashReceived = const Value.absent(),
+                Value<double?> changeAmount = const Value.absent(),
               }) => InvoicesTableCompanion.insert(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -29384,11 +30078,13 @@ class $$InvoicesTableTableTableManager
                 paymentMethodName: paymentMethodName,
                 recordAmountPaid: recordAmountPaid,
                 paymentMethodDetails: paymentMethodDetails,
+                cashReceived: cashReceived,
+                changeAmount: changeAmount,
               ),
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$InvoicesTableTable, Invoice>(table),
                   $$InvoicesTableTableReferences(db, table, e),
                 ),
               )
@@ -29984,7 +30680,7 @@ class $$InvoiceItemsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$InvoiceItemsTableTable, InvoiceItem>(table),
                   $$InvoiceItemsTableTableReferences(db, table, e),
                 ),
               )
@@ -30496,7 +31192,10 @@ class $$PaymentTransactionsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<
+                    $PaymentTransactionsTableTable,
+                    PaymentTransaction
+                  >(table),
                   $$PaymentTransactionsTableTableReferences(db, table, e),
                 ),
               )
@@ -31074,7 +31773,16 @@ class $$RecipesTableTableTableManager
                 isBookmark: isBookmark,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$RecipesTableTable, Recipe>(table),
+                  BaseReferences<_$CoozyDatabase, $RecipesTableTable, Recipe>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -31783,7 +32491,7 @@ class $$EmployeesTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$EmployeesTableTable, Employee>(table),
                   $$EmployeesTableTableReferences(db, table, e),
                 ),
               )
@@ -32306,7 +33014,7 @@ class $$AttendanceTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$AttendanceTableTable, AttendanceRecord>(table),
                   $$AttendanceTableTableReferences(db, table, e),
                 ),
               )
@@ -32781,7 +33489,7 @@ class $$LeavesTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$LeavesTableTable, LeaveRecord>(table),
                   $$LeavesTableTableReferences(db, table, e),
                 ),
               )
@@ -33168,7 +33876,7 @@ class $$RolesTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$RolesTableTable, UserRole>(table),
                   $$RolesTableTableReferences(db, table, e),
                 ),
               )
@@ -33682,7 +34390,7 @@ class $$UserLoginsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$UserLoginsTableTable, UserLogin>(table),
                   $$UserLoginsTableTableReferences(db, table, e),
                 ),
               )
@@ -33989,7 +34697,7 @@ class $$PermissionsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$PermissionsTableTable, UserPermission>(table),
                   $$PermissionsTableTableReferences(db, table, e),
                 ),
               )
@@ -34365,7 +35073,9 @@ class $$RolePermissionsTableTableTableManager
           withReferenceMapper: (p0) => p0
               .map(
                 (e) => (
-                  e.readTable(table),
+                  e.readTable<$RolePermissionsTableTable, RolePermission>(
+                    table,
+                  ),
                   $$RolePermissionsTableTableReferences(db, table, e),
                 ),
               )
@@ -34658,7 +35368,16 @@ class $$TaxesTableTableTableManager
                 isDefaultAdd: isDefaultAdd,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$TaxesTableTable, TaxTableData>(table),
+                  BaseReferences<
+                    _$CoozyDatabase,
+                    $TaxesTableTable,
+                    TaxTableData
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -34919,7 +35638,16 @@ class $$DiscountsTableTableTableManager
                 isDefaultAdd: isDefaultAdd,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$DiscountsTableTable, DiscountTableData>(table),
+                  BaseReferences<
+                    _$CoozyDatabase,
+                    $DiscountsTableTable,
+                    DiscountTableData
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -35187,7 +35915,18 @@ class $$ExtraChargesTableTableTableManager
                 isDefaultAdd: isDefaultAdd,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<$ExtraChargesTableTable, ExtraChargeTableData>(
+                    table,
+                  ),
+                  BaseReferences<
+                    _$CoozyDatabase,
+                    $ExtraChargesTableTable,
+                    ExtraChargeTableData
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),
@@ -35479,7 +36218,19 @@ class $$PaymentMethodsTableTableTableManager
                 isEnabled: isEnabled,
               ),
           withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .map(
+                (e) => (
+                  e.readTable<
+                    $PaymentMethodsTableTable,
+                    PaymentMethodTableData
+                  >(table),
+                  BaseReferences<
+                    _$CoozyDatabase,
+                    $PaymentMethodsTableTable,
+                    PaymentMethodTableData
+                  >(db, table, e),
+                ),
+              )
               .toList(),
           prefetchHooksCallback: null,
         ),

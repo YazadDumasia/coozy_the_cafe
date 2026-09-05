@@ -7,8 +7,9 @@ part 'orders_dao.g.dart';
 class OrderWithItems {
   final Order order;
   final List<OrderItem> items;
+  final Invoice? invoice;
 
-  OrderWithItems({required this.order, required this.items});
+  OrderWithItems({required this.order, required this.items, this.invoice});
 }
 
 @DriftAccessor(
@@ -19,6 +20,7 @@ class OrderWithItems {
     MenuItemsTable,
     MenuItemVariationsTable,
     TableInfoTable,
+    InvoicesTable,
   ],
 )
 class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
@@ -137,7 +139,11 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
         orderItemsTable,
       )..where((t) => t.orderId.equals(orderId))).get();
 
-      return OrderWithItems(order: order, items: items);
+      final invoice = await (select(
+        invoicesTable,
+      )..where((t) => t.orderId.equals(orderId))).getSingleOrNull();
+
+      return OrderWithItems(order: order, items: items, invoice: invoice);
     });
   }
 

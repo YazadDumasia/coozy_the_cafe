@@ -266,9 +266,17 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                 _activeStep = _PaymentStep.details;
               });
             },
-            onPaymentConfirmed: () {
+            onPaymentConfirmed: ({
+              required cashReceived,
+              required changeAmount,
+              note,
+            }) {
               context.read<CheckoutBloc>().add(
-                const CheckoutPaymentConfirmed(),
+                CheckoutPaymentConfirmed(
+                  note: note,
+                  cashReceived: cashReceived,
+                  changeAmount: changeAmount,
+                ),
               );
               setState(() {
                 _activeStep = _PaymentStep.success;
@@ -286,9 +294,9 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                 _activeStep = _PaymentStep.details;
               });
             },
-            onPaymentConfirmed: () {
+            onPaymentConfirmed: (note) {
               context.read<CheckoutBloc>().add(
-                const CheckoutPaymentConfirmed(),
+                CheckoutPaymentConfirmed(note: note),
               );
               setState(() {
                 _activeStep = _PaymentStep.success;

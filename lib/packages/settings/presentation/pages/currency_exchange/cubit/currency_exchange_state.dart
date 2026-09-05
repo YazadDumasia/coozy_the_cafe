@@ -26,6 +26,8 @@ class CurrencyExchangeLoaded extends CurrencyExchangeState {
   final double spreadPercentage;
   final String searchQuery;
 
+  final bool isChangingBase;
+
   const CurrencyExchangeLoaded({
     required this.currencies,
     required this.rates,
@@ -36,9 +38,12 @@ class CurrencyExchangeLoaded extends CurrencyExchangeState {
     required this.isOffline,
     this.spreadPercentage = 0.5, // 0.5% default market spread
     this.searchQuery = '',
+    this.isChangingBase = false,
   });
 
-  double get targetRate => rates[targetCurrency.toLowerCase()] ?? 1.0;
+  bool get hasTargetRate => rates.containsKey(targetCurrency.toLowerCase());
+  double? get rawTargetRate => rates[targetCurrency.toLowerCase()];
+  double get targetRate => rawTargetRate ?? 1.0;
   double get convertedAmount => amount * targetRate;
 
   // Spread calculations (Bid / Ask)
@@ -57,6 +62,7 @@ class CurrencyExchangeLoaded extends CurrencyExchangeState {
     bool? isOffline,
     double? spreadPercentage,
     String? searchQuery,
+    bool? isChangingBase,
   }) {
     return CurrencyExchangeLoaded(
       currencies: currencies ?? this.currencies,
@@ -68,6 +74,7 @@ class CurrencyExchangeLoaded extends CurrencyExchangeState {
       isOffline: isOffline ?? this.isOffline,
       spreadPercentage: spreadPercentage ?? this.spreadPercentage,
       searchQuery: searchQuery ?? this.searchQuery,
+      isChangingBase: isChangingBase ?? this.isChangingBase,
     );
   }
 
@@ -82,6 +89,7 @@ class CurrencyExchangeLoaded extends CurrencyExchangeState {
         isOffline,
         spreadPercentage,
         searchQuery,
+        isChangingBase,
       ];
 }
 

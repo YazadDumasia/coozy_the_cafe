@@ -10,11 +10,7 @@ class OrderInfoScreen extends StatefulWidget {
   final int orderId;
   final OrderManagementEntity? initialOrder;
 
-  const OrderInfoScreen({
-    super.key,
-    required this.orderId,
-    this.initialOrder,
-  });
+  const OrderInfoScreen({super.key, required this.orderId, this.initialOrder});
 
   @override
   State<OrderInfoScreen> createState() => _OrderInfoScreenState();
@@ -26,8 +22,8 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
     super.initState();
     if (widget.initialOrder == null) {
       context.read<OrderManagementBloc>().add(
-            LoadOrderDetailsEvent(widget.orderId),
-          );
+        LoadOrderDetailsEvent(widget.orderId),
+      );
     }
   }
 
@@ -65,6 +61,32 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                 ) ??
                 'Order Information',
           ),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.share),
+              tooltip: 'Share Order',
+              onPressed: () {
+                OrderInfoScreenActions.onShareOrder(
+                  context,
+                  orderId: widget.orderId,
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.receipt_long),
+              tooltip: context.tr(
+                    shared.LocaleKeys.orderManagementInvoiceInfoButton,
+                    track: shared.TrackConstants.orderManagementPageTrack,
+                  ) ??
+                  'Invoice Info',
+              onPressed: () {
+                OrderInfoScreenActions.onInvoiceInfo(
+                  context,
+                  orderId: widget.orderId,
+                );
+              },
+            ),
+          ],
         ),
         body: BlocBuilder<OrderManagementBloc, OrderManagementState>(
           builder: (context, state) {
@@ -76,7 +98,8 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
             }
 
             if (order == null) {
-              if (state is OrderManagementLoadedState && state.isLoadingDetails) {
+              if (state is OrderManagementLoadedState &&
+                  state.isLoadingDetails) {
                 return const shared.LoadingPage();
               }
               if (state is OrderManagementErrorState) {
@@ -84,8 +107,8 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                   errorMsg: state.message,
                   onPressedRetryButton: () {
                     context.read<OrderManagementBloc>().add(
-                          LoadOrderDetailsEvent(widget.orderId),
-                        );
+                      LoadOrderDetailsEvent(widget.orderId),
+                    );
                   },
                 );
               }
@@ -95,8 +118,11 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
 
             final statusColor = _getStatusColor(context, order.status);
             final creationFormatted = order.creationDate != null
-                ? DateUtil.localFormat(order.creationDate, DateUtil.dateFormat3) ??
-                    order.creationDate!
+                ? DateUtil.localFormat(
+                        order.creationDate,
+                        DateUtil.dateFormat3,
+                      ) ??
+                      order.creationDate!
                 : 'N/A';
 
             return ListView(
@@ -149,16 +175,6 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                             color: colorScheme.onSurfaceVariant,
                           ),
                         ),
-                        if (order.hashId.isNotEmpty) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            'Hash Ref: ${order.hashId}',
-                            style: theme.textTheme.bodySmall?.copyWith(
-                              color: colorScheme.outline,
-                              fontSize: 11,
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ),
@@ -166,7 +182,7 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                 const SizedBox(height: 12),
 
                 // Invoice Info Button
-                OutlinedButton.icon(
+                ElevatedButton.icon(
                   onPressed: () {
                     OrderInfoScreenActions.onInvoiceInfo(
                       context,
@@ -180,9 +196,16 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                           track: shared.TrackConstants.orderManagementPageTrack,
                         ) ??
                         'Invoice Info',
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: colorScheme.onPrimary,
+                    ),
                   ),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    elevation: 3,
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -236,14 +259,16 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                             label: 'Phone',
                             value: order.phoneNumber!,
                           ),
-                        if (order.paymentMethodName != null &&
-                            order.paymentMethodName!.isNotEmpty)
-                          _buildDetailRow(
-                            context,
-                            icon: Icons.payment,
-                            label: 'Payment Method',
-                            value: order.paymentMethodName!,
-                          ),
+                        _buildDetailRow(
+                          context,
+                          icon: Icons.payment,
+                          label: 'Payment Method',
+                          value:
+                              (order.paymentMethodName != null &&
+                                  order.paymentMethodName!.isNotEmpty)
+                              ? order.paymentMethodName!
+                              : 'Pending / Not Selected',
+                        ),
                       ],
                     ),
                   ),
@@ -295,21 +320,24 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                                           item.itemName ?? 'Item #${item.id}',
                                           style: theme.textTheme.bodyMedium
                                               ?.copyWith(
-                                            fontWeight: FontWeight.w600,
-                                          ),
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                         ),
                                         Text(
                                           'Qty: ${item.quantity} x ${CurrencyFormatter.format(value: item.sellingPrice)}',
                                           style: theme.textTheme.bodySmall
                                               ?.copyWith(
-                                            color: colorScheme.onSurfaceVariant,
-                                          ),
+                                                color: colorScheme
+                                                    .onSurfaceVariant,
+                                              ),
                                         ),
                                       ],
                                     ),
                                   ),
                                   Text(
-                                    CurrencyFormatter.format(value: item.subTotal),
+                                    CurrencyFormatter.format(
+                                      value: item.subTotal,
+                                    ),
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -329,7 +357,9 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                               ),
                             ),
                             Text(
-                              CurrencyFormatter.format(value: order.totalAmount),
+                              CurrencyFormatter.format(
+                                value: order.totalAmount,
+                              ),
                               style: theme.textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: colorScheme.primary,
@@ -339,6 +369,189 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                         ),
                       ],
                     ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Billing & Financial Breakdown Card (ExpansionTile)
+                Card(
+                  elevation: 1,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ExpansionTile(
+                    initiallyExpanded: true,
+                    shape: const RoundedRectangleBorder(side: BorderSide.none),
+                    collapsedShape: const RoundedRectangleBorder(
+                      side: BorderSide.none,
+                    ),
+                    tilePadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    title: Text(
+                      'Billing & Payment Breakdown',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'Grand Total: ${CurrencyFormatter.format(value: order.totalAmount)}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: Column(
+                          children: [
+                            const Divider(height: 1),
+                            _buildBreakdownRow(
+                              context,
+                              label: 'Payment Method',
+                              value:
+                                  (order.paymentMethodName != null &&
+                                      order.paymentMethodName!.isNotEmpty)
+                                  ? order.paymentMethodName!
+                                  : 'Pending / Not Selected',
+                              isBold: true,
+                            ),
+                            _buildBreakdownRow(
+                              context,
+                              label: 'Subtotal',
+                              value: CurrencyFormatter.format(
+                                value: order.subtotalAmount > 0
+                                    ? order.subtotalAmount
+                                    : order.items.fold<double>(
+                                        0.0,
+                                        (s, i) => s + i.subTotal,
+                                      ),
+                              ),
+                            ),
+
+                            // Render Individual Taxes if taxDetailsList is available
+                            if (order.taxDetailsList.isNotEmpty) ...[
+                              ...order.taxDetailsList.map((tax) {
+                                final name = tax['name'] ?? 'Tax';
+                                final rate = tax['ratePercent'] != null
+                                    ? '${tax['ratePercent']}%'
+                                    : '';
+                                final amt =
+                                    (tax['amount'] as num?)?.toDouble() ?? 0.0;
+                                if (amt <= 0) return const SizedBox.shrink();
+                                final labelText = rate.isNotEmpty
+                                    ? '$name ($rate)'
+                                    : '$name';
+                                return _buildBreakdownRow(
+                                  context,
+                                  label: labelText,
+                                  value:
+                                      '+${CurrencyFormatter.format(value: amt)}',
+                                  valueColor: colorScheme.onSurfaceVariant,
+                                );
+                              }),
+                            ] else if (order.taxAmount > 0) ...[
+                              _buildBreakdownRow(
+                                context,
+                                label: order.taxPercentage > 0
+                                    ? 'Tax (${order.taxPercentage}%)'
+                                    : 'Tax',
+                                value:
+                                    '+${CurrencyFormatter.format(value: order.taxAmount)}',
+                                valueColor: colorScheme.onSurfaceVariant,
+                              ),
+                            ],
+
+                            // Render Individual Discounts if discountDetailsList is available
+                            if (order.discountDetailsList.isNotEmpty) ...[
+                              ...order.discountDetailsList.map((disc) {
+                                final name = disc['name'] ?? 'Discount';
+                                final amt =
+                                    (disc['amount'] as num?)?.toDouble() ?? 0.0;
+                                if (amt <= 0) return const SizedBox.shrink();
+                                return _buildBreakdownRow(
+                                  context,
+                                  label: name,
+                                  value:
+                                      '-${CurrencyFormatter.format(value: amt)}',
+                                  valueColor: Colors.red.shade700,
+                                );
+                              }),
+                            ] else if (order.discountAmount > 0) ...[
+                              _buildBreakdownRow(
+                                context,
+                                label: 'Discount',
+                                value:
+                                    '-${CurrencyFormatter.format(value: order.discountAmount)}',
+                                valueColor: Colors.red.shade700,
+                              ),
+                            ],
+
+                            // Render Individual Charges if chargeDetailsList is available
+                            if (order.chargeDetailsList.isNotEmpty) ...[
+                              ...order.chargeDetailsList.map((chg) {
+                                final name = chg['name'] ?? 'Other Charge';
+                                final amt =
+                                    (chg['amount'] as num?)?.toDouble() ?? 0.0;
+                                if (amt <= 0) return const SizedBox.shrink();
+                                return _buildBreakdownRow(
+                                  context,
+                                  label: name,
+                                  value:
+                                      '+${CurrencyFormatter.format(value: amt)}',
+                                  valueColor: colorScheme.onSurfaceVariant,
+                                );
+                              }),
+                            ] else if (order.otherChargesAmount > 0) ...[
+                              _buildBreakdownRow(
+                                context,
+                                label: 'Other Charges',
+                                value:
+                                    '+${CurrencyFormatter.format(value: order.otherChargesAmount)}',
+                                valueColor: colorScheme.onSurfaceVariant,
+                              ),
+                            ],
+
+                            const Divider(),
+                            _buildBreakdownRow(
+                              context,
+                              label: 'Grand Total',
+                              value: CurrencyFormatter.format(
+                                value: order.totalAmount,
+                              ),
+                              isBold: true,
+                              fontSize: 16,
+                              valueColor: colorScheme.primary,
+                            ),
+                            if (order.cashReceivedAmount > 0) ...[
+                              const SizedBox(height: 4),
+                              _buildBreakdownRow(
+                                context,
+                                label: 'Cash Received',
+                                value: CurrencyFormatter.format(
+                                  value: order.cashReceivedAmount,
+                                ),
+                                valueColor: colorScheme.onSurfaceVariant,
+                              ),
+                              if (order.changeAmount > 0)
+                                _buildBreakdownRow(
+                                  context,
+                                  label: 'Change Given',
+                                  value: CurrencyFormatter.format(
+                                    value: order.changeAmount,
+                                  ),
+                                  valueColor: colorScheme.secondary,
+                                ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -423,6 +636,45 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                 fontWeight: FontWeight.w600,
               ),
               textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBreakdownRow(
+    BuildContext context, {
+    required String label,
+    required String value,
+    bool isBold = false,
+    double? fontSize,
+    Color? valueColor,
+  }) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+              fontSize: fontSize,
+              color: isBold
+                  ? colorScheme.onSurface
+                  : colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Text(
+            value,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: isBold ? FontWeight.bold : FontWeight.w600,
+              fontSize: fontSize,
+              color: valueColor ?? colorScheme.onSurface,
             ),
           ),
         ],

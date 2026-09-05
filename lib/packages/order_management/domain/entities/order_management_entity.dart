@@ -58,6 +58,16 @@ class OrderManagementEntity extends Equatable {
   final int? reservationId;
   final List<OrderItemManagementEntity> items;
   final double totalAmount;
+  final double subtotalAmount;
+  final double discountAmount;
+  final double taxAmount;
+  final double taxPercentage;
+  final double otherChargesAmount;
+  final double cashReceivedAmount;
+  final double changeAmount;
+  final List<Map<String, dynamic>> taxDetailsList;
+  final List<Map<String, dynamic>> discountDetailsList;
+  final List<Map<String, dynamic>> chargeDetailsList;
 
   const OrderManagementEntity({
     required this.id,
@@ -80,6 +90,16 @@ class OrderManagementEntity extends Equatable {
     this.reservationId,
     this.items = const [],
     required this.totalAmount,
+    this.subtotalAmount = 0.0,
+    this.discountAmount = 0.0,
+    this.taxAmount = 0.0,
+    this.taxPercentage = 0.0,
+    this.otherChargesAmount = 0.0,
+    this.cashReceivedAmount = 0.0,
+    this.changeAmount = 0.0,
+    this.taxDetailsList = const [],
+    this.discountDetailsList = const [],
+    this.chargeDetailsList = const [],
   });
 
   @override
@@ -104,5 +124,15 @@ class OrderManagementEntity extends Equatable {
         reservationId,
         items,
         totalAmount,
+        subtotalAmount,
+        discountAmount,
+        taxAmount,
+        taxPercentage,
+        otherChargesAmount,
+        cashReceivedAmount,
+        changeAmount,
+        taxDetailsList,
+        discountDetailsList,
+        chargeDetailsList,
       ];
 }

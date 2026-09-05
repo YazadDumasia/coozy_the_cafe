@@ -75,7 +75,7 @@ class OrderCardWidget extends StatelessWidget {
 
     final formattedDate = order.creationDate != null
         ? DateUtil.localFormat(order.creationDate, DateUtil.dateFormat3) ??
-            order.creationDate!
+              order.creationDate!
         : 'N/A';
 
     final statusColor = _getStatusColor(context, order.status);
@@ -131,8 +131,10 @@ class OrderCardWidget extends StatelessWidget {
                     ],
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: statusColor.withAlpha(30),
                       borderRadius: BorderRadius.circular(20),

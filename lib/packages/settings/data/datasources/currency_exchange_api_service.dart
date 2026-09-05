@@ -4,10 +4,12 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CurrencyExchangeApiService {
-  static const String _primaryCdnUrl =
-      'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1';
-  static const String _fallbackUrl =
+  static const String _currenciesListUrl =
+      'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies.json';
+  static const String _primaryRatesUrl =
       'https://latest.currency-api.pages.dev/v1';
+  static const String _fallbackRatesUrl =
+      'https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1';
 
   static const String _cacheKeyRatesPrefix = 'cache_exchange_rates_';
   static const String _cacheKeyLastUpdatePrefix = 'cache_exchange_last_update_';
@@ -20,7 +22,7 @@ class CurrencyExchangeApiService {
 
     try {
       final response = await http
-          .get(Uri.parse('$_primaryCdnUrl/currencies.json'))
+          .get(Uri.parse(_currenciesListUrl))
           .timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
@@ -30,12 +32,12 @@ class CurrencyExchangeApiService {
         return result;
       }
     } catch (e) {
-      debugPrint('Primary CDN currencies error: $e. Trying fallback...');
+      debugPrint('Primary currencies list error: $e. Trying fallback...');
     }
 
     try {
       final response = await http
-          .get(Uri.parse('$_fallbackUrl/currencies.json'))
+          .get(Uri.parse('$_primaryRatesUrl/currencies.json'))
           .timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
@@ -102,7 +104,7 @@ class CurrencyExchangeApiService {
     }
 
     // Attempt live network fetch
-    for (final baseUrl in [_primaryCdnUrl, _fallbackUrl]) {
+    for (final baseUrl in [_primaryRatesUrl, _fallbackRatesUrl]) {
       try {
         final url = '$baseUrl/currencies/$base.json';
         final response = await http

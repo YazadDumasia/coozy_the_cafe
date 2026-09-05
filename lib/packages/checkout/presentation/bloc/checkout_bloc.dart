@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -247,7 +248,113 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
       if (orderId != null) {
         try {
           final db = sl<CoozyDatabase>();
+          final summary = state.summary;
+          final paymentName = state.selectedPaymentMethod?.name ?? 'Cash';
+          final currentDate = DateTime.now().toUtc().toIso8601String();
+
+          final breakdownDetails = jsonEncode({
+            'taxDetails': summary.taxDetails
+                .map((t) => {
+                      'name': t.name,
+                      'ratePercent': t.ratePercent,
+                      'amount': t.calculatedAmount,
+                    })
+                .toList(),
+            'discountDetails': summary.discountDetails
+                .map((d) => {
+                      'name': d.name,
+                      'amount': d.calculatedAmount,
+                    })
+                .toList(),
+            'chargeDetails': summary.chargeDetails
+                .map((c) => {
+                      'name': c.name,
+                      'amount': c.calculatedAmount,
+                    })
+                .toList(),
+            'roundingAmount': summary.roundingAmount,
+            'cashReceived': event.cashReceived,
+            'changeAmount': event.changeAmount,
+            'note': event.note,
+          });
+
           await db.ordersDao.markOrderCompleted(orderId);
+
+          await (db.update(db.ordersTable)..where((t) => t.id.equals(orderId))).write(
+            OrdersTableCompanion(
+              paymentMethodName: Value(paymentName),
+              paymentMethodDetails: Value(breakdownDetails),
+              cashReceived: Value(event.cashReceived ?? 0.0),
+              changeAmount: Value(event.changeAmount ?? 0.0),
+              subtotalAmount: Value(summary.subtotal),
+              discountAmount: Value(summary.totalDiscounts),
+              taxAmount: Value(summary.totalTaxes),
+              otherChargesAmount: Value(summary.totalOtherCharges),
+              grandTotal: Value(summary.grandTotal),
+              modificationDate: Value(currentDate),
+            ),
+          );
+
+          final existingInvoices = await (db.select(db.invoicesTable)
+                ..where((t) => t.orderId.equals(orderId)))
+              .get();
+
+          final amountPaid = event.cashReceived != null && event.cashReceived! > 0
+              ? event.cashReceived!
+              : summary.grandTotal;
+
+          int targetInvoiceId;
+          if (existingInvoices.isNotEmpty) {
+            targetInvoiceId = existingInvoices.first.id;
+            await (db.update(db.invoicesTable)..where((t) => t.id.equals(targetInvoiceId))).write(
+              InvoicesTableCompanion(
+                totalCost: Value(summary.subtotal),
+                discountAmount: Value(summary.totalDiscounts),
+                taxCost: Value(summary.totalTaxes),
+                taxableAmount: Value(summary.taxableBase),
+                netPaymentAmount: Value(summary.grandTotal),
+                recordAmountPaid: Value(amountPaid),
+                cashReceived: Value(event.cashReceived ?? 0.0),
+                changeAmount: Value(event.changeAmount ?? 0.0),
+                paymentMethodName: Value(paymentName),
+                paymentMethodDetails: Value(breakdownDetails),
+                modifiedDate: Value(currentDate),
+              ),
+            );
+          } else {
+            targetInvoiceId = await db.into(db.invoicesTable).insert(
+                  InvoicesTableCompanion.insert(
+                    orderId: Value(orderId),
+                    totalCost: Value(summary.subtotal),
+                    discountAmount: Value(summary.totalDiscounts),
+                    taxCost: Value(summary.totalTaxes),
+                    taxableAmount: Value(summary.taxableBase),
+                    netPaymentAmount: Value(summary.grandTotal),
+                    recordAmountPaid: Value(amountPaid),
+                    cashReceived: Value(event.cashReceived ?? 0.0),
+                    changeAmount: Value(event.changeAmount ?? 0.0),
+                    paymentMethodName: Value(paymentName),
+                    paymentMethodDetails: Value(breakdownDetails),
+                    createdDate: Value(currentDate),
+                  ),
+                );
+          }
+
+          // Insert explicit payment transaction into payment_transactions DB table
+          await db.into(db.paymentTransactionsTable).insert(
+                PaymentTransactionsTableCompanion.insert(
+                  invoiceId: Value(targetInvoiceId),
+                  paymentMethodName: Value(paymentName),
+                  amount: Value(amountPaid),
+                  transactionReference: Value(
+                    event.note != null && event.note!.isNotEmpty
+                        ? '${event.note} (Cash: $amountPaid, Change: ${event.changeAmount ?? 0.0})'
+                        : 'Cash Paid: $amountPaid, Change: ${event.changeAmount ?? 0.0}',
+                  ),
+                  paymentStatus: const Value('completed'),
+                  createdDate: Value(currentDate),
+                ),
+              );
         } catch (_) {}
       }
     }
