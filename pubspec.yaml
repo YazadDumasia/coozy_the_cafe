@@ -28,7 +28,7 @@ dependencies:
 #
   go_router: ^18.0.0
 #
-  platform: ^3.1.6
+  platform: ^3.2.0
   platform_info: ^5.0.0
   package_info_plus: ^10.2.0
   device_info_plus: ^13.2.0
@@ -78,7 +78,7 @@ dependencies:
   pdfrx: ^2.4.8
   mobile_scanner: ^7.4.0
 #
-  cached_network_image_ce: ^4.9.0
+  cached_network_image_ce: ^4.11.1
   flutter_cache_manager: ^3.4.1
   shimmer: ^3.0.0
   flutter_image: ^4.1.11
@@ -99,7 +99,7 @@ dependencies:
   #
   permission_handler: ^13.0.2
   http: ^1.2.2
-  internet_connection_checker_plus: ^3.1.0
+  internet_connection_checker_plus: ^3.1.2
   url_launcher: ^6.3.1
   #
 #  url_strategy: ^0.3.0
@@ -127,10 +127,10 @@ dependencies:
   #  store_redirect:
   feedback: ^3.1.0
   #  Range Slider
-  syncfusion_flutter_core: ^34.2.4
-  syncfusion_flutter_sliders: ^34.2.4
-  syncfusion_flutter_charts: ^34.2.4
-  syncfusion_flutter_xlsio: ^34.2.4
+  syncfusion_flutter_core: ^34.2.7
+  syncfusion_flutter_sliders: ^34.2.7
+  syncfusion_flutter_charts: ^34.2.7
+  syncfusion_flutter_xlsio: ^34.2.7
   #Notification
   flutter_local_notifications: ^22.3.0
   flutter_timezone: ^5.1.0
