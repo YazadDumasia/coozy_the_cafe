@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'data/datasources/invoice_management_remote_datasource.dart';
 import 'data/repositories/invoice_management_repository_impl.dart';
 import 'domain/repositories/invoice_management_repository.dart';
@@ -10,6 +11,11 @@ import 'domain/usecases/get_payment_modes_usecase.dart';
 import 'presentation/bloc/invoice_management_bloc.dart';
 
 void registerInvoiceManagementDependencies(GetIt sl) {
+  // DAOs
+  if (!sl.isRegistered<InvoicesDao>()) {
+    sl.registerLazySingleton(() => InvoicesDao(sl()));
+  }
+
   // BLoC (Factory)
   sl.registerFactory(
     () => InvoiceManagementBloc(

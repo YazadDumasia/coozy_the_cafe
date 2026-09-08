@@ -7524,6 +7524,50 @@ class $OrdersTableTable extends OrdersTable
       'REFERENCES reservations (id) ON DELETE SET NULL',
     ),
   );
+  static const VerificationMeta _placedAtMeta = const VerificationMeta(
+    'placedAt',
+  );
+  @override
+  late final GeneratedColumn<String> placedAt = GeneratedColumn<String>(
+    'placed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _preparationStartedAtMeta =
+      const VerificationMeta('preparationStartedAt');
+  @override
+  late final GeneratedColumn<String> preparationStartedAt =
+      GeneratedColumn<String>(
+        'preparation_started_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _readyAtMeta = const VerificationMeta(
+    'readyAt',
+  );
+  @override
+  late final GeneratedColumn<String> readyAt = GeneratedColumn<String>(
+    'ready_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _servedAtMeta = const VerificationMeta(
+    'servedAt',
+  );
+  @override
+  late final GeneratedColumn<String> servedAt = GeneratedColumn<String>(
+    'served_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     createdBy,
@@ -7553,6 +7597,10 @@ class $OrdersTableTable extends OrdersTable
     phoneNumber,
     isoCode,
     reservationId,
+    placedAt,
+    preparationStartedAt,
+    readyAt,
+    servedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -7770,6 +7818,33 @@ class $OrdersTableTable extends OrdersTable
         ),
       );
     }
+    if (data.containsKey('placed_at')) {
+      context.handle(
+        _placedAtMeta,
+        placedAt.isAcceptableOrUnknown(data['placed_at']!, _placedAtMeta),
+      );
+    }
+    if (data.containsKey('preparation_started_at')) {
+      context.handle(
+        _preparationStartedAtMeta,
+        preparationStartedAt.isAcceptableOrUnknown(
+          data['preparation_started_at']!,
+          _preparationStartedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ready_at')) {
+      context.handle(
+        _readyAtMeta,
+        readyAt.isAcceptableOrUnknown(data['ready_at']!, _readyAtMeta),
+      );
+    }
+    if (data.containsKey('served_at')) {
+      context.handle(
+        _servedAtMeta,
+        servedAt.isAcceptableOrUnknown(data['served_at']!, _servedAtMeta),
+      );
+    }
     return context;
   }
 
@@ -7887,6 +7962,22 @@ class $OrdersTableTable extends OrdersTable
         DriftSqlType.int,
         data['${effectivePrefix}reservation_id'],
       ),
+      placedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}placed_at'],
+      ),
+      preparationStartedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preparation_started_at'],
+      ),
+      readyAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ready_at'],
+      ),
+      servedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}served_at'],
+      ),
     );
   }
 
@@ -7924,6 +8015,10 @@ class Order extends DataClass implements Insertable<Order> {
   final String? phoneNumber;
   final String? isoCode;
   final int? reservationId;
+  final String? placedAt;
+  final String? preparationStartedAt;
+  final String? readyAt;
+  final String? servedAt;
   const Order({
     this.createdBy,
     this.updatedBy,
@@ -7952,6 +8047,10 @@ class Order extends DataClass implements Insertable<Order> {
     this.phoneNumber,
     this.isoCode,
     this.reservationId,
+    this.placedAt,
+    this.preparationStartedAt,
+    this.readyAt,
+    this.servedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -8032,6 +8131,18 @@ class Order extends DataClass implements Insertable<Order> {
     }
     if (!nullToAbsent || reservationId != null) {
       map['reservation_id'] = Variable<int>(reservationId);
+    }
+    if (!nullToAbsent || placedAt != null) {
+      map['placed_at'] = Variable<String>(placedAt);
+    }
+    if (!nullToAbsent || preparationStartedAt != null) {
+      map['preparation_started_at'] = Variable<String>(preparationStartedAt);
+    }
+    if (!nullToAbsent || readyAt != null) {
+      map['ready_at'] = Variable<String>(readyAt);
+    }
+    if (!nullToAbsent || servedAt != null) {
+      map['served_at'] = Variable<String>(servedAt);
     }
     return map;
   }
@@ -8115,6 +8226,18 @@ class Order extends DataClass implements Insertable<Order> {
       reservationId: reservationId == null && nullToAbsent
           ? const Value.absent()
           : Value(reservationId),
+      placedAt: placedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(placedAt),
+      preparationStartedAt: preparationStartedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(preparationStartedAt),
+      readyAt: readyAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(readyAt),
+      servedAt: servedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(servedAt),
     );
   }
 
@@ -8157,6 +8280,12 @@ class Order extends DataClass implements Insertable<Order> {
       phoneNumber: serializer.fromJson<String?>(json['phoneNumber']),
       isoCode: serializer.fromJson<String?>(json['isoCode']),
       reservationId: serializer.fromJson<int?>(json['reservationId']),
+      placedAt: serializer.fromJson<String?>(json['placedAt']),
+      preparationStartedAt: serializer.fromJson<String?>(
+        json['preparationStartedAt'],
+      ),
+      readyAt: serializer.fromJson<String?>(json['readyAt']),
+      servedAt: serializer.fromJson<String?>(json['servedAt']),
     );
   }
   @override
@@ -8190,6 +8319,10 @@ class Order extends DataClass implements Insertable<Order> {
       'phoneNumber': serializer.toJson<String?>(phoneNumber),
       'isoCode': serializer.toJson<String?>(isoCode),
       'reservationId': serializer.toJson<int?>(reservationId),
+      'placedAt': serializer.toJson<String?>(placedAt),
+      'preparationStartedAt': serializer.toJson<String?>(preparationStartedAt),
+      'readyAt': serializer.toJson<String?>(readyAt),
+      'servedAt': serializer.toJson<String?>(servedAt),
     };
   }
 
@@ -8221,6 +8354,10 @@ class Order extends DataClass implements Insertable<Order> {
     Value<String?> phoneNumber = const Value.absent(),
     Value<String?> isoCode = const Value.absent(),
     Value<int?> reservationId = const Value.absent(),
+    Value<String?> placedAt = const Value.absent(),
+    Value<String?> preparationStartedAt = const Value.absent(),
+    Value<String?> readyAt = const Value.absent(),
+    Value<String?> servedAt = const Value.absent(),
   }) => Order(
     createdBy: createdBy.present ? createdBy.value : this.createdBy,
     updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
@@ -8267,6 +8404,12 @@ class Order extends DataClass implements Insertable<Order> {
     reservationId: reservationId.present
         ? reservationId.value
         : this.reservationId,
+    placedAt: placedAt.present ? placedAt.value : this.placedAt,
+    preparationStartedAt: preparationStartedAt.present
+        ? preparationStartedAt.value
+        : this.preparationStartedAt,
+    readyAt: readyAt.present ? readyAt.value : this.readyAt,
+    servedAt: servedAt.present ? servedAt.value : this.servedAt,
   );
   Order copyWithCompanion(OrdersTableCompanion data) {
     return Order(
@@ -8333,6 +8476,12 @@ class Order extends DataClass implements Insertable<Order> {
       reservationId: data.reservationId.present
           ? data.reservationId.value
           : this.reservationId,
+      placedAt: data.placedAt.present ? data.placedAt.value : this.placedAt,
+      preparationStartedAt: data.preparationStartedAt.present
+          ? data.preparationStartedAt.value
+          : this.preparationStartedAt,
+      readyAt: data.readyAt.present ? data.readyAt.value : this.readyAt,
+      servedAt: data.servedAt.present ? data.servedAt.value : this.servedAt,
     );
   }
 
@@ -8365,7 +8514,11 @@ class Order extends DataClass implements Insertable<Order> {
           ..write('customerName: $customerName, ')
           ..write('phoneNumber: $phoneNumber, ')
           ..write('isoCode: $isoCode, ')
-          ..write('reservationId: $reservationId')
+          ..write('reservationId: $reservationId, ')
+          ..write('placedAt: $placedAt, ')
+          ..write('preparationStartedAt: $preparationStartedAt, ')
+          ..write('readyAt: $readyAt, ')
+          ..write('servedAt: $servedAt')
           ..write(')'))
         .toString();
   }
@@ -8399,6 +8552,10 @@ class Order extends DataClass implements Insertable<Order> {
     phoneNumber,
     isoCode,
     reservationId,
+    placedAt,
+    preparationStartedAt,
+    readyAt,
+    servedAt,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -8430,7 +8587,11 @@ class Order extends DataClass implements Insertable<Order> {
           other.customerName == this.customerName &&
           other.phoneNumber == this.phoneNumber &&
           other.isoCode == this.isoCode &&
-          other.reservationId == this.reservationId);
+          other.reservationId == this.reservationId &&
+          other.placedAt == this.placedAt &&
+          other.preparationStartedAt == this.preparationStartedAt &&
+          other.readyAt == this.readyAt &&
+          other.servedAt == this.servedAt);
 }
 
 class OrdersTableCompanion extends UpdateCompanion<Order> {
@@ -8461,6 +8622,10 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
   final Value<String?> phoneNumber;
   final Value<String?> isoCode;
   final Value<int?> reservationId;
+  final Value<String?> placedAt;
+  final Value<String?> preparationStartedAt;
+  final Value<String?> readyAt;
+  final Value<String?> servedAt;
   const OrdersTableCompanion({
     this.createdBy = const Value.absent(),
     this.updatedBy = const Value.absent(),
@@ -8489,6 +8654,10 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     this.phoneNumber = const Value.absent(),
     this.isoCode = const Value.absent(),
     this.reservationId = const Value.absent(),
+    this.placedAt = const Value.absent(),
+    this.preparationStartedAt = const Value.absent(),
+    this.readyAt = const Value.absent(),
+    this.servedAt = const Value.absent(),
   });
   OrdersTableCompanion.insert({
     this.createdBy = const Value.absent(),
@@ -8518,6 +8687,10 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     this.phoneNumber = const Value.absent(),
     this.isoCode = const Value.absent(),
     this.reservationId = const Value.absent(),
+    this.placedAt = const Value.absent(),
+    this.preparationStartedAt = const Value.absent(),
+    this.readyAt = const Value.absent(),
+    this.servedAt = const Value.absent(),
   });
   static Insertable<Order> custom({
     Expression<int>? createdBy,
@@ -8547,6 +8720,10 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     Expression<String>? phoneNumber,
     Expression<String>? isoCode,
     Expression<int>? reservationId,
+    Expression<String>? placedAt,
+    Expression<String>? preparationStartedAt,
+    Expression<String>? readyAt,
+    Expression<String>? servedAt,
   }) {
     return RawValuesInsertable({
       if (createdBy != null) 'created_by': createdBy,
@@ -8578,6 +8755,11 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
       if (phoneNumber != null) 'phone_number': phoneNumber,
       if (isoCode != null) 'iso_code': isoCode,
       if (reservationId != null) 'reservation_id': reservationId,
+      if (placedAt != null) 'placed_at': placedAt,
+      if (preparationStartedAt != null)
+        'preparation_started_at': preparationStartedAt,
+      if (readyAt != null) 'ready_at': readyAt,
+      if (servedAt != null) 'served_at': servedAt,
     });
   }
 
@@ -8609,6 +8791,10 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     Value<String?>? phoneNumber,
     Value<String?>? isoCode,
     Value<int?>? reservationId,
+    Value<String?>? placedAt,
+    Value<String?>? preparationStartedAt,
+    Value<String?>? readyAt,
+    Value<String?>? servedAt,
   }) {
     return OrdersTableCompanion(
       createdBy: createdBy ?? this.createdBy,
@@ -8638,6 +8824,10 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
       phoneNumber: phoneNumber ?? this.phoneNumber,
       isoCode: isoCode ?? this.isoCode,
       reservationId: reservationId ?? this.reservationId,
+      placedAt: placedAt ?? this.placedAt,
+      preparationStartedAt: preparationStartedAt ?? this.preparationStartedAt,
+      readyAt: readyAt ?? this.readyAt,
+      servedAt: servedAt ?? this.servedAt,
     );
   }
 
@@ -8727,6 +8917,20 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
     if (reservationId.present) {
       map['reservation_id'] = Variable<int>(reservationId.value);
     }
+    if (placedAt.present) {
+      map['placed_at'] = Variable<String>(placedAt.value);
+    }
+    if (preparationStartedAt.present) {
+      map['preparation_started_at'] = Variable<String>(
+        preparationStartedAt.value,
+      );
+    }
+    if (readyAt.present) {
+      map['ready_at'] = Variable<String>(readyAt.value);
+    }
+    if (servedAt.present) {
+      map['served_at'] = Variable<String>(servedAt.value);
+    }
     return map;
   }
 
@@ -8759,7 +8963,11 @@ class OrdersTableCompanion extends UpdateCompanion<Order> {
           ..write('customerName: $customerName, ')
           ..write('phoneNumber: $phoneNumber, ')
           ..write('isoCode: $isoCode, ')
-          ..write('reservationId: $reservationId')
+          ..write('reservationId: $reservationId, ')
+          ..write('placedAt: $placedAt, ')
+          ..write('preparationStartedAt: $preparationStartedAt, ')
+          ..write('readyAt: $readyAt, ')
+          ..write('servedAt: $servedAt')
           ..write(')'))
         .toString();
   }
@@ -8952,6 +9160,50 @@ class $OrderItemsTableTable extends OrderItemsTable
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _placedAtMeta = const VerificationMeta(
+    'placedAt',
+  );
+  @override
+  late final GeneratedColumn<String> placedAt = GeneratedColumn<String>(
+    'placed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _preparationStartedAtMeta =
+      const VerificationMeta('preparationStartedAt');
+  @override
+  late final GeneratedColumn<String> preparationStartedAt =
+      GeneratedColumn<String>(
+        'preparation_started_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _readyAtMeta = const VerificationMeta(
+    'readyAt',
+  );
+  @override
+  late final GeneratedColumn<String> readyAt = GeneratedColumn<String>(
+    'ready_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _servedAtMeta = const VerificationMeta(
+    'servedAt',
+  );
+  @override
+  late final GeneratedColumn<String> servedAt = GeneratedColumn<String>(
+    'served_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     createdBy,
@@ -8969,6 +9221,10 @@ class $OrderItemsTableTable extends OrderItemsTable
     remarks,
     isParcel,
     creationDate,
+    placedAt,
+    preparationStartedAt,
+    readyAt,
+    servedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -9084,6 +9340,33 @@ class $OrderItemsTableTable extends OrderItemsTable
         ),
       );
     }
+    if (data.containsKey('placed_at')) {
+      context.handle(
+        _placedAtMeta,
+        placedAt.isAcceptableOrUnknown(data['placed_at']!, _placedAtMeta),
+      );
+    }
+    if (data.containsKey('preparation_started_at')) {
+      context.handle(
+        _preparationStartedAtMeta,
+        preparationStartedAt.isAcceptableOrUnknown(
+          data['preparation_started_at']!,
+          _preparationStartedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('ready_at')) {
+      context.handle(
+        _readyAtMeta,
+        readyAt.isAcceptableOrUnknown(data['ready_at']!, _readyAtMeta),
+      );
+    }
+    if (data.containsKey('served_at')) {
+      context.handle(
+        _servedAtMeta,
+        servedAt.isAcceptableOrUnknown(data['served_at']!, _servedAtMeta),
+      );
+    }
     return context;
   }
 
@@ -9153,6 +9436,22 @@ class $OrderItemsTableTable extends OrderItemsTable
         DriftSqlType.string,
         data['${effectivePrefix}creation_date'],
       ),
+      placedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}placed_at'],
+      ),
+      preparationStartedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preparation_started_at'],
+      ),
+      readyAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}ready_at'],
+      ),
+      servedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}served_at'],
+      ),
     );
   }
 
@@ -9178,6 +9477,10 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
   final String? remarks;
   final bool isParcel;
   final String? creationDate;
+  final String? placedAt;
+  final String? preparationStartedAt;
+  final String? readyAt;
+  final String? servedAt;
   const OrderItem({
     this.createdBy,
     this.updatedBy,
@@ -9194,6 +9497,10 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     this.remarks,
     required this.isParcel,
     this.creationDate,
+    this.placedAt,
+    this.preparationStartedAt,
+    this.readyAt,
+    this.servedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -9238,6 +9545,18 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     map['is_parcel'] = Variable<bool>(isParcel);
     if (!nullToAbsent || creationDate != null) {
       map['creation_date'] = Variable<String>(creationDate);
+    }
+    if (!nullToAbsent || placedAt != null) {
+      map['placed_at'] = Variable<String>(placedAt);
+    }
+    if (!nullToAbsent || preparationStartedAt != null) {
+      map['preparation_started_at'] = Variable<String>(preparationStartedAt);
+    }
+    if (!nullToAbsent || readyAt != null) {
+      map['ready_at'] = Variable<String>(readyAt);
+    }
+    if (!nullToAbsent || servedAt != null) {
+      map['served_at'] = Variable<String>(servedAt);
     }
     return map;
   }
@@ -9285,6 +9604,18 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       creationDate: creationDate == null && nullToAbsent
           ? const Value.absent()
           : Value(creationDate),
+      placedAt: placedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(placedAt),
+      preparationStartedAt: preparationStartedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(preparationStartedAt),
+      readyAt: readyAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(readyAt),
+      servedAt: servedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(servedAt),
     );
   }
 
@@ -9311,6 +9642,12 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       remarks: serializer.fromJson<String?>(json['remarks']),
       isParcel: serializer.fromJson<bool>(json['isParcel']),
       creationDate: serializer.fromJson<String?>(json['creationDate']),
+      placedAt: serializer.fromJson<String?>(json['placedAt']),
+      preparationStartedAt: serializer.fromJson<String?>(
+        json['preparationStartedAt'],
+      ),
+      readyAt: serializer.fromJson<String?>(json['readyAt']),
+      servedAt: serializer.fromJson<String?>(json['servedAt']),
     );
   }
   @override
@@ -9332,6 +9669,10 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       'remarks': serializer.toJson<String?>(remarks),
       'isParcel': serializer.toJson<bool>(isParcel),
       'creationDate': serializer.toJson<String?>(creationDate),
+      'placedAt': serializer.toJson<String?>(placedAt),
+      'preparationStartedAt': serializer.toJson<String?>(preparationStartedAt),
+      'readyAt': serializer.toJson<String?>(readyAt),
+      'servedAt': serializer.toJson<String?>(servedAt),
     };
   }
 
@@ -9351,6 +9692,10 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     Value<String?> remarks = const Value.absent(),
     bool? isParcel,
     Value<String?> creationDate = const Value.absent(),
+    Value<String?> placedAt = const Value.absent(),
+    Value<String?> preparationStartedAt = const Value.absent(),
+    Value<String?> readyAt = const Value.absent(),
+    Value<String?> servedAt = const Value.absent(),
   }) => OrderItem(
     createdBy: createdBy.present ? createdBy.value : this.createdBy,
     updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
@@ -9369,6 +9714,12 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     remarks: remarks.present ? remarks.value : this.remarks,
     isParcel: isParcel ?? this.isParcel,
     creationDate: creationDate.present ? creationDate.value : this.creationDate,
+    placedAt: placedAt.present ? placedAt.value : this.placedAt,
+    preparationStartedAt: preparationStartedAt.present
+        ? preparationStartedAt.value
+        : this.preparationStartedAt,
+    readyAt: readyAt.present ? readyAt.value : this.readyAt,
+    servedAt: servedAt.present ? servedAt.value : this.servedAt,
   );
   OrderItem copyWithCompanion(OrderItemsTableCompanion data) {
     return OrderItem(
@@ -9397,6 +9748,12 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
       creationDate: data.creationDate.present
           ? data.creationDate.value
           : this.creationDate,
+      placedAt: data.placedAt.present ? data.placedAt.value : this.placedAt,
+      preparationStartedAt: data.preparationStartedAt.present
+          ? data.preparationStartedAt.value
+          : this.preparationStartedAt,
+      readyAt: data.readyAt.present ? data.readyAt.value : this.readyAt,
+      servedAt: data.servedAt.present ? data.servedAt.value : this.servedAt,
     );
   }
 
@@ -9417,7 +9774,11 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
           ..write('selectedVariationId: $selectedVariationId, ')
           ..write('remarks: $remarks, ')
           ..write('isParcel: $isParcel, ')
-          ..write('creationDate: $creationDate')
+          ..write('creationDate: $creationDate, ')
+          ..write('placedAt: $placedAt, ')
+          ..write('preparationStartedAt: $preparationStartedAt, ')
+          ..write('readyAt: $readyAt, ')
+          ..write('servedAt: $servedAt')
           ..write(')'))
         .toString();
   }
@@ -9439,6 +9800,10 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
     remarks,
     isParcel,
     creationDate,
+    placedAt,
+    preparationStartedAt,
+    readyAt,
+    servedAt,
   );
   @override
   bool operator ==(Object other) =>
@@ -9458,7 +9823,11 @@ class OrderItem extends DataClass implements Insertable<OrderItem> {
           other.selectedVariationId == this.selectedVariationId &&
           other.remarks == this.remarks &&
           other.isParcel == this.isParcel &&
-          other.creationDate == this.creationDate);
+          other.creationDate == this.creationDate &&
+          other.placedAt == this.placedAt &&
+          other.preparationStartedAt == this.preparationStartedAt &&
+          other.readyAt == this.readyAt &&
+          other.servedAt == this.servedAt);
 }
 
 class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
@@ -9477,6 +9846,10 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
   final Value<String?> remarks;
   final Value<bool> isParcel;
   final Value<String?> creationDate;
+  final Value<String?> placedAt;
+  final Value<String?> preparationStartedAt;
+  final Value<String?> readyAt;
+  final Value<String?> servedAt;
   const OrderItemsTableCompanion({
     this.createdBy = const Value.absent(),
     this.updatedBy = const Value.absent(),
@@ -9493,6 +9866,10 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
     this.remarks = const Value.absent(),
     this.isParcel = const Value.absent(),
     this.creationDate = const Value.absent(),
+    this.placedAt = const Value.absent(),
+    this.preparationStartedAt = const Value.absent(),
+    this.readyAt = const Value.absent(),
+    this.servedAt = const Value.absent(),
   });
   OrderItemsTableCompanion.insert({
     this.createdBy = const Value.absent(),
@@ -9510,6 +9887,10 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
     this.remarks = const Value.absent(),
     this.isParcel = const Value.absent(),
     this.creationDate = const Value.absent(),
+    this.placedAt = const Value.absent(),
+    this.preparationStartedAt = const Value.absent(),
+    this.readyAt = const Value.absent(),
+    this.servedAt = const Value.absent(),
   });
   static Insertable<OrderItem> custom({
     Expression<int>? createdBy,
@@ -9527,6 +9908,10 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
     Expression<String>? remarks,
     Expression<bool>? isParcel,
     Expression<String>? creationDate,
+    Expression<String>? placedAt,
+    Expression<String>? preparationStartedAt,
+    Expression<String>? readyAt,
+    Expression<String>? servedAt,
   }) {
     return RawValuesInsertable({
       if (createdBy != null) 'created_by': createdBy,
@@ -9545,6 +9930,11 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
       if (remarks != null) 'remarks': remarks,
       if (isParcel != null) 'is_parcel': isParcel,
       if (creationDate != null) 'creation_date': creationDate,
+      if (placedAt != null) 'placed_at': placedAt,
+      if (preparationStartedAt != null)
+        'preparation_started_at': preparationStartedAt,
+      if (readyAt != null) 'ready_at': readyAt,
+      if (servedAt != null) 'served_at': servedAt,
     });
   }
 
@@ -9564,6 +9954,10 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
     Value<String?>? remarks,
     Value<bool>? isParcel,
     Value<String?>? creationDate,
+    Value<String?>? placedAt,
+    Value<String?>? preparationStartedAt,
+    Value<String?>? readyAt,
+    Value<String?>? servedAt,
   }) {
     return OrderItemsTableCompanion(
       createdBy: createdBy ?? this.createdBy,
@@ -9581,6 +9975,10 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
       remarks: remarks ?? this.remarks,
       isParcel: isParcel ?? this.isParcel,
       creationDate: creationDate ?? this.creationDate,
+      placedAt: placedAt ?? this.placedAt,
+      preparationStartedAt: preparationStartedAt ?? this.preparationStartedAt,
+      readyAt: readyAt ?? this.readyAt,
+      servedAt: servedAt ?? this.servedAt,
     );
   }
 
@@ -9632,6 +10030,20 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
     if (creationDate.present) {
       map['creation_date'] = Variable<String>(creationDate.value);
     }
+    if (placedAt.present) {
+      map['placed_at'] = Variable<String>(placedAt.value);
+    }
+    if (preparationStartedAt.present) {
+      map['preparation_started_at'] = Variable<String>(
+        preparationStartedAt.value,
+      );
+    }
+    if (readyAt.present) {
+      map['ready_at'] = Variable<String>(readyAt.value);
+    }
+    if (servedAt.present) {
+      map['served_at'] = Variable<String>(servedAt.value);
+    }
     return map;
   }
 
@@ -9652,7 +10064,11 @@ class OrderItemsTableCompanion extends UpdateCompanion<OrderItem> {
           ..write('selectedVariationId: $selectedVariationId, ')
           ..write('remarks: $remarks, ')
           ..write('isParcel: $isParcel, ')
-          ..write('creationDate: $creationDate')
+          ..write('creationDate: $creationDate, ')
+          ..write('placedAt: $placedAt, ')
+          ..write('preparationStartedAt: $preparationStartedAt, ')
+          ..write('readyAt: $readyAt, ')
+          ..write('servedAt: $servedAt')
           ..write(')'))
         .toString();
   }
@@ -10308,6 +10724,21 @@ class $InvoicesTableTable extends InvoicesTable
     requiredDuringInsert: false,
     defaultValue: const Constant(0.0),
   );
+  static const VerificationMeta _isDeletedMeta = const VerificationMeta(
+    'isDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> isDeleted = GeneratedColumn<bool>(
+    'is_deleted',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     createdBy,
@@ -10334,6 +10765,7 @@ class $InvoicesTableTable extends InvoicesTable
     paymentMethodDetails,
     cashReceived,
     changeAmount,
+    isDeleted,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -10533,6 +10965,12 @@ class $InvoicesTableTable extends InvoicesTable
         ),
       );
     }
+    if (data.containsKey('is_deleted')) {
+      context.handle(
+        _isDeletedMeta,
+        isDeleted.isAcceptableOrUnknown(data['is_deleted']!, _isDeletedMeta),
+      );
+    }
     return context;
   }
 
@@ -10638,6 +11076,10 @@ class $InvoicesTableTable extends InvoicesTable
         DriftSqlType.double,
         data['${effectivePrefix}change_amount'],
       ),
+      isDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_deleted'],
+      ),
     );
   }
 
@@ -10672,6 +11114,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
   final String? paymentMethodDetails;
   final double? cashReceived;
   final double? changeAmount;
+  final bool? isDeleted;
   const Invoice({
     this.createdBy,
     this.updatedBy,
@@ -10697,6 +11140,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     this.paymentMethodDetails,
     this.cashReceived,
     this.changeAmount,
+    this.isDeleted,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -10752,6 +11196,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     }
     if (!nullToAbsent || changeAmount != null) {
       map['change_amount'] = Variable<double>(changeAmount);
+    }
+    if (!nullToAbsent || isDeleted != null) {
+      map['is_deleted'] = Variable<bool>(isDeleted);
     }
     return map;
   }
@@ -10810,6 +11257,9 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       changeAmount: changeAmount == null && nullToAbsent
           ? const Value.absent()
           : Value(changeAmount),
+      isDeleted: isDeleted == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isDeleted),
     );
   }
 
@@ -10847,6 +11297,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       ),
       cashReceived: serializer.fromJson<double?>(json['cashReceived']),
       changeAmount: serializer.fromJson<double?>(json['changeAmount']),
+      isDeleted: serializer.fromJson<bool?>(json['isDeleted']),
     );
   }
   @override
@@ -10877,6 +11328,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       'paymentMethodDetails': serializer.toJson<String?>(paymentMethodDetails),
       'cashReceived': serializer.toJson<double?>(cashReceived),
       'changeAmount': serializer.toJson<double?>(changeAmount),
+      'isDeleted': serializer.toJson<bool?>(isDeleted),
     };
   }
 
@@ -10905,6 +11357,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     Value<String?> paymentMethodDetails = const Value.absent(),
     Value<double?> cashReceived = const Value.absent(),
     Value<double?> changeAmount = const Value.absent(),
+    Value<bool?> isDeleted = const Value.absent(),
   }) => Invoice(
     createdBy: createdBy.present ? createdBy.value : this.createdBy,
     updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
@@ -10936,6 +11389,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
         : this.paymentMethodDetails,
     cashReceived: cashReceived.present ? cashReceived.value : this.cashReceived,
     changeAmount: changeAmount.present ? changeAmount.value : this.changeAmount,
+    isDeleted: isDeleted.present ? isDeleted.value : this.isDeleted,
   );
   Invoice copyWithCompanion(InvoicesTableCompanion data) {
     return Invoice(
@@ -10995,6 +11449,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
       changeAmount: data.changeAmount.present
           ? data.changeAmount.value
           : this.changeAmount,
+      isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
     );
   }
 
@@ -11024,7 +11479,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           ..write('recordAmountPaid: $recordAmountPaid, ')
           ..write('paymentMethodDetails: $paymentMethodDetails, ')
           ..write('cashReceived: $cashReceived, ')
-          ..write('changeAmount: $changeAmount')
+          ..write('changeAmount: $changeAmount, ')
+          ..write('isDeleted: $isDeleted')
           ..write(')'))
         .toString();
   }
@@ -11055,6 +11511,7 @@ class Invoice extends DataClass implements Insertable<Invoice> {
     paymentMethodDetails,
     cashReceived,
     changeAmount,
+    isDeleted,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -11083,7 +11540,8 @@ class Invoice extends DataClass implements Insertable<Invoice> {
           other.recordAmountPaid == this.recordAmountPaid &&
           other.paymentMethodDetails == this.paymentMethodDetails &&
           other.cashReceived == this.cashReceived &&
-          other.changeAmount == this.changeAmount);
+          other.changeAmount == this.changeAmount &&
+          other.isDeleted == this.isDeleted);
 }
 
 class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
@@ -11111,6 +11569,7 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
   final Value<String?> paymentMethodDetails;
   final Value<double?> cashReceived;
   final Value<double?> changeAmount;
+  final Value<bool?> isDeleted;
   const InvoicesTableCompanion({
     this.createdBy = const Value.absent(),
     this.updatedBy = const Value.absent(),
@@ -11136,6 +11595,7 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     this.paymentMethodDetails = const Value.absent(),
     this.cashReceived = const Value.absent(),
     this.changeAmount = const Value.absent(),
+    this.isDeleted = const Value.absent(),
   });
   InvoicesTableCompanion.insert({
     this.createdBy = const Value.absent(),
@@ -11162,6 +11622,7 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     this.paymentMethodDetails = const Value.absent(),
     this.cashReceived = const Value.absent(),
     this.changeAmount = const Value.absent(),
+    this.isDeleted = const Value.absent(),
   });
   static Insertable<Invoice> custom({
     Expression<int>? createdBy,
@@ -11188,6 +11649,7 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     Expression<String>? paymentMethodDetails,
     Expression<double>? cashReceived,
     Expression<double>? changeAmount,
+    Expression<bool>? isDeleted,
   }) {
     return RawValuesInsertable({
       if (createdBy != null) 'created_by': createdBy,
@@ -11215,6 +11677,7 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
         'payment_method_details': paymentMethodDetails,
       if (cashReceived != null) 'cash_received': cashReceived,
       if (changeAmount != null) 'change_amount': changeAmount,
+      if (isDeleted != null) 'is_deleted': isDeleted,
     });
   }
 
@@ -11243,6 +11706,7 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     Value<String?>? paymentMethodDetails,
     Value<double?>? cashReceived,
     Value<double?>? changeAmount,
+    Value<bool?>? isDeleted,
   }) {
     return InvoicesTableCompanion(
       createdBy: createdBy ?? this.createdBy,
@@ -11269,6 +11733,7 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
       paymentMethodDetails: paymentMethodDetails ?? this.paymentMethodDetails,
       cashReceived: cashReceived ?? this.cashReceived,
       changeAmount: changeAmount ?? this.changeAmount,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
@@ -11349,6 +11814,9 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
     if (changeAmount.present) {
       map['change_amount'] = Variable<double>(changeAmount.value);
     }
+    if (isDeleted.present) {
+      map['is_deleted'] = Variable<bool>(isDeleted.value);
+    }
     return map;
   }
 
@@ -11378,7 +11846,8 @@ class InvoicesTableCompanion extends UpdateCompanion<Invoice> {
           ..write('recordAmountPaid: $recordAmountPaid, ')
           ..write('paymentMethodDetails: $paymentMethodDetails, ')
           ..write('cashReceived: $cashReceived, ')
-          ..write('changeAmount: $changeAmount')
+          ..write('changeAmount: $changeAmount, ')
+          ..write('isDeleted: $isDeleted')
           ..write(')'))
         .toString();
   }
@@ -26798,6 +27267,10 @@ typedef $$OrdersTableTableCreateCompanionBuilder =
       Value<String?> phoneNumber,
       Value<String?> isoCode,
       Value<int?> reservationId,
+      Value<String?> placedAt,
+      Value<String?> preparationStartedAt,
+      Value<String?> readyAt,
+      Value<String?> servedAt,
     });
 typedef $$OrdersTableTableUpdateCompanionBuilder =
     OrdersTableCompanion Function({
@@ -26828,6 +27301,10 @@ typedef $$OrdersTableTableUpdateCompanionBuilder =
       Value<String?> phoneNumber,
       Value<String?> isoCode,
       Value<int?> reservationId,
+      Value<String?> placedAt,
+      Value<String?> preparationStartedAt,
+      Value<String?> readyAt,
+      Value<String?> servedAt,
     });
 
 final class $$OrdersTableTableReferences
@@ -27052,6 +27529,26 @@ class $$OrdersTableTableFilterComposer
 
   ColumnFilters<String> get isoCode => $composableBuilder(
     column: $table.isoCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get placedAt => $composableBuilder(
+    column: $table.placedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preparationStartedAt => $composableBuilder(
+    column: $table.preparationStartedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get readyAt => $composableBuilder(
+    column: $table.readyAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get servedAt => $composableBuilder(
+    column: $table.servedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -27304,6 +27801,26 @@ class $$OrdersTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get placedAt => $composableBuilder(
+    column: $table.placedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preparationStartedAt => $composableBuilder(
+    column: $table.preparationStartedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get readyAt => $composableBuilder(
+    column: $table.readyAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get servedAt => $composableBuilder(
+    column: $table.servedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$TableInfoTableTableOrderingComposer get tableInfoId {
     final $$TableInfoTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -27484,6 +28001,20 @@ class $$OrdersTableTableAnnotationComposer
 
   GeneratedColumn<String> get isoCode =>
       $composableBuilder(column: $table.isoCode, builder: (column) => column);
+
+  GeneratedColumn<String> get placedAt =>
+      $composableBuilder(column: $table.placedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get preparationStartedAt => $composableBuilder(
+    column: $table.preparationStartedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get readyAt =>
+      $composableBuilder(column: $table.readyAt, builder: (column) => column);
+
+  GeneratedColumn<String> get servedAt =>
+      $composableBuilder(column: $table.servedAt, builder: (column) => column);
 
   $$TableInfoTableTableAnnotationComposer get tableInfoId {
     final $$TableInfoTableTableAnnotationComposer composer = $composerBuilder(
@@ -27667,6 +28198,10 @@ class $$OrdersTableTableTableManager
                 Value<String?> phoneNumber = const Value.absent(),
                 Value<String?> isoCode = const Value.absent(),
                 Value<int?> reservationId = const Value.absent(),
+                Value<String?> placedAt = const Value.absent(),
+                Value<String?> preparationStartedAt = const Value.absent(),
+                Value<String?> readyAt = const Value.absent(),
+                Value<String?> servedAt = const Value.absent(),
               }) => OrdersTableCompanion(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -27695,6 +28230,10 @@ class $$OrdersTableTableTableManager
                 phoneNumber: phoneNumber,
                 isoCode: isoCode,
                 reservationId: reservationId,
+                placedAt: placedAt,
+                preparationStartedAt: preparationStartedAt,
+                readyAt: readyAt,
+                servedAt: servedAt,
               ),
           createCompanionCallback:
               ({
@@ -27725,6 +28264,10 @@ class $$OrdersTableTableTableManager
                 Value<String?> phoneNumber = const Value.absent(),
                 Value<String?> isoCode = const Value.absent(),
                 Value<int?> reservationId = const Value.absent(),
+                Value<String?> placedAt = const Value.absent(),
+                Value<String?> preparationStartedAt = const Value.absent(),
+                Value<String?> readyAt = const Value.absent(),
+                Value<String?> servedAt = const Value.absent(),
               }) => OrdersTableCompanion.insert(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -27753,6 +28296,10 @@ class $$OrdersTableTableTableManager
                 phoneNumber: phoneNumber,
                 isoCode: isoCode,
                 reservationId: reservationId,
+                placedAt: placedAt,
+                preparationStartedAt: preparationStartedAt,
+                readyAt: readyAt,
+                servedAt: servedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -27929,6 +28476,10 @@ typedef $$OrderItemsTableTableCreateCompanionBuilder =
       Value<String?> remarks,
       Value<bool> isParcel,
       Value<String?> creationDate,
+      Value<String?> placedAt,
+      Value<String?> preparationStartedAt,
+      Value<String?> readyAt,
+      Value<String?> servedAt,
     });
 typedef $$OrderItemsTableTableUpdateCompanionBuilder =
     OrderItemsTableCompanion Function({
@@ -27947,6 +28498,10 @@ typedef $$OrderItemsTableTableUpdateCompanionBuilder =
       Value<String?> remarks,
       Value<bool> isParcel,
       Value<String?> creationDate,
+      Value<String?> placedAt,
+      Value<String?> preparationStartedAt,
+      Value<String?> readyAt,
+      Value<String?> servedAt,
     });
 
 final class $$OrderItemsTableTableReferences
@@ -28091,6 +28646,26 @@ class $$OrderItemsTableTableFilterComposer
 
   ColumnFilters<String> get creationDate => $composableBuilder(
     column: $table.creationDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get placedAt => $composableBuilder(
+    column: $table.placedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preparationStartedAt => $composableBuilder(
+    column: $table.preparationStartedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get readyAt => $composableBuilder(
+    column: $table.readyAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get servedAt => $composableBuilder(
+    column: $table.servedAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -28252,6 +28827,26 @@ class $$OrderItemsTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get placedAt => $composableBuilder(
+    column: $table.placedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preparationStartedAt => $composableBuilder(
+    column: $table.preparationStartedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get readyAt => $composableBuilder(
+    column: $table.readyAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get servedAt => $composableBuilder(
+    column: $table.servedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$OrdersTableTableOrderingComposer get orderId {
     final $$OrdersTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -28393,6 +28988,20 @@ class $$OrderItemsTableTableAnnotationComposer
     column: $table.creationDate,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get placedAt =>
+      $composableBuilder(column: $table.placedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get preparationStartedAt => $composableBuilder(
+    column: $table.preparationStartedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get readyAt =>
+      $composableBuilder(column: $table.readyAt, builder: (column) => column);
+
+  GeneratedColumn<String> get servedAt =>
+      $composableBuilder(column: $table.servedAt, builder: (column) => column);
 
   $$OrdersTableTableAnnotationComposer get orderId {
     final $$OrdersTableTableAnnotationComposer composer = $composerBuilder(
@@ -28538,6 +29147,10 @@ class $$OrderItemsTableTableTableManager
                 Value<String?> remarks = const Value.absent(),
                 Value<bool> isParcel = const Value.absent(),
                 Value<String?> creationDate = const Value.absent(),
+                Value<String?> placedAt = const Value.absent(),
+                Value<String?> preparationStartedAt = const Value.absent(),
+                Value<String?> readyAt = const Value.absent(),
+                Value<String?> servedAt = const Value.absent(),
               }) => OrderItemsTableCompanion(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -28554,6 +29167,10 @@ class $$OrderItemsTableTableTableManager
                 remarks: remarks,
                 isParcel: isParcel,
                 creationDate: creationDate,
+                placedAt: placedAt,
+                preparationStartedAt: preparationStartedAt,
+                readyAt: readyAt,
+                servedAt: servedAt,
               ),
           createCompanionCallback:
               ({
@@ -28572,6 +29189,10 @@ class $$OrderItemsTableTableTableManager
                 Value<String?> remarks = const Value.absent(),
                 Value<bool> isParcel = const Value.absent(),
                 Value<String?> creationDate = const Value.absent(),
+                Value<String?> placedAt = const Value.absent(),
+                Value<String?> preparationStartedAt = const Value.absent(),
+                Value<String?> readyAt = const Value.absent(),
+                Value<String?> servedAt = const Value.absent(),
               }) => OrderItemsTableCompanion.insert(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -28588,6 +29209,10 @@ class $$OrderItemsTableTableTableManager
                 remarks: remarks,
                 isParcel: isParcel,
                 creationDate: creationDate,
+                placedAt: placedAt,
+                preparationStartedAt: preparationStartedAt,
+                readyAt: readyAt,
+                servedAt: servedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(
@@ -29163,6 +29788,7 @@ typedef $$InvoicesTableTableCreateCompanionBuilder =
       Value<String?> paymentMethodDetails,
       Value<double?> cashReceived,
       Value<double?> changeAmount,
+      Value<bool?> isDeleted,
     });
 typedef $$InvoicesTableTableUpdateCompanionBuilder =
     InvoicesTableCompanion Function({
@@ -29190,6 +29816,7 @@ typedef $$InvoicesTableTableUpdateCompanionBuilder =
       Value<String?> paymentMethodDetails,
       Value<double?> cashReceived,
       Value<double?> changeAmount,
+      Value<bool?> isDeleted,
     });
 
 final class $$InvoicesTableTableReferences
@@ -29410,6 +30037,11 @@ class $$InvoicesTableTableFilterComposer
 
   ColumnFilters<double> get changeAmount => $composableBuilder(
     column: $table.changeAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -29649,6 +30281,11 @@ class $$InvoicesTableTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$OrdersTableTableOrderingComposer get orderId {
     final $$OrdersTableTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -29818,6 +30455,9 @@ class $$InvoicesTableTableAnnotationComposer
     column: $table.changeAmount,
     builder: (column) => column,
   );
+
+  GeneratedColumn<bool> get isDeleted =>
+      $composableBuilder(column: $table.isDeleted, builder: (column) => column);
 
   $$OrdersTableTableAnnotationComposer get orderId {
     final $$OrdersTableTableAnnotationComposer composer = $composerBuilder(
@@ -30003,6 +30643,7 @@ class $$InvoicesTableTableTableManager
                 Value<String?> paymentMethodDetails = const Value.absent(),
                 Value<double?> cashReceived = const Value.absent(),
                 Value<double?> changeAmount = const Value.absent(),
+                Value<bool?> isDeleted = const Value.absent(),
               }) => InvoicesTableCompanion(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -30028,6 +30669,7 @@ class $$InvoicesTableTableTableManager
                 paymentMethodDetails: paymentMethodDetails,
                 cashReceived: cashReceived,
                 changeAmount: changeAmount,
+                isDeleted: isDeleted,
               ),
           createCompanionCallback:
               ({
@@ -30055,6 +30697,7 @@ class $$InvoicesTableTableTableManager
                 Value<String?> paymentMethodDetails = const Value.absent(),
                 Value<double?> cashReceived = const Value.absent(),
                 Value<double?> changeAmount = const Value.absent(),
+                Value<bool?> isDeleted = const Value.absent(),
               }) => InvoicesTableCompanion.insert(
                 createdBy: createdBy,
                 updatedBy: updatedBy,
@@ -30080,6 +30723,7 @@ class $$InvoicesTableTableTableManager
                 paymentMethodDetails: paymentMethodDetails,
                 cashReceived: cashReceived,
                 changeAmount: changeAmount,
+                isDeleted: isDeleted,
               ),
           withReferenceMapper: (p0) => p0
               .map(

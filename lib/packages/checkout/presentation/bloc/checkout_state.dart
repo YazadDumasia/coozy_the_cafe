@@ -2,6 +2,7 @@ part of 'checkout_bloc.dart';
 
 class CheckoutState extends Equatable {
   final String? orderId;
+  final int? lastCreatedInvoiceId;
   final bool isLoading;
   final String? errorMessage;
   final List<CartItem> cartItems;
@@ -16,6 +17,7 @@ class CheckoutState extends Equatable {
 
   const CheckoutState({
     this.orderId,
+    this.lastCreatedInvoiceId,
     this.isLoading = false,
     this.errorMessage,
     required this.cartItems,
@@ -66,6 +68,7 @@ class CheckoutState extends Equatable {
 
   CheckoutState copyWith({
     String? orderId,
+    int? lastCreatedInvoiceId,
     bool? isLoading,
     String? errorMessage,
     List<CartItem>? cartItems,
@@ -80,6 +83,7 @@ class CheckoutState extends Equatable {
   }) {
     return CheckoutState(
       orderId: orderId ?? this.orderId,
+      lastCreatedInvoiceId: lastCreatedInvoiceId ?? this.lastCreatedInvoiceId,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
       cartItems: cartItems ?? this.cartItems,
@@ -97,6 +101,7 @@ class CheckoutState extends Equatable {
   @override
   List<Object?> get props => [
         orderId,
+        lastCreatedInvoiceId,
         isLoading,
         errorMessage,
         cartItems,

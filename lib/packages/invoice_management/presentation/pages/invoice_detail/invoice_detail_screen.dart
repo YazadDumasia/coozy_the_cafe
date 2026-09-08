@@ -1,5 +1,8 @@
+import 'dart:convert';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
@@ -67,14 +70,14 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.share_outlined),
-                onPressed: () => InvoiceDetailScreenActions.onShare(context),
+                onPressed: () => InvoiceDetailScreenActions.onShare(context), 
               ),
               IconButton(
                 icon: const Icon(Icons.sms_outlined),
                 onPressed: () => InvoiceDetailScreenActions.onSendSms(context),
               ),
               IconButton(
-                icon: const Icon(Icons.chat_bubble_outline),
+                icon:  Icon(FontAwesomeIcons.whatsapp.data),
                 onPressed: () => InvoiceDetailScreenActions.onWhatsApp(context),
               ),
               IconButton(
@@ -113,17 +116,13 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                   );
 
               final items = details?.items ?? [];
-              final totalUnits =
-                  details?.totalUnits ??
-                  items.fold<int>(0, (s, i) => s + i.quantity);
-              final totalTypes = details?.totalItemTypes ?? items.length;
 
               final createdDateStr = inv.createdDate != null
-                  ? core.DateUtil.dateToString(
-                          DateTime.tryParse(inv.createdDate!) ?? DateTime.now(),
-                          'dd Aug yyyy - hh:mm a',
+                  ? (core.DateUtil.localFormat(
+                          inv.createdDate,
+                          'dd MMM yyyy - hh:mm a',
                         ) ??
-                        ''
+                        '')
                   : '';
 
               return Column(
@@ -180,6 +179,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 InvoiceDetailScreenActions.onDelete(
                                   context,
                                   inv.id,
+                                  fromCheckout: widget.fromCheckout,
                                 ),
                             child: Text(
                               context.tr(
@@ -240,25 +240,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                           children: [
                             CircleAvatar(
                               radius: 36,
-                              backgroundColor: const Color(0xFF6D4C41),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(
-                                    Icons.free_breakfast,
-                                    color: Colors.white,
-                                    size: 24,
-                                  ),
-                                  Text(
-                                    'COOZY',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 8,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              backgroundColor: const Color(0xFF6D4C41),                              
+                              child:Image.asset(Assets.images.appLogoClearBg.path).paddingAll(5)
                             ),
                             const SizedBox(height: 8),
                             Text(
@@ -284,106 +267,109 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                               ),
                             ),
                             const Divider(height: 24),
-                            Text(
-                              'Receipt# ${inv.hashId.isNotEmpty ? inv.hashId : 'MD-${inv.id}'} | TABLE 5',
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                fontWeight: FontWeight.w600,
-                              ),
+                            // Receipt No
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Receipt No',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    inv.hashId.isNotEmpty ? inv.hashId : 'MD-${inv.id}',
+                                    textAlign: TextAlign.end,
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 2),
-                            Text(
-                              'Date : $createdDateStr',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
+                            const SizedBox(height: 6),
+                            // Date row
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Date',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    createdDateStr,
+                                    textAlign: TextAlign.end,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: colorScheme.onSurface,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(height: 12),
-                            Container(
-                              color: Colors.grey.shade100,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 8,
-                              ),
-                              child: Row(
-                                children: const [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      'P Mode',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      'I#',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      'U#',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      'Amount',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 8,
-                              ),
-                              child: Row(
+                            const SizedBox(height: 6),
+                            // Table row below Date
+                            () {
+                              final tableName = (details?.tableName != null && details!.tableName!.isNotEmpty)
+                                  ? details.tableName!
+                                  : (inv.orderId != null ? 'Table ${inv.orderId}' : 'Dine-In');
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
-                                    flex: 3,
-                                    child: Text(
-                                      inv.paymentMethodName ?? 'Cash',
+                                  Text(
+                                    'Table / Dine-In',
+                                    style: theme.textTheme.labelMedium?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
+                                  const SizedBox(width: 16),
                                   Expanded(
                                     child: Text(
-                                      '$totalTypes',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      '$totalUnits',
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Text(
-                                      '₹${inv.netPaymentAmount.toStringAsFixed(2)}',
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
+                                      tableName,
+                                      textAlign: TextAlign.end,
+                                      style: theme.textTheme.titleSmall?.copyWith(
                                         fontWeight: FontWeight.bold,
+                                        color: colorScheme.primary,
                                       ),
                                     ),
                                   ),
                                 ],
-                              ),
+                              );
+                            }(),
+                            const SizedBox(height: 6),
+                            // Payment Mode row
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Payment Mode',
+                                  style: theme.textTheme.labelMedium?.copyWith(
+                                    color: colorScheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Text(
+                                    inv.paymentMethodName ?? 'Cash',
+                                    textAlign: TextAlign.end,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: colorScheme.onSurface,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+                            const SizedBox(height: 16),
                             const SizedBox(height: 8),
                             Container(
                               color: Colors.grey.shade100,
@@ -500,6 +486,90 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 Text('₹${inv.totalCost.toStringAsFixed(2)}'),
                               ],
                             ),
+                            if (inv.paymentMethodDetails != null &&
+                                inv.paymentMethodDetails!.isNotEmpty) ...[
+                              () {
+                                try {
+                                  final detailsMap = jsonDecode(inv.paymentMethodDetails!) as Map<String, dynamic>;
+                                  final taxList = (detailsMap['taxDetails'] as List<dynamic>?) ?? [];
+                                  final chargeList = (detailsMap['chargeDetails'] as List<dynamic>?) ?? [];
+                                  final discountList = (detailsMap['discountDetails'] as List<dynamic>?) ?? [];
+
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: [
+                                      ...discountList.map((d) {
+                                        final name = d['name'] ?? 'Discount';
+                                        final amt = (d['amount'] as num?)?.toDouble() ?? 0.0;
+                                        return Padding(
+                                          padding: const EdgeInsets.only(top: 4),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(name.toString(), style: const TextStyle(color: Colors.grey)),
+                                              Text('-₹${amt.toStringAsFixed(2)}', style: const TextStyle(color: Colors.green)),
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                      ...taxList.map((t) {
+                                        final name = t['name'] ?? 'Tax';
+                                        final amt = (t['amount'] as num?)?.toDouble() ?? 0.0;
+                                        return Padding(
+                                          padding: const EdgeInsets.only(top: 4),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(name.toString(), style: const TextStyle(color: Colors.grey)),
+                                              Text('+₹${amt.toStringAsFixed(2)}'),
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                      ...chargeList.map((c) {
+                                        final name = c['name'] ?? 'Extra Charge';
+                                        final amt = (c['amount'] as num?)?.toDouble() ?? 0.0;
+                                        return Padding(
+                                          padding: const EdgeInsets.only(top: 4),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(name.toString(), style: const TextStyle(color: Colors.grey)),
+                                              Text('+₹${amt.toStringAsFixed(2)}'),
+                                            ],
+                                          ),
+                                        );
+                                      }),
+                                    ],
+                                  );
+                                } catch (_) {
+                                  return const SizedBox.shrink();
+                                }
+                              }(),
+                            ] else if (inv.taxCost > 0 || inv.discountAmount > 0) ...[
+                              if (inv.discountAmount > 0)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Discount', style: TextStyle(color: Colors.grey)),
+                                      Text('-₹${inv.discountAmount.toStringAsFixed(2)}', style: const TextStyle(color: Colors.green)),
+                                    ],
+                                  ),
+                                ),
+                              if (inv.taxCost > 0)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 4),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text('Tax', style: TextStyle(color: Colors.grey)),
+                                      Text('+₹${inv.taxCost.toStringAsFixed(2)}'),
+                                    ],
+                                  ),
+                                ),
+                            ],
                             const SizedBox(height: 4),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -521,6 +591,17 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                               ],
                             ),
                             const Divider(height: 24),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text('Payment Method'),
+                                Text(
+                                  inv.paymentMethodName ?? 'Cash',
+                                  style: const TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
@@ -553,19 +634,19 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 color: colorScheme.onSurfaceVariant,
                               ),
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              context.tr(
-                                    shared.LocaleKeys.invoiceFooterPoweredBy,
-                                    track:
-                                        shared.TrackConstants.invoicePageTrack,
-                                  ) ??
-                                  'Powered By Restokeep',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontStyle: FontStyle.italic,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
+                            // const SizedBox(height: 4),
+                            // Text(
+                            //   context.tr(
+                            //         shared.LocaleKeys.invoiceFooterPoweredBy,
+                            //         track:
+                            //             shared.TrackConstants.invoicePageTrack,
+                            //       ) ??
+                            //       'Powered By Coozy The cafe POS',
+                            //   style: theme.textTheme.bodyMedium?.copyWith(
+                            //     fontStyle: FontStyle.italic,
+                            //     color: colorScheme.onSurfaceVariant,
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

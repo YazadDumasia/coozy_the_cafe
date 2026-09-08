@@ -170,6 +170,26 @@ class InvoiceManagementBloc
           ),
         ),
       );
+    } else {
+      emit(const InvoiceManagementLoadingState());
+      final modesResult = await getPaymentModesUseCase();
+      List<PaymentMode> modes = [];
+      modesResult.fold((_) {}, (data) => modes = data);
+
+      final result = await getInvoiceDetailsUseCase(event.invoiceId);
+      result.fold(
+        (failure) => emit(InvoiceManagementErrorState(failure.message)),
+        (details) => emit(
+          InvoiceManagementLoadedState(
+            invoices: const [],
+            totalCount: 0,
+            currentPage: 1,
+            hasReachedMax: true,
+            selectedInvoiceDetails: details,
+            paymentModes: modes,
+          ),
+        ),
+      );
     }
   }
 

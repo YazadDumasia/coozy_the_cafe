@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart' show OrderItemStatus;
 import '../../../../domain/entities/kitchen_order_item_entity.dart';
 
 class KitchenItemTile extends StatelessWidget {
@@ -12,27 +13,33 @@ class KitchenItemTile extends StatelessWidget {
     required this.onStatusChanged,
   });
 
-  Color _getStatusColor(BuildContext context, String status) {
+  Color _getStatusColor(BuildContext context, OrderItemStatus status) {
     switch (status) {
-      case 'preparing':
+      case OrderItemStatus.preparing:
         return Colors.blue;
-      case 'ready':
+      case OrderItemStatus.ready:
         return Colors.green;
-      case 'pending':
-      default:
+      case OrderItemStatus.served:
+        return Colors.purple;
+      case OrderItemStatus.cancelled:
+        return Theme.of(context).colorScheme.error;
+      case OrderItemStatus.pending:
         return Colors.orange;
     }
   }
 
-  String _getStatusLabel(BuildContext context, String status) {
-    switch (status.toLowerCase()) {
-      case 'preparing':
+  String _getStatusLabel(BuildContext context, OrderItemStatus status) {
+    switch (status) {
+      case OrderItemStatus.preparing:
         return context.tr(shared.LocaleKeys.kitchenStatusPreparing, track: shared.TrackConstants.orderPageTrack) ??
             'Preparing';
-      case 'ready':
+      case OrderItemStatus.ready:
         return context.tr(shared.LocaleKeys.kitchenStatusReady, track: shared.TrackConstants.orderPageTrack) ?? 'Ready';
-      case 'pending':
-      default:
+      case OrderItemStatus.served:
+        return 'Served';
+      case OrderItemStatus.cancelled:
+        return 'Cancelled';
+      case OrderItemStatus.pending:
         return context.tr(shared.LocaleKeys.kitchenStatusPending, track: shared.TrackConstants.orderPageTrack) ?? 'Pending';
     }
   }
@@ -40,8 +47,8 @@ class KitchenItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final statusColor = _getStatusColor(context, item.status);
-    final statusLabel = _getStatusLabel(context, item.status);
+    final statusColor = _getStatusColor(context, item.orderItemStatus);
+    final statusLabel = _getStatusLabel(context, item.orderItemStatus);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -139,6 +146,37 @@ class KitchenItemTile extends StatelessWidget {
               ),
             ],
           ),
+          if (item.waitingDuration != null || item.preparationDuration != null) ...[
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                if (item.waitingDuration != null) ...[
+                  Icon(Icons.hourglass_empty, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                  const SizedBox(width: 2),
+                  Text(
+                    'Wait: ${item.waitingDuration!.inMinutes}m ${item.waitingDuration!.inSeconds.remainder(60)}s',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                      fontSize: 10,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                ],
+                if (item.preparationDuration != null) ...[
+                  Icon(Icons.timer_outlined, size: 12, color: Colors.blue.shade700),
+                  const SizedBox(width: 2),
+                  Text(
+                    'Prep: ${item.preparationDuration!.inMinutes}m ${item.preparationDuration!.inSeconds.remainder(60)}s',
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: Colors.blue.shade700,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 10,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ],
           if (item.remarks != null && item.remarks!.trim().isNotEmpty) ...[
             const SizedBox(height: 4),
             Container(

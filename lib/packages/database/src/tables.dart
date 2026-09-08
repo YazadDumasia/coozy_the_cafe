@@ -229,6 +229,10 @@ class OrdersTable extends BaseTable {
     #id,
     onDelete: KeyAction.setNull,
   )();
+  TextColumn get placedAt => text().nullable()();
+  TextColumn get preparationStartedAt => text().nullable()();
+  TextColumn get readyAt => text().nullable()();
+  TextColumn get servedAt => text().nullable()();
 }
 
 @DataClassName('OrderItem')
@@ -261,6 +265,10 @@ class OrderItemsTable extends BaseTable {
   TextColumn get remarks => text().nullable()();
   BoolColumn get isParcel => boolean().withDefault(const Constant(false))();
   TextColumn get creationDate => text().nullable()();
+  TextColumn get placedAt => text().nullable()();
+  TextColumn get preparationStartedAt => text().nullable()();
+  TextColumn get readyAt => text().nullable()();
+  TextColumn get servedAt => text().nullable()();
 }
 
 @DataClassName('PaymentMode')
@@ -322,6 +330,7 @@ class InvoicesTable extends BaseTable {
   TextColumn get paymentMethodDetails => text().nullable()();
   RealColumn get cashReceived => real().nullable().withDefault(const Constant(0.0))();
   RealColumn get changeAmount => real().nullable().withDefault(const Constant(0.0))();
+  BoolColumn get isDeleted => boolean().nullable().withDefault(const Constant(false))();
 }
 
 @DataClassName('InvoiceItem')

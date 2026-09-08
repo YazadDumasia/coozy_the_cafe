@@ -24,6 +24,7 @@ class InvoiceEntity extends Equatable {
   final String? paymentMethodDetails;
   final double? cashReceived;
   final double? changeAmount;
+  final bool isDeleted;
 
   const InvoiceEntity({
     required this.id,
@@ -48,6 +49,7 @@ class InvoiceEntity extends Equatable {
     this.paymentMethodDetails,
     this.cashReceived,
     this.changeAmount,
+    this.isDeleted = false,
   });
 
   factory InvoiceEntity.fromDrift(Invoice data) {
@@ -74,6 +76,7 @@ class InvoiceEntity extends Equatable {
       paymentMethodDetails: data.paymentMethodDetails,
       cashReceived: data.cashReceived,
       changeAmount: data.changeAmount,
+      isDeleted: data.isDeleted ?? false,
     );
   }
 
@@ -100,6 +103,7 @@ class InvoiceEntity extends Equatable {
     String? paymentMethodDetails,
     double? cashReceived,
     double? changeAmount,
+    bool? isDeleted,
   }) {
     return InvoiceEntity(
       id: id ?? this.id,
@@ -124,6 +128,7 @@ class InvoiceEntity extends Equatable {
       paymentMethodDetails: paymentMethodDetails ?? this.paymentMethodDetails,
       cashReceived: cashReceived ?? this.cashReceived,
       changeAmount: changeAmount ?? this.changeAmount,
+      isDeleted: isDeleted ?? this.isDeleted,
     );
   }
 
@@ -151,6 +156,7 @@ class InvoiceEntity extends Equatable {
         paymentMethodDetails,
         cashReceived,
         changeAmount,
+        isDeleted,
       ];
 }
 

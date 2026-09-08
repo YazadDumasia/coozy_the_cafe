@@ -87,6 +87,13 @@ class CoozyDatabase extends _$CoozyDatabase {
       await customStatement(
         'CREATE INDEX IF NOT EXISTS idx_invoice_pagination ON invoices (created_date DESC, id DESC);',
       );
+      try {
+        await customStatement(
+          'ALTER TABLE invoices ADD COLUMN is_deleted INTEGER DEFAULT 0;',
+        );
+      } catch (_) {
+        // Column may already exist
+      }
       await customStatement(
         'CREATE INDEX IF NOT EXISTS idx_reservations_pagination ON reservations (reservation_date_time DESC, id DESC);',
       );

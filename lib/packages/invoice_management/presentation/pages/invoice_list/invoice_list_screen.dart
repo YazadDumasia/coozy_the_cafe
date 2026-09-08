@@ -84,7 +84,8 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
             }
           },
           builder: (context, state) {
-            if (state is InvoiceManagementLoadingState) {
+            if (state is InvoiceManagementLoadingState ||
+                state is InvoiceManagementInitialState) {
               return const shared.LoadingPage();
             } else if (state is InvoiceManagementErrorState) {
               return shared.ErrorPage(

@@ -58,15 +58,25 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
   Future<void> markOrderCompleted(int orderId) async {
     final currentDate = DateTime.now().toUtc().toIso8601String();
     await transaction(() async {
+      final order = await (select(ordersTable)..where((t) => t.id.equals(orderId))).getSingleOrNull();
+      Value<String?> served = const Value.absent();
+      Value<String?> ready = const Value.absent();
+      if (order != null) {
+        if (order.readyAt == null) ready = Value(currentDate);
+        if (order.servedAt == null) served = Value(currentDate);
+      }
       await (update(ordersTable)..where((t) => t.id.equals(orderId))).write(
         OrdersTableCompanion(
           status: const Value('completed'),
           modificationDate: Value(currentDate),
+          readyAt: ready,
+          servedAt: served,
         ),
       );
       await (update(orderItemsTable)..where((t) => t.orderId.equals(orderId))).write(
-        const OrderItemsTableCompanion(
-          status: Value('completed'),
+        OrderItemsTableCompanion(
+          status: const Value('completed'),
+          servedAt: Value(currentDate),
         ),
       );
     });
@@ -78,6 +88,7 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
     CustomersTableCompanion? customer,
   }) async {
     return transaction(() async {
+      final nowIso = DateTime.now().toUtc().toIso8601String();
       int? customerId = order.customerId.present
           ? order.customerId.value
           : null;
@@ -88,17 +99,25 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
         ).insert(customer, mode: InsertMode.replace);
       }
 
-      final finalOrder = customerId != null
+      var finalOrder = customerId != null
           ? order.copyWith(customerId: Value(customerId))
           : order;
+
+      if (!finalOrder.placedAt.present || finalOrder.placedAt.value == null) {
+        finalOrder = finalOrder.copyWith(placedAt: Value(nowIso));
+      }
 
       final orderId = await into(
         ordersTable,
       ).insert(finalOrder, mode: InsertMode.replace);
 
       for (final item in orderItems) {
+        var finalItem = item.copyWith(orderId: Value(orderId));
+        if (!finalItem.placedAt.present || finalItem.placedAt.value == null) {
+          finalItem = finalItem.copyWith(placedAt: Value(nowIso));
+        }
         await into(orderItemsTable).insert(
-          item.copyWith(orderId: Value(orderId)),
+          finalItem,
           mode: InsertMode.replace,
         );
       }
@@ -176,6 +195,13 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
         ..where(orderItemsTable.orderId.equals(orderId));
       final result = await query.getSingle();
       return result.read(countExpr) ?? 0;
+    });
+  }
+
+  Future<int> permanentlyDeleteOrder(int orderId) async {
+    return transaction(() async {
+      await (delete(orderItemsTable)..where((t) => t.orderId.equals(orderId))).go();
+      return (delete(ordersTable)..where((t) => t.id.equals(orderId))).go();
     });
   }
 

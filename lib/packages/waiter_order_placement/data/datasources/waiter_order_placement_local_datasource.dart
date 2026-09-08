@@ -395,6 +395,6 @@ class WaiterOrderPlacementLocalDataSourceImpl
 
   @override
   Future<void> deleteTableOrder(int orderId) async {
-    await _ordersDao.updateOrderIsDeleted(orderId: orderId, isDeleted: true);
+    await _ordersDao.permanentlyDeleteOrder(orderId);
   }
 }

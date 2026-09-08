@@ -10,6 +10,8 @@ part 'invoices_dao.g.dart';
     InvoicesTable,
     InvoiceItemsTable,
     PaymentTransactionsTable,
+    OrdersTable,
+    OrderItemsTable,
   ],
 )
 class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
@@ -80,7 +82,8 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     String? search,
   }) {
     final offset = (pageNo - 1) * limit;
-    final query = select(invoicesTable);
+    final query = select(invoicesTable)
+      ..where((t) => t.isDeleted.equals(false) | t.isDeleted.isNull());
 
     query.orderBy([
       (t) => OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc),
@@ -100,7 +103,12 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
 
   Future<int> getInvoicesCount({String? search}) async {
     final countExpr = invoicesTable.id.count();
-    final query = selectOnly(invoicesTable)..addColumns([countExpr]);
+    final query = selectOnly(invoicesTable)
+      ..where(
+        invoicesTable.isDeleted.equals(false) |
+            invoicesTable.isDeleted.isNull(),
+      )
+      ..addColumns([countExpr]);
     if (search != null && search.isNotEmpty) {
       query.where(
         invoicesTable.hashId.like('%$search%') |
@@ -117,8 +125,43 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     invoicesTable,
   )..where((t) => t.id.equals(id))).write(invoice).then((rows) => rows > 0);
 
-  Future<int> deleteInvoice(int id) =>
-      (delete(invoicesTable)..where((t) => t.id.equals(id))).go();
+  Future<int> deleteInvoice(int id) async {
+    return transaction(() async {
+      final nowUtcIso = DateTime.now().toUtc().toIso8601String();
+
+      // 1. Fetch invoice to get linked orderId
+      final invoice = await (select(invoicesTable)..where((t) => t.id.equals(id))).getSingleOrNull();
+      if (invoice == null) return 0;
+
+      // 2. Soft delete the invoice
+      final rowsUpdated = await (update(invoicesTable)..where((t) => t.id.equals(id))).write(
+        InvoicesTableCompanion(
+          isDeleted: const Value(true),
+          modifiedDate: Value(nowUtcIso),
+        ),
+      );
+
+      // 3. If invoice is linked to an order, soft delete the order and order items
+      final linkedOrderId = invoice.orderId;
+      if (linkedOrderId != null) {
+        await (update(ordersTable)..where((t) => t.id.equals(linkedOrderId))).write(
+          OrdersTableCompanion(
+            isDeleted: const Value(true),
+            status: const Value('deleted'),
+            modificationDate: Value(nowUtcIso),
+          ),
+        );
+
+        await (update(orderItemsTable)..where((t) => t.orderId.equals(linkedOrderId))).write(
+          const OrderItemsTableCompanion(
+            status: Value('deleted'),
+          ),
+        );
+      }
+
+      return rowsUpdated;
+    });
+  }
 
   Future<List<Invoice>> getInvoicesByDateRange(
     String startIso,
@@ -128,7 +171,9 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
   }) {
     final query = select(invoicesTable)
       ..where(
-        (t) => t.createdDate.isBetween(Constant(startIso), Constant(endIso)),
+        (t) =>
+            t.createdDate.isBetween(Constant(startIso), Constant(endIso)) &
+            (t.isDeleted.equals(false) | t.isDeleted.isNull()),
       );
     query.orderBy([
       (t) => OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc),
@@ -149,9 +194,11 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     final query = selectOnly(invoicesTable)
       ..where(
         invoicesTable.createdDate.isBetween(
-          Constant(startIso),
-          Constant(endIso),
-        ),
+              Constant(startIso),
+              Constant(endIso),
+            ) &
+            (invoicesTable.isDeleted.equals(false) |
+                invoicesTable.isDeleted.isNull()),
       );
     query.addColumns([countExpr]);
     final row = await query.getSingle();

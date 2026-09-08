@@ -21,9 +21,9 @@ class InvoiceCardWidget extends StatelessWidget {
         .toLowerCase()
         .contains('upi');
     final methodText = invoice.paymentMethodName ?? 'Cash';
-    final receiptTitle = invoice.hashId.isNotEmpty
-        ? invoice.hashId
-        : 'MD-${invoice.id}';
+    final hashIdVal = invoice.hashId;
+    final receiptTitle =
+        hashIdVal.isNotEmpty ? hashIdVal : 'MD-${invoice.id}';
 
     final createdDateStr = invoice.createdDate != null
         ? core.DateUtil.dateToString(
@@ -31,6 +31,7 @@ class InvoiceCardWidget extends StatelessWidget {
             'dd MMM yyyy - hh:mm a',
           ) ?? ''
         : '';
+    final netAmount = invoice.netPaymentAmount;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -93,7 +94,7 @@ class InvoiceCardWidget extends StatelessWidget {
               const SizedBox(width: 8),
               // Price
               Text(
-                '₹${invoice.netPaymentAmount.toStringAsFixed(0)}',
+                '₹${netAmount.toStringAsFixed(0)}',
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: colorScheme.primary,

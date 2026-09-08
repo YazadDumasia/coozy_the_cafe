@@ -14,7 +14,7 @@ class MenuItemDetailScreen extends StatefulWidget {
   final int itemId;
 
   const MenuItemDetailScreen({super.key, required this.itemId});
-
+  
   @override
   State<MenuItemDetailScreen> createState() => _MenuItemDetailScreenState();
 }
@@ -86,9 +86,7 @@ class _MenuItemDetailScreenState extends State<MenuItemDetailScreen> {
   }
 
   Widget _buildDetailContent(BuildContext context, MenuItem item) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
+   
     String? categoryName;
     String? subcategoryName;
 
@@ -133,7 +131,7 @@ class _MenuItemDetailScreenState extends State<MenuItemDetailScreen> {
                 MenuItemDetailActions.handleEditMenuItem(context, item),
           ),
           IconButton(
-            icon: Icon(Icons.delete_outline, color: colorScheme.error),
+            icon: Icon(Icons.delete_outline, ),
             tooltip:
                 context.tr(
                   shared.LocaleKeys.commonDelete,

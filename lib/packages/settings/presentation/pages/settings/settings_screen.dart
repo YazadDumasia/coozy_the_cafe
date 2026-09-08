@@ -46,15 +46,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final ValueNotifier<int> _currentStepNotifier = ValueNotifier(0);
   final ValueNotifier<int> _totalStepsNotifier = ValueNotifier(7);
   final ValueNotifier<String> _currentStepDescNotifier = ValueNotifier('');
+  final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<bool> _showScrollToTopNotifier = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
+    _scrollController.addListener(_onScroll);
     _loadSettings();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final show = _scrollController.offset > 300;
+    if (_showScrollToTopNotifier.value != show) {
+      _showScrollToTopNotifier.value = show;
+    }
+  }
+
+  void _scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOutCubic,
+      );
+    }
   }
 
   @override
   void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    _showScrollToTopNotifier.dispose();
     _isFakeDataEnabledNotifier.dispose();
     _autoPrintKitchenSlipNotifier.dispose();
     _selectedCurrencySymbolNotifier.dispose();
@@ -868,11 +892,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _tr(context, shared.LocaleKeys.settingsTitle, 'Settings'),
           ),
         ),
+        floatingActionButton: ValueListenableBuilder<bool>(
+          valueListenable: _showScrollToTopNotifier,
+          builder: (context, showScrollToTop, child) {
+            if (!showScrollToTop) return const SizedBox.shrink();
+            return FloatingActionButton.small(
+              heroTag: 'settings_scroll_to_top_fab',
+              onPressed: _scrollToTop,
+              tooltip: 'Scroll to top',
+              child: const Icon(Icons.arrow_upward_rounded),
+            );
+          },
+        ),
         body: Center(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 900),
             child: ListView(
-              padding: const EdgeInsets.all(16.0),
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.only(
+                left: 16.0,
+                right: 16.0,
+                top: 16.0,
+                bottom: 80.0,
+              ),
               children: [
                 // Theme Section
                 Text(

@@ -36,6 +36,8 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
   bool _isExpanderOpen = false;
   _PaymentStep _activeStep = _PaymentStep.details;
   List<db.Customer> _customerSuggestions = [];
+  String _isoCode = 'IN';
+  int _phoneFieldKey = 0;
 
   @override
   void initState() {
@@ -52,6 +54,24 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
     _nameFocusNode = FocusNode();
     _emailFocusNode = FocusNode();
     _addressFocusNode = FocusNode();
+
+    if (initialCustomer.isoCode != null &&
+        initialCustomer.isoCode!.isNotEmpty) {
+      _isoCode = initialCustomer.isoCode!;
+    } else if (initialCustomer.mobileNumber.isNotEmpty) {
+      final phone = initialCustomer.mobileNumber;
+      if (phone.startsWith('+')) {
+        try {
+          final parsed = shared.PhoneNumber.fromCompleteNumber(
+            completeNumber: phone,
+          );
+          if (parsed.countryISOCode.isNotEmpty) {
+            _isoCode = parsed.countryISOCode.toUpperCase();
+            _mobileController.text = parsed.number;
+          }
+        } catch (_) {}
+      }
+    }
 
     _loadCustomerSuggestions();
   }
@@ -91,6 +111,44 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
         offset: _nameController.text.length,
       );
     }
+    String? targetIsoCode;
+    if (selection.isoCode != null && selection.isoCode!.isNotEmpty) {
+      final code = selection.isoCode!.trim();
+      if (code.startsWith('+')) {
+        try {
+          final country = shared.CountryPickerUtils.getCountryByPhoneCode(
+            code.replaceAll('+', ''),
+          );
+          targetIsoCode = country.isoCode.toUpperCase();
+        } catch (_) {}
+      } else {
+        try {
+          final country = shared.CountryPickerUtils.getCountryByIsoCode(code);
+          targetIsoCode = country.isoCode.toUpperCase();
+        } catch (_) {}
+      }
+    } else if (selection.phoneNumber != null &&
+        selection.phoneNumber!.isNotEmpty) {
+      try {
+        final phone = selection.phoneNumber!;
+        final parsed = shared.PhoneNumber.fromCompleteNumber(
+          completeNumber: phone.startsWith('+') ? phone : '+$phone',
+        );
+        if (parsed.countryISOCode.isNotEmpty) {
+          targetIsoCode = parsed.countryISOCode.toUpperCase();
+        }
+      } catch (_) {}
+    }
+
+    if (targetIsoCode != null &&
+        targetIsoCode.isNotEmpty &&
+        targetIsoCode != _isoCode) {
+      setState(() {
+        _isoCode = targetIsoCode!;
+        _phoneFieldKey++;
+      });
+    }
+
     _updateCustomer();
   }
 
@@ -198,6 +256,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
           name: _nameController.text.trim(),
           email: _emailController.text.trim(),
           address: _addressController.text.trim(),
+          isoCode: _isoCode,
         ),
       ),
     );
@@ -247,7 +306,8 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
               if (Navigator.of(context).canPop()) {
                 Navigator.of(context).pop();
               }
-              final invoiceId = state.orderId ?? 1;
+              final invoiceId = state.lastCreatedInvoiceId ??
+                  (int.tryParse(state.orderId ?? '') ?? 1);
               context.push(
                 core.AppRoutePath.invoiceDetailRoute(
                   invoiceId,
@@ -352,37 +412,47 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                 },
                 fieldViewBuilder:
                     (context, controller, focusNode, onFieldSubmitted) {
-                      return TextFormField(
+                      return shared.PhoneNumberTextFormField(
+                        key: ValueKey(_phoneFieldKey),
                         controller: controller,
                         focusNode: focusNode,
-                        keyboardType: TextInputType.phone,
-                        onChanged: (_) => _updateCustomer(),
+                        showDropdownIcon: true,
+                        showCountryFlag: true,
+                        initialCountryCode: _isoCode,
+                        flagsButtonMargin: const EdgeInsets.all(10),
+                        isCountryButtonPersistent: false,
+                        textInputAction: TextInputAction.next,
                         decoration: InputDecoration(
                           labelText:
                               context.tr(
                                 shared.LocaleKeys.commonPhoneNumberLabel,
                                 track: shared.TrackConstants.commonTrack,
                               ) ??
-                              'Mobile Number',
-                          prefixIcon: const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 14,
-                            ),
-                            child: Text(
-                              '+91',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
+                              'Phone Number',
+                          hintText:
+                              context.tr(
+                                shared.LocaleKeys.commonPhoneNumberOptionalHint,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Phone Number (Optional)',
                           suffixIcon: IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () => _openCustomerSearchModal(context),
                           ),
                           border: const OutlineInputBorder(),
                         ),
+                        onCountryChanged: (shared.Country country) {
+                          setState(() {
+                            _isoCode = country.isoCode;
+                          });
+                          _updateCustomer();
+                        },
+                        onChanged: (phone) {
+                          _updateCustomer();
+                        },
+                        onSubmitted: (value) {
+                          FocusScope.of(context).requestFocus(_nameFocusNode);
+                        },
                       );
                     },
               ),

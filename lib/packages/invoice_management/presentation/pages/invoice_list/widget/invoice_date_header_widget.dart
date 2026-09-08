@@ -17,12 +17,13 @@ class InvoiceDateHeaderWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final primaryColor = theme.primaryColor;
 
+    final now = DateTime.now();
     final startText = dateRange != null
         ? (core.DateUtil.dateToString(dateRange!.start, 'dd MMM yyyy') ?? '')
-        : '29 Aug 2026';
+        : (core.DateUtil.dateToString(now.subtract(const Duration(days: 30)), 'dd MMM yyyy') ?? '');
     final endText = dateRange != null
         ? (core.DateUtil.dateToString(dateRange!.end, 'dd MMM yyyy') ?? '')
-        : '31 Aug 2026';
+        : (core.DateUtil.dateToString(now, 'dd MMM yyyy') ?? '');
 
     return Container(
       color: primaryColor,

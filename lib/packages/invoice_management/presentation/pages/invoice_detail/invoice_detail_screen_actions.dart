@@ -12,12 +12,18 @@ class InvoiceDetailScreenActions {
     );
   }
 
-  static void onDelete(BuildContext context, int invoiceId) {
+  static void onDelete(
+    BuildContext context,
+    int invoiceId, {
+    bool fromCheckout = false,
+  }) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('Delete Receipt'),
-        content: const Text('Are you sure you want to delete this receipt?'),
+        content: const Text(
+          'Are you sure you want to delete this receipt? This will soft delete the invoice and its linked order.',
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
@@ -30,7 +36,13 @@ class InvoiceDetailScreenActions {
               context
                   .read<InvoiceManagementBloc>()
                   .add(DeleteInvoiceEvent(invoiceId));
-              context.pop();
+              if (fromCheckout) {
+                context.go(AppRoutePath.homeRoute);
+              } else if (Navigator.of(context).canPop()) {
+                context.pop();
+              } else {
+                context.go(AppRoutePath.homeRoute);
+              }
             },
             child: const Text('Delete', style: TextStyle(color: Colors.white)),
           ),

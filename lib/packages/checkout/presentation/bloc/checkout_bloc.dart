@@ -278,84 +278,143 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
             'note': event.note,
           });
 
-          await db.ordersDao.markOrderCompleted(orderId);
+          int? targetInvoiceId;
 
-          await (db.update(db.ordersTable)..where((t) => t.id.equals(orderId))).write(
-            OrdersTableCompanion(
-              paymentMethodName: Value(paymentName),
-              paymentMethodDetails: Value(breakdownDetails),
-              cashReceived: Value(event.cashReceived ?? 0.0),
-              changeAmount: Value(event.changeAmount ?? 0.0),
-              subtotalAmount: Value(summary.subtotal),
-              discountAmount: Value(summary.totalDiscounts),
-              taxAmount: Value(summary.totalTaxes),
-              otherChargesAmount: Value(summary.totalOtherCharges),
-              grandTotal: Value(summary.grandTotal),
-              modificationDate: Value(currentDate),
-            ),
-          );
+          await db.transaction(() async {
+            // Check existing order for any customerId or existing info
+            final existingOrder = await (db.select(db.ordersTable)..where((t) => t.id.equals(orderId))).getSingleOrNull();
 
-          final existingInvoices = await (db.select(db.invoicesTable)
-                ..where((t) => t.orderId.equals(orderId)))
-              .get();
+            await db.ordersDao.markOrderCompleted(orderId);
 
-          final amountPaid = event.cashReceived != null && event.cashReceived! > 0
-              ? event.cashReceived!
-              : summary.grandTotal;
+            final cust = state.customerDetails;
+            final customerName = cust.name.trim().isNotEmpty
+                ? cust.name.trim()
+                : (existingOrder?.customerName?.trim().isNotEmpty == true ? existingOrder!.customerName!.trim() : null);
+            final phoneNumber = cust.mobileNumber.trim().isNotEmpty
+                ? cust.mobileNumber.trim()
+                : (existingOrder?.phoneNumber?.trim().isNotEmpty == true ? existingOrder!.phoneNumber!.trim() : null);
+            final isoCode = cust.isoCode?.trim().isNotEmpty == true
+                ? cust.isoCode!.trim()
+                : (existingOrder?.isoCode?.trim().isNotEmpty == true ? existingOrder!.isoCode!.trim() : null);
+            final customerId = existingOrder?.customerId;
 
-          int targetInvoiceId;
-          if (existingInvoices.isNotEmpty) {
-            targetInvoiceId = existingInvoices.first.id;
-            await (db.update(db.invoicesTable)..where((t) => t.id.equals(targetInvoiceId))).write(
-              InvoicesTableCompanion(
-                totalCost: Value(summary.subtotal),
-                discountAmount: Value(summary.totalDiscounts),
-                taxCost: Value(summary.totalTaxes),
-                taxableAmount: Value(summary.taxableBase),
-                netPaymentAmount: Value(summary.grandTotal),
-                recordAmountPaid: Value(amountPaid),
-                cashReceived: Value(event.cashReceived ?? 0.0),
-                changeAmount: Value(event.changeAmount ?? 0.0),
+            // Update order with payment and breakdown details
+            await (db.update(db.ordersTable)..where((t) => t.id.equals(orderId))).write(
+              OrdersTableCompanion(
                 paymentMethodName: Value(paymentName),
                 paymentMethodDetails: Value(breakdownDetails),
-                modifiedDate: Value(currentDate),
+                cashReceived: Value(event.cashReceived ?? 0.0),
+                changeAmount: Value(event.changeAmount ?? 0.0),
+                subtotalAmount: Value(summary.subtotal),
+                discountAmount: Value(summary.totalDiscounts),
+                taxAmount: Value(summary.totalTaxes),
+                otherChargesAmount: Value(summary.totalOtherCharges),
+                grandTotal: Value(summary.grandTotal),
+                customerName: customerName != null ? Value(customerName) : const Value.absent(),
+                phoneNumber: phoneNumber != null ? Value(phoneNumber) : const Value.absent(),
+                isoCode: isoCode != null ? Value(isoCode) : const Value.absent(),
+                modificationDate: Value(currentDate),
               ),
             );
-          } else {
-            targetInvoiceId = await db.into(db.invoicesTable).insert(
-                  InvoicesTableCompanion.insert(
-                    orderId: Value(orderId),
-                    totalCost: Value(summary.subtotal),
-                    discountAmount: Value(summary.totalDiscounts),
-                    taxCost: Value(summary.totalTaxes),
-                    taxableAmount: Value(summary.taxableBase),
-                    netPaymentAmount: Value(summary.grandTotal),
-                    recordAmountPaid: Value(amountPaid),
-                    cashReceived: Value(event.cashReceived ?? 0.0),
-                    changeAmount: Value(event.changeAmount ?? 0.0),
+
+            final existingInvoices = await (db.select(db.invoicesTable)
+                  ..where((t) => t.orderId.equals(orderId)))
+                .get();
+
+            final amountPaid = event.cashReceived != null && event.cashReceived! > 0
+                ? event.cashReceived!
+                : summary.grandTotal;
+
+            if (existingInvoices.isNotEmpty) {
+              targetInvoiceId = existingInvoices.first.id;
+              await (db.update(db.invoicesTable)..where((t) => t.id.equals(targetInvoiceId!))).write(
+                InvoicesTableCompanion(
+                  totalCost: Value(summary.subtotal),
+                  discountAmount: Value(summary.totalDiscounts),
+                  taxCost: Value(summary.totalTaxes),
+                  taxableAmount: Value(summary.taxableBase),
+                  netPaymentAmount: Value(summary.grandTotal),
+                  recordAmountPaid: Value(amountPaid),
+                  cashReceived: Value(event.cashReceived ?? 0.0),
+                  changeAmount: Value(event.changeAmount ?? 0.0),
+                  paymentMethodName: Value(paymentName),
+                  paymentMethodDetails: Value(breakdownDetails),
+                  customerId: customerId != null ? Value(customerId) : const Value.absent(),
+                  customerName: customerName != null ? Value(customerName) : const Value.absent(),
+                  phoneNumber: phoneNumber != null ? Value(phoneNumber) : const Value.absent(),
+                  isoCode: isoCode != null ? Value(isoCode) : const Value.absent(),
+                  modifiedDate: Value(currentDate),
+                ),
+              );
+            } else {
+              targetInvoiceId = await db.into(db.invoicesTable).insert(
+                    InvoicesTableCompanion.insert(
+                      orderId: Value(orderId),
+                      totalCost: Value(summary.subtotal),
+                      discountAmount: Value(summary.totalDiscounts),
+                      taxCost: Value(summary.totalTaxes),
+                      taxableAmount: Value(summary.taxableBase),
+                      netPaymentAmount: Value(summary.grandTotal),
+                      recordAmountPaid: Value(amountPaid),
+                      cashReceived: Value(event.cashReceived ?? 0.0),
+                      changeAmount: Value(event.changeAmount ?? 0.0),
+                      paymentMethodName: Value(paymentName),
+                      paymentMethodDetails: Value(breakdownDetails),
+                      customerId: customerId != null ? Value(customerId) : const Value.absent(),
+                      customerName: Value(customerName),
+                      phoneNumber: Value(phoneNumber),
+                      isoCode: Value(isoCode),
+                      createdDate: Value(currentDate),
+                    ),
+                  );
+            }
+
+            // Insert or replace Invoice Items for this invoice
+            await (db.delete(db.invoiceItemsTable)
+                  ..where((t) => t.invoiceId.equals(targetInvoiceId!)))
+                .go();
+
+            for (final item in state.cartItems) {
+              final rawIdStr = item.id.replaceAll('var_', '').replaceAll('item_', '');
+              final idInt = int.tryParse(rawIdStr);
+
+              await db.into(db.invoiceItemsTable).insert(
+                    InvoiceItemsTableCompanion.insert(
+                      invoiceId: Value(targetInvoiceId!),
+                      itemId: Value(idInt),
+                      itemName: Value(item.name),
+                      quantity: Value(item.quantity),
+                      sellingPrice: Value(item.unitPrice),
+                      totalPrice: Value(item.lineTotal),
+                      discountAmount: Value(item.itemDiscount),
+                      createdDate: Value(currentDate),
+                    ),
+                  );
+            }
+
+            // Insert explicit payment transaction into payment_transactions DB table
+            await db.into(db.paymentTransactionsTable).insert(
+                  PaymentTransactionsTableCompanion.insert(
+                    invoiceId: Value(targetInvoiceId!),
                     paymentMethodName: Value(paymentName),
-                    paymentMethodDetails: Value(breakdownDetails),
+                    amount: Value(amountPaid),
+                    transactionReference: Value(
+                      event.note != null && event.note!.isNotEmpty
+                          ? '${event.note} (Cash: $amountPaid, Change: ${event.changeAmount ?? 0.0})'
+                          : 'Cash Paid: $amountPaid, Change: ${event.changeAmount ?? 0.0}',
+                    ),
+                    paymentStatus: const Value('completed'),
                     createdDate: Value(currentDate),
                   ),
                 );
-          }
+          });
 
-          // Insert explicit payment transaction into payment_transactions DB table
-          await db.into(db.paymentTransactionsTable).insert(
-                PaymentTransactionsTableCompanion.insert(
-                  invoiceId: Value(targetInvoiceId),
-                  paymentMethodName: Value(paymentName),
-                  amount: Value(amountPaid),
-                  transactionReference: Value(
-                    event.note != null && event.note!.isNotEmpty
-                        ? '${event.note} (Cash: $amountPaid, Change: ${event.changeAmount ?? 0.0})'
-                        : 'Cash Paid: $amountPaid, Change: ${event.changeAmount ?? 0.0}',
-                  ),
-                  paymentStatus: const Value('completed'),
-                  createdDate: Value(currentDate),
-                ),
-              );
-        } catch (_) {}
+          if (targetInvoiceId != null) {
+            emit(state.copyWith(lastCreatedInvoiceId: targetInvoiceId));
+          }
+        } catch (e, stack) {
+          debugPrint('Checkout confirmation error: $e\n$stack');
+        }
       }
     }
   }

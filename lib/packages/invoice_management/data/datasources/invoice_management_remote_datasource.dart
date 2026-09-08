@@ -26,6 +26,8 @@ abstract class InvoiceManagementRemoteDataSource {
   Future<int> deleteInvoice(int id);
 
   Future<List<PaymentMode>> getPaymentModes();
+
+  Future<Order?> getOrderById(int orderId);
 }
 
 class InvoiceManagementRemoteDataSourceImpl
@@ -107,5 +109,11 @@ class InvoiceManagementRemoteDataSourceImpl
   @override
   Future<List<PaymentMode>> getPaymentModes() {
     return invoicesDao.getPaymentModes();
+  }
+
+  @override
+  Future<Order?> getOrderById(int orderId) async {
+    final orderWithItems = await invoicesDao.attachedDatabase.ordersDao.getOrderInfo(orderId);
+    return orderWithItems?.order;
   }
 }

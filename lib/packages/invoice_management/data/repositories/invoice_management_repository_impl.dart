@@ -67,11 +67,22 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
       final itemEntities =
           itemRows.map((item) => InvoiceItemEntity.fromDrift(item)).toList();
 
+      String? tableName;
+      if (invoiceRow.orderId != null) {
+        try {
+          final order = await remoteDataSource.getOrderById(invoiceRow.orderId!);
+          if (order != null && order.tableNameText != null && order.tableNameText!.isNotEmpty) {
+            tableName = order.tableNameText;
+          }
+        } catch (_) {}
+      }
+
       return Right(
         InvoiceDetailsEntity(
           invoice: invoiceEntity,
           items: itemEntities,
           paymentTransactions: paymentRows,
+          tableName: tableName,
         ),
       );
     } catch (e) {

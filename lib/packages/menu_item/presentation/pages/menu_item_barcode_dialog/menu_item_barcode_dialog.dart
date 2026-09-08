@@ -6,6 +6,11 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/repositories/waiter_order_placement_repository.dart';
 import '../../../domain/services/menu_item_barcode_pdf_generator.dart';
 
+/// Monotonically increasing counter used to generate unique source-name keys
+/// for [PdfDocumentRefData], ensuring each dialog instance gets its own
+/// isolated document (no sharing via the [PdfDocumentRef._listenables] cache).
+int _docRefCounter = 0;
+
 class MenuItemBarcodeDialog extends StatefulWidget {
   final MenuItemBarcodeInfo? singleBarcodeInfo;
   final String? filterCategoryName;
@@ -26,19 +31,47 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
   bool _isLoading = true;
   int _selectedColumns = 3;
 
+  /// Set to true in dispose() so in-flight async work aborts cleanly.
+  bool _cancelled = false;
+
+  /// Incremented each time a new generation starts; guards against stale
+  /// results from a previous run being applied after the column count changes.
+  int _generationId = 0;
+
+  // ---------------------------------------------------------------------------
+  // PDF engine resource ownership
+  // ---------------------------------------------------------------------------
+
+  /// Each completed generation gets a unique [sourceName] so pdfrx never
+  /// shares/caches this document with another dialog or generation.
+  /// The unique key ensures [PdfDocumentRef._listenables] treats each
+  /// generation as a distinct document — so autoDispose removes it from the
+  /// cache when the [PdfViewer] widget is unmounted (i.e. dialog dismissed).
+  String? _pdfSourceName;
+
   @override
   void initState() {
     super.initState();
     _loadBarcodePdf();
   }
 
-  Future<void> _loadBarcodePdf() async {
-    setState(() {
-      _isLoading = true;
-    });
+  @override
+  void dispose() {
+    _cancelled = true;
+    super.dispose();
+  }
 
-    // Yield execution to UI frame so CircularProgressIndicator starts spinning fluidly
+  Future<void> _loadBarcodePdf() async {
+    // Claim a generation slot; later steps check against this to discard
+    // results from superseded runs (e.g. rapid column-count changes).
+    final int myGeneration = ++_generationId;
+
+    if (!mounted || _cancelled) return;
+    setState(() => _isLoading = true);
+
+    // Yield to the UI thread so the spinner appears immediately.
     await Future.delayed(const Duration(milliseconds: 30));
+    if (_cancelled || _generationId != myGeneration) return;
 
     try {
       if (widget.singleBarcodeInfo != null) {
@@ -47,29 +80,30 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
         final waiterRepo = core.sl<WaiterOrderPlacementRepository>();
         final catalogRes = await waiterRepo.getActiveMenuCatalog();
 
+        // Abort if the dialog was dismissed while we were fetching the catalog.
+        if (_cancelled || _generationId != myGeneration) return;
+
         catalogRes.fold(
-          (failure) {
-            _barcodeItems = [];
-          },
+          (failure) => _barcodeItems = [],
           (catalog) {
-            var items = MenuItemBarcodePdfGenerator.extractBarcodeItems(
-              catalog,
-            );
+            var items = MenuItemBarcodePdfGenerator.extractBarcodeItems(catalog);
             if (widget.filterCategoryName != null &&
                 widget.filterCategoryName!.isNotEmpty) {
-              items =
-                  items
-                      .where(
-                        (i) =>
-                            i.categoryName.toLowerCase() ==
-                            widget.filterCategoryName!.toLowerCase(),
-                      )
-                      .toList();
+              items = items
+                  .where(
+                    (i) =>
+                        i.categoryName.toLowerCase() ==
+                        widget.filterCategoryName!.toLowerCase(),
+                  )
+                  .toList();
             }
             _barcodeItems = items;
           },
         );
       }
+
+      // Abort before the expensive PDF rendering step if already cancelled.
+      if (_cancelled || _generationId != myGeneration) return;
 
       final bytes = await MenuItemBarcodePdfGenerator.generatePdf(
         barcodeItems: _barcodeItems,
@@ -77,21 +111,26 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
         title: 'Coozy The Cafe - Menu Item Barcodes',
       );
 
-      if (mounted) {
-        setState(() {
-          _pdfBytes = bytes;
-          _isLoading = false;
-        });
-      }
+      // Final guard: do not update state if dismissed after rendering finished.
+      if (_cancelled || _generationId != myGeneration || !mounted) return;
+
+      // Assign a unique source name so pdfrx doesn't share/cache this document
+      // with any other PdfViewer instance. With autoDispose:true (default),
+      // the engine worker is released when PdfViewer leaves the tree.
+      final uniqueSourceName = 'barcode_pdf_${++_docRefCounter}';
+
+      setState(() {
+        _pdfBytes = bytes;
+        _pdfSourceName = uniqueSourceName;
+        _isLoading = false;
+      });
     } catch (e, stack) {
       core.PlatformUtils.debugLog(
         MenuItemBarcodeDialog,
         'Error generating Barcode PDF: $e\n$stack',
       );
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
+      if (!_cancelled && _generationId == myGeneration && mounted) {
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -125,23 +164,31 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
           children: [
             // Header Title & Close
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.qr_code_rounded,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 28,
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      titleText,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.qr_code_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 24,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          titleText,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
@@ -162,43 +209,54 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
               ),
               child: Row(
                 children: [
-                  Text(
-                    'Grid Columns Layout: ',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                  Flexible(
+                    flex: 0,
+                    child: Text(
+                      'Columns:',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  SegmentedButton<int>(
-                    segments: const [
-                      ButtonSegment<int>(
-                        value: 2,
-                        label: Text('2 Columns'),
-                        icon: Icon(Icons.view_column_outlined),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: SegmentedButton<int>(
+                      segments: const [
+                        ButtonSegment<int>(
+                          value: 2,
+                          label: Text('2'),
+                          icon: Icon(Icons.view_column_outlined, size: 16),
+                        ),
+                        ButtonSegment<int>(
+                          value: 3,
+                          label: Text('3'),
+                          icon: Icon(Icons.view_week_outlined, size: 16),
+                        ),
+                        ButtonSegment<int>(
+                          value: 4,
+                          label: Text('4'),
+                          icon: Icon(Icons.grid_view_rounded, size: 16),
+                        ),
+                      ],
+                      selected: {_selectedColumns},
+                      onSelectionChanged: (newSelection) {
+                        if (newSelection.isNotEmpty &&
+                            newSelection.first != _selectedColumns) {
+                          setState(() {
+                            _selectedColumns = newSelection.first;
+                            _pdfBytes = null;
+                            _pdfSourceName = null;
+                            _isLoading = true;
+                          });
+                          _loadBarcodePdf();
+                        }
+                      },
+                      style: const ButtonStyle(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        visualDensity: VisualDensity.compact,
                       ),
-                      ButtonSegment<int>(
-                        value: 3,
-                        label: Text('3 Columns'),
-                        icon: Icon(Icons.view_week_outlined),
-                      ),
-                      ButtonSegment<int>(
-                        value: 4,
-                        label: Text('4 Columns'),
-                        icon: Icon(Icons.grid_view_rounded),
-                      ),
-                    ],
-                    selected: {_selectedColumns},
-                    onSelectionChanged: (newSelection) {
-                      if (newSelection.isNotEmpty) {
-                        setState(() {
-                          _selectedColumns = newSelection.first;
-                        });
-                        _loadBarcodePdf();
-                      }
-                    },
-                    style: const ButtonStyle(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      visualDensity: VisualDensity.compact,
                     ),
                   ),
                 ],
@@ -225,7 +283,7 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                           ),
                           child: PdfViewer.data(
                             _pdfBytes!,
-                            sourceName: docName,
+                            sourceName: _pdfSourceName!,
                           ),
                         ),
                       )

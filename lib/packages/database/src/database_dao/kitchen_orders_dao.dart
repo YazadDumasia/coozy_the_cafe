@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import '../constants/order_status_enum.dart';
 import '../database.dart';
 import '../tables.dart';
 
@@ -96,23 +97,209 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
     });
   }
 
-  /// Updates the status of a specific order item (e.g., 'pending' -> 'preparing' -> 'ready').
+  /// Updates the status of a specific order item (e.g., pending -> preparing -> ready -> served).
+  /// Accepts either a String or can be invoked with OrderItemStatus.
+  /// Also records transition timestamps:
+  /// - 'preparing': records preparationStartedAt
+  /// - 'ready': records readyAt
+  /// - 'served': records servedAt
   Future<bool> updateOrderItemStatus(int orderItemId, String status) async {
-    final rows =
-        await (update(orderItemsTable)..where((t) => t.id.equals(orderItemId)))
-            .write(OrderItemsTableCompanion(status: Value(status)));
-    return rows > 0;
+    final nowIso = DateTime.now().toUtc().toIso8601String();
+    final itemStatus = OrderItemStatus.fromString(status);
+
+    return await transaction(() async {
+      final existingItem = await (select(orderItemsTable)..where((t) => t.id.equals(orderItemId))).getSingleOrNull();
+      if (existingItem == null) return false;
+
+      Value<String?> prepStarted = const Value.absent();
+      Value<String?> ready = const Value.absent();
+      Value<String?> served = const Value.absent();
+
+      switch (itemStatus) {
+        case OrderItemStatus.preparing:
+          if (existingItem.preparationStartedAt == null) {
+            prepStarted = Value(nowIso);
+          }
+          break;
+        case OrderItemStatus.ready:
+          if (existingItem.preparationStartedAt == null) {
+            prepStarted = Value(nowIso);
+          }
+          if (existingItem.readyAt == null) {
+            ready = Value(nowIso);
+          }
+          break;
+        case OrderItemStatus.served:
+          // If jumping directly from pending to served/completed,
+          // ensure prep started and ready are also captured so waiting time and prep time don't break.
+          if (existingItem.preparationStartedAt == null) {
+            prepStarted = Value(nowIso);
+          }
+          if (existingItem.readyAt == null) {
+            ready = Value(nowIso);
+          }
+          if (existingItem.servedAt == null) {
+            served = Value(nowIso);
+          }
+          break;
+        case OrderItemStatus.pending:
+        case OrderItemStatus.cancelled:
+          break;
+      }
+
+      final rows = await (update(orderItemsTable)..where((t) => t.id.equals(orderItemId))).write(
+        OrderItemsTableCompanion(
+          status: Value(itemStatus.value),
+          preparationStartedAt: prepStarted,
+          readyAt: ready,
+          servedAt: served,
+        ),
+      );
+
+      final orderId = existingItem.orderId;
+      if (orderId != null) {
+        final order = await (select(ordersTable)..where((t) => t.id.equals(orderId))).getSingleOrNull();
+        if (order != null) {
+          Value<String?> orderPrepStarted = const Value.absent();
+          Value<String?> orderReady = const Value.absent();
+          Value<String?> orderServed = const Value.absent();
+          Value<String?> orderStatus = const Value.absent();
+
+          if (itemStatus == OrderItemStatus.preparing) {
+            if (order.preparationStartedAt == null) {
+              orderPrepStarted = Value(nowIso);
+            }
+            final currentOrderStatus = OrderStatus.fromString(order.status);
+            if (currentOrderStatus == OrderStatus.placed) {
+              orderStatus = Value(OrderStatus.inProgress.value);
+            }
+          }
+
+          final orderItems = await (select(orderItemsTable)..where((t) => t.orderId.equals(orderId))).get();
+          final allReadyOrServed = orderItems.isNotEmpty && orderItems.every((item) {
+            final s = OrderItemStatus.fromString(item.status);
+            return s == OrderItemStatus.ready || s == OrderItemStatus.served;
+          });
+          final allServed = orderItems.isNotEmpty && orderItems.every((item) {
+            final s = OrderItemStatus.fromString(item.status);
+            return s == OrderItemStatus.served;
+          });
+
+          if (allServed) {
+            if (order.preparationStartedAt == null) orderPrepStarted = Value(nowIso);
+            if (order.readyAt == null) orderReady = Value(nowIso);
+            if (order.servedAt == null) orderServed = Value(nowIso);
+            orderStatus = Value(OrderStatus.served.value);
+          } else if (allReadyOrServed) {
+            if (order.preparationStartedAt == null) orderPrepStarted = Value(nowIso);
+            if (order.readyAt == null) orderReady = Value(nowIso);
+            orderStatus = Value(OrderStatus.ready.value);
+          }
+
+          await (update(ordersTable)..where((t) => t.id.equals(orderId))).write(
+            OrdersTableCompanion(
+              status: orderStatus,
+              preparationStartedAt: orderPrepStarted,
+              readyAt: orderReady,
+              servedAt: orderServed,
+              modificationDate: Value(nowIso),
+            ),
+          );
+        }
+      }
+
+      return rows > 0;
+    });
   }
 
-  /// Marks all items in a specific order as a certain status (e.g., 'ready').
+  /// Marks all items in a specific order as a certain status (e.g., 'ready', 'served').
+  /// Also sets timestamps for waiting/preparation/serving period tracking.
   Future<int> updateAllOrderItemsStatus(int orderId, String status) async {
-    return await (update(orderItemsTable)..where(
-          (t) =>
-              t.orderId.equals(orderId) &
-              (t.status.isIn(['pending', 'preparing', 'placed']) |
-                  t.status.isNull()),
-        ))
-        .write(OrderItemsTableCompanion(status: Value(status)));
+    final nowIso = DateTime.now().toUtc().toIso8601String();
+    final itemStatus = OrderItemStatus.fromString(status);
+
+    return await transaction(() async {
+      Value<String?> prepStarted = const Value.absent();
+      Value<String?> ready = const Value.absent();
+      Value<String?> served = const Value.absent();
+
+      switch (itemStatus) {
+        case OrderItemStatus.preparing:
+          prepStarted = Value(nowIso);
+          break;
+        case OrderItemStatus.ready:
+          prepStarted = Value(nowIso);
+          ready = Value(nowIso);
+          break;
+        case OrderItemStatus.served:
+          prepStarted = Value(nowIso);
+          ready = Value(nowIso);
+          served = Value(nowIso);
+          break;
+        case OrderItemStatus.pending:
+        case OrderItemStatus.cancelled:
+          break;
+      }
+
+      final count = await (update(orderItemsTable)..where(
+            (t) =>
+                t.orderId.equals(orderId) &
+                (t.status.isIn([
+                      OrderItemStatus.pending.value,
+                      OrderItemStatus.preparing.value,
+                      'placed',
+                    ]) |
+                    t.status.isNull()),
+          ))
+          .write(
+            OrderItemsTableCompanion(
+              status: Value(itemStatus.value),
+              preparationStartedAt: prepStarted,
+              readyAt: ready,
+              servedAt: served,
+            ),
+          );
+
+      final order = await (select(ordersTable)..where((t) => t.id.equals(orderId))).getSingleOrNull();
+      if (order != null) {
+        Value<String?> orderPrepStarted = const Value.absent();
+        Value<String?> orderReady = const Value.absent();
+        Value<String?> orderServed = const Value.absent();
+        OrderStatus targetOrderStatus;
+
+        switch (itemStatus) {
+          case OrderItemStatus.preparing:
+            if (order.preparationStartedAt == null) orderPrepStarted = Value(nowIso);
+            targetOrderStatus = OrderStatus.inProgress;
+            break;
+          case OrderItemStatus.ready:
+            if (order.preparationStartedAt == null) orderPrepStarted = Value(nowIso);
+            if (order.readyAt == null) orderReady = Value(nowIso);
+            targetOrderStatus = OrderStatus.ready;
+            break;
+          case OrderItemStatus.served:
+            if (order.readyAt == null) orderReady = Value(nowIso);
+            if (order.servedAt == null) orderServed = Value(nowIso);
+            targetOrderStatus = OrderStatus.served;
+            break;
+          default:
+            targetOrderStatus = OrderStatus.fromString(order.status);
+            break;
+        }
+
+        await (update(ordersTable)..where((t) => t.id.equals(orderId))).write(
+          OrdersTableCompanion(
+            status: Value(targetOrderStatus.value),
+            preparationStartedAt: orderPrepStarted,
+            readyAt: orderReady,
+            servedAt: orderServed,
+            modificationDate: Value(nowIso),
+          ),
+        );
+      }
+
+      return count;
+    });
   }
 
   /// Gets an aggregated list of items to prepare to optimize kitchen flow.

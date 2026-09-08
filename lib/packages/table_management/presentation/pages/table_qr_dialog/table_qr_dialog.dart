@@ -25,19 +25,47 @@ class _TableQrDialogState extends State<TableQrDialog> {
   bool _isLoading = true;
   int _selectedColumns = 2;
 
+  /// Set to true in dispose() so in-flight async work aborts cleanly.
+  bool _cancelled = false;
+
+  /// Incremented each time a new generation starts; guards against stale
+  /// results from a previous run being applied after the column count changes.
+  int _generationId = 0;
+
+  /// Counter used to produce unique source names for each rendered PDF.
+  static int _docRefCounter = 0;
+
+  /// Each completed generation gets a unique [sourceName] so pdfrx never
+  /// shares/caches this document with another dialog or generation.
+  /// The unique key ensures autoDispose removes it from the cache when
+  /// [PdfViewer] is unmounted.
+  String? _pdfSourceName;
+
   @override
   void initState() {
     super.initState();
     _loadPdf();
   }
 
+  @override
+  void dispose() {
+    _cancelled = true;
+    super.dispose();
+  }
+
   Future<void> _loadPdf() async {
+    // Claim a generation slot; later steps check against this to discard
+    // results from superseded runs (e.g. rapid column-count changes).
+    final int myGeneration = ++_generationId;
+
+    if (!mounted || _cancelled) return;
     setState(() {
       _isLoading = true;
     });
 
     // Yield execution to UI frame so CircularProgressIndicator starts spinning fluidly
     await Future.delayed(const Duration(milliseconds: 30));
+    if (_cancelled || _generationId != myGeneration) return;
 
     try {
       final List<TableInfo> targetTables =
@@ -51,18 +79,22 @@ class _TableQrDialogState extends State<TableQrDialog> {
         columnsCount: _selectedColumns,
       );
 
-      if (mounted) {
-        setState(() {
-          _pdfBytes = bytes;
-          _isLoading = false;
-        });
-      }
+      // Final guard: do not update state if dismissed after rendering finished or superseded
+      if (_cancelled || _generationId != myGeneration || !mounted) return;
+
+      final uniqueSourceName = 'table_qr_pdf_${++_docRefCounter}';
+
+      setState(() {
+        _pdfBytes = bytes;
+        _pdfSourceName = uniqueSourceName;
+        _isLoading = false;
+      });
     } catch (e, stack) {
       core.PlatformUtils.debugLog(
         TableQrDialog,
         'Error generating PDF: $e\n$stack',
       );
-      if (mounted) {
+      if (!_cancelled && _generationId == myGeneration && mounted) {
         setState(() {
           _isLoading = false;
         });
@@ -181,9 +213,13 @@ class _TableQrDialogState extends State<TableQrDialog> {
                       ],
                       selected: {_selectedColumns},
                       onSelectionChanged: (newSelection) {
-                        if (newSelection.isNotEmpty) {
+                        if (newSelection.isNotEmpty &&
+                            newSelection.first != _selectedColumns) {
                           setState(() {
                             _selectedColumns = newSelection.first;
+                            _pdfBytes = null;
+                            _pdfSourceName = null;
+                            _isLoading = true;
                           });
                           _loadPdf();
                         }
@@ -219,7 +255,7 @@ class _TableQrDialogState extends State<TableQrDialog> {
                           ),
                           child: PdfViewer.data(
                             _pdfBytes!,
-                            sourceName: docName,
+                            sourceName: _pdfSourceName!,
                           ),
                         ),
                       )

@@ -88,15 +88,12 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.homeRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.homeRoute,
-                        )) {
-                          context.go(core.AppRoutePath.homeRoute);
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.homeRoute,
+                        isGo: true,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -111,15 +108,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.tableInfoScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.tableInfoScreenRoute,
-                        )) {
-                          context.push(core.AppRoutePath.tableInfoScreenRoute);
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.tableInfoScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -135,15 +128,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.kitchenScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.kitchenScreenRoute,
-                        )) {
-                          context.push(core.AppRoutePath.kitchenScreenRoute);
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.kitchenScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -159,17 +148,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.menuCategoryFullListRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.menuCategoryFullListRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.menuCategoryFullListRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.menuCategoryFullListRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -184,17 +167,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.menuSubCategoryFullListRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.menuSubCategoryFullListRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.menuSubCategoryFullListRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.menuSubCategoryFullListRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -209,17 +186,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.menuItemFullListScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.menuItemFullListScreenRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.menuItemFullListScreenRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.menuItemFullListScreenRoute,
+                      ),
                     ),
 
                     _buildDrawerItem(
@@ -235,17 +206,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.inventoryListScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.inventoryListScreenRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.inventoryListScreenRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.inventoryListScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -260,17 +225,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.purchaseListScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.purchaseListScreenRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.purchaseListScreenRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.purchaseListScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -285,17 +244,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.reservationListScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.reservationListScreenRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.reservationListScreenRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.reservationListScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -315,15 +268,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.orderListScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.orderListScreenRoute,
-                        )) {
-                          context.push(core.AppRoutePath.orderListScreenRoute);
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.orderListScreenRoute,
+                      ),
                     ),
 
                     _buildDrawerItem(
@@ -339,17 +288,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.invoiceListScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.invoiceListScreenRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.invoiceListScreenRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.invoiceListScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -380,17 +323,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.recipesListScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.recipesListScreenRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.recipesListScreenRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.recipesListScreenRoute,
+                      ),
                     ),
 
                     _buildDrawerItem(
@@ -406,17 +343,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.staffManagementScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.staffManagementScreenRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.staffManagementScreenRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.staffManagementScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -431,17 +362,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.customerListScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.customerListScreenRoute,
-                        )) {
-                          context.push(
-                            core.AppRoutePath.customerListScreenRoute,
-                          );
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.customerListScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -456,15 +381,11 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.settingsScreenRoute,
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        if (!_isRouteActive(
-                          currentLocation,
-                          core.AppRoutePath.settingsScreenRoute,
-                        )) {
-                          context.push(core.AppRoutePath.settingsScreenRoute);
-                        }
-                      },
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.settingsScreenRoute,
+                      ),
                     ),
                     _buildDrawerItem(
                       context,
@@ -507,6 +428,24 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
         ],
       ),
     );
+  }
+
+  void _navigateToRoute(
+    BuildContext context,
+    String currentLocation,
+    String targetRoute, {
+    bool isGo = false,
+  }) {
+    final isAlreadyActive = _isRouteActive(currentLocation, targetRoute);
+    final router = GoRouter.of(context);
+    Navigator.pop(context);
+    if (!isAlreadyActive) {
+      if (isGo) {
+        router.go(targetRoute);
+      } else {
+        router.push(targetRoute);
+      }
+    }
   }
 
   Widget _buildDrawerItem(

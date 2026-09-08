@@ -31,6 +31,10 @@ class KitchenRepositoryImpl implements KitchenRepository {
             isParcel: (itemMap['is_parcel'] as int? ?? 0) == 1,
             variationQuantity: itemMap['variationQuantity']?.toString(),
             variationUnit: itemMap['variationUnit']?.toString(),
+            placedAt: itemMap['placed_at'] as String?,
+            preparationStartedAt: itemMap['preparation_started_at'] as String?,
+            readyAt: itemMap['ready_at'] as String?,
+            servedAt: itemMap['served_at'] as String?,
           );
         }).toList();
 
@@ -43,6 +47,10 @@ class KitchenRepositoryImpl implements KitchenRepository {
           orderType: rawOrder['order_type'] as String?,
           customerName: rawOrder['customer_name'] as String?,
           items: items,
+          placedAt: rawOrder['placed_at'] as String?,
+          preparationStartedAt: rawOrder['preparation_started_at'] as String?,
+          readyAt: rawOrder['ready_at'] as String?,
+          servedAt: rawOrder['served_at'] as String?,
         );
       }).toList();
 
@@ -72,6 +80,10 @@ class KitchenRepositoryImpl implements KitchenRepository {
             isParcel: (itemMap['is_parcel'] as int? ?? 0) == 1,
             variationQuantity: itemMap['variationQuantity']?.toString(),
             variationUnit: itemMap['variationUnit']?.toString(),
+            placedAt: itemMap['placed_at'] as String?,
+            preparationStartedAt: itemMap['preparation_started_at'] as String?,
+            readyAt: itemMap['ready_at'] as String?,
+            servedAt: itemMap['served_at'] as String?,
           );
         }).toList();
 
@@ -84,6 +96,10 @@ class KitchenRepositoryImpl implements KitchenRepository {
           orderType: rawOrder['order_type'] as String?,
           customerName: rawOrder['customer_name'] as String?,
           items: items,
+          placedAt: rawOrder['placed_at'] as String?,
+          preparationStartedAt: rawOrder['preparation_started_at'] as String?,
+          readyAt: rawOrder['ready_at'] as String?,
+          servedAt: rawOrder['served_at'] as String?,
         );
       }).toList();
     });
