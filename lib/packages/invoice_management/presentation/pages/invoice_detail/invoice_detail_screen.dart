@@ -12,29 +12,51 @@ import 'invoice_detail_screen_actions.dart';
 
 class InvoiceDetailScreen extends StatefulWidget {
   final int invoiceId;
+  final String? hashId;
+  final String? orderHashId;
   final InvoiceEntity? initialInvoice;
   final bool fromCheckout;
 
   const InvoiceDetailScreen({
     super.key,
-    required this.invoiceId,
+    this.invoiceId = 0,
+    this.hashId,
+    this.orderHashId,
     this.initialInvoice,
     this.fromCheckout = false,
-  });
+  }) : assert(
+          invoiceId != 0 || hashId != null || orderHashId != null,
+          'Either invoiceId, hashId, or orderHashId must be provided',
+        );
 
   @override
   State<InvoiceDetailScreen> createState() => _InvoiceDetailScreenState();
 }
 
 class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
+  bool _hasUpdated = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
-        context.read<InvoiceManagementBloc>().add(
-          LoadInvoiceDetailsEvent(widget.invoiceId),
-        );
+        if (widget.hashId != null) {
+          // Load by invoice's own hashId
+          context.read<InvoiceManagementBloc>().add(
+            LoadInvoiceDetailsByHashIdEvent(widget.hashId!),
+          );
+        } else if (widget.orderHashId != null) {
+          // Load by linked order's hashId
+          context.read<InvoiceManagementBloc>().add(
+            LoadInvoiceDetailsByOrderHashIdEvent(widget.orderHashId!),
+          );
+        } else {
+          // Load by integer invoiceId
+          context.read<InvoiceManagementBloc>().add(
+            LoadInvoiceDetailsEvent(widget.invoiceId),
+          );
+        }
       }
     });
   }
@@ -42,8 +64,10 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
   void _handleBackNavigation(BuildContext context) {
     if (widget.fromCheckout) {
       context.go(core.AppRoutePath.homeRoute);
+    } else if (context.canPop()) {
+      context.pop(_hasUpdated);
     } else if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+      Navigator.of(context).pop(_hasUpdated);
     } else {
       context.go(core.AppRoutePath.homeRoute);
     }
@@ -63,6 +87,15 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+            title: Text(
+              context.tr(
+                    shared.LocaleKeys.invoiceDetailTitle,
+                    track:
+                        shared.TrackConstants.invoicePageTrack,
+                  ) ??
+                  'Invoice Details',
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => _handleBackNavigation(context),
@@ -205,10 +238,16 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                               ),
                             ),
                             onPressed: details != null
-                                ? () => InvoiceDetailScreenActions.onEdit(
-                                    context,
-                                    details!,
-                                  )
+                                ? () async {
+                                    final updated =
+                                        await InvoiceDetailScreenActions.onEdit(
+                                      context,
+                                      details!,
+                                    );
+                                    if (updated == true && mounted) {
+                                      _hasUpdated = true;
+                                    }
+                                  }
                                 : null,
                             child: Text(
                               context.tr(
@@ -453,7 +492,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          '₹${item.unitPrice.toStringAsFixed(2)}',
+                                          core.CurrencyFormatter.format(value: item.unitPrice),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -466,7 +505,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          '₹${item.totalPrice.toStringAsFixed(2)}',
+                                          core.CurrencyFormatter.format(value: item.totalPrice),
                                           textAlign: TextAlign.right,
                                         ),
                                       ),
@@ -483,7 +522,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                   'Subtotal',
                                   style: TextStyle(color: Colors.grey),
                                 ),
-                                Text('₹${inv.totalCost.toStringAsFixed(2)}'),
+                                Text(core.CurrencyFormatter.format(value: inv.totalCost)),
                               ],
                             ),
                             if (inv.paymentMethodDetails != null &&
@@ -498,7 +537,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                   return Column(
                                     crossAxisAlignment: CrossAxisAlignment.stretch,
                                     children: [
-                                      ...discountList.map((d) {
+                                      ...discountList.where((d) => ((d['amount'] as num?)?.toDouble() ?? 0.0) > 0).map((d) {
                                         final name = d['name'] ?? 'Discount';
                                         final amt = (d['amount'] as num?)?.toDouble() ?? 0.0;
                                         return Padding(
@@ -507,12 +546,15 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(name.toString(), style: const TextStyle(color: Colors.grey)),
-                                              Text('-₹${amt.toStringAsFixed(2)}', style: const TextStyle(color: Colors.green)),
+                                              Text(
+                                                '-${core.CurrencyFormatter.format(value: amt)}',
+                                                style: const TextStyle(color: Colors.green),
+                                              ),
                                             ],
                                           ),
                                         );
                                       }),
-                                      ...taxList.map((t) {
+                                      ...taxList.where((t) => ((t['amount'] as num?)?.toDouble() ?? 0.0) > 0).map((t) {
                                         final name = t['name'] ?? 'Tax';
                                         final amt = (t['amount'] as num?)?.toDouble() ?? 0.0;
                                         return Padding(
@@ -521,12 +563,12 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(name.toString(), style: const TextStyle(color: Colors.grey)),
-                                              Text('+₹${amt.toStringAsFixed(2)}'),
+                                              Text('+${core.CurrencyFormatter.format(value: amt)}'),
                                             ],
                                           ),
                                         );
                                       }),
-                                      ...chargeList.map((c) {
+                                      ...chargeList.where((c) => ((c['amount'] as num?)?.toDouble() ?? 0.0) > 0).map((c) {
                                         final name = c['name'] ?? 'Extra Charge';
                                         final amt = (c['amount'] as num?)?.toDouble() ?? 0.0;
                                         return Padding(
@@ -535,7 +577,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(name.toString(), style: const TextStyle(color: Colors.grey)),
-                                              Text('+₹${amt.toStringAsFixed(2)}'),
+                                              Text('+${core.CurrencyFormatter.format(value: amt)}'),
                                             ],
                                           ),
                                         );
@@ -554,7 +596,10 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       const Text('Discount', style: TextStyle(color: Colors.grey)),
-                                      Text('-₹${inv.discountAmount.toStringAsFixed(2)}', style: const TextStyle(color: Colors.green)),
+                                      Text(
+                                        '-${core.CurrencyFormatter.format(value: inv.discountAmount)}',
+                                        style: const TextStyle(color: Colors.green),
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -565,7 +610,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       const Text('Tax', style: TextStyle(color: Colors.grey)),
-                                      Text('+₹${inv.taxCost.toStringAsFixed(2)}'),
+                                      Text('+${core.CurrencyFormatter.format(value: inv.taxCost)}'),
                                     ],
                                   ),
                                 ),
@@ -582,7 +627,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                   ),
                                 ),
                                 Text(
-                                  '₹${inv.netPaymentAmount.toStringAsFixed(2)}',
+                                  core.CurrencyFormatter.format(value: inv.netPaymentAmount),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
@@ -601,26 +646,30 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text('Cash Received'),
-                                Text(
-                                  '₹${(inv.cashReceived ?? inv.netPaymentAmount).toStringAsFixed(2)}',
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 4),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text('Change Amount'),
-                                Text(
-                                  '₹${(inv.changeAmount ?? 0.0).toStringAsFixed(2)}',
-                                ),
-                              ],
-                            ),
+                            if (inv.cashReceived != null && inv.cashReceived! > 0) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Cash Received'),
+                                  Text(
+                                    core.CurrencyFormatter.format(value: inv.cashReceived!),
+                                  ),
+                                ],
+                              ),
+                            ],
+                            if (inv.changeAmount != null && inv.changeAmount! > 0) ...[
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Change Amount'),
+                                  Text(
+                                    core.CurrencyFormatter.format(value: inv.changeAmount!),
+                                  ),
+                                ],
+                              ),
+                            ],
                             const SizedBox(height: 24),
                             Text(
                               context.tr(

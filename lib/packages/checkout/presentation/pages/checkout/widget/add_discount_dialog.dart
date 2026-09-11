@@ -4,11 +4,17 @@ import '../../../../domain/entities/discount.dart';
 
 class AddDiscountDialog extends StatefulWidget {
   final String? initialName;
+  final double? initialValue;
+  final bool? initialIsPercentage;
+  final bool? initialIsDefaultAdd;
   final Function(Discount) onDiscountAdded;
 
   const AddDiscountDialog({
     super.key,
     this.initialName,
+    this.initialValue,
+    this.initialIsPercentage,
+    this.initialIsDefaultAdd,
     required this.onDiscountAdded,
   });
 
@@ -22,14 +28,22 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
   late final TextEditingController _valueController;
   late final FocusNode _nameFocusNode;
   late final FocusNode _valueFocusNode;
-  bool _isPercentage = false;
-  bool _isDefaultAdd = false;
+  late bool _isPercentage;
+  late bool _isDefaultAdd;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initialName ?? '');
-    _valueController = TextEditingController();
+    _valueController = TextEditingController(
+      text: widget.initialValue != null
+          ? (widget.initialValue! % 1 == 0
+              ? widget.initialValue!.toInt().toString()
+              : widget.initialValue!.toString())
+          : '',
+    );
+    _isPercentage = widget.initialIsPercentage ?? false;
+    _isDefaultAdd = widget.initialIsDefaultAdd ?? false;
     _nameFocusNode = FocusNode();
     _valueFocusNode = FocusNode();
   }

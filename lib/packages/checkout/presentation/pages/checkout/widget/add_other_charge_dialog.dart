@@ -4,11 +4,17 @@ import '../../../../domain/entities/extra_charge.dart';
 
 class AddOtherChargeDialog extends StatefulWidget {
   final String? initialName;
+  final double? initialValue;
+  final bool? initialIsPercentage;
+  final bool? initialIsDefaultAdd;
   final Function(ExtraCharge) onChargeAdded;
 
   const AddOtherChargeDialog({
     super.key,
     this.initialName,
+    this.initialValue,
+    this.initialIsPercentage,
+    this.initialIsDefaultAdd,
     required this.onChargeAdded,
   });
 
@@ -22,14 +28,22 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
   late final TextEditingController _valueController;
   late final FocusNode _nameFocusNode;
   late final FocusNode _valueFocusNode;
-  bool _isPercentage = false;
-  bool _isDefaultAdd = false;
+  late bool _isPercentage;
+  late bool _isDefaultAdd;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initialName ?? '');
-    _valueController = TextEditingController();
+    _valueController = TextEditingController(
+      text: widget.initialValue != null
+          ? (widget.initialValue! % 1 == 0
+              ? widget.initialValue!.toInt().toString()
+              : widget.initialValue!.toString())
+          : '',
+    );
+    _isPercentage = widget.initialIsPercentage ?? false;
+    _isDefaultAdd = widget.initialIsDefaultAdd ?? false;
     _nameFocusNode = FocusNode();
     _valueFocusNode = FocusNode();
   }

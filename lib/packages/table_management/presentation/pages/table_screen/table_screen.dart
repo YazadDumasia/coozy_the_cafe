@@ -7,7 +7,8 @@ import '../../widgets/table_list/table_grid_item.dart';
 import '../../widgets/table_list/table_list_item.dart';
 
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
-
+import 'package:lottie/lottie.dart';
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
@@ -120,7 +121,16 @@ class _TableScreenState extends State<TableScreen>
                           state.tables,
                         );
                       },
-                      icon: const Icon(Icons.qr_code_2_rounded),
+                      icon: SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: Lottie.asset(
+                          Theme.of(context).brightness == Brightness.dark
+                              ? Assets.lottie.qrcodeDark
+                              : Assets.lottie.qrcodeLight,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
                       tooltip:
                           context.tr(
                             shared.LocaleKeys.printTableQrCardsTooltip,

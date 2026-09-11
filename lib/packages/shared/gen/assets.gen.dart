@@ -209,6 +209,12 @@ class $AssetsLottieGen {
   /// File path: assets/lottie/lost_connection.json
   String get lostConnection => 'assets/lottie/lost_connection.json';
 
+  /// File path: assets/lottie/qrcode_dark.json
+  String get qrcodeDark => 'assets/lottie/qrcode_dark.json';
+
+  /// File path: assets/lottie/qrcode_light.json
+  String get qrcodeLight => 'assets/lottie/qrcode_light.json';
+
   /// File path: assets/lottie/red_circled_white_cross_error.json
   String get redCircledWhiteCrossError =>
       'assets/lottie/red_circled_white_cross_error.json';
@@ -236,6 +242,8 @@ class $AssetsLottieGen {
     imageLoaderLightTheme,
     loading,
     lostConnection,
+    qrcodeDark,
+    qrcodeLight,
     redCircledWhiteCrossError,
     successDark,
     successLight,

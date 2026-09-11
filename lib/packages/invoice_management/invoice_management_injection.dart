@@ -5,6 +5,9 @@ import 'data/repositories/invoice_management_repository_impl.dart';
 import 'domain/repositories/invoice_management_repository.dart';
 import 'domain/usecases/get_paginated_invoices_usecase.dart';
 import 'domain/usecases/get_invoice_details_usecase.dart';
+import 'domain/usecases/get_invoice_details_by_order_id_usecase.dart';
+import 'domain/usecases/get_invoice_details_by_order_hash_id_usecase.dart';
+import 'domain/usecases/get_invoice_details_by_hash_id_usecase.dart';
 import 'domain/usecases/update_invoice_usecase.dart';
 import 'domain/usecases/delete_invoice_usecase.dart';
 import 'domain/usecases/get_payment_modes_usecase.dart';
@@ -21,6 +24,9 @@ void registerInvoiceManagementDependencies(GetIt sl) {
     () => InvoiceManagementBloc(
       getPaginatedInvoicesUseCase: sl(),
       getInvoiceDetailsUseCase: sl(),
+      getInvoiceDetailsByOrderIdUseCase: sl(),
+      getInvoiceDetailsByOrderHashIdUseCase: sl(),
+      getInvoiceDetailsByHashIdUseCase: sl(),
       updateInvoiceUseCase: sl(),
       deleteInvoiceUseCase: sl(),
       getPaymentModesUseCase: sl(),
@@ -30,6 +36,9 @@ void registerInvoiceManagementDependencies(GetIt sl) {
   // Use Cases (Lazy Singleton)
   sl.registerLazySingleton(() => GetPaginatedInvoicesUseCase(sl()));
   sl.registerLazySingleton(() => GetInvoiceDetailsUseCase(sl()));
+  sl.registerLazySingleton(() => GetInvoiceDetailsByOrderIdUseCase(sl()));
+  sl.registerLazySingleton(() => GetInvoiceDetailsByOrderHashIdUseCase(sl()));
+  sl.registerLazySingleton(() => GetInvoiceDetailsByHashIdUseCase(sl()));
   sl.registerLazySingleton(() => UpdateInvoiceUseCase(sl()));
   sl.registerLazySingleton(() => DeleteInvoiceUseCase(sl()));
   sl.registerLazySingleton(() => GetPaymentModesUseCase(sl()));

@@ -60,7 +60,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                   shared.LocaleKeys.invoiceListTitle,
                   track: shared.TrackConstants.invoicePageTrack,
                 ) ??
-                'Receipts',
+                'Invoices',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [

@@ -15,6 +15,7 @@ class MenuItemPickerScreen extends StatefulWidget {
   final int? tableId;
   final String? tableName;
   final int? orderId;
+  final bool isPickerOnly;
 
   const MenuItemPickerScreen({
     super.key,
@@ -22,6 +23,7 @@ class MenuItemPickerScreen extends StatefulWidget {
     this.tableId,
     this.tableName,
     this.orderId,
+    this.isPickerOnly = false,
   });
 
   @override
@@ -154,7 +156,13 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
           canPop: false,
           onPopInvokedWithResult: (didPop, result) {
             if (!didPop && context.mounted) {
-              context.go(core.AppRoutePath.homeRoute);
+              if (widget.isPickerOnly && Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              } else if (widget.isPickerOnly && context.canPop()) {
+                context.pop();
+              } else {
+                context.go(core.AppRoutePath.homeRoute);
+              }
             }
           },
           child: SafeArea(
@@ -162,7 +170,15 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
               appBar: AppBar(
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back),
-                  onPressed: () => context.go(core.AppRoutePath.homeRoute),
+                  onPressed: () {
+                    if (widget.isPickerOnly && Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    } else if (widget.isPickerOnly && context.canPop()) {
+                      context.pop();
+                    } else {
+                      context.go(core.AppRoutePath.homeRoute);
+                    }
+                  },
                 ),
                 title: isSearchMode
                     ? TextField(
@@ -186,6 +202,31 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                         },
                       ),
                 actions: [
+                  if (widget.isPickerOnly) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4),
+                      child: TextButton.icon(
+                        onPressed: state.cartItems.isEmpty
+                            ? null
+                            : () {
+                                if (Navigator.of(context).canPop()) {
+                                  Navigator.of(context).pop(state.cartItems);
+                                } else if (context.canPop()) {
+                                  context.pop(state.cartItems);
+                                }
+                              },
+                        icon: const Icon(Icons.check, color: Colors.white),
+                        label: Text(
+                          'Submit (${state.cartItems.length})',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+
                   // Fast Forward / Order Summary Action Button (>> icon)
                   IconButton(
                     tooltip:
@@ -248,6 +289,7 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                     tableName: state.loadedTableName ?? effectiveTableName,
                     orderId: widget.orderId ?? state.editingOrderId,
                     isSubmitting: state.isSubmitting,
+                    isPickerOnly: widget.isPickerOnly,
                   ),
 
                   // Tab 1..N: Category Tabs

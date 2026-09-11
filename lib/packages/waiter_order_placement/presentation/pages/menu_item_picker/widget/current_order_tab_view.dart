@@ -15,6 +15,7 @@ class CurrentOrderTabView extends StatefulWidget {
   final String tableName;
   final int? orderId;
   final bool isSubmitting;
+  final bool isPickerOnly;
 
   const CurrentOrderTabView({
     super.key,
@@ -23,6 +24,7 @@ class CurrentOrderTabView extends StatefulWidget {
     required this.tableName,
     this.orderId,
     this.isSubmitting = false,
+    this.isPickerOnly = false,
   });
 
   @override
@@ -362,7 +364,7 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (widget.orderId != null) ...[
+                if (widget.isPickerOnly) ...[
                   Expanded(
                     child: SizedBox(
                       height: buttonHeight,
@@ -375,17 +377,21 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
                           ),
                           elevation: 2,
                         ),
-                        onPressed: () {
-                          final currentOrderId = widget.orderId?.toString() ?? '1';
-                          context.push(
-                            core.AppRoutePath.checkoutScreenRoute,
-                            extra: currentOrderId,
-                          );
-                        },
-
+                        onPressed: widget.cartItems.isEmpty
+                            ? null
+                            : () {
+                                if (Navigator.of(context).canPop()) {
+                                  Navigator.of(context).pop(widget.cartItems);
+                                } else if (context.canPop()) {
+                                  context.pop(widget.cartItems);
+                                }
+                              },
                         child: Text(
-                          context.tr(shared.LocaleKeys.billNowBtnText, track: shared.TrackConstants.tablePageTrack) ??
-                              'Bill Now',
+                          context.tr(
+                                shared.LocaleKeys.commonSubmit,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Submit',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onPrimary,
                             fontWeight: FontWeight.bold,
@@ -395,52 +401,94 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                ],
-                Expanded(
-                  child: SizedBox(
-                    height: buttonHeight,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: theme.colorScheme.onPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        elevation: 2,
-                      ),
-                      onPressed: widget.isSubmitting
-                          ? null
-                          : () {
-                              context.read<MenuItemPickerBloc>().add(
-                                SubmitOrderEvent(
-                                  tableId: widget.tableId,
-                                  tableName: widget.tableName,
-                                  orderId: widget.orderId,
-                                ),
-                              );
-                            },
-                      child: widget.isSubmitting
-                          ? SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                color: theme.colorScheme.onPrimary,
-                                strokeWidth: 2.5,
-                              ),
-                            )
-                          : Text(
-                              context.tr(shared.LocaleKeys.sendOrderBtnText, track: shared.TrackConstants.tablePageTrack) ??
-                                  'Send Order',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onPrimary,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.0,
-                              ),
+                ] else ...[
+                  if (widget.orderId != null) ...[
+                    Expanded(
+                      child: SizedBox(
+                        height: buttonHeight,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: theme.colorScheme.primary,
+                            foregroundColor: theme.colorScheme.onPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
+                            elevation: 2,
+                          ),
+                          onPressed: () {
+                            final currentOrderId =
+                                widget.orderId?.toString() ?? '1';
+                            context.push(
+                              core.AppRoutePath.checkoutScreenRoute,
+                              extra: currentOrderId,
+                            );
+                          },
+                          child: Text(
+                            context.tr(
+                                  shared.LocaleKeys.billNowBtnText,
+                                  track: shared.TrackConstants.tablePageTrack,
+                                ) ??
+                                'Bill Now',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.colorScheme.onPrimary,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                  ],
+                  Expanded(
+                    child: SizedBox(
+                      height: buttonHeight,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: theme.colorScheme.primary,
+                          foregroundColor: theme.colorScheme.onPrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 2,
+                        ),
+                        onPressed: widget.isSubmitting
+                            ? null
+                            : () {
+                                context.read<MenuItemPickerBloc>().add(
+                                  SubmitOrderEvent(
+                                    tableId: widget.tableId,
+                                    tableName: widget.tableName,
+                                    orderId: widget.orderId,
+                                  ),
+                                );
+                              },
+                        child: widget.isSubmitting
+                            ? SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: theme.colorScheme.onPrimary,
+                                  strokeWidth: 2.5,
+                                ),
+                              )
+                            : Text(
+                                context.tr(
+                                      shared.LocaleKeys.sendOrderBtnText,
+                                      track:
+                                          shared.TrackConstants.tablePageTrack,
+                                    ) ??
+                                    'Send Order',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onPrimary,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ],
             ),
           ),

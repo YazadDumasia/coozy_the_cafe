@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../bloc/order_management_bloc.dart';
@@ -46,48 +47,69 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
     }
   }
 
+  void _handleBackNavigation(BuildContext context) {
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    } else {
+      context.go(AppRoutePath.homeRoute);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            context.tr(
-                  shared.LocaleKeys.orderManagementOrderInfoAppbarTitle,
-                  track: shared.TrackConstants.orderManagementPageTrack,
-                ) ??
-                'Order Information',
-          ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.share),
-              tooltip: 'Share Order',
-              onPressed: () {
-                OrderInfoScreenActions.onShareOrder(
-                  context,
-                  orderId: widget.orderId,
-                );
-              },
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handleBackNavigation(context);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => _handleBackNavigation(context),
             ),
-            IconButton(
-              icon: const Icon(Icons.receipt_long),
-              tooltip: context.tr(
-                    shared.LocaleKeys.orderManagementInvoiceInfoButton,
+            title: Text(
+              context.tr(
+                    shared.LocaleKeys.orderManagementOrderInfoAppbarTitle,
                     track: shared.TrackConstants.orderManagementPageTrack,
                   ) ??
-                  'Invoice Info',
-              onPressed: () {
-                OrderInfoScreenActions.onInvoiceInfo(
-                  context,
-                  orderId: widget.orderId,
-                );
-              },
+                  'Order Information',
             ),
-          ],
-        ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.share),
+                tooltip: 'Share Order',
+                onPressed: () {
+                  OrderInfoScreenActions.onShareOrder(
+                    context,
+                    orderId: widget.orderId,
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.receipt_long),
+                tooltip: context.tr(
+                      shared.LocaleKeys.orderManagementInvoiceInfoButton,
+                      track: shared.TrackConstants.orderManagementPageTrack,
+                    ) ??
+                    'Invoice Info',
+                onPressed: () {
+                  final hashId = widget.initialOrder?.hashId ?? '';
+                  if (hashId.isNotEmpty) {
+                    OrderInfoScreenActions.onInvoiceInfo(
+                      context,
+                      orderHashId: hashId,
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         body: BlocBuilder<OrderManagementBloc, OrderManagementState>(
           builder: (context, state) {
             OrderManagementEntity? order = widget.initialOrder;
@@ -184,10 +206,13 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                 // Invoice Info Button
                 ElevatedButton.icon(
                   onPressed: () {
-                    OrderInfoScreenActions.onInvoiceInfo(
-                      context,
-                      orderId: widget.orderId,
-                    );
+                    final hashId = order?.hashId ?? '';
+                    if (hashId.isNotEmpty) {
+                      OrderInfoScreenActions.onInvoiceInfo(
+                        context,
+                        orderHashId: hashId,
+                      );
+                    }
                   },
                   icon: const Icon(Icons.receipt_long),
                   label: Text(
@@ -604,8 +629,9 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
           },
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildDetailRow(
     BuildContext context, {

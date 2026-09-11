@@ -4,11 +4,15 @@ import '../../../../domain/entities/tax.dart';
 
 class AddTaxDialog extends StatefulWidget {
   final String? initialName;
+  final double? initialRate;
+  final bool? initialIsDefaultAdd;
   final Function(Tax) onTaxAdded;
 
   const AddTaxDialog({
     super.key,
     this.initialName,
+    this.initialRate,
+    this.initialIsDefaultAdd,
     required this.onTaxAdded,
   });
 
@@ -22,13 +26,20 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
   late final TextEditingController _rateController;
   late final FocusNode _nameFocusNode;
   late final FocusNode _rateFocusNode;
-  bool _isDefaultAdd = false;
+  late bool _isDefaultAdd;
 
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.initialName ?? '');
-    _rateController = TextEditingController();
+    _rateController = TextEditingController(
+      text: widget.initialRate != null
+          ? (widget.initialRate! % 1 == 0
+              ? widget.initialRate!.toInt().toString()
+              : widget.initialRate!.toString())
+          : '',
+    );
+    _isDefaultAdd = widget.initialIsDefaultAdd ?? false;
     _nameFocusNode = FocusNode();
     _rateFocusNode = FocusNode();
   }

@@ -17,11 +17,21 @@ abstract class InvoiceManagementRemoteDataSource {
 
   Future<Invoice?> getInvoiceById(int invoiceId);
 
+  Future<Invoice?> getInvoiceByHashId(String hashId);
+
+  Future<Invoice?> getInvoiceByOrderId(int orderId);
+
+  Future<Invoice?> getInvoiceByOrderHashId(String orderHashId);
+
   Future<List<InvoiceItem>> getInvoiceItemsByInvoiceId(int invoiceId);
 
   Future<List<PaymentTransaction>> getPaymentTransactionsByInvoiceId(int invoiceId);
 
-  Future<bool> updateInvoice(int id, InvoicesTableCompanion invoice);
+  Future<bool> updateInvoice(
+    int id,
+    InvoicesTableCompanion invoice, {
+    List<InvoiceItemsTableCompanion>? items,
+  });
 
   Future<int> deleteInvoice(int id);
 
@@ -85,6 +95,21 @@ class InvoiceManagementRemoteDataSourceImpl
   }
 
   @override
+  Future<Invoice?> getInvoiceByHashId(String hashId) {
+    return invoicesDao.getInvoiceByHashId(hashId);
+  }
+
+  @override
+  Future<Invoice?> getInvoiceByOrderId(int orderId) {
+    return invoicesDao.getInvoiceByOrderId(orderId);
+  }
+
+  @override
+  Future<Invoice?> getInvoiceByOrderHashId(String orderHashId) {
+    return invoicesDao.getInvoiceByOrderHashId(orderHashId);
+  }
+
+  @override
   Future<List<InvoiceItem>> getInvoiceItemsByInvoiceId(int invoiceId) {
     return invoicesDao.getInvoiceItemsByInvoiceId(invoiceId);
   }
@@ -97,8 +122,12 @@ class InvoiceManagementRemoteDataSourceImpl
   }
 
   @override
-  Future<bool> updateInvoice(int id, InvoicesTableCompanion invoice) {
-    return invoicesDao.updateInvoice(id, invoice);
+  Future<bool> updateInvoice(
+    int id,
+    InvoicesTableCompanion invoice, {
+    List<InvoiceItemsTableCompanion>? items,
+  }) {
+    return invoicesDao.updateInvoice(id, invoice, items: items);
   }
 
   @override

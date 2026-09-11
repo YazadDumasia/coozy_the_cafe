@@ -15,10 +15,20 @@ class InvoiceListScreenActions {
         );
   }
 
-  static void onInvoiceTapped(BuildContext context, InvoiceEntity invoice) {
-    context.push(
-      AppRoutePath.invoiceDetailRoute(invoice.id),
+  static Future<void> onInvoiceTapped(
+    BuildContext context,
+    InvoiceEntity invoice,
+  ) async {
+    await context.push(
+      AppRoutePath.invoiceDetailRoute(
+        invoice.hashId.isNotEmpty ? invoice.hashId : invoice.id,
+      ),
       extra: invoice,
     );
+    if (context.mounted) {
+      context.read<InvoiceManagementBloc>().add(
+            const LoadInvoicesEvent(isRefresh: true),
+          );
+    }
   }
 }

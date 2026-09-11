@@ -24,6 +24,7 @@ class WaiterOrderPlacementRoutes {
         int? tableId;
         String? tableName;
         int? orderId;
+        bool isPickerOnly = false;
 
         if (state.extra is int) {
           orderId = state.extra as int;
@@ -43,17 +44,21 @@ class WaiterOrderPlacementRoutes {
           if (map['tableName'] is String) {
             tableName = map['tableName'] as String;
           }
+          if (map['isPickerOnly'] is bool) {
+            isPickerOnly = map['isPickerOnly'] as bool;
+          }
         }
 
         return BlocProvider<MenuItemPickerBloc>(
           create: (_) =>
               sl<MenuItemPickerBloc>()
-                ..add(LoadMenuCatalogEvent(orderId: orderId)),
+                ..add(LoadMenuCatalogEvent(orderId: isPickerOnly ? null : orderId)),
           child: MenuItemPickerScreen(
             table: table,
             tableId: tableId,
             tableName: tableName,
             orderId: orderId,
+            isPickerOnly: isPickerOnly,
           ),
         );
       },

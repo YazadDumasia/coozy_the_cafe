@@ -132,4 +132,100 @@ void main() {
     final remainingItems = await (db.select(db.orderItemsTable)..where((t) => t.orderId.equals(orderId))).get();
     expect(remainingItems.isEmpty, true);
   });
+
+  test('Updating invoice also updates linked order record in database', () async {
+    // 1. Create order
+    final orderId = await ordersDao.createNewOrder(
+      order: OrdersTableCompanion(
+        hashId: const Value('order-sync-1'),
+        customerName: const Value('Old Customer'),
+        phoneNumber: const Value('1234567890'),
+        paymentMethodName: const Value('Cash'),
+        grandTotal: const Value(100.0),
+        status: const Value('completed'),
+        creationDate: Value(DateTime.now().toUtc().toIso8601String()),
+      ),
+      orderItems: [],
+    );
+
+    // 2. Create invoice linked to order
+    final invoiceId = await invoicesDao.createInvoice(
+      invoice: InvoicesTableCompanion(
+        orderId: Value(orderId),
+        hashId: const Value('inv-sync-1'),
+        customerName: const Value('Old Customer'),
+        phoneNumber: const Value('1234567890'),
+        paymentMethodName: const Value('Cash'),
+        totalCost: const Value(100.0),
+        netPaymentAmount: const Value(100.0),
+        createdDate: Value(DateTime.now().toUtc().toIso8601String()),
+      ),
+      items: [],
+      payments: [],
+    );
+
+    // 3. Update invoice with new customer name, payment mode, and total amounts
+    final updateSuccess = await invoicesDao.updateInvoice(
+      invoiceId,
+      InvoicesTableCompanion(
+        customerName: const Value('Updated Customer Name'),
+        phoneNumber: const Value('9876543210'),
+        paymentMethodName: const Value('Credit Card'),
+        totalCost: const Value(150.0),
+        discountAmount: const Value(10.0),
+        taxCost: const Value(15.0),
+        netPaymentAmount: const Value(155.0),
+      ),
+    );
+
+    expect(updateSuccess, true);
+
+    // 4. Verify linked order in database reflects updated information
+    final updatedOrderWithItems = await ordersDao.getOrderInfo(orderId);
+    expect(updatedOrderWithItems, isNotNull);
+    final updatedOrder = updatedOrderWithItems!.order;
+
+    expect(updatedOrder.customerName, 'Updated Customer Name');
+    expect(updatedOrder.phoneNumber, '9876543210');
+    expect(updatedOrder.paymentMethodName, 'Credit Card');
+    expect(updatedOrder.subtotalAmount, 150.0);
+    expect(updatedOrder.discountAmount, 10.0);
+    expect(updatedOrder.taxAmount, 15.0);
+    expect(updatedOrder.grandTotal, 155.0);
+  });
+
+  test('Deleting order also soft-deletes linked invoice in database', () async {
+    // 1. Create order
+    final orderId = await ordersDao.createNewOrder(
+      order: OrdersTableCompanion(
+        hashId: const Value('order-del-sync-1'),
+        status: const Value('completed'),
+        creationDate: Value(DateTime.now().toUtc().toIso8601String()),
+      ),
+      orderItems: [],
+    );
+
+    // 2. Create invoice linked to order
+    final invoiceId = await invoicesDao.createInvoice(
+      invoice: InvoicesTableCompanion(
+        orderId: Value(orderId),
+        hashId: const Value('inv-del-sync-1'),
+        createdDate: Value(DateTime.now().toUtc().toIso8601String()),
+      ),
+      items: [],
+      payments: [],
+    );
+
+    // 3. Delete order
+    await ordersDao.updateOrderIsDeleted(orderId: orderId, isDeleted: true);
+
+    // 4. Verify linked invoice has isDeleted = true
+    final invoice = await invoicesDao.getInvoiceById(invoiceId);
+    expect(invoice, isNotNull);
+    expect(invoice!.isDeleted, true);
+
+    // Verify invoice is not returned in active paginated queries
+    final activeInvoices = await invoicesDao.getInvoicesPaginated(limit: 10, pageNo: 1);
+    expect(activeInvoices.any((i) => i.id == invoiceId), false);
+  });
 }

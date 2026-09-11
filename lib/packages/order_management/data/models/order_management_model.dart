@@ -15,14 +15,16 @@ class OrderItemManagementModel extends OrderItemManagementEntity {
     super.notes,
   });
 
-  factory OrderItemManagementModel.fromDrift(OrderItem item) {
+  factory OrderItemManagementModel.fromDrift(OrderItem item, {String? itemName}) {
     final qty = item.quantity ?? 1;
     final price = item.sellingPrice ?? 0.0;
     return OrderItemManagementModel(
       id: item.id,
       orderId: item.orderId,
       itemId: item.itemId,
-      itemName: 'Item #${item.itemId ?? item.id}',
+      itemName: (itemName != null && itemName.isNotEmpty)
+          ? itemName
+          : 'Item #${item.itemId ?? item.id}',
       quantity: qty,
       sellingPrice: price,
       subTotal: price * qty,
@@ -66,11 +68,17 @@ class OrderManagementModel extends OrderManagementEntity {
     super.chargeDetailsList,
   });
 
-  factory OrderManagementModel.fromDrift(OrderWithItems orderWithItems) {
+  factory OrderManagementModel.fromDrift(
+    OrderWithItems orderWithItems, {
+    Map<int, String>? itemNamesMap,
+  }) {
     final o = orderWithItems.order;
     final inv = orderWithItems.invoice;
     final itemModels = orderWithItems.items
-        .map((i) => OrderItemManagementModel.fromDrift(i))
+        .map((i) => OrderItemManagementModel.fromDrift(
+              i,
+              itemName: itemNamesMap?[i.id],
+            ))
         .toList();
 
     final subtotal = itemModels.fold<double>(

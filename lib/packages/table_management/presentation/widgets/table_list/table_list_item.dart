@@ -195,6 +195,12 @@ class TableListItem extends StatelessWidget {
                         data: Theme.of(context),
                         child: PopupMenuButton(
                           onSelected: (value) async {
+                            if (value == 'view_qr') {
+                              TableScreenActions.showTableQrDialog(
+                                context,
+                                model,
+                              );
+                            }
                             if (value == 'edit') {
                               TableScreenActions.onUpdateModel(context, model);
                             }
@@ -211,6 +217,28 @@ class TableListItem extends StatelessWidget {
                           },
                           itemBuilder: (BuildContext bc) {
                             return <PopupMenuItem<String>>[
+                              PopupMenuItem(
+                                value: 'view_qr',
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.qr_code_2_rounded,
+                                      size: 20,
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      context.tr(
+                                            shared.LocaleKeys.viewTableQrCard,
+                                            track:
+                                                shared
+                                                    .TrackConstants
+                                                    .tablePageTrack,
+                                          ) ??
+                                          'View QR Card',
+                                    ),
+                                  ],
+                                ),
+                              ),
                               PopupMenuItem(
                                 value: 'edit',
                                 child: Text(

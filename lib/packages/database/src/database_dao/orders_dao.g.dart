@@ -16,6 +16,10 @@ mixin _$OrdersDaoMixin on DatabaseAccessor<CoozyDatabase> {
   $PaymentModesTableTable get paymentModesTable =>
       attachedDatabase.paymentModesTable;
   $InvoicesTableTable get invoicesTable => attachedDatabase.invoicesTable;
+  $InvoiceItemsTableTable get invoiceItemsTable =>
+      attachedDatabase.invoiceItemsTable;
+  $PaymentTransactionsTableTable get paymentTransactionsTable =>
+      attachedDatabase.paymentTransactionsTable;
   OrdersDaoManager get managers => OrdersDaoManager(this);
 }
 
@@ -61,4 +65,14 @@ class OrdersDaoManager {
       );
   $$InvoicesTableTableTableManager get invoicesTable =>
       $$InvoicesTableTableTableManager(_db.attachedDatabase, _db.invoicesTable);
+  $$InvoiceItemsTableTableTableManager get invoiceItemsTable =>
+      $$InvoiceItemsTableTableTableManager(
+        _db.attachedDatabase,
+        _db.invoiceItemsTable,
+      );
+  $$PaymentTransactionsTableTableTableManager get paymentTransactionsTable =>
+      $$PaymentTransactionsTableTableTableManager(
+        _db.attachedDatabase,
+        _db.paymentTransactionsTable,
+      );
 }

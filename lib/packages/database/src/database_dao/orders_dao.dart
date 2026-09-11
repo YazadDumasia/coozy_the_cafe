@@ -21,6 +21,8 @@ class OrderWithItems {
     MenuItemVariationsTable,
     TableInfoTable,
     InvoicesTable,
+    InvoiceItemsTable,
+    PaymentTransactionsTable,
   ],
 )
 class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
@@ -189,6 +191,14 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
       await (update(orderItemsTable)..where((t) => t.orderId.equals(orderId)))
           .write(OrderItemsTableCompanion(status: Value(itemStatus)));
 
+      // Sync linked invoice soft delete status if present
+      await (update(invoicesTable)..where((t) => t.orderId.equals(orderId))).write(
+        InvoicesTableCompanion(
+          isDeleted: Value(isDeleted),
+          modifiedDate: Value(currentDate),
+        ),
+      );
+
       final countExpr = orderItemsTable.id.count();
       final query = selectOnly(orderItemsTable)
         ..addColumns([countExpr])
@@ -200,6 +210,15 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
 
   Future<int> permanentlyDeleteOrder(int orderId) async {
     return transaction(() async {
+      final invoices = await (select(invoicesTable)..where((t) => t.orderId.equals(orderId))).get();
+      final invoiceIds = invoices.map((i) => i.id).toList();
+
+      if (invoiceIds.isNotEmpty) {
+        await (delete(invoiceItemsTable)..where((t) => t.invoiceId.isIn(invoiceIds))).go();
+        await (delete(paymentTransactionsTable)..where((t) => t.invoiceId.isIn(invoiceIds))).go();
+        await (delete(invoicesTable)..where((t) => t.id.isIn(invoiceIds))).go();
+      }
+
       await (delete(orderItemsTable)..where((t) => t.orderId.equals(orderId))).go();
       return (delete(ordersTable)..where((t) => t.id.equals(orderId))).go();
     });

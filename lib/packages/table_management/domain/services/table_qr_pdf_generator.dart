@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../entities/table_info.dart';
 
 class _TableQrComputeParams {
@@ -397,8 +398,8 @@ class TableQrPdfGenerator {
     );
   }
 
-  /// Downloads or saves the generated PDF file directly across Mobile & Web.
-  static Future<void> downloadOrSavePdf({
+  /// Downloads or saves the generated PDF file directly to device storage across Mobile, Desktop & Web.
+  static Future<shared.PdfSaveResult> downloadOrSavePdf({
     required List<TableInfo> tables,
     TableInfo? singleTable,
     int columnsCount = 2,
@@ -409,9 +410,44 @@ class TableQrPdfGenerator {
       singleTable: singleTable,
       columnsCount: columnsCount,
     );
-    await Printing.sharePdf(
+    return await shared.PdfSaveHelper.saveAndDownloadPdf(
       bytes: pdfBytes,
       filename: docName,
     );
+  }
+
+  /// Shares the generated PDF file via the system share sheet.
+  static Future<void> sharePdf({
+    required List<TableInfo> tables,
+    TableInfo? singleTable,
+    int columnsCount = 2,
+    required String docName,
+    Rect? sharePositionOrigin,
+  }) async {
+    final pdfBytes = await generatePdf(
+      tables: tables,
+      singleTable: singleTable,
+      columnsCount: columnsCount,
+    );
+    final result = await shared.PdfSaveHelper.saveAndDownloadPdf(
+      bytes: pdfBytes,
+      filename: docName,
+    );
+    await shared.PdfSaveHelper.sharePdfFile(
+      filePath: result.filePath ?? docName,
+      filename: docName,
+      fallbackBytes: pdfBytes,
+      sharePositionOrigin: sharePositionOrigin,
+    );
+  }
+
+  /// Checks and requests storage permission on mobile platforms (Android).
+  static Future<bool> requestStoragePermission() async {
+    return await shared.PdfSaveHelper.requestStoragePermission();
+  }
+
+  /// Alias for [requestStoragePermission].
+  static Future<bool> checkPdfStoragePermission() async {
+    return await shared.PdfSaveHelper.checkPdfStoragePermission();
   }
 }

@@ -53,6 +53,7 @@ export 'utils/components/local_keys_enum.dart';
 export 'utils/components/local_manager.dart';
 export 'utils/components/mask_text_input_formatter.dart';
 export 'utils/components/page_transition.dart';
+export 'utils/components/pdf_save_helper.dart';
 export 'utils/components/pulse_animation.dart';
 export 'utils/components/sprung.dart';
 export 'utils/components/top_login.dart';

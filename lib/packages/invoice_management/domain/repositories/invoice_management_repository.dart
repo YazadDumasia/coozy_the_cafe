@@ -14,6 +14,12 @@ abstract class InvoiceManagementRepository {
 
   Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetails(int invoiceId);
 
+  Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetailsByOrderId(int orderId);
+
+  Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetailsByHashId(String hashId);
+
+  Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetailsByOrderHashId(String orderHashId);
+
   Future<Either<Failure, bool>> updateInvoice({
     required InvoiceEntity invoice,
     required List<InvoiceItemEntity> items,

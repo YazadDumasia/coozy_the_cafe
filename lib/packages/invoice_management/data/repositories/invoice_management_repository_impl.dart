@@ -91,6 +91,58 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
   }
 
   @override
+  Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetailsByOrderId(
+    int orderId,
+  ) async {
+    try {
+      final invoiceRow = await remoteDataSource.getInvoiceByOrderId(orderId);
+      if (invoiceRow == null) {
+        return const Left(
+          UnexpectedFailure(message: 'No invoice found for this order'),
+        );
+      }
+      return getInvoiceDetails(invoiceRow.id);
+    } catch (e) {
+      return Left(DatabaseFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetailsByHashId(
+    String hashId,
+  ) async {
+    try {
+      final invoiceRow = await remoteDataSource.getInvoiceByHashId(hashId);
+      if (invoiceRow == null) {
+        return const Left(
+          UnexpectedFailure(message: 'No invoice found for this hash ID'),
+        );
+      }
+      return getInvoiceDetails(invoiceRow.id);
+    } catch (e) {
+      return Left(DatabaseFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetailsByOrderHashId(
+    String orderHashId,
+  ) async {
+    try {
+      final invoiceRow =
+          await remoteDataSource.getInvoiceByOrderHashId(orderHashId);
+      if (invoiceRow == null) {
+        return const Left(
+          UnexpectedFailure(message: 'No invoice found for this order'),
+        );
+      }
+      return getInvoiceDetails(invoiceRow.id);
+    } catch (e) {
+      return Left(DatabaseFailure(message: e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, bool>> updateInvoice({
     required InvoiceEntity invoice,
     required List<InvoiceItemEntity> items,
@@ -100,18 +152,34 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
         customerName: Value(invoice.customerName),
         phoneNumber: Value(invoice.phoneNumber),
         paymentMethodName: Value(invoice.paymentMethodName),
+        taxPercentage: Value(invoice.taxPercentage),
+        discountType: Value(invoice.discountType),
+        discountAmount: Value(invoice.discountAmount),
         totalCost: Value(invoice.totalCost),
         taxCost: Value(invoice.taxCost),
         taxableAmount: Value(invoice.taxableAmount),
         netPaymentAmount: Value(invoice.netPaymentAmount),
         recordAmountPaid: Value(invoice.recordAmountPaid),
-        discountAmount: Value(invoice.discountAmount),
         modifiedDate: Value(DateTime.now().toIso8601String()),
       );
+
+      final itemCompanions = items.map((item) {
+        return InvoiceItemsTableCompanion(
+          invoiceId: Value(item.invoiceId ?? invoice.id),
+          orderItemId: Value(item.orderItemId),
+          itemId: Value(item.itemId),
+          itemName: Value(item.itemName),
+          quantity: Value(item.quantity),
+          sellingPrice: Value(item.unitPrice),
+          totalPrice: Value(item.totalPrice),
+          createdDate: Value(DateTime.now().toIso8601String()),
+        );
+      }).toList();
 
       final success = await remoteDataSource.updateInvoice(
         invoice.id,
         companion,
+        items: itemCompanions,
       );
       return Right(success);
     } catch (e) {

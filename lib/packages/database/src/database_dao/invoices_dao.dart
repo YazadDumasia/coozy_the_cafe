@@ -76,6 +76,28 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     return query.getSingleOrNull();
   }
 
+  Future<Invoice?> getInvoiceByOrderId(int orderId) {
+    final query = select(invoicesTable)
+      ..where(
+        (t) =>
+            t.orderId.equals(orderId) &
+            (t.isDeleted.equals(false) | t.isDeleted.isNull()),
+      )
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc),
+      ])
+      ..limit(1);
+    return query.getSingleOrNull();
+  }
+
+  Future<Invoice?> getInvoiceByOrderHashId(String orderHashId) async {
+    final order = await (select(ordersTable)
+          ..where((t) => t.hashId.equals(orderHashId)))
+        .getSingleOrNull();
+    if (order == null) return null;
+    return getInvoiceByOrderId(order.id);
+  }
+
   Future<List<Invoice>> getInvoicesPaginated({
     required int limit,
     required int pageNo,
@@ -121,9 +143,83 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     return row.read(countExpr) ?? 0;
   }
 
-  Future<bool> updateInvoice(int id, InvoicesTableCompanion invoice) => (update(
-    invoicesTable,
-  )..where((t) => t.id.equals(id))).write(invoice).then((rows) => rows > 0);
+  Future<bool> updateInvoice(
+    int id,
+    InvoicesTableCompanion invoice, {
+    List<InvoiceItemsTableCompanion>? items,
+  }) async {
+    return transaction(() async {
+      // 1. Fetch current invoice to retrieve linked orderId
+      final existingInvoice = await (select(invoicesTable)..where((t) => t.id.equals(id))).getSingleOrNull();
+
+      // 2. Update invoice record
+      final rowsUpdated = await (update(invoicesTable)..where((t) => t.id.equals(id))).write(invoice);
+      if (rowsUpdated <= 0) return false;
+
+      // 2b. Sync invoice items if provided
+      if (items != null) {
+        await (delete(invoiceItemsTable)..where((t) => t.invoiceId.equals(id))).go();
+        for (final item in items) {
+          await into(invoiceItemsTable).insert(
+            item.copyWith(invoiceId: Value(id)),
+          );
+        }
+      }
+
+      // 3. Sync linked Order record if orderId exists
+      final orderId = invoice.orderId.present ? invoice.orderId.value : existingInvoice?.orderId;
+      if (orderId != null) {
+        final nowIso = DateTime.now().toUtc().toIso8601String();
+
+        final orderCompanion = OrdersTableCompanion(
+          customerName: invoice.customerName.present ? invoice.customerName : const Value.absent(),
+          phoneNumber: invoice.phoneNumber.present ? invoice.phoneNumber : const Value.absent(),
+          isoCode: invoice.isoCode.present ? invoice.isoCode : const Value.absent(),
+          paymentMethodName: invoice.paymentMethodName.present ? invoice.paymentMethodName : const Value.absent(),
+          paymentMethodDetails: invoice.paymentMethodDetails.present ? invoice.paymentMethodDetails : const Value.absent(),
+          cashReceived: invoice.cashReceived.present ? invoice.cashReceived : const Value.absent(),
+          changeAmount: invoice.changeAmount.present ? invoice.changeAmount : const Value.absent(),
+          subtotalAmount: invoice.totalCost.present ? invoice.totalCost : const Value.absent(),
+          discountAmount: invoice.discountAmount.present ? invoice.discountAmount : const Value.absent(),
+          taxAmount: invoice.taxCost.present ? invoice.taxCost : const Value.absent(),
+          grandTotal: invoice.netPaymentAmount.present ? invoice.netPaymentAmount : const Value.absent(),
+          modificationDate: Value(nowIso),
+        );
+
+        await (update(ordersTable)..where((t) => t.id.equals(orderId))).write(orderCompanion);
+
+        // Also sync order items if items are provided
+        if (items != null) {
+          await (delete(orderItemsTable)..where((t) => t.orderId.equals(orderId))).go();
+          for (final item in items) {
+            int? validItemId;
+            if (item.itemId.present && item.itemId.value != null) {
+              final exists = await (select(attachedDatabase.menuItemsTable)
+                    ..where((m) => m.id.equals(item.itemId.value!)))
+                  .getSingleOrNull();
+              if (exists != null) {
+                validItemId = item.itemId.value;
+              }
+            }
+
+            await into(orderItemsTable).insert(
+              OrderItemsTableCompanion(
+                orderId: Value(orderId),
+                itemId: Value(validItemId),
+                menuItemId: Value(validItemId),
+                quantity: item.quantity,
+                sellingPrice: item.sellingPrice,
+                creationDate: Value(nowIso),
+                status: const Value('completed'),
+              ),
+            );
+          }
+        }
+      }
+
+      return true;
+    });
+  }
 
   Future<int> deleteInvoice(int id) async {
     return transaction(() async {

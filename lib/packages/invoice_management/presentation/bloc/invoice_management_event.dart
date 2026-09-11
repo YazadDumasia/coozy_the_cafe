@@ -44,6 +44,33 @@ class LoadInvoiceDetailsEvent extends InvoiceManagementEvent {
   List<Object?> get props => [invoiceId];
 }
 
+class LoadInvoiceDetailsByOrderIdEvent extends InvoiceManagementEvent {
+  final int orderId;
+
+  const LoadInvoiceDetailsByOrderIdEvent(this.orderId);
+
+  @override
+  List<Object?> get props => [orderId];
+}
+
+class LoadInvoiceDetailsByOrderHashIdEvent extends InvoiceManagementEvent {
+  final String orderHashId;
+
+  const LoadInvoiceDetailsByOrderHashIdEvent(this.orderHashId);
+
+  @override
+  List<Object?> get props => [orderHashId];
+}
+
+class LoadInvoiceDetailsByHashIdEvent extends InvoiceManagementEvent {
+  final String hashId;
+
+  const LoadInvoiceDetailsByHashIdEvent(this.hashId);
+
+  @override
+  List<Object?> get props => [hashId];
+}
+
 class UpdateInvoiceEvent extends InvoiceManagementEvent {
   final InvoiceEntity invoice;
   final List<InvoiceItemEntity> items;

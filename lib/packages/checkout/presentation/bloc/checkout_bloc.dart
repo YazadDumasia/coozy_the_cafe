@@ -59,9 +59,61 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     Emitter<CheckoutState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, orderId: event.orderId, errorMessage: null));
+
+    // Load default taxes, discounts, and extra charges from DB
+    List<Tax> defaultTaxes = [];
+    List<Discount> defaultDiscounts = [];
+    List<ExtraCharge> defaultExtraCharges = [];
+
+    try {
+      final db = sl<CoozyDatabase>();
+      final dbTaxes = await (db.select(db.taxesTable)
+            ..where((t) => t.isDefaultAdd.equals(true)))
+          .get();
+      defaultTaxes = dbTaxes
+          .map((t) => Tax(
+                id: t.id.toString(),
+                name: t.name,
+                ratePercent: t.ratePercent,
+                isDefaultAdd: t.isDefaultAdd,
+              ))
+          .toList();
+
+      final dbDiscounts = await (db.select(db.discountsTable)
+            ..where((d) => d.isDefaultAdd.equals(true)))
+          .get();
+      defaultDiscounts = dbDiscounts
+          .map((d) => Discount(
+                id: d.id.toString(),
+                name: d.name,
+                value: d.value,
+                isPercentage: d.isPercentage,
+                isDefaultAdd: d.isDefaultAdd,
+              ))
+          .toList();
+
+      final dbCharges = await (db.select(db.extraChargesTable)
+            ..where((c) => c.isDefaultAdd.equals(true)))
+          .get();
+      defaultExtraCharges = dbCharges
+          .map((c) => ExtraCharge(
+                id: c.id.toString(),
+                name: c.name,
+                value: c.value,
+                isPercentage: c.isPercentage,
+                isDefaultAdd: c.isDefaultAdd,
+              ))
+          .toList();
+    } catch (_) {}
+
     if (getOrderCheckoutData == null) {
       // Fallback if no remote/local repository provided
-      emit(state.copyWith(isLoading: false));
+      emit(state.copyWith(
+        isLoading: false,
+        appliedTaxes: defaultTaxes.isNotEmpty ? defaultTaxes : state.appliedTaxes,
+        appliedDiscounts: defaultDiscounts.isNotEmpty ? defaultDiscounts : state.appliedDiscounts,
+        appliedOtherCharges: defaultExtraCharges.isNotEmpty ? defaultExtraCharges : state.appliedOtherCharges,
+      ));
       _recalculateAndEmit(emit, state);
       return;
     }
@@ -70,13 +122,22 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
     result.fold(
       (failure) {
-        emit(state.copyWith(isLoading: false, errorMessage: failure.message));
+        emit(state.copyWith(
+          isLoading: false,
+          errorMessage: failure.message,
+          appliedTaxes: defaultTaxes.isNotEmpty ? defaultTaxes : state.appliedTaxes,
+          appliedDiscounts: defaultDiscounts.isNotEmpty ? defaultDiscounts : state.appliedDiscounts,
+          appliedOtherCharges: defaultExtraCharges.isNotEmpty ? defaultExtraCharges : state.appliedOtherCharges,
+        ));
       },
       (data) {
         final newState = state.copyWith(
           isLoading: false,
           cartItems: data.items,
           customerDetails: data.customerDetails,
+          appliedTaxes: defaultTaxes.isNotEmpty ? defaultTaxes : state.appliedTaxes,
+          appliedDiscounts: defaultDiscounts.isNotEmpty ? defaultDiscounts : state.appliedDiscounts,
+          appliedOtherCharges: defaultExtraCharges.isNotEmpty ? defaultExtraCharges : state.appliedOtherCharges,
         );
         _recalculateAndEmit(emit, newState);
       },
@@ -152,34 +213,143 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     } catch (_) {}
   }
 
-  void _onTaxAdded(CheckoutTaxAdded event, Emitter<CheckoutState> emit) {
+  Future<void> _onTaxAdded(CheckoutTaxAdded event, Emitter<CheckoutState> emit) async {
     final updated = List<Tax>.from(state.appliedTaxes)..add(event.tax);
     _recalculateAndEmit(emit, state.copyWith(appliedTaxes: updated));
+
+    try {
+      final db = sl<CoozyDatabase>();
+      final existing = await (db.select(db.taxesTable)
+            ..where((t) => t.name.equals(event.tax.name)))
+          .getSingleOrNull();
+
+      if (existing != null) {
+        await (db.update(db.taxesTable)
+              ..where((t) => t.id.equals(existing.id)))
+            .write(TaxesTableCompanion(
+          ratePercent: Value(event.tax.ratePercent),
+          isDefaultAdd: Value(event.tax.isDefaultAdd),
+        ));
+      } else {
+        await db.into(db.taxesTable).insert(TaxesTableCompanion.insert(
+          name: event.tax.name,
+          ratePercent: event.tax.ratePercent,
+          isDefaultAdd: Value(event.tax.isDefaultAdd),
+        ));
+      }
+    } catch (_) {}
   }
 
-  void _onTaxRemoved(CheckoutTaxRemoved event, Emitter<CheckoutState> emit) {
+  Future<void> _onTaxRemoved(CheckoutTaxRemoved event, Emitter<CheckoutState> emit) async {
+    final removedTax = state.appliedTaxes.firstWhere(
+      (t) => t.id == event.taxId,
+      orElse: () => const Tax(id: '', name: '', ratePercent: 0),
+    );
     final updated = state.appliedTaxes.where((t) => t.id != event.taxId).toList();
     _recalculateAndEmit(emit, state.copyWith(appliedTaxes: updated));
+
+    if (removedTax.name.isNotEmpty) {
+      try {
+        final db = sl<CoozyDatabase>();
+        await (db.update(db.taxesTable)
+              ..where((t) => t.name.equals(removedTax.name)))
+            .write(const TaxesTableCompanion(isDefaultAdd: Value(false)));
+      } catch (_) {}
+    }
   }
 
-  void _onDiscountAdded(CheckoutDiscountAdded event, Emitter<CheckoutState> emit) {
+  Future<void> _onDiscountAdded(CheckoutDiscountAdded event, Emitter<CheckoutState> emit) async {
     final updated = List<Discount>.from(state.appliedDiscounts)..add(event.discount);
     _recalculateAndEmit(emit, state.copyWith(appliedDiscounts: updated));
+
+    try {
+      final db = sl<CoozyDatabase>();
+      final existing = await (db.select(db.discountsTable)
+            ..where((d) => d.name.equals(event.discount.name)))
+          .getSingleOrNull();
+
+      if (existing != null) {
+        await (db.update(db.discountsTable)
+              ..where((d) => d.id.equals(existing.id)))
+            .write(DiscountsTableCompanion(
+          value: Value(event.discount.value),
+          isPercentage: Value(event.discount.isPercentage),
+          isDefaultAdd: Value(event.discount.isDefaultAdd),
+        ));
+      } else {
+        await db.into(db.discountsTable).insert(DiscountsTableCompanion.insert(
+          name: event.discount.name,
+          value: event.discount.value,
+          isPercentage: Value(event.discount.isPercentage),
+          isDefaultAdd: Value(event.discount.isDefaultAdd),
+        ));
+      }
+    } catch (_) {}
   }
 
-  void _onDiscountRemoved(CheckoutDiscountRemoved event, Emitter<CheckoutState> emit) {
+  Future<void> _onDiscountRemoved(CheckoutDiscountRemoved event, Emitter<CheckoutState> emit) async {
+    final removedDiscount = state.appliedDiscounts.firstWhere(
+      (d) => d.id == event.discountId,
+      orElse: () => const Discount(id: '', name: '', value: 0),
+    );
     final updated = state.appliedDiscounts.where((d) => d.id != event.discountId).toList();
     _recalculateAndEmit(emit, state.copyWith(appliedDiscounts: updated));
+
+    if (removedDiscount.name.isNotEmpty) {
+      try {
+        final db = sl<CoozyDatabase>();
+        await (db.update(db.discountsTable)
+              ..where((d) => d.name.equals(removedDiscount.name)))
+            .write(const DiscountsTableCompanion(isDefaultAdd: Value(false)));
+      } catch (_) {}
+    }
   }
 
-  void _onOtherChargeAdded(CheckoutOtherChargeAdded event, Emitter<CheckoutState> emit) {
+  Future<void> _onOtherChargeAdded(CheckoutOtherChargeAdded event, Emitter<CheckoutState> emit) async {
     final updated = List<ExtraCharge>.from(state.appliedOtherCharges)..add(event.extraCharge);
     _recalculateAndEmit(emit, state.copyWith(appliedOtherCharges: updated));
+
+    try {
+      final db = sl<CoozyDatabase>();
+      final existing = await (db.select(db.extraChargesTable)
+            ..where((c) => c.name.equals(event.extraCharge.name)))
+          .getSingleOrNull();
+
+      if (existing != null) {
+        await (db.update(db.extraChargesTable)
+              ..where((c) => c.id.equals(existing.id)))
+            .write(ExtraChargesTableCompanion(
+          value: Value(event.extraCharge.value),
+          isPercentage: Value(event.extraCharge.isPercentage),
+          isDefaultAdd: Value(event.extraCharge.isDefaultAdd),
+        ));
+      } else {
+        await db.into(db.extraChargesTable).insert(ExtraChargesTableCompanion.insert(
+          name: event.extraCharge.name,
+          value: event.extraCharge.value,
+          isPercentage: Value(event.extraCharge.isPercentage),
+          isDefaultAdd: Value(event.extraCharge.isDefaultAdd),
+        ));
+      }
+    } catch (_) {}
   }
 
-  void _onOtherChargeRemoved(CheckoutOtherChargeRemoved event, Emitter<CheckoutState> emit) {
+  Future<void> _onOtherChargeRemoved(CheckoutOtherChargeRemoved event, Emitter<CheckoutState> emit) async {
+    final removedCharge = state.appliedOtherCharges.firstWhere(
+      (c) => c.id == event.chargeId,
+      orElse: () => const ExtraCharge(id: '', name: '', value: 0),
+    );
     final updated = state.appliedOtherCharges.where((c) => c.id != event.chargeId).toList();
     _recalculateAndEmit(emit, state.copyWith(appliedOtherCharges: updated));
+
+    if (removedCharge.name.isNotEmpty) {
+      try {
+        final db = sl<CoozyDatabase>();
+        await (db.update(db.extraChargesTable)
+              ..where((c) => c.name.equals(removedCharge.name)))
+            .write(const ExtraChargesTableCompanion(isDefaultAdd: Value(false)));
+      } catch (_) {}
+    }
   }
 
   void _onRoundOffToggled(CheckoutRoundOffToggled event, Emitter<CheckoutState> emit) {

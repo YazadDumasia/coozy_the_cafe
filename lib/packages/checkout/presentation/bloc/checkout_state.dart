@@ -36,10 +36,9 @@ class CheckoutState extends Equatable {
     final defaultMethods = [
       const PaymentMethod(id: 'cash', name: 'Cash', icon: Icons.payments, isEnabled: true),
       const PaymentMethod(id: 'debit_card', name: 'Debit Card', icon: Icons.credit_card, isEnabled: true),
-      const PaymentMethod(id: 'credit_card', name: 'Credit Card', icon: Icons.credit_score, isEnabled: true),
+      const PaymentMethod(id: 'credit_card', name: 'Credit Card', icon: Icons.credit_card, isEnabled: true),
       const PaymentMethod(id: 'credit', name: 'Credit', icon: Icons.account_balance_wallet, isEnabled: true),
       const PaymentMethod(id: 'upi', name: 'UPI', icon: Icons.qr_code, isEnabled: true),
-
       const PaymentMethod(id: 'bitcoin', name: 'Bitcoin', icon: Icons.currency_bitcoin, isEnabled: true),
     ];
 

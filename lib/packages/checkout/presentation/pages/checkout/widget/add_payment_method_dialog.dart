@@ -17,7 +17,7 @@ class _AddPaymentMethodDialogState extends State<AddPaymentMethodDialog> {
   IconData _selectedIcon = Icons.payment;
 
   final List<IconData> _availableIcons = const [
-    Icons.payment,
+    // Icons.payment,
     Icons.account_balance_wallet,
     Icons.qr_code,
     Icons.credit_card,

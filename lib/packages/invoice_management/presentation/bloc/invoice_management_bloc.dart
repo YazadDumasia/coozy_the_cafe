@@ -5,6 +5,9 @@ import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import '../../domain/entities/invoice_management_entity.dart';
 import '../../domain/usecases/get_paginated_invoices_usecase.dart';
 import '../../domain/usecases/get_invoice_details_usecase.dart';
+import '../../domain/usecases/get_invoice_details_by_order_id_usecase.dart';
+import '../../domain/usecases/get_invoice_details_by_order_hash_id_usecase.dart';
+import '../../domain/usecases/get_invoice_details_by_hash_id_usecase.dart';
 import '../../domain/usecases/update_invoice_usecase.dart';
 import '../../domain/usecases/delete_invoice_usecase.dart';
 import '../../domain/usecases/get_payment_modes_usecase.dart';
@@ -16,6 +19,9 @@ class InvoiceManagementBloc
     extends Bloc<InvoiceManagementEvent, InvoiceManagementState> {
   final GetPaginatedInvoicesUseCase getPaginatedInvoicesUseCase;
   final GetInvoiceDetailsUseCase getInvoiceDetailsUseCase;
+  final GetInvoiceDetailsByOrderIdUseCase getInvoiceDetailsByOrderIdUseCase;
+  final GetInvoiceDetailsByOrderHashIdUseCase getInvoiceDetailsByOrderHashIdUseCase;
+  final GetInvoiceDetailsByHashIdUseCase getInvoiceDetailsByHashIdUseCase;
   final UpdateInvoiceUseCase updateInvoiceUseCase;
   final DeleteInvoiceUseCase deleteInvoiceUseCase;
   final GetPaymentModesUseCase getPaymentModesUseCase;
@@ -25,6 +31,9 @@ class InvoiceManagementBloc
   InvoiceManagementBloc({
     required this.getPaginatedInvoicesUseCase,
     required this.getInvoiceDetailsUseCase,
+    required this.getInvoiceDetailsByOrderIdUseCase,
+    required this.getInvoiceDetailsByOrderHashIdUseCase,
+    required this.getInvoiceDetailsByHashIdUseCase,
     required this.updateInvoiceUseCase,
     required this.deleteInvoiceUseCase,
     required this.getPaymentModesUseCase,
@@ -33,6 +42,9 @@ class InvoiceManagementBloc
     on<LoadMoreInvoicesEvent>(_onLoadMoreInvoices);
     on<SelectInvoiceDateRangeEvent>(_onSelectDateRange);
     on<LoadInvoiceDetailsEvent>(_onLoadInvoiceDetails);
+    on<LoadInvoiceDetailsByOrderIdEvent>(_onLoadInvoiceDetailsByOrderId);
+    on<LoadInvoiceDetailsByOrderHashIdEvent>(_onLoadInvoiceDetailsByOrderHashId);
+    on<LoadInvoiceDetailsByHashIdEvent>(_onLoadInvoiceDetailsByHashId);
     on<UpdateInvoiceEvent>(_onUpdateInvoice);
     on<DeleteInvoiceEvent>(_onDeleteInvoice);
   }
@@ -42,15 +54,18 @@ class InvoiceManagementBloc
     Emitter<InvoiceManagementState> emit,
   ) async {
     final currentState = state;
-    String query = event.searchQuery ?? '';
-    DateTimeRange? range = event.dateRange;
+    String query = '';
+    DateTimeRange? range;
 
-    if (!event.isRefresh && currentState is InvoiceManagementLoadedState) {
+    if (currentState is InvoiceManagementLoadedState) {
       query = event.searchQuery ?? currentState.searchQuery;
       range = event.dateRange ?? currentState.dateRange;
+    } else {
+      query = event.searchQuery ?? '';
+      range = event.dateRange;
     }
 
-    if (currentState is! InvoiceManagementLoadedState || event.isRefresh) {
+    if (currentState is! InvoiceManagementLoadedState) {
       emit(const InvoiceManagementLoadingState());
     }
 
@@ -193,6 +208,145 @@ class InvoiceManagementBloc
     }
   }
 
+  Future<void> _onLoadInvoiceDetailsByOrderId(
+    LoadInvoiceDetailsByOrderIdEvent event,
+    Emitter<InvoiceManagementState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is InvoiceManagementLoadedState) {
+      emit(currentState.copyWith(isLoadingDetails: true));
+      final result =
+          await getInvoiceDetailsByOrderIdUseCase(event.orderId);
+      result.fold(
+        (failure) => emit(
+          currentState.copyWith(
+            isLoadingDetails: false,
+            errorMessage: failure.message,
+          ),
+        ),
+        (details) => emit(
+          currentState.copyWith(
+            isLoadingDetails: false,
+            selectedInvoiceDetails: details,
+          ),
+        ),
+      );
+    } else {
+      emit(const InvoiceManagementLoadingState());
+      final modesResult = await getPaymentModesUseCase();
+      List<PaymentMode> modes = [];
+      modesResult.fold((_) {}, (data) => modes = data);
+
+      final result =
+          await getInvoiceDetailsByOrderIdUseCase(event.orderId);
+      result.fold(
+        (failure) => emit(InvoiceManagementErrorState(failure.message)),
+        (details) => emit(
+          InvoiceManagementLoadedState(
+            invoices: const [],
+            totalCount: 0,
+            currentPage: 1,
+            hasReachedMax: true,
+            selectedInvoiceDetails: details,
+            paymentModes: modes,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onLoadInvoiceDetailsByOrderHashId(
+    LoadInvoiceDetailsByOrderHashIdEvent event,
+    Emitter<InvoiceManagementState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is InvoiceManagementLoadedState) {
+      emit(currentState.copyWith(isLoadingDetails: true));
+      final result =
+          await getInvoiceDetailsByOrderHashIdUseCase(event.orderHashId);
+      result.fold(
+        (failure) => emit(
+          currentState.copyWith(
+            isLoadingDetails: false,
+            errorMessage: failure.message,
+          ),
+        ),
+        (details) => emit(
+          currentState.copyWith(
+            isLoadingDetails: false,
+            selectedInvoiceDetails: details,
+          ),
+        ),
+      );
+    } else {
+      emit(const InvoiceManagementLoadingState());
+      final modesResult = await getPaymentModesUseCase();
+      List<PaymentMode> modes = [];
+      modesResult.fold((_) {}, (data) => modes = data);
+
+      final result =
+          await getInvoiceDetailsByOrderHashIdUseCase(event.orderHashId);
+      result.fold(
+        (failure) => emit(InvoiceManagementErrorState(failure.message)),
+        (details) => emit(
+          InvoiceManagementLoadedState(
+            invoices: const [],
+            totalCount: 0,
+            currentPage: 1,
+            hasReachedMax: true,
+            selectedInvoiceDetails: details,
+            paymentModes: modes,
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _onLoadInvoiceDetailsByHashId(
+    LoadInvoiceDetailsByHashIdEvent event,
+    Emitter<InvoiceManagementState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is InvoiceManagementLoadedState) {
+      emit(currentState.copyWith(isLoadingDetails: true));
+      final result = await getInvoiceDetailsByHashIdUseCase(event.hashId);
+      result.fold(
+        (failure) => emit(
+          currentState.copyWith(
+            isLoadingDetails: false,
+            errorMessage: failure.message,
+          ),
+        ),
+        (details) => emit(
+          currentState.copyWith(
+            isLoadingDetails: false,
+            selectedInvoiceDetails: details,
+          ),
+        ),
+      );
+    } else {
+      emit(const InvoiceManagementLoadingState());
+      final modesResult = await getPaymentModesUseCase();
+      List<PaymentMode> modes = [];
+      modesResult.fold((_) {}, (data) => modes = data);
+
+      final result = await getInvoiceDetailsByHashIdUseCase(event.hashId);
+      result.fold(
+        (failure) => emit(InvoiceManagementErrorState(failure.message)),
+        (details) => emit(
+          InvoiceManagementLoadedState(
+            invoices: const [],
+            totalCount: 0,
+            currentPage: 1,
+            hasReachedMax: true,
+            selectedInvoiceDetails: details,
+            paymentModes: modes,
+          ),
+        ),
+      );
+    }
+  }
+
   Future<void> _onUpdateInvoice(
     UpdateInvoiceEvent event,
     Emitter<InvoiceManagementState> emit,
@@ -217,6 +371,7 @@ class InvoiceManagementBloc
       (_) {
         emit(const InvoiceUpdatedSuccessState());
         add(const LoadInvoicesEvent(isRefresh: true));
+        add(LoadInvoiceDetailsEvent(event.invoice.id));
       },
     );
   }

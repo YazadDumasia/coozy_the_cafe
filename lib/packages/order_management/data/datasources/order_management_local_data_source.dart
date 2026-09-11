@@ -49,8 +49,11 @@ class OrderManagementLocalDataSourceImpl
       status: status,
     );
 
-    final models =
-        rawOrders.map((o) => OrderManagementModel.fromDrift(o)).toList();
+    final allItems = rawOrders.expand((o) => o.items).toList();
+    final itemNamesMap = await _getItemNamesMap(allItems);
+    final models = rawOrders
+        .map((o) => OrderManagementModel.fromDrift(o, itemNamesMap: itemNamesMap))
+        .toList();
 
     return (models, count);
   }
@@ -59,7 +62,40 @@ class OrderManagementLocalDataSourceImpl
   Future<OrderManagementModel?> getOrderInfo(int orderId) async {
     final orderWithItems = await ordersDao.getOrderInfo(orderId);
     if (orderWithItems == null) return null;
-    return OrderManagementModel.fromDrift(orderWithItems);
+    final itemNamesMap = await _getItemNamesMap(orderWithItems.items);
+    return OrderManagementModel.fromDrift(
+      orderWithItems,
+      itemNamesMap: itemNamesMap,
+    );
+  }
+
+  Future<Map<int, String>> _getItemNamesMap(List<OrderItem> items) async {
+    final db = ordersDao.attachedDatabase;
+    final itemNamesMap = <int, String>{};
+    for (final item in items) {
+      final menuItemId = item.menuItemId ?? item.itemId;
+      if (menuItemId == null || itemNamesMap.containsKey(item.id)) continue;
+
+      final menuItem = await (db.select(db.menuItemsTable)
+            ..where((m) => m.id.equals(menuItemId)))
+          .getSingleOrNull();
+
+      if (menuItem != null && menuItem.name.isNotEmpty) {
+        String name = menuItem.name;
+        if (item.selectedVariationId != null) {
+          final variation = await (db.select(db.menuItemVariationsTable)
+                ..where((v) => v.id.equals(item.selectedVariationId!)))
+              .getSingleOrNull();
+          if (variation != null &&
+              variation.name != null &&
+              variation.name!.isNotEmpty) {
+            name = '$name (${variation.name})';
+          }
+        }
+        itemNamesMap[item.id] = name;
+      }
+    }
+    return itemNamesMap;
   }
 
   @override

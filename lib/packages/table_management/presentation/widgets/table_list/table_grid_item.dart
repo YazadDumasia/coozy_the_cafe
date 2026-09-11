@@ -179,6 +179,20 @@ class TableGridItem extends StatelessWidget {
           ),
           PositionedDirectional(
             top: 5.0,
+            start: 5.0,
+            child: GestureDetector(
+              onTap: () async {
+                TableScreenActions.showTableQrDialog(context, model);
+              },
+              child: Icon(
+                Icons.qr_code_2_rounded,
+                color: Theme.of(context).colorScheme.primary,
+                size: 22.0,
+              ),
+            ),
+          ),
+          PositionedDirectional(
+            top: 5.0,
             end: 5.0,
             child: GestureDetector(
               onTap: () async {

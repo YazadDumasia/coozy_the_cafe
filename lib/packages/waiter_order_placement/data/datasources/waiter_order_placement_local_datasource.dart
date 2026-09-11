@@ -245,7 +245,10 @@ class WaiterOrderPlacementLocalDataSourceImpl
                 .getSingleOrNull();
       }
 
-      final itemName = menuItem?.name ?? 'Item #$menuItemId';
+      final baseName = menuItem?.name ?? 'Item #$menuItemId';
+      final itemName = (variation?.name != null && variation!.name!.isNotEmpty)
+          ? '$baseName (${variation.name})'
+          : baseName;
       final price =
           item.sellingPrice ??
           variation?.sellingPrice ??
