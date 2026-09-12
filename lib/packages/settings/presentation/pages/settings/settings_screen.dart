@@ -295,34 +295,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       core.NotificationApi.showFakeDataRemovedNotification();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr(
-                  shared.LocaleKeys.fakeDataSuccessfullyRemovedMsg,
-                  track: shared.TrackConstants.commonTrack,
-                ) ??
-                'Fake data successfully removed from database.',
-          ),
-          backgroundColor: Colors.orange,
-        ),
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: context.tr(
+              shared.LocaleKeys.fakeDataSuccessfullyRemovedMsg,
+              track: shared.TrackConstants.commonTrack,
+            ) ??
+            'Fake data successfully removed from database.',
       );
     } catch (e, stackTrace) {
       debugPrint('Error processing master fake data: $e\n$stackTrace');
       if (mounted) {
         _statusMessageNotifier.value = 'Error processing fake data: $e';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.tr(
-                    shared.LocaleKeys.commonCustomErrorMsg,
-                    track: shared.TrackConstants.commonTrack,
-                    params: {"error": e.toString()},
-                  ) ??
-                  'Error: ${e.toString()}',
-            ),
-            backgroundColor: Colors.red,
-          ),
+        shared.SnackBarUtils.showError(
+          context,
+          message: context.tr(
+                shared.LocaleKeys.commonCustomErrorMsg,
+                track: shared.TrackConstants.commonTrack,
+                params: {"error": e.toString()},
+              ) ??
+              'Error: ${e.toString()}',
         );
       }
     } finally {
@@ -403,18 +395,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       core.NotificationApi.showFakeDataCompletedNotification(count: count);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr(
-                  shared.LocaleKeys.fakedRecordsAddedSuccessfullyMsg,
-                  params: {'count': count.toString()},
-                  track: shared.TrackConstants.commonTrack,
-                ) ??
-                'Faked records of $count added successfully.',
-          ),
-          backgroundColor: Colors.green,
-        ),
+      shared.SnackBarUtils.showSuccess(
+        context,
+        message: context.tr(
+              shared.LocaleKeys.fakedRecordsAddedSuccessfullyMsg,
+              params: {'count': count.toString()},
+              track: shared.TrackConstants.commonTrack,
+            ) ??
+            'Faked records of $count added successfully.',
       );
     } catch (e, stackTrace) {
       debugPrint('Error generating selected dataset: $e\n$stackTrace');
@@ -808,18 +796,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         core.NotificationApi.showFakeDataCompletedNotification(count: count);
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                context.tr(
-                      shared.LocaleKeys.fakeDataActiveInDatabaseMsg,
-                      params: {'name': name},
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    '$name fake data active in database!',
-              ),
-              backgroundColor: Colors.green,
-            ),
+          shared.SnackBarUtils.showSuccess(
+            context,
+            message: context.tr(
+                  shared.LocaleKeys.fakeDataActiveInDatabaseMsg,
+                  params: {'name': name},
+                  track: shared.TrackConstants.commonTrack,
+                ) ??
+                '$name fake data active in database!',
           );
         }
       } else {
@@ -838,18 +822,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
         core.NotificationApi.showFakeDataRemovedNotification();
 
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                context.tr(
-                      shared.LocaleKeys.fakeDataRemovedFromDatabaseMsg,
-                      params: {'name': name},
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    '$name fake data removed from database.',
-              ),
-              backgroundColor: Colors.orange,
-            ),
+          shared.SnackBarUtils.showWarning(
+            context,
+            message: context.tr(
+                  shared.LocaleKeys.fakeDataRemovedFromDatabaseMsg,
+                  params: {'name': name},
+                  track: shared.TrackConstants.commonTrack,
+                ) ??
+                '$name fake data removed from database.',
           );
         }
       }
@@ -857,18 +837,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
       debugPrint('Error updating $name fake data: $e\n$stackTrace');
       if (mounted) {
         _statusMessageNotifier.value = 'Error updating $name fake data: $e';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              context.tr(
-                    shared.LocaleKeys.commonCustomErrorMsg,
-                    track: shared.TrackConstants.commonTrack,
-                    params: {"error": e.toString()},
-                  ) ??
-                  'Error updating $name fake data: ${e.toString()}',
-            ),
-            backgroundColor: Colors.red,
-          ),
+        shared.SnackBarUtils.showError(
+          context,
+          message: context.tr(
+                shared.LocaleKeys.commonCustomErrorMsg,
+                track: shared.TrackConstants.commonTrack,
+                params: {"error": e.toString()},
+              ) ??
+              'Error updating $name fake data: ${e.toString()}',
         );
       }
     } finally {

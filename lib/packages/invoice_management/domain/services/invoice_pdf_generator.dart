@@ -467,12 +467,13 @@ class InvoicePdfGenerator {
   static Future<void> printPdf({
     required InvoiceDetailsEntity details,
     String? docName,
+    Uint8List? bytes,
   }) async {
     final receiptNo = details.invoice.hashId.isNotEmpty
         ? details.invoice.hashId
         : 'MD-${details.invoice.id}';
     final name = docName ?? 'Invoice_$receiptNo.pdf';
-    final pdfBytes = await generatePdf(details: details);
+    final pdfBytes = bytes ?? await generatePdf(details: details);
 
     await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => pdfBytes,
@@ -499,16 +500,20 @@ class InvoicePdfGenerator {
   /// Shares the generated invoice PDF via the system share sheet.
   static Future<void> sharePdf({
     required InvoiceDetailsEntity details,
+    String? filePath,
+    Uint8List? bytes,
     Rect? sharePositionOrigin,
   }) async {
     final receiptNo = details.invoice.hashId.isNotEmpty
         ? details.invoice.hashId
         : 'MD-${details.invoice.id}';
-    final pdfBytes = await generatePdf(details: details);
+    final pdfBytes =
+        bytes ?? (filePath == null ? await generatePdf(details: details) : null);
 
     await shared.PdfSaveHelper.shareInvoice(
       bytes: pdfBytes,
       invoiceNumber: receiptNo,
+      filePath: filePath,
       sharePositionOrigin: sharePositionOrigin,
     );
   }

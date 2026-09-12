@@ -14,48 +14,46 @@ import '../../widgets/invoice_pdf_preview_dialog/invoice_pdf_preview_dialog.dart
 
 class InvoiceDetailScreenActions {
   static void onReturn(BuildContext context, InvoiceDetailsEntity details) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Return requested')),
-    );
+    shared.SnackBarUtils.showInfo(context, message: 'Return requested');
   }
 
-  static void onDelete(
+  static Future<void> onDelete(
     BuildContext context,
     int invoiceId, {
     bool fromCheckout = false,
-  }) {
-    showDialog(
+  }) async {
+    final bool? isConfirmed =
+        await shared.DialogUtils.showConfirmationDialog<bool>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Delete Receipt'),
-        content: const Text(
+      title: context.tr(
+            shared.LocaleKeys.commonDelete,
+            track: shared.TrackConstants.commonTrack,
+          ) ??
+          'Delete Receipt',
+      content:
           'Are you sure you want to delete this receipt? This will soft delete the invoice and its linked order.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () {
-              Navigator.pop(dialogContext);
-              context
-                  .read<InvoiceManagementBloc>()
-                  .add(DeleteInvoiceEvent(invoiceId));
-              if (fromCheckout) {
-                context.go(core.AppRoutePath.homeRoute);
-              } else if (Navigator.of(context).canPop()) {
-                context.pop();
-              } else {
-                context.go(core.AppRoutePath.homeRoute);
-              }
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
+      cancelText: context.tr(
+            shared.LocaleKeys.commonCancel,
+            track: shared.TrackConstants.commonTrack,
+          ) ??
+          'Cancel',
+      confirmText: context.tr(
+            shared.LocaleKeys.commonDelete,
+            track: shared.TrackConstants.commonTrack,
+          ) ??
+          'Delete',
     );
+
+    if (isConfirmed == true && context.mounted) {
+      context.read<InvoiceManagementBloc>().add(DeleteInvoiceEvent(invoiceId));
+      if (fromCheckout) {
+        context.go(core.AppRoutePath.homeRoute);
+      } else if (Navigator.of(context).canPop()) {
+        context.pop();
+      } else {
+        context.go(core.AppRoutePath.homeRoute);
+      }
+    }
   }
 
   static Future<bool?> onEdit(
@@ -100,10 +98,9 @@ class InvoiceDetailScreenActions {
   }) async {
     final invoiceDetails = _resolveDetails(context, details);
     if (invoiceDetails == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please wait for invoice details to load.'),
-        ),
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: 'Please wait for invoice details to load.',
       );
       return;
     }
@@ -115,8 +112,9 @@ class InvoiceDetailScreenActions {
       );
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to share invoice PDF: $e')),
+        shared.SnackBarUtils.showError(
+          context,
+          message: 'Failed to share invoice PDF: $e',
         );
       }
     }
@@ -128,10 +126,9 @@ class InvoiceDetailScreenActions {
   }) async {
     final invoiceDetails = _resolveDetails(context, details);
     if (invoiceDetails == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please wait for invoice details to load.'),
-        ),
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: 'Please wait for invoice details to load.',
       );
       return;
     }
@@ -155,10 +152,9 @@ class InvoiceDetailScreenActions {
   }) async {
     final invoiceDetails = _resolveDetails(context, details);
     if (invoiceDetails == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please wait for invoice details to load.'),
-        ),
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: 'Please wait for invoice details to load.',
       );
       return;
     }
@@ -176,6 +172,30 @@ class InvoiceDetailScreenActions {
     );
   }
 
+  static Future<void> onPreviewPdf(
+    BuildContext context, {
+    InvoiceDetailsEntity? details,
+  }) async {
+    final invoiceDetails = _resolveDetails(context, details);
+    if (invoiceDetails == null) {
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: 'Please wait for invoice details to load.',
+      );
+      return;
+    }
+
+    if (context.mounted) {
+      await showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (dialogCtx) => InvoicePdfPreviewDialog(
+          details: invoiceDetails,
+        ),
+      );
+    }
+  }
+
   static Future<void> onOpenPdf(
     BuildContext context, {
     InvoiceDetailsEntity? details,
@@ -183,10 +203,9 @@ class InvoiceDetailScreenActions {
   }) async {
     final invoiceDetails = _resolveDetails(context, details);
     if (invoiceDetails == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please wait for invoice details to load.'),
-        ),
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: 'Please wait for invoice details to load.',
       );
       return;
     }
@@ -212,6 +231,7 @@ class InvoiceDetailScreenActions {
     if (context.mounted) {
       await showDialog(
         context: context,
+        barrierDismissible: true,
         builder: (dialogCtx) => InvoicePdfPreviewDialog(
           details: invoiceDetails,
           filePath: filePath,
@@ -226,10 +246,9 @@ class InvoiceDetailScreenActions {
   }) async {
     final invoiceDetails = _resolveDetails(context, details);
     if (invoiceDetails == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please wait for invoice details to load.'),
-        ),
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: 'Please wait for invoice details to load.',
       );
       return;
     }
@@ -269,100 +288,46 @@ class InvoiceDetailScreenActions {
             ) ??
             'Share';
 
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 6),
-            content: Row(
-              children: [
-                const Icon(
-                  Icons.check_circle_rounded,
-                  color: Colors.greenAccent,
-                  size: 22,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        successTitle,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      if (fileName.isNotEmpty)
-                        Text(
-                          fileName,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.white.withValues(alpha: 0.7),
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                    ],
-                  ),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    onOpenPdf(
-                      context,
-                      details: invoiceDetails,
-                      filePath: result.filePath,
-                    );
-                  },
-                  child: Text(
-                    openLabel.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.amberAccent,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    visualDensity: VisualDensity.compact,
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    InvoicePdfGenerator.sharePdf(
-                      details: invoiceDetails,
-                    );
-                  },
-                  child: Text(
-                    shareLabel.toUpperCase(),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ],
+        shared.SnackBarUtils.showActionNotification(
+          context,
+          title: successTitle,
+          subtitle: fileName.isNotEmpty ? fileName : null,
+          duration: const Duration(seconds: 6),
+          actions: [
+            shared.SnackBarActionItem(
+              label: openLabel,
+              textColor: Colors.amberAccent,
+              onPressed: () {
+                onOpenPdf(
+                  context,
+                  details: invoiceDetails,
+                  filePath: result.filePath,
+                );
+              },
             ),
-          ),
+            shared.SnackBarActionItem(
+              label: shareLabel,
+              textColor: Colors.white,
+              onPressed: () {
+                InvoicePdfGenerator.sharePdf(
+                  details: invoiceDetails,
+                );
+              },
+            ),
+          ],
         );
       } else {
         final String errorMsg = result.errorMessage ?? 'Unknown error';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save invoice PDF: $errorMsg')),
+        shared.SnackBarUtils.showError(
+          context,
+          message: 'Failed to save invoice PDF: $errorMsg',
         );
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to save invoice PDF: $e')),
+        shared.SnackBarUtils.showError(
+          context,
+          message: 'Failed to save invoice PDF: $e',
         );
       }
     }
@@ -374,10 +339,9 @@ class InvoiceDetailScreenActions {
   }) async {
     final invoiceDetails = _resolveDetails(context, details);
     if (invoiceDetails == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please wait for invoice details to load.'),
-        ),
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: 'Please wait for invoice details to load.',
       );
       return;
     }
@@ -386,8 +350,9 @@ class InvoiceDetailScreenActions {
       await InvoicePdfGenerator.printPdf(details: invoiceDetails);
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to print invoice: $e')),
+        shared.SnackBarUtils.showError(
+          context,
+          message: 'Failed to print invoice: $e',
         );
       }
     }

@@ -87,9 +87,10 @@ class AddEditReservationScreenActions {
         ),
       );
     } else if (state is ReservationActionError) {
-      ScaffoldMessenger.of(
+      shared.SnackBarUtils.showError(
         context,
-      ).showSnackBar(SnackBar(content: Text(state.message)));
+        message: state.message,
+      );
     }
   }
 }

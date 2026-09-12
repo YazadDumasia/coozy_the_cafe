@@ -255,21 +255,17 @@ class MenuCategoryListItem extends StatelessWidget {
                                 index,
                                 onError: (error) {
                                   if (context.mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          context.tr(
-                                                shared
-                                                    .LocaleKeys
-                                                    .menuCategoryFullListFailedToReorderCategoryMsg,
-                                                track: shared
-                                                    .TrackConstants
-                                                    .menuCategoryPageTrack,
-                                              ) ??
-                                              'Failed to reorder categories.',
-                                        ),
-                                        backgroundColor: Colors.red,
-                                      ),
+                                    shared.SnackBarUtils.showError(
+                                      context,
+                                      message: context.tr(
+                                            shared
+                                                .LocaleKeys
+                                                .menuCategoryFullListFailedToReorderCategoryMsg,
+                                            track: shared
+                                                .TrackConstants
+                                                .menuCategoryPageTrack,
+                                          ) ??
+                                          'Failed to reorder categories.',
                                     );
                                   }
                                 },
@@ -292,23 +288,17 @@ class MenuCategoryListItem extends StatelessWidget {
                                   index,
                                   onError: (error) {
                                     if (context.mounted) {
-                                      ScaffoldMessenger.of(
+                                      shared.SnackBarUtils.showError(
                                         context,
-                                      ).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            context.tr(
-                                                  shared
-                                                      .LocaleKeys
-                                                      .menuCategoryFullListFailedToReorderCategoryMsg,
-                                                  track: shared
-                                                      .TrackConstants
-                                                      .menuCategoryPageTrack,
-                                                ) ??
-                                                'Failed to reorder categories.',
-                                          ),
-                                          backgroundColor: Colors.red,
-                                        ),
+                                        message: context.tr(
+                                              shared
+                                                  .LocaleKeys
+                                                  .menuCategoryFullListFailedToReorderCategoryMsg,
+                                              track: shared
+                                                  .TrackConstants
+                                                  .menuCategoryPageTrack,
+                                            ) ??
+                                            'Failed to reorder categories.',
                                       );
                                     }
                                   },

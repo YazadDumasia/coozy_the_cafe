@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../database.dart';
 
 typedef FakeDataProgressCallback =
@@ -2399,11 +2400,9 @@ class FakeDataHelper {
                             if (isPresent) {
                               await removeDatasetData(database, stageKeys);
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Sample $title data removed.'),
-                                    backgroundColor: Colors.orange,
-                                  ),
+                                shared.SnackBarUtils.showWarning(
+                                  context,
+                                  message: 'Sample $title data removed.',
                                 );
                               }
                             } else {
@@ -2412,13 +2411,10 @@ class FakeDataHelper {
                                 stageKeys,
                               );
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
+                                shared.SnackBarUtils.showSuccess(
+                                  context,
+                                  message:
                                       'Generated $count sample $title records!',
-                                    ),
-                                    backgroundColor: Colors.green,
-                                  ),
                                 );
                               }
                             }

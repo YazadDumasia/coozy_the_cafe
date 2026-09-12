@@ -121,16 +121,12 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          context.tr(
-                                shared.LocaleKeys.thermalKotPrintSuccessMsg,
-                              ) ??
-                              'KOT Slip sent to Thermal Printer successfully!',
-                        ),
-                        backgroundColor: Colors.green,
-                      ),
+                    shared.SnackBarUtils.showSuccess(
+                      context,
+                      message: context.tr(
+                            shared.LocaleKeys.thermalKotPrintSuccessMsg,
+                          ) ??
+                          'KOT Slip sent to Thermal Printer successfully!',
                     );
                   },
                 ),

@@ -58,53 +58,41 @@ class AddEditMenuItemScreenActions {
     if (!(formKey.currentState?.validate() ?? false)) return;
 
     if (categoryId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr(
-                  shared
-                      .LocaleKeys
-                      .menuItemPageAddEditMenuItemPleaseSelectCategory,
-                  track: shared.TrackConstants.menuItemPageTrack,
-                ) ??
-                'Please select a category',
-          ),
-          backgroundColor: Colors.red,
-        ),
+      shared.SnackBarUtils.showError(
+        context,
+        message: context.tr(
+              shared
+                  .LocaleKeys
+                  .menuItemPageAddEditMenuItemPleaseSelectCategory,
+              track: shared.TrackConstants.menuItemPageTrack,
+            ) ??
+            'Please select a category',
       );
       return;
     }
 
     if (foodType == null || foodType.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr(
-                  shared
-                      .LocaleKeys
-                      .menuItemPageAddEditMenuItemPleaseSelectFoodType,
-                  track: shared.TrackConstants.menuItemPageTrack,
-                ) ??
-                'Please select a food type',
-          ),
-          backgroundColor: Colors.red,
-        ),
+      shared.SnackBarUtils.showError(
+        context,
+        message: context.tr(
+              shared
+                  .LocaleKeys
+                  .menuItemPageAddEditMenuItemPleaseSelectFoodType,
+              track: shared.TrackConstants.menuItemPageTrack,
+            ) ??
+            'Please select a food type',
       );
       return;
     }
 
     if (variations != null && variations.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr(
-                  shared.LocaleKeys.menuItemPageAddEditMenuItemAdd,
-                  track: shared.TrackConstants.menuItemPageTrack,
-                ) ??
-                'Please add at least one variation',
-          ),
-          backgroundColor: Colors.red,
-        ),
+      shared.SnackBarUtils.showError(
+        context,
+        message: context.tr(
+              shared.LocaleKeys.menuItemPageAddEditMenuItemAdd,
+              track: shared.TrackConstants.menuItemPageTrack,
+            ) ??
+            'Please add at least one variation',
       );
       return;
     }

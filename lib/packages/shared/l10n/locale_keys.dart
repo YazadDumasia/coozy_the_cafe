@@ -1332,6 +1332,8 @@ abstract class LocaleKeys {
   static const String invoiceItemCountUnit = 'invoice_item_count_unit';
   static const String invoiceItemCountUnitsShort = 'invoice_item_count_units_short';
   static const String invoiceListTitle = 'invoice_list_title';
+  static const String invoicePreviewError = 'invoice_preview_error';
+  static const String invoicePreviewTitle = 'invoice_preview_title';
   static const String invoiceTableAmount = 'invoice_table_amount';
   static const String invoiceTableItemsCount = 'invoice_table_items_count';
   static const String invoiceTableName = 'invoice_table_name';

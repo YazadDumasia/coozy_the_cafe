@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:another_flushbar/flushbar.dart';
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/menu_category_full_list_cubit/menu_category_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
 import 'package:flutter/material.dart';
@@ -186,27 +185,22 @@ class _MenuSubCategoryExpansionChildListViewWidgetState
                                                     final subName =
                                                         subCategory.name ??
                                                         'Sub-category';
-                                                    Flushbar(
-                                                      message: isEnable
-                                                          ? '$subName sub-category is activated successfully.'
-                                                          : '$subName sub-category is deactivated successfully.',
+                                                    final message = isEnable
+                                                        ? '$subName sub-category is activated successfully.'
+                                                        : '$subName sub-category is deactivated successfully.';
+                                                    shared.SnackBarUtils.showSuccess(
+                                                      context,
+                                                      message: message,
                                                       duration: const Duration(
                                                         seconds: 2,
                                                       ),
-                                                      margin:
-                                                          const EdgeInsets.all(
-                                                            8,
-                                                          ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
-                                                          ),
-                                                    ).show(context);
+                                                    );
                                                   }
                                                 },
                                                 onError: (error) {
                                                   if (context.mounted) {
-                                                    Flushbar(
+                                                    shared.SnackBarUtils.showError(
+                                                      context,
                                                       message:
                                                           context.tr(
                                                             shared
@@ -217,20 +211,10 @@ class _MenuSubCategoryExpansionChildListViewWidgetState
                                                                 .menuCategoryPageTrack,
                                                           ) ??
                                                           'Failed to update sub-category status.',
-                                                      backgroundColor:
-                                                          Colors.red,
                                                       duration: const Duration(
                                                         seconds: 2,
                                                       ),
-                                                      margin:
-                                                          const EdgeInsets.all(
-                                                            8,
-                                                          ),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
-                                                          ),
-                                                    ).show(context);
+                                                    );
                                                   }
                                                 },
                                               );

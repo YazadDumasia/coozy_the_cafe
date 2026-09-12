@@ -119,12 +119,10 @@ class _CheckoutBarcodeScannerDialogState
 
       if (mounted) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('✓ Added "$displayName" (${core.CurrencyFormatter.format(value: unitPrice)})'),
-            backgroundColor: Colors.green[800],
-            duration: const Duration(seconds: 2),
-          ),
+        core.SnackBarUtils.showSuccess(
+          context,
+          message: '✓ Added "$displayName" (${core.CurrencyFormatter.format(value: unitPrice)})',
+          duration: const Duration(seconds: 2),
         );
       }
     } catch (e) {

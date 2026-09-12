@@ -231,8 +231,9 @@ class _PaymentSuccessViewState extends State<PaymentSuccessView>
                   onPressed:
                       widget.onGetReceipt ??
                       () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Receipt downloaded')),
+                        shared.SnackBarUtils.showSuccess(
+                          context,
+                          message: 'Receipt downloaded',
                         );
                       },
                   style: ElevatedButton.styleFrom(

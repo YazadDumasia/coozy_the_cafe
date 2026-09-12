@@ -332,10 +332,9 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                               );
                             } catch (e) {
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Failed to share PDF: $e'),
-                                  ),
+                                shared.SnackBarUtils.showError(
+                                  context,
+                                  message: 'Failed to share PDF: $e',
                                 );
                               }
                             } finally {
@@ -393,62 +392,55 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                                             ) ??
                                             'PDF saved successfully: ${result.filePath}');
 
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(successText),
-                                    duration: const Duration(seconds: 4),
-                                    action:
-                                        (!result.isWeb &&
-                                                result.filePath != null)
-                                            ? SnackBarAction(
-                                              label:
-                                                  context.tr(
-                                                    shared
-                                                        .LocaleKeys
-                                                        .pdfShareBtn,
-                                                    track:
-                                                        shared
-                                                            .TrackConstants
-                                                            .tablePageTrack,
-                                                  ) ??
-                                                  'Share',
-                                              onPressed: () {
-                                                MenuItemBarcodePdfGenerator.sharePdf(
-                                                  barcodeItems: _barcodeItems,
-                                                  columnsCount:
-                                                      _selectedColumns,
-                                                  docName: docName,
-                                                );
-                                              },
-                                            )
-                                            : null,
-                                  ),
+                                shared.SnackBarUtils.showSuccess(
+                                  context,
+                                  message: successText,
+                                  duration: const Duration(seconds: 4),
+                                  actions: (!result.isWeb &&
+                                          result.filePath != null)
+                                      ? [
+                                          shared.SnackBarActionItem(
+                                            label: context.tr(
+                                                  shared
+                                                      .LocaleKeys
+                                                      .pdfShareBtn,
+                                                  track: shared
+                                                      .TrackConstants
+                                                      .tablePageTrack,
+                                                ) ??
+                                                'Share',
+                                            onPressed: () {
+                                              MenuItemBarcodePdfGenerator.sharePdf(
+                                                barcodeItems: _barcodeItems,
+                                                columnsCount:
+                                                    _selectedColumns,
+                                                docName: docName,
+                                              );
+                                            },
+                                          ),
+                                        ]
+                                      : const [],
                                 );
                               } else {
                                 final String errorMsg =
                                     result.errorMessage ?? 'Unknown error';
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      context.tr(
-                                            shared.LocaleKeys.pdfSaveFailedMsg,
-                                            params: {'error': errorMsg},
-                                            track:
-                                                shared
-                                                    .TrackConstants
-                                                    .tablePageTrack,
-                                          ) ??
-                                          'Failed to save PDF: $errorMsg',
-                                    ),
-                                  ),
+                                shared.SnackBarUtils.showError(
+                                  context,
+                                  message: context.tr(
+                                        shared.LocaleKeys.pdfSaveFailedMsg,
+                                        params: {'error': errorMsg},
+                                        track: shared
+                                            .TrackConstants
+                                            .tablePageTrack,
+                                      ) ??
+                                      'Failed to save PDF: $errorMsg',
                                 );
                               }
                             } catch (e) {
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Failed to save PDF: $e'),
-                                  ),
+                                shared.SnackBarUtils.showError(
+                                  context,
+                                  message: 'Failed to save PDF: $e',
                                 );
                               }
                             } finally {
@@ -482,10 +474,9 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                               );
                             } catch (e) {
                               if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text('Failed to print PDF: $e'),
-                                  ),
+                                shared.SnackBarUtils.showError(
+                                  context,
+                                  message: 'Failed to print PDF: $e',
                                 );
                               }
                             }

@@ -217,16 +217,13 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
   void _onSave() {
     if (!_formKey.currentState!.validate()) return;
     if (_dateTimeNotifier.value == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            context.tr(
-                  shared.LocaleKeys.selectDateAndTimeMsg,
-                  track: shared.TrackConstants.reservationPageTrack,
-                ) ??
-                'Please select date and time.',
-          ),
-        ),
+      shared.SnackBarUtils.showWarning(
+        context,
+        message: context.tr(
+              shared.LocaleKeys.selectDateAndTimeMsg,
+              track: shared.TrackConstants.reservationPageTrack,
+            ) ??
+            'Please select date and time.',
       );
       return;
     }

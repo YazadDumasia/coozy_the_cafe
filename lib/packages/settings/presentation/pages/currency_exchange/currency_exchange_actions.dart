@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,12 +19,10 @@ mixin CurrencyExchangeActions {
 
   void copyToClipboard(BuildContext context, String text, String label) {
     Clipboard.setData(ClipboardData(text: text));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('$label copied to clipboard!'),
-        duration: const Duration(seconds: 2),
-        behavior: SnackBarBehavior.floating,
-      ),
+    shared.SnackBarUtils.showSuccess(
+      context,
+      message: '$label copied to clipboard!',
+      duration: const Duration(seconds: 2),
     );
   }
 }

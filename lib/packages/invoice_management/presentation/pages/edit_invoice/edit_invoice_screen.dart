@@ -341,8 +341,9 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
                 state.errorMessage != null &&
                 state.errorMessage!.isNotEmpty) {
               _isSavingNotifier.value = false;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorMessage!)),
+              shared.SnackBarUtils.showError(
+                context,
+                message: state.errorMessage!,
               );
             }
           },

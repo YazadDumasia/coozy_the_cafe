@@ -116,8 +116,9 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
           listener: (context, state) {
             if (state is InvoiceManagementLoadedState &&
                 state.errorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorMessage!)),
+              shared.SnackBarUtils.showError(
+                context,
+                message: state.errorMessage!,
               );
             }
           },

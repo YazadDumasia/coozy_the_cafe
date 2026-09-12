@@ -99,11 +99,9 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   params: {'tableName': tName, 'orderId': oId},
                 ) ??
                 'Order placed successfully for $tName! (ID: #$oId)';
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(localizedMsg),
-                backgroundColor: Colors.green,
-              ),
+            shared.SnackBarUtils.showSuccess(
+              context,
+              message: localizedMsg,
             );
             context.go(core.AppRoutePath.homeRoute);
           } else if (state.errorMessage != null &&
@@ -114,8 +112,9 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                 ? (context.tr(shared.LocaleKeys.cartIsEmptyMsg, track: shared.TrackConstants.tablePageTrack) ??
                       state.errorMessage!)
                 : state.errorMessage!;
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(errText), backgroundColor: Colors.red),
+            shared.SnackBarUtils.showError(
+              context,
+              message: errText,
             );
           }
 

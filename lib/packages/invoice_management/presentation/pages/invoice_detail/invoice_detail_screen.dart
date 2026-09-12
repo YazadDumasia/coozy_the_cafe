@@ -99,7 +99,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
           onSelected: (value) {
             switch (value) {
               case 'preview':
-                InvoiceDetailScreenActions.onOpenPdf(context);
+                InvoiceDetailScreenActions.onPreviewPdf(context);
                 break;
               case 'print':
                 InvoiceDetailScreenActions.onPrint(context);
@@ -223,6 +223,15 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
 
     // Tablet / Desktop / Web layout: show full action buttons
     return [
+      IconButton(
+        icon: const Icon(Icons.picture_as_pdf_outlined),
+        tooltip: context.tr(
+              shared.LocaleKeys.invoiceActionPreviewPdf,
+              track: shared.TrackConstants.invoicePageTrack,
+            ) ??
+            'Preview PDF',
+        onPressed: () => InvoiceDetailScreenActions.onPreviewPdf(context),
+      ),
       IconButton(
         icon: const Icon(Icons.share_outlined),
         tooltip: context.tr(

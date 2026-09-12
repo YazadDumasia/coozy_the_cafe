@@ -24,3 +24,4 @@ export 'utils/feature_flags.dart';
 export 'utils/hash_id_generator.dart';
 export 'utils/local_push_notifications_api.dart';
 export 'utils/platform_utils.dart';
+export 'utils/snackbar_utils.dart';

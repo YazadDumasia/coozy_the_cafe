@@ -55,6 +55,7 @@ export 'utils/components/mask_text_input_formatter.dart';
 export 'utils/components/page_transition.dart';
 export 'utils/components/pdf_save_helper.dart';
 export 'utils/components/pulse_animation.dart';
+export 'utils/components/snackbar_utils.dart';
 export 'utils/components/sprung.dart';
 export 'utils/components/top_login.dart';
 export 'utils/components/upper_case_text_formatter.dart';

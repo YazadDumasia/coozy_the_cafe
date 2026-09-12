@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -163,28 +162,28 @@ class MenuCategoryFullListScreenActions {
       onSuccess: () {
         if (context.mounted) {
           final catName = category.name ?? 'Category';
-          Flushbar(
-            message: isEnable
-                ? (context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuCategoryFullListEnableToUpdateCategoryMsg,
-                        params: {'catName': catName},
-                        track: shared.TrackConstants.menuCategoryPageTrack,
-                      ) ??
-                      '$catName category is activated successfully.')
-                : (context.tr(
-                        shared
-                            .LocaleKeys
-                            .menuCategoryFullListUnableToUpdateCategoryMsg,
-                        params: {'catName': catName},
-                        track: shared.TrackConstants.menuCategoryPageTrack,
-                      ) ??
-                      '$catName category is deactivated successfully.'),
+          final message = isEnable
+              ? (context.tr(
+                      shared
+                          .LocaleKeys
+                          .menuCategoryFullListEnableToUpdateCategoryMsg,
+                      params: {'catName': catName},
+                      track: shared.TrackConstants.menuCategoryPageTrack,
+                    ) ??
+                    '$catName category is activated successfully.')
+              : (context.tr(
+                      shared
+                          .LocaleKeys
+                          .menuCategoryFullListUnableToUpdateCategoryMsg,
+                      params: {'catName': catName},
+                      track: shared.TrackConstants.menuCategoryPageTrack,
+                    ) ??
+                    '$catName category is deactivated successfully.');
+          shared.SnackBarUtils.showSuccess(
+            context,
+            message: message,
             duration: const Duration(seconds: 2),
-            margin: const EdgeInsets.all(8),
-            borderRadius: BorderRadius.circular(8),
-          ).show(context);
+          );
         }
       },
       onError: (error) {
@@ -193,20 +192,17 @@ class MenuCategoryFullListScreenActions {
           'handleToggleCategory:onError: $error',
         );
         if (context.mounted) {
-          Flushbar(
-            message:
-                context.tr(
+          shared.SnackBarUtils.showError(
+            context,
+            message: context.tr(
                   shared
                       .LocaleKeys
                       .menuCategoryFullListFailedToUpdateCategoryMsg,
                   track: shared.TrackConstants.menuCategoryPageTrack,
                 ) ??
                 'Failed to update category status.',
-            backgroundColor: Colors.red,
             duration: const Duration(seconds: 2),
-            margin: const EdgeInsets.all(8),
-            borderRadius: BorderRadius.circular(8),
-          ).show(context);
+          );
         }
       },
     );

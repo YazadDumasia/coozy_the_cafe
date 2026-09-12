@@ -360,8 +360,9 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                     >(
                       listener: (context, state) {
                         if (state is ReservationActionError) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.message)),
+                          shared.SnackBarUtils.showError(
+                            context,
+                            message: state.message,
                           );
                         }
                       },

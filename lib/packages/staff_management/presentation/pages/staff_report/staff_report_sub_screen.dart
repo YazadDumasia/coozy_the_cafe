@@ -377,21 +377,18 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
 
                             onPressed: () {
                               _refreshAllData();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    context.tr(
-                                          shared
-                                              .LocaleKeys
-                                              .staffReportsReloadedSuccess,
-                                          track: shared
-                                              .TrackConstants
-                                              .staffManagementPageTrack,
-                                        ) ??
-                                        'Staff reports reloaded successfully!',
-                                  ),
-                                  duration: const Duration(seconds: 1),
-                                ),
+                              shared.SnackBarUtils.showSuccess(
+                                context,
+                                message: context.tr(
+                                      shared
+                                          .LocaleKeys
+                                          .staffReportsReloadedSuccess,
+                                      track: shared
+                                          .TrackConstants
+                                          .staffManagementPageTrack,
+                                    ) ??
+                                    'Staff reports reloaded successfully!',
+                                duration: const Duration(seconds: 2),
                               );
                             },
                           ),
