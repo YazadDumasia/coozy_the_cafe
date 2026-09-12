@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../bloc/invoice_management_bloc.dart';
 import 'invoice_list_screen_actions.dart';
 import 'widget/invoice_card_widget.dart';
 import 'widget/invoice_date_header_widget.dart';
+import 'widget/invoice_list_active_filters_row.dart';
 
 class InvoiceListScreen extends StatefulWidget {
   const InvoiceListScreen({super.key});
@@ -15,6 +17,8 @@ class InvoiceListScreen extends StatefulWidget {
 
 class _InvoiceListScreenState extends State<InvoiceListScreen> {
   late final ScrollController _scrollController;
+  final ValueNotifier<List<shared.AppliedFilterModel>> _appliedFiltersNotifier =
+      ValueNotifier([]);
 
   @override
   void initState() {
@@ -35,6 +39,7 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
+    _appliedFiltersNotifier.dispose();
     super.dispose();
   }
 
@@ -49,9 +54,6 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -64,8 +66,44 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [
+            BlocBuilder<InvoiceManagementBloc, InvoiceManagementState>(
+              builder: (context, state) {
+                final paymentModes = state is InvoiceManagementLoadedState
+                    ? state.paymentModes
+                    : const <PaymentMode>[];
+                return ValueListenableBuilder<List<shared.AppliedFilterModel>>(
+                  valueListenable: _appliedFiltersNotifier,
+                  builder: (context, appliedFilters, _) {
+                    final hasFilters = appliedFilters.isNotEmpty;
+                    return IconButton(
+                      icon: Badge(
+                        isLabelVisible: hasFilters,
+                        child: const Icon(Icons.filter_list),
+                      ),
+                      tooltip: context.tr(
+                            shared.LocaleKeys.commonFilter,
+                            track: shared.TrackConstants.commonTrack,
+                          ) ??
+                          'Filter',
+                      onPressed: () {
+                        InvoiceListScreenActions.openFilterBottomSheet(
+                          context: context,
+                          appliedFiltersNotifier: _appliedFiltersNotifier,
+                          paymentModes: paymentModes,
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.refresh),
+              tooltip: context.tr(
+                    shared.LocaleKeys.commonRefresh,
+                    track: shared.TrackConstants.commonTrack,
+                  ) ??
+                  'Refresh',
               onPressed: () {
                 context.read<InvoiceManagementBloc>().add(
                       const LoadInvoicesEvent(isRefresh: true),
@@ -102,6 +140,27 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
               return Column(
                 children: [
                   InvoiceDateHeaderWidget(dateRange: state.dateRange),
+                  ValueListenableBuilder<List<shared.AppliedFilterModel>>(
+                    valueListenable: _appliedFiltersNotifier,
+                    builder: (context, appliedFilters, _) {
+                      return InvoiceListActiveFiltersRow(
+                        appliedFilters: appliedFilters,
+                        onRemoveAppliedFilterKey: (key) {
+                          InvoiceListScreenActions.removeAppliedFilterKey(
+                            context: context,
+                            appliedFiltersNotifier: _appliedFiltersNotifier,
+                            filterKey: key,
+                          );
+                        },
+                        onClearAll: () {
+                          InvoiceListScreenActions.clearAllFilters(
+                            context: context,
+                            appliedFiltersNotifier: _appliedFiltersNotifier,
+                          );
+                        },
+                      );
+                    },
+                  ),
                   Expanded(
                     child: invoices.isEmpty
                         ? Center(
@@ -146,24 +205,6 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
             }
             return const SizedBox.shrink();
           },
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            // Action for filter selection modal
-          },
-          backgroundColor: colorScheme.primary,
-          icon: const Icon(Icons.filter_list, color: Colors.white),
-          label: Text(
-            context.tr(
-                  shared.LocaleKeys.invoiceFilterAll,
-                  track: shared.TrackConstants.invoicePageTrack,
-                ) ??
-                'FILTER : ALL',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
         ),
       ),
     );

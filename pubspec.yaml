@@ -140,6 +140,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   world_countries: ^4.4.0
+  open_filex: ^4.7.0
   # easy_localization: ^3.0.8
 dependency_overrides:
   intl: ^0.20.3

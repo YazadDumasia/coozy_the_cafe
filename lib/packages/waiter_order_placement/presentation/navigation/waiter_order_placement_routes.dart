@@ -25,6 +25,7 @@ class WaiterOrderPlacementRoutes {
         String? tableName;
         int? orderId;
         bool isPickerOnly = false;
+        bool displayEmptyViewForTab = false;
 
         if (state.extra is int) {
           orderId = state.extra as int;
@@ -47,6 +48,14 @@ class WaiterOrderPlacementRoutes {
           if (map['isPickerOnly'] is bool) {
             isPickerOnly = map['isPickerOnly'] as bool;
           }
+          if (map['displayEmptyViewForTab'] is bool) {
+            displayEmptyViewForTab = map['displayEmptyViewForTab'] as bool;
+          }
+        }
+
+        if (state.uri.queryParameters.containsKey('displayEmptyViewForTab')) {
+          displayEmptyViewForTab =
+              state.uri.queryParameters['displayEmptyViewForTab'] == 'true';
         }
 
         return BlocProvider<MenuItemPickerBloc>(
@@ -59,6 +68,7 @@ class WaiterOrderPlacementRoutes {
             tableName: tableName,
             orderId: orderId,
             isPickerOnly: isPickerOnly,
+            displayEmptyViewForTab: displayEmptyViewForTab,
           ),
         );
       },

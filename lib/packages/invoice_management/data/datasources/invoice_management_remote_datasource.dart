@@ -7,12 +7,14 @@ abstract class InvoiceManagementRemoteDataSource {
     DateTime? startDate,
     DateTime? endDate,
     String? searchQuery,
+    List<String>? paymentMethods,
   });
 
   Future<int> getInvoicesCount({
     DateTime? startDate,
     DateTime? endDate,
     String? searchQuery,
+    List<String>? paymentMethods,
   });
 
   Future<Invoice?> getInvoiceById(int invoiceId);
@@ -53,24 +55,16 @@ class InvoiceManagementRemoteDataSourceImpl
     DateTime? startDate,
     DateTime? endDate,
     String? searchQuery,
+    List<String>? paymentMethods,
   }) async {
-    if (startDate != null && endDate != null) {
-      final startIso = startDate.toIso8601String();
-      final endIso = endDate.toIso8601String();
-      final offset = (pageNo - 1) * limit;
-      return invoicesDao.getInvoicesByDateRange(
-        startIso,
-        endIso,
-        limit: limit,
-        offset: offset,
-      );
-    } else {
-      return invoicesDao.getInvoicesPaginated(
-        limit: limit,
-        pageNo: pageNo,
-        search: searchQuery,
-      );
-    }
+    return invoicesDao.getInvoicesWithFilters(
+      limit: limit,
+      pageNo: pageNo,
+      startDate: startDate,
+      endDate: endDate,
+      searchQuery: searchQuery,
+      paymentMethods: paymentMethods,
+    );
   }
 
   @override
@@ -78,15 +72,14 @@ class InvoiceManagementRemoteDataSourceImpl
     DateTime? startDate,
     DateTime? endDate,
     String? searchQuery,
+    List<String>? paymentMethods,
   }) async {
-    if (startDate != null && endDate != null) {
-      return invoicesDao.getInvoicesCountByDateRange(
-        startDate.toIso8601String(),
-        endDate.toIso8601String(),
-      );
-    } else {
-      return invoicesDao.getInvoicesCount(search: searchQuery);
-    }
+    return invoicesDao.getInvoicesCountWithFilters(
+      startDate: startDate,
+      endDate: endDate,
+      searchQuery: searchQuery,
+      paymentMethods: paymentMethods,
+    );
   }
 
   @override

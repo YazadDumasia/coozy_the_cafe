@@ -9,6 +9,7 @@ class GetPaginatedInvoicesParams {
   final DateTime? startDate;
   final DateTime? endDate;
   final String? searchQuery;
+  final List<String>? paymentMethods;
 
   const GetPaginatedInvoicesParams({
     required this.limit,
@@ -16,6 +17,7 @@ class GetPaginatedInvoicesParams {
     this.startDate,
     this.endDate,
     this.searchQuery,
+    this.paymentMethods,
   });
 }
 
@@ -33,6 +35,7 @@ class GetPaginatedInvoicesUseCase {
       startDate: params.startDate,
       endDate: params.endDate,
       searchQuery: params.searchQuery,
+      paymentMethods: params.paymentMethods,
     );
   }
 }

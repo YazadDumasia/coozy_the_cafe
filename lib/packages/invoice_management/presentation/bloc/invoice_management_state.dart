@@ -27,6 +27,7 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
   final bool isLoadingDetails;
   final String? errorMessage;
   final List<PaymentMode> paymentModes;
+  final List<String> selectedPaymentMethods;
 
   const InvoiceManagementLoadedState({
     required this.invoices,
@@ -40,6 +41,7 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
     this.isLoadingDetails = false,
     this.errorMessage,
     this.paymentModes = const [],
+    this.selectedPaymentMethods = const [],
   });
 
   InvoiceManagementLoadedState copyWith({
@@ -54,6 +56,7 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
     bool? isLoadingDetails,
     String? errorMessage,
     List<PaymentMode>? paymentModes,
+    List<String>? selectedPaymentMethods,
   }) {
     return InvoiceManagementLoadedState(
       invoices: invoices ?? this.invoices,
@@ -68,6 +71,8 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
       isLoadingDetails: isLoadingDetails ?? this.isLoadingDetails,
       errorMessage: errorMessage,
       paymentModes: paymentModes ?? this.paymentModes,
+      selectedPaymentMethods:
+          selectedPaymentMethods ?? this.selectedPaymentMethods,
     );
   }
 
@@ -84,6 +89,7 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
         isLoadingDetails,
         errorMessage,
         paymentModes,
+        selectedPaymentMethods,
       ];
 }
 

@@ -73,6 +73,204 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     }
   }
 
+  List<Widget> _buildAppBarActions(BuildContext context) {
+    final bool isMobile = shared.ResponsiveLayout.isMobile(context);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    if (isMobile) {
+      return [
+        IconButton(
+          icon: const Icon(Icons.share_outlined),
+          tooltip: context.tr(
+                shared.LocaleKeys.invoiceActionShare,
+                track: shared.TrackConstants.invoicePageTrack,
+              ) ??
+              'Share',
+          onPressed: () => InvoiceDetailScreenActions.onShare(context),
+        ),
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.more_vert),
+          tooltip: context.tr(
+                shared.LocaleKeys.invoiceActionMoreOptions,
+                track: shared.TrackConstants.invoicePageTrack,
+              ) ??
+              'More options',
+          onSelected: (value) {
+            switch (value) {
+              case 'preview':
+                InvoiceDetailScreenActions.onOpenPdf(context);
+                break;
+              case 'print':
+                InvoiceDetailScreenActions.onPrint(context);
+                break;
+              case 'download':
+                InvoiceDetailScreenActions.onDownload(context);
+                break;
+              case 'whatsapp':
+                InvoiceDetailScreenActions.onWhatsApp(context);
+                break;
+              case 'sms':
+                InvoiceDetailScreenActions.onSendSms(context);
+                break;
+            }
+          },
+          itemBuilder: (BuildContext popupContext) => [
+            PopupMenuItem<String>(
+              value: 'preview',
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.picture_as_pdf_outlined,
+                    size: 20,
+                    color: colorScheme.onSurface,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    context.tr(
+                          shared.LocaleKeys.invoiceActionPreviewPdf,
+                          track: shared.TrackConstants.invoicePageTrack,
+                        ) ??
+                        'Preview PDF',
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<String>(
+              value: 'print',
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.print_outlined,
+                    size: 20,
+                    color: colorScheme.onSurface,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    context.tr(
+                          shared.LocaleKeys.invoiceActionPrint,
+                          track: shared.TrackConstants.invoicePageTrack,
+                        ) ??
+                        'Print',
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<String>(
+              value: 'download',
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.file_download_outlined,
+                    size: 20,
+                    color: colorScheme.onSurface,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    context.tr(
+                          shared.LocaleKeys.invoiceActionDownload,
+                          track: shared.TrackConstants.invoicePageTrack,
+                        ) ??
+                        'Download PDF',
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<String>(
+              value: 'whatsapp',
+              child: Row(
+                children: [
+                  Icon(
+                    FontAwesomeIcons.whatsapp.data,
+                    size: 20,
+                    color: const Color(0xFF25D366),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    context.tr(
+                          shared.LocaleKeys.invoiceActionWhatsapp,
+                          track: shared.TrackConstants.invoicePageTrack,
+                        ) ??
+                        'WhatsApp',
+                  ),
+                ],
+              ),
+            ),
+            PopupMenuItem<String>(
+              value: 'sms',
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.sms_outlined,
+                    size: 20,
+                    color: colorScheme.onSurface,
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    context.tr(
+                          shared.LocaleKeys.invoiceActionSms,
+                          track: shared.TrackConstants.invoicePageTrack,
+                        ) ??
+                        'Send SMS',
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ];
+    }
+
+    // Tablet / Desktop / Web layout: show full action buttons
+    return [
+      IconButton(
+        icon: const Icon(Icons.share_outlined),
+        tooltip: context.tr(
+              shared.LocaleKeys.invoiceActionShare,
+              track: shared.TrackConstants.invoicePageTrack,
+            ) ??
+            'Share',
+        onPressed: () => InvoiceDetailScreenActions.onShare(context),
+      ),
+      IconButton(
+        icon: const Icon(Icons.sms_outlined),
+        tooltip: context.tr(
+              shared.LocaleKeys.invoiceActionSms,
+              track: shared.TrackConstants.invoicePageTrack,
+            ) ??
+            'Send SMS',
+        onPressed: () => InvoiceDetailScreenActions.onSendSms(context),
+      ),
+      IconButton(
+        icon: Icon(FontAwesomeIcons.whatsapp.data),
+        tooltip: context.tr(
+              shared.LocaleKeys.invoiceActionWhatsapp,
+              track: shared.TrackConstants.invoicePageTrack,
+            ) ??
+            'WhatsApp',
+        onPressed: () => InvoiceDetailScreenActions.onWhatsApp(context),
+      ),
+      IconButton(
+        icon: const Icon(Icons.file_download_outlined),
+        tooltip: context.tr(
+              shared.LocaleKeys.invoiceActionDownload,
+              track: shared.TrackConstants.invoicePageTrack,
+            ) ??
+            'Download PDF',
+        onPressed: () => InvoiceDetailScreenActions.onDownload(context),
+      ),
+      IconButton(
+        icon: const Icon(Icons.print_outlined),
+        tooltip: context.tr(
+              shared.LocaleKeys.invoiceActionPrint,
+              track: shared.TrackConstants.invoicePageTrack,
+            ) ??
+            'Print',
+        onPressed: () => InvoiceDetailScreenActions.onPrint(context),
+      ),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -95,34 +293,14 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                   ) ??
                   'Invoice Details',
               style: const TextStyle(fontWeight: FontWeight.bold),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
               onPressed: () => _handleBackNavigation(context),
             ),
-            actions: [
-              IconButton(
-                icon: const Icon(Icons.share_outlined),
-                onPressed: () => InvoiceDetailScreenActions.onShare(context), 
-              ),
-              IconButton(
-                icon: const Icon(Icons.sms_outlined),
-                onPressed: () => InvoiceDetailScreenActions.onSendSms(context),
-              ),
-              IconButton(
-                icon:  Icon(FontAwesomeIcons.whatsapp.data),
-                onPressed: () => InvoiceDetailScreenActions.onWhatsApp(context),
-              ),
-              IconButton(
-                icon: const Icon(Icons.file_download_outlined),
-                onPressed: () => InvoiceDetailScreenActions.onDownload(context),
-              ),
-              IconButton(
-                icon: const Icon(Icons.print_outlined),
-                onPressed: () => InvoiceDetailScreenActions.onPrint(context),
-              ),
-              IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
-            ],
+            actions: _buildAppBarActions(context),
           ),
           body: BlocBuilder<InvoiceManagementBloc, InvoiceManagementState>(
             builder: (context, state) {
@@ -185,15 +363,19 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     details!,
                                   )
                                 : null,
-                            child: Text(
-                              context.tr(
-                                    shared.LocaleKeys.invoiceActionReturn,
-                                    track:
-                                        shared.TrackConstants.invoicePageTrack,
-                                  ) ??
-                                  'RETURN',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                context.tr(
+                                      shared.LocaleKeys.invoiceActionReturn,
+                                      track:
+                                          shared.TrackConstants.invoicePageTrack,
+                                    ) ??
+                                    'RETURN',
+                                maxLines: 1,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -214,15 +396,19 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                   inv.id,
                                   fromCheckout: widget.fromCheckout,
                                 ),
-                            child: Text(
-                              context.tr(
-                                    shared.LocaleKeys.invoiceActionDelete,
-                                    track:
-                                        shared.TrackConstants.invoicePageTrack,
-                                  ) ??
-                                  'DELETE',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                context.tr(
+                                      shared.LocaleKeys.invoiceActionDelete,
+                                      track:
+                                          shared.TrackConstants.invoicePageTrack,
+                                    ) ??
+                                    'DELETE',
+                                maxLines: 1,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -249,15 +435,19 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     }
                                   }
                                 : null,
-                            child: Text(
-                              context.tr(
-                                    shared.LocaleKeys.invoiceActionEdit,
-                                    track:
-                                        shared.TrackConstants.invoicePageTrack,
-                                  ) ??
-                                  'EDIT',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                context.tr(
+                                      shared.LocaleKeys.invoiceActionEdit,
+                                      track:
+                                          shared.TrackConstants.invoicePageTrack,
+                                    ) ??
+                                    'EDIT',
+                                maxLines: 1,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
@@ -308,7 +498,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                             const Divider(height: 24),
                             // Receipt No
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   'Receipt No',
@@ -319,11 +509,16 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 ),
                                 const SizedBox(width: 16),
                                 Expanded(
-                                  child: Text(
-                                    inv.hashId.isNotEmpty ? inv.hashId : 'MD-${inv.id}',
-                                    textAlign: TextAlign.end,
-                                    style: theme.textTheme.titleSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      inv.hashId.isNotEmpty ? inv.hashId : 'MD-${inv.id}',
+                                      textAlign: TextAlign.end,
+                                      maxLines: 1,
+                                      style: theme.textTheme.titleSmall?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -332,7 +527,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                             const SizedBox(height: 6),
                             // Date row
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   'Date',
@@ -343,11 +538,16 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 ),
                                 const SizedBox(width: 16),
                                 Expanded(
-                                  child: Text(
-                                    createdDateStr,
-                                    textAlign: TextAlign.end,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: colorScheme.onSurface,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      createdDateStr,
+                                      textAlign: TextAlign.end,
+                                      maxLines: 1,
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: colorScheme.onSurface,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -360,7 +560,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                   ? details.tableName!
                                   : (inv.orderId != null ? 'Table ${inv.orderId}' : 'Dine-In');
                               return Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
                                     'Table / Dine-In',
@@ -371,12 +571,17 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(
-                                    child: Text(
-                                      tableName,
-                                      textAlign: TextAlign.end,
-                                      style: theme.textTheme.titleSmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: colorScheme.primary,
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        tableName,
+                                        textAlign: TextAlign.end,
+                                        maxLines: 1,
+                                        style: theme.textTheme.titleSmall?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: colorScheme.primary,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -386,7 +591,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                             const SizedBox(height: 6),
                             // Payment Mode row
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   'Payment Mode',
@@ -397,12 +602,17 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 ),
                                 const SizedBox(width: 16),
                                 Expanded(
-                                  child: Text(
-                                    inv.paymentMethodName ?? 'Cash',
-                                    textAlign: TextAlign.end,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                      color: colorScheme.onSurface,
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      inv.paymentMethodName ?? 'Cash',
+                                      textAlign: TextAlign.end,
+                                      maxLines: 1,
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                        color: colorScheme.onSurface,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -626,11 +836,19 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     fontSize: 16,
                                   ),
                                 ),
-                                Text(
-                                  core.CurrencyFormatter.format(value: inv.netPaymentAmount),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      core.CurrencyFormatter.format(value: inv.netPaymentAmount),
+                                      maxLines: 1,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -640,9 +858,17 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text('Payment Method'),
-                                Text(
-                                  inv.paymentMethodName ?? 'Cash',
-                                  style: const TextStyle(fontWeight: FontWeight.w600),
+                                const SizedBox(width: 12),
+                                Flexible(
+                                  child: FittedBox(
+                                    fit: BoxFit.scaleDown,
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      inv.paymentMethodName ?? 'Cash',
+                                      maxLines: 1,
+                                      style: const TextStyle(fontWeight: FontWeight.w600),
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -652,8 +878,16 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Cash Received'),
-                                  Text(
-                                    core.CurrencyFormatter.format(value: inv.cashReceived!),
+                                  const SizedBox(width: 12),
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        core.CurrencyFormatter.format(value: inv.cashReceived!),
+                                        maxLines: 1,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -664,8 +898,16 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Change Amount'),
-                                  Text(
-                                    core.CurrencyFormatter.format(value: inv.changeAmount!),
+                                  const SizedBox(width: 12),
+                                  Flexible(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        core.CurrencyFormatter.format(value: inv.changeAmount!),
+                                        maxLines: 1,
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),

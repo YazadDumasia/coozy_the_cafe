@@ -16,6 +16,7 @@ class MenuItemPickerScreen extends StatefulWidget {
   final String? tableName;
   final int? orderId;
   final bool isPickerOnly;
+  final bool displayEmptyViewForTab;
 
   const MenuItemPickerScreen({
     super.key,
@@ -24,6 +25,7 @@ class MenuItemPickerScreen extends StatefulWidget {
     this.tableName,
     this.orderId,
     this.isPickerOnly = false,
+    this.displayEmptyViewForTab = false,
   });
 
   @override
@@ -63,9 +65,15 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
 
   void _syncTabController(int requiredCount) {
     if (_tabController == null || _tabCount != requiredCount) {
+      final previousIndex = _tabController?.index ?? 0;
       _tabController?.dispose();
       _tabCount = requiredCount;
-      _tabController = TabController(length: _tabCount, vsync: this);
+      final initialIndex = (previousIndex < _tabCount) ? previousIndex : 0;
+      _tabController = TabController(
+        length: _tabCount,
+        vsync: this,
+        initialIndex: initialIndex,
+      );
       _tabController!.addListener(() {
         if (!_tabController!.indexIsChanging) {
           context.read<MenuItemPickerBloc>().add(
@@ -143,7 +151,12 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
         }
 
         final catalogData = state.catalogData;
-        final categories = catalogData.activeCategories;
+        final categories = catalogData.getDisplayCategories(
+          displayEmptyViewForTab: widget.displayEmptyViewForTab,
+        );
+        final categoryDataList = catalogData.getDisplayCategoryDataList(
+          displayEmptyViewForTab: widget.displayEmptyViewForTab,
+        );
         final totalTabs = categories.length + 1; // Tab 0 = Current Order
 
         _syncTabController(totalTabs);
@@ -293,9 +306,9 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   ),
 
                   // Tab 1..N: Category Tabs
-                  for (int i = 0; i < categories.length; i++)
+                  for (int i = 0; i < categoryDataList.length; i++)
                     CategoryMenuItemsTabView(
-                      categoryData: catalogData.categoryDataList[i],
+                      categoryData: categoryDataList[i],
                       searchQuery: state.searchQuery,
                       onReviewOrder: () {
                         if (_tabController != null) {

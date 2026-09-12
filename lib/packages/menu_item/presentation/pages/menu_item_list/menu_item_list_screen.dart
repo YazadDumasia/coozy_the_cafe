@@ -84,18 +84,27 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
               onPressed: () =>
                   MenuItemListScreenActions.handleAddMenuItem(context),
             ),
-            IconButton(
-              icon: const Icon(Icons.filter_list),
-              tooltip:
-                  context.tr(
-                    shared.LocaleKeys.commonFilter,
-                    track: shared.TrackConstants.commonTrack,
-                  ) ??
-                  'Filter',
-              onPressed: () {
-                showMenuItemFilterBottomSheet(
-                  context: context,
-                  appliedFiltersNotifier: _appliedFiltersNotifier,
+            ValueListenableBuilder<List<shared.AppliedFilterModel>>(
+              valueListenable: _appliedFiltersNotifier,
+              builder: (context, appliedFilters, _) {
+                final hasFilters = appliedFilters.isNotEmpty;
+                return IconButton(
+                  icon: Badge(
+                    isLabelVisible: hasFilters,
+                    child: const Icon(Icons.filter_list),
+                  ),
+                  tooltip:
+                      context.tr(
+                        shared.LocaleKeys.commonFilter,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Filter',
+                  onPressed: () {
+                    showMenuItemFilterBottomSheet(
+                      context: context,
+                      appliedFiltersNotifier: _appliedFiltersNotifier,
+                    );
+                  },
                 );
               },
             ),

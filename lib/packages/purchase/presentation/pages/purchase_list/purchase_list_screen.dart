@@ -114,6 +114,7 @@ class _PurchaseListScreenState extends State<PurchaseListScreen> {
               onFilterChange: (applied) {
                 _appliedFiltersNotifier.value = applied;
               },
+              themeProps: shared.ThemeProps.defaultThemeProps(context),
               filters: [
                 shared.FilterListModel(
                   filterKey: 'transaction_type',

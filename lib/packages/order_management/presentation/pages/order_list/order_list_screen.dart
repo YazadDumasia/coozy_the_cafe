@@ -8,6 +8,7 @@ import '../../bloc/order_management_bloc.dart';
 import 'order_list_screen_actions.dart';
 import 'widget/order_card_widget.dart';
 import 'widget/order_date_range_picker_bar.dart';
+import 'widget/order_list_filter_bottom_sheet.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key});
@@ -20,6 +21,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
   late final ScrollController _scrollController;
   late final TextEditingController _searchController;
   late final FocusNode _searchFocusNode;
+  final ValueNotifier<List<shared.AppliedFilterModel>> _appliedFiltersNotifier =
+      ValueNotifier([]);
   Timer? _searchDebounce;
 
   @override
@@ -47,6 +50,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
     _scrollController.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _appliedFiltersNotifier.dispose();
     _searchDebounce?.cancel();
     super.dispose();
   }
@@ -85,6 +89,48 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 'Order Management',
           ),
           actions: [
+            ValueListenableBuilder<List<shared.AppliedFilterModel>>(
+              valueListenable: _appliedFiltersNotifier,
+              builder: (context, appliedFilters, _) {
+                final hasFilters = appliedFilters.isNotEmpty;
+                return IconButton(
+                  icon: Badge(
+                    isLabelVisible: hasFilters,
+                    child: const Icon(Icons.filter_list),
+                  ),
+                  tooltip: context.tr(
+                        shared.LocaleKeys.commonFilter,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Filter',
+                  onPressed: () {
+                    showOrderFilterBottomSheet(
+                      context: context,
+                      appliedFiltersNotifier: _appliedFiltersNotifier,
+                      onApply: (applied) {
+                        final statusFilter = applied
+                            .where((e) => e.filterKey == 'order_status')
+                            .firstOrNull;
+                        if (statusFilter != null &&
+                            statusFilter.applied.isNotEmpty) {
+                          final selectedKey =
+                              statusFilter.applied.first.filterKey ?? 'all';
+                          OrderListScreenActions.onStatusFilterChanged(
+                            context,
+                            selectedKey,
+                          );
+                        } else {
+                          OrderListScreenActions.onStatusFilterChanged(
+                            context,
+                            'all',
+                          );
+                        }
+                      },
+                    );
+                  },
+                );
+              },
+            ),
             IconButton(
               icon: const Icon(Icons.refresh),
               tooltip: context.tr(
@@ -119,6 +165,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
                           icon: const Icon(Icons.clear),
+                          tooltip: context.tr(
+                                shared.LocaleKeys.commonClear,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Clear',
                           onPressed: () {
                             _searchController.clear();
                             _onSearchChanged('');
@@ -165,11 +216,46 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 }
 
                 final filterOptions = [
-                  ('all', 'All'),
-                  ('newOrder', 'New'),
-                  ('inProgress', 'In Progress'),
-                  ('completed', 'Completed'),
-                  ('cancelled', 'Cancelled'),
+                  (
+                    'all',
+                    context.tr(
+                          shared.LocaleKeys.orderManagementAllStatuses,
+                          track: shared.TrackConstants.orderManagementPageTrack,
+                        ) ??
+                        'All',
+                  ),
+                  (
+                    'newOrder',
+                    context.tr(
+                          shared.LocaleKeys.orderManagementOrderStatusNew,
+                          track: shared.TrackConstants.orderManagementPageTrack,
+                        ) ??
+                        'New',
+                  ),
+                  (
+                    'inProgress',
+                    context.tr(
+                          shared.LocaleKeys.orderManagementOrderStatusInProgress,
+                          track: shared.TrackConstants.orderManagementPageTrack,
+                        ) ??
+                        'In Progress',
+                  ),
+                  (
+                    'completed',
+                    context.tr(
+                          shared.LocaleKeys.orderManagementOrderStatusCompleted,
+                          track: shared.TrackConstants.orderManagementPageTrack,
+                        ) ??
+                        'Completed',
+                  ),
+                  (
+                    'cancelled',
+                    context.tr(
+                          shared.LocaleKeys.orderManagementOrderStatusCancelled,
+                          track: shared.TrackConstants.orderManagementPageTrack,
+                        ) ??
+                        'Cancelled',
+                  ),
                 ];
 
                 return SingleChildScrollView(
@@ -184,6 +270,21 @@ class _OrderListScreenState extends State<OrderListScreen> {
                           selected: isSelected,
                           label: Text(opt.$2),
                           onSelected: (_) {
+                            if (opt.$1.toLowerCase() == 'all') {
+                              _appliedFiltersNotifier.value = [];
+                            } else {
+                              _appliedFiltersNotifier.value = [
+                                shared.AppliedFilterModel(
+                                  filterKey: 'order_status',
+                                  applied: [
+                                    shared.FilterItemModel(
+                                      filterKey: opt.$1,
+                                      filterTitle: opt.$2,
+                                    ),
+                                  ],
+                                ),
+                              ];
+                            }
                             OrderListScreenActions.onStatusFilterChanged(
                               context,
                               opt.$1,

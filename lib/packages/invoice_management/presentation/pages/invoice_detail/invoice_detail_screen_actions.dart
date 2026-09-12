@@ -1,11 +1,16 @@
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../bloc/invoice_management_bloc.dart';
 import '../../../domain/entities/invoice_management_entity.dart';
 import '../../../domain/services/invoice_pdf_generator.dart';
+import '../../widgets/invoice_pdf_preview_dialog/invoice_pdf_preview_dialog.dart';
 
 class InvoiceDetailScreenActions {
   static void onReturn(BuildContext context, InvoiceDetailsEntity details) {
@@ -171,6 +176,50 @@ class InvoiceDetailScreenActions {
     );
   }
 
+  static Future<void> onOpenPdf(
+    BuildContext context, {
+    InvoiceDetailsEntity? details,
+    String? filePath,
+  }) async {
+    final invoiceDetails = _resolveDetails(context, details);
+    if (invoiceDetails == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please wait for invoice details to load.'),
+        ),
+      );
+      return;
+    }
+
+    if (!kIsWeb && filePath != null && filePath.isNotEmpty) {
+      try {
+        final openResult = await OpenFilex.open(
+          filePath,
+          type: 'application/pdf',
+        );
+        if (openResult.type == ResultType.done) {
+          return;
+        }
+      } catch (e) {
+        core.PlatformUtils.debugLog(
+          InvoiceDetailScreenActions,
+          'OpenFilex failed, falling back to in-app preview: $e',
+        );
+      }
+    }
+
+    // Fallback or Web: display in-app preview dialog using pdfrx
+    if (context.mounted) {
+      await showDialog(
+        context: context,
+        builder: (dialogCtx) => InvoicePdfPreviewDialog(
+          details: invoiceDetails,
+          filePath: filePath,
+        ),
+      );
+    }
+  }
+
   static Future<void> onDownload(
     BuildContext context, {
     InvoiceDetailsEntity? details,
@@ -193,22 +242,115 @@ class InvoiceDetailScreenActions {
       if (!context.mounted) return;
 
       if (result.isSuccess) {
-        final String successText = result.isWeb
-            ? 'Invoice PDF download started!'
-            : 'Invoice PDF saved: ${result.filePath}';
+        final String fileName = (result.filePath != null && !result.isWeb)
+            ? result.filePath!.split(Platform.pathSeparator).last
+            : '';
+        final String successTitle = result.isWeb
+            ? (context.tr(
+                  shared.LocaleKeys.invoiceDownloadSuccessWeb,
+                  track: shared.TrackConstants.invoicePageTrack,
+                ) ??
+                'Invoice PDF downloaded!')
+            : (context.tr(
+                  shared.LocaleKeys.invoiceDownloadSuccess,
+                  track: shared.TrackConstants.invoicePageTrack,
+                ) ??
+                'Invoice PDF saved successfully!');
 
+        final openLabel = context.tr(
+              shared.LocaleKeys.invoiceActionOpen,
+              track: shared.TrackConstants.invoicePageTrack,
+            ) ??
+            'Open';
+
+        final shareLabel = context.tr(
+              shared.LocaleKeys.invoiceActionShare,
+              track: shared.TrackConstants.invoicePageTrack,
+            ) ??
+            'Share';
+
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(successText),
-            duration: const Duration(seconds: 4),
-            action: (!result.isWeb && result.filePath != null)
-                ? SnackBarAction(
-                    label: 'Share',
-                    onPressed: () {
-                      InvoicePdfGenerator.sharePdf(details: invoiceDetails);
-                    },
-                  )
-                : null,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 6),
+            content: Row(
+              children: [
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: Colors.greenAccent,
+                  size: 22,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        successTitle,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (fileName.isNotEmpty)
+                        Text(
+                          fileName,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white.withValues(alpha: 0.7),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    onOpenPdf(
+                      context,
+                      details: invoiceDetails,
+                      filePath: result.filePath,
+                    );
+                  },
+                  child: Text(
+                    openLabel.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.amberAccent,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    InvoicePdfGenerator.sharePdf(
+                      details: invoiceDetails,
+                    );
+                  },
+                  child: Text(
+                    shareLabel.toUpperCase(),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       } else {

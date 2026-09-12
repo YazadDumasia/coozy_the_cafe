@@ -111,7 +111,7 @@ class RecipesListScreenActions {
         maxWidth: MediaQuery.of(context).size.width,
         minWidth: MediaQuery.of(context).size.width,
         minHeight: 0,
-        maxHeight: MediaQuery.of(context).size.height * 0.9,
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
       ),
       isScrollControlled: true,
       builder: (_) {
@@ -280,32 +280,7 @@ class RecipesListScreenActions {
                 ),
               ),
             ],
-            themeProps: shared.ThemeProps(
-              activeFilterTextColor: Theme.of(
-                context,
-              ).textTheme.bodyLarge!.color,
-              dividerColor: Theme.of(context).dividerColor,
-              inActiveFilterItemBackgroundColor: Theme.of(
-                context,
-              ).colorScheme.secondaryContainer,
-              inActiveFilterTextColor: Theme.of(
-                context,
-              ).textTheme.bodyLarge!.color,
-              submitButtonThemeStyle: Theme.of(context)
-                  .elevatedButtonTheme
-                  .style
-                  ?.copyWith(
-                    backgroundColor: WidgetStateProperty.all(
-                      Theme.of(context).colorScheme.secondaryContainer,
-                    ),
-                    shape: WidgetStateProperty.all(
-                      const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.zero),
-                      ),
-                    ),
-                  ),
-              resetButtonColor: Theme.of(context).colorScheme.secondary,
-            ),
+            themeProps: shared.ThemeProps.defaultThemeProps(context),
           ),
         );
       },

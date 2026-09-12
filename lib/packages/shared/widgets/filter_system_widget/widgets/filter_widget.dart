@@ -72,51 +72,94 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
   Widget build(BuildContext context) {
     return BlocConsumer<FilterCubit, FilterState>(
       listener: (context, state) {},
-      builder: (_, state) {
-        final ThemeProps? themeProps = _filterCubit.filterProps.themeProps;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  FilterText(
-                    title: _filterCubit.filterProps.title ?? 'Filters',
-                    style: themeProps?.titleStyle,
-                    fontColor: themeProps?.titleColor,
-                  ),
-                  Visibility(
-                    visible: (_filterCubit.filterProps.showCloseIcon ?? true),
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      visualDensity: const VisualDensity(
-                        horizontal: -4,
-                        vertical: -4,
-                      ),
-                      onPressed: () {
-                        if (_filterCubit.filterProps.onCloseTap != null) {
-                          _filterCubit.filterProps.onCloseTap!();
-                        }
-                        Navigator.of(context).pop();
-                      },
-                      icon:
-                          _filterCubit.filterProps.closeIcon ??
-                          const Icon(Icons.close),
-                    ),
-                  ),
-                ],
+      builder: (context, state) {
+        final ThemeProps defaultProps = ThemeProps.defaultThemeProps(context);
+        final ThemeProps? customProps = _filterCubit.filterProps.themeProps;
+        final ThemeProps themeProps = ThemeProps(
+          searchBarViewProps: customProps?.searchBarViewProps ?? defaultProps.searchBarViewProps,
+          titleStyle: customProps?.titleStyle ?? defaultProps.titleStyle,
+          titleColor: customProps?.titleColor ?? defaultProps.titleColor,
+          inActiveFilterItemBackgroundColor: customProps?.inActiveFilterItemBackgroundColor ?? defaultProps.inActiveFilterItemBackgroundColor,
+          resetButtonColor: customProps?.resetButtonColor ?? defaultProps.resetButtonColor,
+          submitButtonColor: customProps?.submitButtonColor ?? defaultProps.submitButtonColor,
+          divider: customProps?.divider ?? defaultProps.divider,
+          dividerColor: customProps?.dividerColor ?? defaultProps.dividerColor,
+          inActiveFilterHeaderColor: customProps?.inActiveFilterHeaderColor ?? defaultProps.inActiveFilterHeaderColor,
+          activeFilterHeaderColor: customProps?.activeFilterHeaderColor ?? defaultProps.activeFilterHeaderColor,
+          activeFilterTextStyle: customProps?.activeFilterTextStyle ?? defaultProps.activeFilterTextStyle,
+          activeFilterTextColor: customProps?.activeFilterTextColor ?? defaultProps.activeFilterTextColor,
+          inActiveFilterTextColor: customProps?.inActiveFilterTextColor ?? defaultProps.inActiveFilterTextColor,
+          inActiveFilterTextStyle: customProps?.inActiveFilterTextStyle ?? defaultProps.inActiveFilterTextStyle,
+          activeFilterHeaderStyle: customProps?.activeFilterHeaderStyle ?? defaultProps.activeFilterHeaderStyle,
+          dividerThickness: customProps?.dividerThickness ?? defaultProps.dividerThickness,
+          resetButtonStyle: customProps?.resetButtonStyle ?? defaultProps.resetButtonStyle,
+          resetButtonThemeStyle: customProps?.resetButtonThemeStyle ?? defaultProps.resetButtonThemeStyle,
+          submitButtonStyle: customProps?.submitButtonStyle ?? defaultProps.submitButtonStyle,
+          submitButtonThemeStyle: customProps?.submitButtonThemeStyle ?? defaultProps.submitButtonThemeStyle,
+          checkBoxTileThemeProps: customProps?.checkBoxTileThemeProps ?? defaultProps.checkBoxTileThemeProps,
+          radioTileThemeProps: customProps?.radioTileThemeProps ?? defaultProps.radioTileThemeProps,
+          sliderTileThemeProps: customProps?.sliderTileThemeProps ?? defaultProps.sliderTileThemeProps,
+          closeIconColor: customProps?.closeIconColor ?? defaultProps.closeIconColor,
+        );
+        return IconTheme(
+          data: Theme.of(context).iconTheme.copyWith(
+                color: themeProps.closeIconColor ??
+                    Theme.of(context).colorScheme.onSurface,
               ),
-            ),
-            themeProps?.divider ??
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    FilterText(
+                      title: _filterCubit.filterProps.title ?? 'Filters',
+                      style: themeProps.titleStyle,
+                      fontColor: themeProps.titleColor,
+                    ),
+                    Visibility(
+                      visible: (_filterCubit.filterProps.showCloseIcon ?? true),
+                      child: IconButton(
+                        tooltip: context.tr(
+                              LocaleKeys.commonClose,
+                              track: TrackConstants.commonTrack,
+                            ) ??
+                            'Close',
+                        padding: EdgeInsets.zero,
+                        visualDensity: const VisualDensity(
+                          horizontal: -4,
+                          vertical: -4,
+                        ),
+                        color: themeProps.closeIconColor ??
+                            Theme.of(context).colorScheme.onSurface,
+                        onPressed: () {
+                          if (_filterCubit.filterProps.onCloseTap != null) {
+                            _filterCubit.filterProps.onCloseTap!();
+                          }
+                          Navigator.of(context).pop();
+                        },
+                        icon:
+                            _filterCubit.filterProps.closeIcon ??
+                            Icon(
+                              Icons.close,
+                              color: themeProps.closeIconColor ??
+                                  Theme.of(context).colorScheme.onSurface,
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            themeProps.divider ??
                 Container(
-                  height: themeProps?.dividerThickness ?? 2,
+                  height: themeProps.dividerThickness ?? 2,
                   width: MediaQuery.of(context).size.width,
-                  color: themeProps?.dividerColor ?? getDividerColor(context),
+                  color: themeProps.dividerColor ?? getDividerColor(context),
                 ),
             Expanded(
               child: SizedBox(
@@ -167,7 +210,7 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                                                     (index ==
                                                         state.activeFilterIndex)
                                                     ? themeProps
-                                                              ?.inActiveFilterItemBackgroundColor ??
+                                                              .inActiveFilterItemBackgroundColor ??
                                                           Theme.of(context)
                                                               .colorScheme
                                                               .primaryContainer
@@ -191,23 +234,23 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                                                           state
                                                               .activeFilterIndex)
                                                       // ? themeProps
-                                                      //     ?.activeFilterTextStyle
+                                                      //     .activeFilterTextStyle
                                                       ? themeProps
-                                                            ?.inActiveFilterTextStyle
+                                                            .inActiveFilterTextStyle
                                                       : themeProps
-                                                            ?.inActiveFilterTextStyle,
+                                                            .inActiveFilterTextStyle,
                                                   fontWeight: FontWeight.w500,
                                                   fontColor:
                                                       (index ==
                                                           state
                                                               .activeFilterIndex)
                                                       ? themeProps
-                                                                ?.activeFilterTextColor ??
+                                                                .activeFilterTextColor ??
                                                             getTheme(
                                                               context,
                                                             ).primaryColor
                                                       : themeProps
-                                                            ?.inActiveFilterTextColor,
+                                                            .inActiveFilterTextColor,
                                                 ),
                                               ),
                                             ),
@@ -227,12 +270,12 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                         ),
                       ),
                     ),
-                    themeProps?.divider ??
+                    themeProps.divider ??
                         Container(
                           height: double.maxFinite,
-                          width: themeProps?.dividerThickness ?? 1,
+                          width: themeProps.dividerThickness ?? 1,
                           color:
-                              themeProps?.dividerColor ??
+                              themeProps.dividerColor ??
                               getDividerColor(context),
                         ),
                     Flexible(
@@ -243,11 +286,11 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                 ),
               ),
             ),
-            themeProps?.divider ??
+            themeProps.divider ??
                 Container(
-                  height: themeProps?.dividerThickness ?? 2,
+                  height: themeProps.dividerThickness ?? 2,
                   width: MediaQuery.of(context).size.width,
-                  color: themeProps?.dividerColor ?? getDividerColor(context),
+                  color: themeProps.dividerColor ?? getDividerColor(context),
                 ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
@@ -270,9 +313,9 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                         _filterCubit.onFilterRemove();
                         Navigator.of(context).pop();
                       },
-                      style: themeProps?.resetButtonStyle,
-                      buttonStyle: themeProps?.resetButtonThemeStyle,
-                      txtColor: themeProps?.resetButtonColor,
+                      style: themeProps.resetButtonStyle,
+                      buttonStyle: themeProps.resetButtonThemeStyle,
+                      txtColor: themeProps.resetButtonColor,
                     ),
                     FilterTextButton(
                       text:
@@ -283,14 +326,14 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                           'Apply',
                       isElevatedButton: true,
                       txtColor:
-                          themeProps?.submitButtonColor ??
+                          themeProps.submitButtonColor ??
                           getTheme(context).colorScheme.secondary,
                       onTap: () {
                         _filterCubit.onFilterSubmit();
                         Navigator.of(context).pop();
                       },
-                      style: themeProps?.submitButtonStyle,
-                      buttonStyle: themeProps?.submitButtonThemeStyle,
+                      style: themeProps.submitButtonStyle,
+                      buttonStyle: themeProps.submitButtonThemeStyle,
                     ),
                     const SizedBox(width: 10),
                   ],
@@ -298,8 +341,9 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
               ),
             ),
           ],
-        );
-      },
+        ),
+      );
+    },
     );
   }
 
@@ -440,6 +484,11 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                             ),
                         suffixIcon: searchValue.isNotEmpty
                             ? IconButton(
+                                tooltip: context.tr(
+                                      LocaleKeys.commonClear,
+                                      track: TrackConstants.commonTrack,
+                                    ) ??
+                                    'Clear',
                                 onPressed: () {
                                   _clearSearch();
                                 },
@@ -453,6 +502,11 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                                     ),
                               )
                             : IconButton(
+                                tooltip: context.tr(
+                                      LocaleKeys.commonSearchLabel,
+                                      track: TrackConstants.commonTrack,
+                                    ) ??
+                                    'Search',
                                 onPressed: () {
                                   _filterCubit.filterBySearch(
                                     _searchController.text,
@@ -627,6 +681,11 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                             ),
                         suffixIcon: searchValue.isNotEmpty
                             ? IconButton(
+                                tooltip: context.tr(
+                                      LocaleKeys.commonClear,
+                                      track: TrackConstants.commonTrack,
+                                    ) ??
+                                    'Clear',
                                 onPressed: () {
                                   _clearSearch();
                                 },
@@ -640,6 +699,11 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                                     ),
                               )
                             : IconButton(
+                                tooltip: context.tr(
+                                      LocaleKeys.commonSearchLabel,
+                                      track: TrackConstants.commonTrack,
+                                    ) ??
+                                    'Search',
                                 onPressed: () {
                                   _filterCubit.filterBySearch(
                                     _searchController.text,
@@ -1530,6 +1594,11 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                             hintText: hintText,
                             suffixIcon: textEditingController.text.isNotEmpty
                                 ? IconButton(
+                                    tooltip: context.tr(
+                                          LocaleKeys.commonClear,
+                                          track: TrackConstants.commonTrack,
+                                    ) ??
+                                    'Clear',
                                     icon: const Icon(Icons.close),
                                     onPressed: () {
                                       setState(() {
@@ -1762,6 +1831,11 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                             hintText: hintText,
                             suffixIcon: textEditingController.text.isNotEmpty
                                 ? IconButton(
+                                    tooltip: context.tr(
+                                          LocaleKeys.commonClear,
+                                          track: TrackConstants.commonTrack,
+                                    ) ??
+                                    'Clear',
                                     icon: const Icon(Icons.close),
                                     onPressed: () async {
                                       setState(() {

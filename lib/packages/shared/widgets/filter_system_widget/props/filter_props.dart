@@ -53,9 +53,11 @@ class ThemeProps {
     this.checkBoxTileThemeProps,
     this.radioTileThemeProps,
     this.sliderTileThemeProps,
+    this.closeIconColor,
   });
   final TextStyle? titleStyle;
   final Color? titleColor;
+  final Color? closeIconColor;
   final Color? activeFilterHeaderColor;
   final Color? inActiveFilterHeaderColor;
   final Color? inActiveFilterItemBackgroundColor;
@@ -77,6 +79,31 @@ class ThemeProps {
   final CheckBoxTileThemeProps? checkBoxTileThemeProps;
   final RadioTileThemeProps? radioTileThemeProps;
   final SliderTileThemeProps? sliderTileThemeProps;
+
+  static ThemeProps defaultThemeProps(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    return ThemeProps(
+      closeIconColor: colorScheme.onSurface,
+      titleColor: colorScheme.onSurface,
+      activeFilterTextColor: theme.textTheme.bodyLarge?.color,
+      dividerColor: theme.dividerColor,
+      inActiveFilterItemBackgroundColor: colorScheme.secondaryContainer,
+      inActiveFilterTextColor: theme.textTheme.bodyLarge?.color,
+      submitButtonThemeStyle: theme.elevatedButtonTheme.style?.copyWith(
+        backgroundColor: WidgetStateProperty.all(
+          colorScheme.secondaryContainer,
+        ),
+        shape: WidgetStateProperty.all(
+          const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.zero),
+          ),
+        ),
+      ),
+      submitButtonColor: colorScheme.secondary,
+      resetButtonColor: colorScheme.secondary,
+    );
+  }
 }
 
 class CheckBoxTileThemeProps {

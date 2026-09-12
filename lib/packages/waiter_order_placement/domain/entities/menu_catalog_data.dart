@@ -14,6 +14,18 @@ class MenuCatalogCategoryData extends Equatable {
     this.subcategoryItems = const {},
   });
 
+  bool get hasItems =>
+      uncategorizedItems.isNotEmpty ||
+      subcategoryItems.values.any((items) => items.isNotEmpty);
+
+  int get totalItemCount {
+    int count = uncategorizedItems.length;
+    for (final items in subcategoryItems.values) {
+      count += items.length;
+    }
+    return count;
+  }
+
   @override
   List<Object?> get props => [
     category,
@@ -31,6 +43,21 @@ class MenuCatalogData extends Equatable {
     this.activeCategories = const [],
     this.categoryDataList = const [],
   });
+
+  List<Category> getDisplayCategories({bool displayEmptyViewForTab = false}) {
+    if (displayEmptyViewForTab) return activeCategories;
+    return categoryDataList
+        .where((cd) => cd.hasItems)
+        .map((cd) => cd.category)
+        .toList();
+  }
+
+  List<MenuCatalogCategoryData> getDisplayCategoryDataList({
+    bool displayEmptyViewForTab = false,
+  }) {
+    if (displayEmptyViewForTab) return categoryDataList;
+    return categoryDataList.where((cd) => cd.hasItems).toList();
+  }
 
   @override
   List<Object?> get props => [activeCategories, categoryDataList];

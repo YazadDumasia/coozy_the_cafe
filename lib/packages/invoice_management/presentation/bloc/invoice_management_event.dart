@@ -11,15 +11,17 @@ class LoadInvoicesEvent extends InvoiceManagementEvent {
   final bool isRefresh;
   final String? searchQuery;
   final DateTimeRange? dateRange;
+  final List<String>? paymentMethods;
 
   const LoadInvoicesEvent({
     this.isRefresh = false,
     this.searchQuery,
     this.dateRange,
+    this.paymentMethods,
   });
 
   @override
-  List<Object?> get props => [isRefresh, searchQuery, dateRange];
+  List<Object?> get props => [isRefresh, searchQuery, dateRange, paymentMethods];
 }
 
 class LoadMoreInvoicesEvent extends InvoiceManagementEvent {

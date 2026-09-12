@@ -18,6 +18,7 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
     DateTime? startDate,
     DateTime? endDate,
     String? searchQuery,
+    List<String>? paymentMethods,
   }) async {
     try {
       final invoiceRows = await remoteDataSource.getPaginatedInvoices(
@@ -26,12 +27,14 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
         startDate: startDate,
         endDate: endDate,
         searchQuery: searchQuery,
+        paymentMethods: paymentMethods,
       );
 
       final totalCount = await remoteDataSource.getInvoicesCount(
         startDate: startDate,
         endDate: endDate,
         searchQuery: searchQuery,
+        paymentMethods: paymentMethods,
       );
 
       final entities =

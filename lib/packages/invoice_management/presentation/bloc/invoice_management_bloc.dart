@@ -56,13 +56,16 @@ class InvoiceManagementBloc
     final currentState = state;
     String query = '';
     DateTimeRange? range;
+    List<String> paymentMethods = [];
 
     if (currentState is InvoiceManagementLoadedState) {
       query = event.searchQuery ?? currentState.searchQuery;
       range = event.dateRange ?? currentState.dateRange;
+      paymentMethods = event.paymentMethods ?? currentState.selectedPaymentMethods;
     } else {
       query = event.searchQuery ?? '';
       range = event.dateRange;
+      paymentMethods = event.paymentMethods ?? [];
     }
 
     if (currentState is! InvoiceManagementLoadedState) {
@@ -80,6 +83,7 @@ class InvoiceManagementBloc
         startDate: range?.start,
         endDate: range?.end,
         searchQuery: query,
+        paymentMethods: paymentMethods.isNotEmpty ? paymentMethods : null,
       ),
     );
 
@@ -97,6 +101,7 @@ class InvoiceManagementBloc
             searchQuery: query,
             dateRange: range,
             paymentModes: modes,
+            selectedPaymentMethods: paymentMethods,
           ),
         );
       },
@@ -121,6 +126,9 @@ class InvoiceManagementBloc
         startDate: currentState.dateRange?.start,
         endDate: currentState.dateRange?.end,
         searchQuery: currentState.searchQuery,
+        paymentMethods: currentState.selectedPaymentMethods.isNotEmpty
+            ? currentState.selectedPaymentMethods
+            : null,
       ),
     );
 

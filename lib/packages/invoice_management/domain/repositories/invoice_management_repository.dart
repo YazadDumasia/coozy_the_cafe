@@ -10,6 +10,7 @@ abstract class InvoiceManagementRepository {
     DateTime? startDate,
     DateTime? endDate,
     String? searchQuery,
+    List<String>? paymentMethods,
   });
 
   Future<Either<Failure, InvoiceDetailsEntity>> getInvoiceDetails(int invoiceId);

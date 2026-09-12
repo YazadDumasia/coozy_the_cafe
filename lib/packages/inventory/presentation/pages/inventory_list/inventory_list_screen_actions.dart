@@ -69,6 +69,7 @@ class InventoryListScreenActions {
               onFilterChange: (applied) {
                 appliedFiltersNotifier.value = applied;
               },
+              themeProps: shared.ThemeProps.defaultThemeProps(context),
               filters: [
                 shared.FilterListModel(
                   filterKey: 'status',

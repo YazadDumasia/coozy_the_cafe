@@ -98,49 +98,107 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     return getInvoiceByOrderId(order.id);
   }
 
+  Expression<bool> _buildInvoiceFilterExpression({
+    DateTime? startDate,
+    DateTime? endDate,
+    String? searchQuery,
+    List<String>? paymentMethods,
+  }) {
+    Expression<bool> expr =
+        invoicesTable.isDeleted.equals(false) | invoicesTable.isDeleted.isNull();
+
+    if (startDate != null) {
+      final startOfDay = DateTime.utc(startDate.year, startDate.month, startDate.day, 0, 0, 0);
+      expr = expr & invoicesTable.createdDate.isBiggerOrEqualValue(startOfDay.toIso8601String());
+    }
+    if (endDate != null) {
+      final endOfDay = DateTime.utc(endDate.year, endDate.month, endDate.day, 23, 59, 59, 999);
+      expr = expr & invoicesTable.createdDate.isSmallerOrEqualValue(endOfDay.toIso8601String());
+    }
+
+    if (paymentMethods != null && paymentMethods.isNotEmpty) {
+      Expression<bool>? pExpr;
+      for (final method in paymentMethods) {
+        final clean = method.trim();
+        if (clean.isEmpty) continue;
+        final term = invoicesTable.paymentMethodName.like('%$clean%');
+        pExpr = (pExpr == null) ? term : (pExpr | term);
+      }
+      if (pExpr != null) {
+        expr = expr & pExpr;
+      }
+    }
+
+    if (searchQuery != null && searchQuery.trim().isNotEmpty) {
+      final clean = '%${searchQuery.trim()}%';
+      expr = expr &
+          (invoicesTable.hashId.like(clean) |
+              invoicesTable.customerName.like(clean) |
+              invoicesTable.phoneNumber.like(clean) |
+              invoicesTable.isoCode.like(clean));
+    }
+
+    return expr;
+  }
+
+  Future<List<Invoice>> getInvoicesWithFilters({
+    required int limit,
+    required int pageNo,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? searchQuery,
+    List<String>? paymentMethods,
+  }) {
+    final offset = (pageNo - 1) * limit;
+    final query = select(invoicesTable)
+      ..where((t) => _buildInvoiceFilterExpression(
+            startDate: startDate,
+            endDate: endDate,
+            searchQuery: searchQuery,
+            paymentMethods: paymentMethods,
+          ))
+      ..orderBy([
+        (t) => OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc),
+        (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc),
+      ])
+      ..limit(limit, offset: offset);
+
+    return query.get();
+  }
+
+  Future<int> getInvoicesCountWithFilters({
+    DateTime? startDate,
+    DateTime? endDate,
+    String? searchQuery,
+    List<String>? paymentMethods,
+  }) async {
+    final countExpr = invoicesTable.id.count();
+    final query = selectOnly(invoicesTable)
+      ..addColumns([countExpr])
+      ..where(_buildInvoiceFilterExpression(
+        startDate: startDate,
+        endDate: endDate,
+        searchQuery: searchQuery,
+        paymentMethods: paymentMethods,
+      ));
+    final row = await query.getSingle();
+    return row.read(countExpr) ?? 0;
+  }
+
   Future<List<Invoice>> getInvoicesPaginated({
     required int limit,
     required int pageNo,
     String? search,
   }) {
-    final offset = (pageNo - 1) * limit;
-    final query = select(invoicesTable)
-      ..where((t) => t.isDeleted.equals(false) | t.isDeleted.isNull());
-
-    query.orderBy([
-      (t) => OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc),
-      (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc),
-    ]);
-
-    if (search != null && search.isNotEmpty) {
-      query.where(
-        (t) =>
-            t.hashId.like('%$search%') |
-            t.customerName.like('%$search%') |
-            t.phoneNumber.like('%$search%'),
-      );
-    }
-    return (query..limit(limit, offset: offset)).get();
+    return getInvoicesWithFilters(
+      limit: limit,
+      pageNo: pageNo,
+      searchQuery: search,
+    );
   }
 
   Future<int> getInvoicesCount({String? search}) async {
-    final countExpr = invoicesTable.id.count();
-    final query = selectOnly(invoicesTable)
-      ..where(
-        invoicesTable.isDeleted.equals(false) |
-            invoicesTable.isDeleted.isNull(),
-      )
-      ..addColumns([countExpr]);
-    if (search != null && search.isNotEmpty) {
-      query.where(
-        invoicesTable.hashId.like('%$search%') |
-            invoicesTable.customerName.like('%$search%') |
-            invoicesTable.phoneNumber.like('%$search%') |
-            invoicesTable.isoCode.like('%$search%'),
-      );
-    }
-    final row = await query.getSingle();
-    return row.read(countExpr) ?? 0;
+    return getInvoicesCountWithFilters(searchQuery: search);
   }
 
   Future<bool> updateInvoice(

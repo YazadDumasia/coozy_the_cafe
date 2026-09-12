@@ -47,13 +47,13 @@ class FilterTextButton extends StatelessWidget {
                   style ??
                   (isSecondary
                       ? Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: txtColor ?? Theme.of(context).primaryColor,
+                          color: txtColor ?? Theme.of(context).colorScheme.onPrimaryContainer,
                           fontWeight: fontWeight,
                           fontSize: fontSize,
                           decoration: TextDecoration.underline,
                         )
                       : Theme.of(context).textTheme.titleMedium?.copyWith(
-                          color: txtColor ?? Theme.of(context).primaryColor,
+                          color: txtColor ?? Theme.of(context).colorScheme.primaryContainer,
                           fontWeight: fontWeight,
                           fontSize: fontSize,
                         )),

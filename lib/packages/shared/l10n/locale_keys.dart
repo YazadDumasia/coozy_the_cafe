@@ -90,6 +90,7 @@ abstract class LocaleKeys {
   static String commonReject = 'common_reject';
   static String commonSubmit = 'common_submit';
   static String commonUpdate = 'common_update';
+  static String commonClear = 'common_clear';
   static String commonDelete = 'common_delete';
   static String commonSearchHint = 'common_search_hint';
   static String commonAlertTitleText = 'common_alert_title_text';
@@ -210,6 +211,7 @@ abstract class LocaleKeys {
   static String crudSuccessAdd = 'crud_success_add';
   static String crudSuccessUpdate = 'crud_success_update';
   static String crudSuccessDelete = 'crud_success_delete';
+  static String commonRefresh = 'common_refresh';
   static String commonReset = 'common_reset';
   static String commonApply = 'common_apply';
   static String commonListViewTooltip = 'common_list_view_tooltip';
@@ -1296,9 +1298,17 @@ abstract class LocaleKeys {
 
   // invoice_page keys
   static const String invoiceActionDelete = 'invoice_action_delete';
+  static const String invoiceActionDownload = 'invoice_action_download';
   static const String invoiceActionEdit = 'invoice_action_edit';
+  static const String invoiceActionMoreOptions = 'invoice_action_more_options';
+  static const String invoiceActionOpen = 'invoice_action_open';
+  static const String invoiceActionPreviewPdf = 'invoice_action_preview_pdf';
+  static const String invoiceActionPrint = 'invoice_action_print';
   static const String invoiceActionReturn = 'invoice_action_return';
   static const String invoiceActionSave = 'invoice_action_save';
+  static const String invoiceActionShare = 'invoice_action_share';
+  static const String invoiceActionSms = 'invoice_action_sms';
+  static const String invoiceActionWhatsapp = 'invoice_action_whatsapp';
   static const String invoiceAddDiscount = 'invoice_add_discount';
   static const String invoiceAddItem = 'invoice_add_item';
   static const String invoiceAddOtherCharges = 'invoice_add_other_charges';
@@ -1312,6 +1322,8 @@ abstract class LocaleKeys {
   static const String invoiceDateFrom = 'invoice_date_from';
   static const String invoiceDateTo = 'invoice_date_to';
   static const String invoiceDetailTitle = 'invoice_detail_title';
+  static const String invoiceDownloadSuccess = 'invoice_download_success';
+  static const String invoiceDownloadSuccessWeb = 'invoice_download_success_web';
   static const String invoiceEditTitle = 'invoice_edit_title';
   static const String invoiceFilterAll = 'invoice_filter_all';
   static const String invoiceFooterPoweredBy = 'invoice_footer_powered_by';
