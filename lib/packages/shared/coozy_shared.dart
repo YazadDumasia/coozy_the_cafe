@@ -26,6 +26,12 @@ export 'icons/reservation_icons.dart';
 export 'l10n/locale_keys.dart';
 export 'l10n/track_constants.dart';
 
+// models
+export 'models/tax_model/tax_model.dart';
+export 'models/discount_model/discount_model.dart';
+export 'models/extra_charge_model/extra_charge_model.dart';
+export 'models/bill_summary_model/bill_summary_model.dart';
+
 // models/language_model
 export 'models/language_model/language_model.dart';
 
@@ -55,6 +61,7 @@ export 'utils/components/mask_text_input_formatter.dart';
 export 'utils/components/page_transition.dart';
 export 'utils/components/pdf_save_helper.dart';
 export 'utils/components/pulse_animation.dart';
+export 'utils/components/responsive_modal.dart';
 export 'utils/components/snackbar_utils.dart';
 export 'utils/components/sprung.dart';
 export 'utils/components/top_login.dart';

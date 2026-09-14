@@ -15,6 +15,7 @@ void main() async {
   GoRouter.optionURLReflectsImperativeAPIs = true;
   WidgetsFlutterBinding.ensureInitialized();
   await shared.LocalManager.preferencesInit();
+  await core.CurrencyFormatter.initFromPreferences();
   await initDI();
   await core.NotificationApi.init(initScheduled: true);
   core.NotificationApi.onNotification.stream.listen((payload) async {
@@ -77,6 +78,7 @@ class _MyAppState extends State<MyApp> {
               final theme = shared.MaterialTheme(textTheme);
 
               return MaterialApp.router(
+                scaffoldMessengerKey: shared.scaffoldMessengerKey,
                 title: 'Coozy the Cafe',
                 debugShowCheckedModeBanner: false,
                 themeMode: themeState.themeMode,

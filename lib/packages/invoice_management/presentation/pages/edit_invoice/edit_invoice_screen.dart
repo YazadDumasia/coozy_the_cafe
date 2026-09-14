@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -8,10 +9,7 @@ import '../../bloc/invoice_management_bloc.dart';
 import '../../../domain/entities/invoice_management_entity.dart';
 import 'edit_invoice_screen_actions.dart';
 import 'widget/add_invoice_item_dialog.dart';
-import 'widget/edit_invoice_charges_dialog.dart';
-import 'widget/edit_invoice_discount_dialog.dart';
 import 'widget/edit_invoice_item_dialog.dart';
-import 'widget/edit_invoice_tax_dialog.dart';
 
 class EditInvoiceScreen extends StatefulWidget {
   final InvoiceDetailsEntity details;
@@ -32,8 +30,13 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   late final ValueNotifier<InvoiceEntity> _invoiceNotifier;
   late final ValueNotifier<List<InvoiceItemEntity>> _itemsNotifier;
   late final ValueNotifier<String> _paymentMethodNotifier;
-  late final ValueNotifier<double> _otherChargesNotifier;
   late final ValueNotifier<bool> _isSavingNotifier;
+
+  late final ValueNotifier<List<shared.Tax>> _appliedTaxesNotifier;
+  late final ValueNotifier<List<shared.Discount>> _appliedDiscountsNotifier;
+  late final ValueNotifier<List<shared.ExtraCharge>> _appliedChargesNotifier;
+  late final ValueNotifier<bool> _isRoundOffEnabledNotifier;
+  late final ValueNotifier<shared.BillSummary> _summaryNotifier;
 
   @override
   void initState() {
@@ -49,13 +52,99 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
       initialPaymentMethod = invoice.paymentMethodName!;
     }
     _paymentMethodNotifier = ValueNotifier<String>(initialPaymentMethod);
-    _otherChargesNotifier = ValueNotifier<double>(0.0);
     _isSavingNotifier = ValueNotifier<bool>(false);
 
     _phoneController = TextEditingController(text: invoice.phoneNumber ?? '');
     _nameController = TextEditingController(text: invoice.customerName ?? '');
     _phoneFocusNode = FocusNode();
     _nameFocusNode = FocusNode();
+
+    // Parse existing paymentMethodDetails JSON if available to restore applied taxes, discounts, charges, round-off
+    List<shared.Tax> initialTaxes = [];
+    List<shared.Discount> initialDiscounts = [];
+    List<shared.ExtraCharge> initialCharges = [];
+    bool initialRoundOff = false;
+
+    if (invoice.paymentMethodDetails != null &&
+        invoice.paymentMethodDetails!.trim().isNotEmpty) {
+      try {
+        final decoded = jsonDecode(invoice.paymentMethodDetails!);
+        if (decoded is Map<String, dynamic>) {
+          if (decoded['taxDetails'] is List) {
+            for (final t in decoded['taxDetails']) {
+              if (t is Map<String, dynamic>) {
+                final rate = (t['ratePercent'] as num?)?.toDouble() ?? 0.0;
+                final name = t['name']?.toString() ?? 'Tax';
+                initialTaxes.add(shared.Tax(
+                  id: 'tax_${initialTaxes.length}_${DateTime.now().millisecondsSinceEpoch}',
+                  name: name,
+                  ratePercent: rate,
+                ));
+              }
+            }
+          }
+          if (decoded['discountDetails'] is List) {
+            for (final d in decoded['discountDetails']) {
+              if (d is Map<String, dynamic>) {
+                final val = (d['amount'] as num?)?.toDouble() ?? 0.0;
+                final name = d['name']?.toString() ?? 'Discount';
+                initialDiscounts.add(shared.Discount(
+                  id: 'disc_${initialDiscounts.length}_${DateTime.now().millisecondsSinceEpoch}',
+                  name: name,
+                  value: val,
+                  isPercentage: false,
+                ));
+              }
+            }
+          }
+          if (decoded['chargeDetails'] is List) {
+            for (final c in decoded['chargeDetails']) {
+              if (c is Map<String, dynamic>) {
+                final val = (c['amount'] as num?)?.toDouble() ?? 0.0;
+                final name = c['name']?.toString() ?? 'Charge';
+                initialCharges.add(shared.ExtraCharge(
+                  id: 'chg_${initialCharges.length}_${DateTime.now().millisecondsSinceEpoch}',
+                  name: name,
+                  value: val,
+                  isPercentage: false,
+                ));
+              }
+            }
+          }
+          if (decoded['roundingAmount'] != null &&
+              ((decoded['roundingAmount'] as num).toDouble()).abs() > 0.0001) {
+            initialRoundOff = true;
+          }
+        }
+      } catch (_) {}
+    }
+
+    // Fallbacks if breakdown was not in paymentMethodDetails
+    if (initialTaxes.isEmpty && invoice.taxPercentage > 0) {
+      initialTaxes.add(shared.Tax(
+        id: 'tax_legacy_1',
+        name: 'Tax (${invoice.taxPercentage.toStringAsFixed(1)}%)',
+        ratePercent: invoice.taxPercentage,
+      ));
+    }
+    if (initialDiscounts.isEmpty && invoice.discountAmount > 0) {
+      initialDiscounts.add(shared.Discount(
+        id: 'disc_legacy_1',
+        name: 'Discount',
+        value: invoice.discountAmount,
+        isPercentage: false,
+      ));
+    }
+
+    _appliedTaxesNotifier = ValueNotifier<List<shared.Tax>>(initialTaxes);
+    _appliedDiscountsNotifier =
+        ValueNotifier<List<shared.Discount>>(initialDiscounts);
+    _appliedChargesNotifier =
+        ValueNotifier<List<shared.ExtraCharge>>(initialCharges);
+    _isRoundOffEnabledNotifier = ValueNotifier<bool>(initialRoundOff);
+    _summaryNotifier = ValueNotifier<shared.BillSummary>(shared.BillSummary.empty());
+
+    _recalculateTotals();
   }
 
   @override
@@ -67,8 +156,12 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
     _invoiceNotifier.dispose();
     _itemsNotifier.dispose();
     _paymentMethodNotifier.dispose();
-    _otherChargesNotifier.dispose();
     _isSavingNotifier.dispose();
+    _appliedTaxesNotifier.dispose();
+    _appliedDiscountsNotifier.dispose();
+    _appliedChargesNotifier.dispose();
+    _isRoundOffEnabledNotifier.dispose();
+    _summaryNotifier.dispose();
     super.dispose();
   }
 
@@ -79,35 +172,59 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
       subtotal += item.totalPrice;
     }
 
+    final summary = const shared.BillCalculator().calculate(
+      subtotal: subtotal,
+      appliedTaxes: _appliedTaxesNotifier.value,
+      appliedDiscounts: _appliedDiscountsNotifier.value,
+      appliedOtherCharges: _appliedChargesNotifier.value,
+      isRoundOffEnabled: _isRoundOffEnabledNotifier.value,
+    );
+    _summaryNotifier.value = summary;
+
+    final breakdownJson = jsonEncode({
+      'taxDetails': summary.taxDetails
+          .map((t) => {
+                'name': t.name,
+                'ratePercent': t.ratePercent,
+                'amount': t.calculatedAmount,
+              })
+          .toList(),
+      'discountDetails': summary.discountDetails
+          .map((d) => {
+                'name': d.name,
+                'amount': d.calculatedAmount,
+              })
+          .toList(),
+      'chargeDetails': summary.chargeDetails
+          .map((c) => {
+                'name': c.name,
+                'amount': c.calculatedAmount,
+              })
+          .toList(),
+      'roundingAmount': summary.roundingAmount,
+    });
+
     final currentInvoice = _invoiceNotifier.value;
-    double discount = currentInvoice.discountAmount;
-    if (discount > subtotal) discount = subtotal;
-
-    final taxable = (subtotal - discount).clamp(0.0, double.infinity);
-    double tax = currentInvoice.taxCost;
-    if (currentInvoice.taxPercentage > 0) {
-      tax = double.parse(
-        (taxable * (currentInvoice.taxPercentage / 100.0)).toStringAsFixed(2),
-      );
-    }
-
-    final otherCharges = _otherChargesNotifier.value;
-    final grandTotal =
-        (taxable + tax + otherCharges).clamp(0.0, double.infinity);
+    final primaryTaxRate = _appliedTaxesNotifier.value.isNotEmpty
+        ? _appliedTaxesNotifier.value.first.ratePercent
+        : 0.0;
 
     _invoiceNotifier.value = currentInvoice.copyWith(
-      totalCost: subtotal,
-      taxableAmount: taxable,
-      discountAmount: discount,
-      taxCost: tax,
-      netPaymentAmount: grandTotal,
+      totalCost: summary.subtotal,
+      taxableAmount: summary.taxableBase,
+      discountAmount: summary.totalDiscounts,
+      taxPercentage: primaryTaxRate,
+      taxCost: summary.totalTaxes,
+      netPaymentAmount: summary.grandTotal,
+      recordAmountPaid: summary.grandTotal,
+      paymentMethodDetails: breakdownJson,
     );
   }
 
   void _onEditItem(InvoiceItemEntity item, int index) {
-    showDialog(
+    shared.showResponsiveModal(
       context: context,
-      builder: (dialogCtx) => EditInvoiceItemDialog(
+      child: EditInvoiceItemDialog(
         itemName: item.itemName,
         initialQuantity: item.quantity,
         initialUnitPrice: item.unitPrice,
@@ -176,9 +293,9 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   }
 
   void _onAddCustomItem() {
-    showDialog(
+    shared.showResponsiveModal(
       context: context,
-      builder: (dialogCtx) => AddInvoiceItemDialog(
+      child: AddInvoiceItemDialog(
         onAdd: (name, q, p) {
           final newItem = InvoiceItemEntity(
             id: DateTime.now().millisecondsSinceEpoch,
@@ -198,18 +315,13 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   }
 
   void _onAdjustTax() {
-    final invoice = _invoiceNotifier.value;
-    showDialog(
+    shared.showResponsiveModal(
       context: context,
-      builder: (dialogCtx) => EditInvoiceTaxDialog(
-        currentSubtotal: invoice.totalCost,
-        initialTaxPercentage: invoice.taxPercentage,
-        initialTaxCost: invoice.taxCost,
-        onApply: (pct, cost) {
-          _invoiceNotifier.value = _invoiceNotifier.value.copyWith(
-            taxPercentage: pct,
-            taxCost: cost,
-          );
+      child: shared.SelectTaxDialog(
+        appliedTaxes: _appliedTaxesNotifier.value,
+        onTaxAdded: (tax) {
+          final updated = List<shared.Tax>.from(_appliedTaxesNotifier.value)..add(tax);
+          _appliedTaxesNotifier.value = updated;
           _recalculateTotals();
         },
       ),
@@ -217,18 +329,14 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   }
 
   void _onAdjustDiscount() {
-    final invoice = _invoiceNotifier.value;
-    showDialog(
+    shared.showResponsiveModal(
       context: context,
-      builder: (dialogCtx) => EditInvoiceDiscountDialog(
-        currentSubtotal: invoice.totalCost,
-        initialDiscountType: invoice.discountType,
-        initialDiscountAmount: invoice.discountAmount,
-        onApply: (type, amt) {
-          _invoiceNotifier.value = _invoiceNotifier.value.copyWith(
-            discountType: type,
-            discountAmount: amt,
-          );
+      child: shared.SelectDiscountDialog(
+        appliedDiscounts: _appliedDiscountsNotifier.value,
+        onDiscountAdded: (discount) {
+          final updated =
+              List<shared.Discount>.from(_appliedDiscountsNotifier.value)..add(discount);
+          _appliedDiscountsNotifier.value = updated;
           _recalculateTotals();
         },
       ),
@@ -236,12 +344,14 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   }
 
   void _onAdjustCharges() {
-    showDialog(
+    shared.showResponsiveModal(
       context: context,
-      builder: (dialogCtx) => EditInvoiceChargesDialog(
-        initialCharges: _otherChargesNotifier.value,
-        onApply: (charges) {
-          _otherChargesNotifier.value = charges;
+      child: shared.SelectChargeDialog(
+        appliedOtherCharges: _appliedChargesNotifier.value,
+        onChargeAdded: (charge) {
+          final updated =
+              List<shared.ExtraCharge>.from(_appliedChargesNotifier.value)..add(charge);
+          _appliedChargesNotifier.value = updated;
           _recalculateTotals();
         },
       ),
@@ -501,248 +611,62 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // Totals breakdown card
-                ValueListenableBuilder<InvoiceEntity>(
-                  valueListenable: _invoiceNotifier,
-                  builder: (context, invoice, _) {
+                // Shared Subtotal & Breakdown Summary Card matching Checkout page
+                ValueListenableBuilder<shared.BillSummary>(
+                  valueListenable: _summaryNotifier,
+                  builder: (context, summary, _) {
                     return ValueListenableBuilder<List<InvoiceItemEntity>>(
                       valueListenable: _itemsNotifier,
                       builder: (context, items, _) {
-                        final totalUnits =
-                            items.fold(0, (sum, i) => sum + i.quantity);
-                        final totalItems = items.length;
+                        return ValueListenableBuilder<bool>(
+                          valueListenable: _isRoundOffEnabledNotifier,
+                          builder: (context, isRoundOffEnabled, _) {
+                            final totalUnits =
+                                items.fold(0, (sum, i) => sum + i.quantity);
+                            final totalItems = items.length;
 
-                        return Card(
-                          elevation: 1,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(
-                              color: colorScheme.outlineVariant,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      context.tr(
-                                            shared.LocaleKeys.invoiceSubtotal,
-                                            track: shared
-                                                .TrackConstants
-                                                .invoicePageTrack,
-                                          ) ??
-                                          'Subtotal',
-                                      style:
-                                          theme.textTheme.bodyMedium?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                    Text(
-                                      core.CurrencyFormatter.format(
-                                        value: invoice.totalCost,
-                                      ),
-                                      style:
-                                          theme.textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (invoice.discountAmount > 0) ...[
-                                  const SizedBox(height: 6),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Discount',
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                          color: colorScheme.error,
-                                        ),
-                                      ),
-                                      Text(
-                                        '- ${core.CurrencyFormatter.format(value: invoice.discountAmount)}',
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                          color: colorScheme.error,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                                if (invoice.taxCost > 0) ...[
-                                  const SizedBox(height: 6),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        'Tax ${invoice.taxPercentage > 0 ? '(${invoice.taxPercentage}%)' : ''}',
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
-                                      ),
-                                      Text(
-                                        '+ ${core.CurrencyFormatter.format(value: invoice.taxCost)}',
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                                ValueListenableBuilder<double>(
-                                  valueListenable: _otherChargesNotifier,
-                                  builder: (context, charges, _) {
-                                    if (charges <= 0) {
-                                      return const SizedBox.shrink();
-                                    }
-                                    return Padding(
-                                      padding: const EdgeInsets.only(top: 6),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Other Charges',
-                                            style: theme.textTheme.bodyMedium
-                                                ?.copyWith(
-                                              color:
-                                                  colorScheme.onSurfaceVariant,
-                                            ),
-                                          ),
-                                          Text(
-                                            '+ ${core.CurrencyFormatter.format(value: charges)}',
-                                            style: theme.textTheme.bodyMedium
-                                                ?.copyWith(
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                                Divider(
-                                  height: 20,
-                                  color: colorScheme.outlineVariant,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      context.tr(
-                                            shared.LocaleKeys.invoiceGrandTotal,
-                                            track: shared
-                                                .TrackConstants
-                                                .invoicePageTrack,
-                                          ) ??
-                                          'Grand Total',
-                                      style:
-                                          theme.textTheme.titleMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Text(
-                                      core.CurrencyFormatter.format(
-                                        value: invoice.netPaymentAmount,
-                                      ),
-                                      style:
-                                          theme.textTheme.titleLarge?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        color: colorScheme.primary,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  children: [
-                                    OutlinedButton.icon(
-                                      onPressed: _onAdjustTax,
-                                      icon: const Icon(Icons.percent, size: 16),
-                                      label: Text(
-                                        context.tr(
-                                              shared.LocaleKeys.invoiceAddTax,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .invoicePageTrack,
-                                            ) ??
-                                            'ADD TAX',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Text(
-                                      '$totalItems ITEMS | $totalUnits UNITS',
-                                      style:
-                                          theme.textTheme.bodySmall?.copyWith(
-                                        color: colorScheme.onSurfaceVariant,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    OutlinedButton.icon(
-                                      onPressed: _onAdjustDiscount,
-                                      icon: const Icon(
-                                        Icons.discount_outlined,
-                                        size: 16,
-                                      ),
-                                      label: Text(
-                                        context.tr(
-                                              shared.LocaleKeys
-                                                  .invoiceAddDiscount,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .invoicePageTrack,
-                                            ) ??
-                                            'ADD DISCOUNT',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                    OutlinedButton.icon(
-                                      onPressed: _onAdjustCharges,
-                                      icon: const Icon(
-                                        Icons.add_circle_outline,
-                                        size: 16,
-                                      ),
-                                      label: Text(
-                                        context.tr(
-                                              shared.LocaleKeys
-                                                  .invoiceAddOtherCharges,
-                                              track: shared
-                                                  .TrackConstants
-                                                  .invoicePageTrack,
-                                            ) ??
-                                            'OTHER CHARGES',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                            return shared.SubtotalSummaryCard(
+                              subtotal: summary.subtotal,
+                              taxDetails: summary.taxDetails,
+                              discountDetails: summary.discountDetails,
+                              chargeDetails: summary.chargeDetails,
+                              grandTotal: summary.grandTotal,
+                              totalItemCount: totalItems,
+                              totalUnitCount: totalUnits,
+                              isRoundOffEnabled: isRoundOffEnabled,
+                              roundingAmount: summary.roundingAmount,
+                              showClearButton: false,
+                              onRoundOffToggled: () {
+                                _isRoundOffEnabledNotifier.value =
+                                    !_isRoundOffEnabledNotifier.value;
+                                _recalculateTotals();
+                              },
+                              onAddTax: _onAdjustTax,
+                              onAddDiscount: _onAdjustDiscount,
+                              onAddOtherCharges: _onAdjustCharges,
+                              onRemoveTax: (taxDetail) {
+                                final updated = _appliedTaxesNotifier.value
+                                    .where((t) => t.name != taxDetail.name)
+                                    .toList();
+                                _appliedTaxesNotifier.value = updated;
+                                _recalculateTotals();
+                              },
+                              onRemoveDiscount: (discountDetail) {
+                                final updated = _appliedDiscountsNotifier.value
+                                    .where((d) => d.name != discountDetail.name)
+                                    .toList();
+                                _appliedDiscountsNotifier.value = updated;
+                                _recalculateTotals();
+                              },
+                              onRemoveCharge: (chargeDetail) {
+                                final updated = _appliedChargesNotifier.value
+                                    .where((c) => c.name != chargeDetail.name)
+                                    .toList();
+                                _appliedChargesNotifier.value = updated;
+                                _recalculateTotals();
+                              },
+                            );
+                          },
                         );
                       },
                     );

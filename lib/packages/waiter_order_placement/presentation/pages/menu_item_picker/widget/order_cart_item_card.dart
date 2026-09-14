@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/entities/order_cart_item.dart';
 import 'package:coozy_the_cafe/packages/waiter_order_placement/presentation/bloc/menu_item_picker_bloc.dart';
@@ -169,7 +170,9 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        (widget.item.price * widget.item.quantity).toStringAsFixed(0),
+                        core.CurrencyFormatter.format(
+                          value: widget.item.totalPrice,
+                        ),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.primary,
                           fontWeight: FontWeight.w600,

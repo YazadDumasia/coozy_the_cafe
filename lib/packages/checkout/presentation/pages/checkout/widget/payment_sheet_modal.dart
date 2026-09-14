@@ -16,7 +16,9 @@ import 'payment_success_view.dart';
 enum _PaymentStep { details, cash, other, success }
 
 class PaymentSheetModal extends StatefulWidget {
-  const PaymentSheetModal({super.key});
+  final CheckoutBloc checkoutBloc;
+
+  const PaymentSheetModal({super.key, required this.checkoutBloc});
 
   @override
   State<PaymentSheetModal> createState() => _PaymentSheetModalState();
@@ -42,7 +44,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
   @override
   void initState() {
     super.initState();
-    final initialCustomer = context.read<CheckoutBloc>().state.customerDetails;
+    final initialCustomer = widget.checkoutBloc.state.customerDetails;
     _mobileController = TextEditingController(
       text: initialCustomer.mobileNumber,
     );
@@ -249,7 +251,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
   }
 
   void _updateCustomer() {
-    context.read<CheckoutBloc>().add(
+    widget.checkoutBloc.add(
       CheckoutCustomerDetailsUpdated(
         CustomerDetails(
           mobileNumber: _mobileController.text.trim(),
@@ -273,7 +275,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
             title: 'Add Payment Mode',
             child: AddPaymentMethodDialog(
               onPaymentMethodAdded: (newMethod) {
-                context.read<CheckoutBloc>().add(
+                widget.checkoutBloc.add(
                   CheckoutPaymentMethodAdded(newMethod),
                 );
               },
@@ -289,6 +291,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
     final theme = Theme.of(context);
 
     return BlocBuilder<CheckoutBloc, CheckoutState>(
+      bloc: widget.checkoutBloc,
       builder: (context, state) {
         final enabledMethods = state.availablePaymentMethods
             .where((m) => m.isEnabled)
@@ -316,7 +319,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
               );
             },
             onNewSale: () {
-              context.read<CheckoutBloc>().add(const CheckoutCleared());
+              widget.checkoutBloc.add(const CheckoutCleared());
               if (Navigator.of(context).canPop()) {
                 Navigator.of(context).pop();
               }
@@ -335,7 +338,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
             },
             onPaymentConfirmed:
                 ({required cashReceived, required changeAmount, note}) {
-                  context.read<CheckoutBloc>().add(
+                  widget.checkoutBloc.add(
                     CheckoutPaymentConfirmed(
                       note: note,
                       cashReceived: cashReceived,
@@ -359,7 +362,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
               });
             },
             onPaymentConfirmed: (note) {
-              context.read<CheckoutBloc>().add(
+              widget.checkoutBloc.add(
                 CheckoutPaymentConfirmed(note: note),
               );
               setState(() {
@@ -637,7 +640,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
 
                   return InkWell(
                     onTap: () {
-                      context.read<CheckoutBloc>().add(
+                      widget.checkoutBloc.add(
                         CheckoutPaymentSelected(method),
                       );
                     },

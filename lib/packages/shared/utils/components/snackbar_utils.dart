@@ -1,5 +1,6 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'global.dart';
 
 /// Represents an action button displayed inside a [SnackBarUtils] notification.
 class SnackBarActionItem {
@@ -20,9 +21,15 @@ class SnackBarUtils {
   static Flushbar? _activeFlushbar;
 
   /// Dismisses any currently visible notification immediately.
-  static void hideCurrent(BuildContext context) {
-    if (_activeFlushbar != null && _activeFlushbar!.isShowing()) {
-      _activeFlushbar!.dismiss();
+  static void hideCurrent([BuildContext? context]) {
+    try {
+      if (_activeFlushbar != null) {
+        if (_activeFlushbar!.isShowing() || _activeFlushbar!.isAppearing()) {
+          _activeFlushbar!.dismiss();
+        }
+        _activeFlushbar = null;
+      }
+    } catch (_) {
       _activeFlushbar = null;
     }
   }
@@ -42,7 +49,10 @@ class SnackBarUtils {
     EdgeInsets margin = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     BorderRadius? borderRadius,
   }) async {
-    final theme = Theme.of(context);
+    final effectiveContext =
+        (context.mounted ? context : navigatorKey.currentContext) ?? context;
+
+    final theme = Theme.of(effectiveContext);
     final isDark = theme.brightness == Brightness.dark;
     final defaultBg = isDark
         ? const Color(0xFF1E293B)
@@ -50,7 +60,7 @@ class SnackBarUtils {
     final effectiveTextColor = textColor ?? Colors.white;
 
     // Dismiss any active flushbar before showing a new one
-    hideCurrent(context);
+    hideCurrent(effectiveContext);
 
     late Flushbar flushbar;
 
@@ -65,7 +75,9 @@ class SnackBarUtils {
               padding: const EdgeInsets.symmetric(horizontal: 8),
             ),
             onPressed: () {
-              flushbar.dismiss();
+              try {
+                flushbar.dismiss();
+              } catch (_) {}
               action.onPressed();
             },
             child: Text(
@@ -126,7 +138,11 @@ class SnackBarUtils {
     );
 
     _activeFlushbar = flushbar;
-    return flushbar.show(context);
+    try {
+      return await flushbar.show(effectiveContext);
+    } catch (_) {
+      return null;
+    }
   }
 
   /// Shows a success notification with a green checkmark and green indicator bar.
@@ -138,9 +154,11 @@ class SnackBarUtils {
     List<SnackBarActionItem> actions = const [],
     FlushbarPosition position = FlushbarPosition.BOTTOM,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveContext =
+        (context.mounted ? context : navigatorKey.currentContext) ?? context;
+    final isDark = Theme.of(effectiveContext).brightness == Brightness.dark;
     return showSnackBar(
-      context,
+      effectiveContext,
       title: title,
       message: message,
       duration: duration,
@@ -165,9 +183,11 @@ class SnackBarUtils {
     List<SnackBarActionItem> actions = const [],
     FlushbarPosition position = FlushbarPosition.BOTTOM,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveContext =
+        (context.mounted ? context : navigatorKey.currentContext) ?? context;
+    final isDark = Theme.of(effectiveContext).brightness == Brightness.dark;
     return showSnackBar(
-      context,
+      effectiveContext,
       title: title,
       message: message,
       duration: duration,
@@ -192,9 +212,11 @@ class SnackBarUtils {
     List<SnackBarActionItem> actions = const [],
     FlushbarPosition position = FlushbarPosition.BOTTOM,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveContext =
+        (context.mounted ? context : navigatorKey.currentContext) ?? context;
+    final isDark = Theme.of(effectiveContext).brightness == Brightness.dark;
     return showSnackBar(
-      context,
+      effectiveContext,
       title: title,
       message: message,
       duration: duration,
@@ -219,9 +241,11 @@ class SnackBarUtils {
     List<SnackBarActionItem> actions = const [],
     FlushbarPosition position = FlushbarPosition.BOTTOM,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveContext =
+        (context.mounted ? context : navigatorKey.currentContext) ?? context;
+    final isDark = Theme.of(effectiveContext).brightness == Brightness.dark;
     return showSnackBar(
-      context,
+      effectiveContext,
       title: title,
       message: message,
       duration: duration,
@@ -249,9 +273,11 @@ class SnackBarUtils {
     required List<SnackBarActionItem> actions,
     FlushbarPosition position = FlushbarPosition.BOTTOM,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveContext =
+        (context.mounted ? context : navigatorKey.currentContext) ?? context;
+    final isDark = Theme.of(effectiveContext).brightness == Brightness.dark;
     return showSnackBar(
-      context,
+      effectiveContext,
       title: title,
       message: subtitle ?? '',
       duration: duration,

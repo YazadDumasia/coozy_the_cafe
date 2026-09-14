@@ -22,9 +22,7 @@ import '../../order_management/presentation/navigation/order_management_routes.d
 import '../../invoice_management/presentation/navigation/invoice_management_routes.dart';
 import 'app_routes.dart';
 
-final GlobalKey<NavigatorState> _rootNavigatorKey = GlobalKey<NavigatorState>(
-  debugLabel: 'root',
-);
+final GlobalKey<NavigatorState> _rootNavigatorKey = shared.navigatorKey;
 
 class AppWebTitleObserver extends NavigatorObserver {
   @override

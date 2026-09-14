@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter/material.dart';
 
 class EditCartItemDialog extends StatefulWidget {
@@ -19,74 +20,189 @@ class EditCartItemDialog extends StatefulWidget {
 }
 
 class _EditCartItemDialogState extends State<EditCartItemDialog> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late final TextEditingController _qtyController;
   late final TextEditingController _priceController;
+  late final FocusNode _qtyFocusNode;
+  late final FocusNode _priceFocusNode;
+  late final ValueNotifier<double> _totalNotifier;
 
   @override
   void initState() {
     super.initState();
-    _qtyController = TextEditingController(text: widget.initialQuantity.toString());
-    _priceController = TextEditingController(text: widget.initialUnitPrice.toString());
+    _qtyController =
+        TextEditingController(text: widget.initialQuantity.toString());
+    _priceController =
+        TextEditingController(text: widget.initialUnitPrice.toStringAsFixed(2));
+    _qtyFocusNode = FocusNode();
+    _priceFocusNode = FocusNode();
+    _totalNotifier = ValueNotifier<double>(
+      widget.initialQuantity * widget.initialUnitPrice,
+    );
+
+    _qtyController.addListener(_updateTotal);
+    _priceController.addListener(_updateTotal);
+  }
+
+  void _updateTotal() {
+    final qty = int.tryParse(_qtyController.text) ?? 0;
+    final price = double.tryParse(_priceController.text) ?? 0.0;
+    _totalNotifier.value = qty * price;
   }
 
   @override
   void dispose() {
+    _qtyController.removeListener(_updateTotal);
+    _priceController.removeListener(_updateTotal);
     _qtyController.dispose();
     _priceController.dispose();
+    _qtyFocusNode.dispose();
+    _priceFocusNode.dispose();
+    _totalNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            'Edit Item: ${widget.initialName}',
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: _qtyController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: 'Quantity',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextFormField(
-            controller: _priceController,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-              labelText: 'Unit Price',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'Edit Item: ${widget.initialName}',
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(width: 8),
-              ElevatedButton(
-                onPressed: () {
-                  final q = int.tryParse(_qtyController.text) ?? widget.initialQuantity;
-                  final p = double.tryParse(_priceController.text) ?? widget.initialUnitPrice;
-                  widget.onSave(q, p);
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Save'),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _qtyController,
+              focusNode: _qtyFocusNode,
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              decoration: InputDecoration(
+                labelText: 'Quantity',
+                border: const OutlineInputBorder(),
+                prefixIcon: const Icon(Icons.numbers),
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove_circle_outline),
+                      onPressed: () {
+                        final current = int.tryParse(_qtyController.text) ?? 1;
+                        if (current > 1) {
+                          _qtyController.text = (current - 1).toString();
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add_circle_outline),
+                      onPressed: () {
+                        final current = int.tryParse(_qtyController.text) ?? 0;
+                        _qtyController.text = (current + 1).toString();
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ],
-          ),
-        ],
+              validator: (value) {
+                final parsed = int.tryParse(value ?? '');
+                if (parsed == null || parsed <= 0) {
+                  return 'Please enter a valid quantity';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: _priceController,
+              focusNode: _priceFocusNode,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              textInputAction: TextInputAction.done,
+              decoration: InputDecoration(
+                labelText: 'Unit Price',
+                border: const OutlineInputBorder(),
+                prefixText: '${core.CurrencyFormatter.primarySymbol} ',
+                hintText: '0.00',
+              ),
+              validator: (value) {
+                final parsed = double.tryParse(value ?? '');
+                if (parsed == null || parsed < 0) {
+                  return 'Please enter a valid unit price';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
+            ValueListenableBuilder<double>(
+              valueListenable: _totalNotifier,
+              builder: (context, total, _) {
+                return Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(
+                      color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Total Price',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        core.CurrencyFormatter.format(value: total),
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.primary,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('Cancel'),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      final q = int.tryParse(_qtyController.text) ??
+                          widget.initialQuantity;
+                      final p = double.tryParse(_priceController.text) ??
+                          widget.initialUnitPrice;
+                      widget.onSave(q, p);
+                      Navigator.of(context).pop();
+                    }
+                  },
+                  child: const Text('Save'),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

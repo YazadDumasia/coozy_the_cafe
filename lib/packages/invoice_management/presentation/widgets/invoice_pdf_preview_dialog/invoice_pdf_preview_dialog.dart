@@ -278,7 +278,9 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
             // Content Viewer
             Expanded(
               child: _isLoading
-                  ? const Center(child: shared.LoadingPage())
+                  ? const Center(
+                      child: shared.LoadingPage(isEmbedded: true),
+                    )
                   : _errorMessage != null
                       ? Center(
                           child: Padding(

@@ -3,7 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
 class LoadingPage extends StatefulWidget {
-  const LoadingPage({super.key});
+  /// When `true`, renders only the Lottie animation centered without
+  /// Scaffold/SafeArea, suitable for dialogs, sheets, and inline loading.
+  /// When `false` (default), wraps in a full Scaffold for route-level usage.
+  final bool isEmbedded;
+
+  const LoadingPage({super.key, this.isEmbedded = false});
 
   @override
   State<LoadingPage> createState() => _LoadingPageState();
@@ -28,6 +33,14 @@ class _LoadingPageState extends State<LoadingPage>
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isEmbedded) {
+      return _buildLoadingContent(
+        context,
+        maxWidth: MediaQuery.of(context).size.width * .65,
+        maxHeight: 120,
+      );
+    }
+
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -72,6 +85,21 @@ class _LoadingPageState extends State<LoadingPage>
             }
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildLoadingContent(
+    BuildContext context, {
+    double maxWidth = 120,
+    double maxHeight = 120,
+  }) {
+    return Center(
+      child: Lottie.asset(
+        Assets.lottie.loading,
+        fit: BoxFit.contain,
+        width: maxWidth,
+        height: maxHeight,
       ),
     );
   }

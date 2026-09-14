@@ -73,26 +73,34 @@ class OrderManagementLocalDataSourceImpl
     final db = ordersDao.attachedDatabase;
     final itemNamesMap = <int, String>{};
     for (final item in items) {
+      if (itemNamesMap.containsKey(item.id)) continue;
+
       final menuItemId = item.menuItemId ?? item.itemId;
-      if (menuItemId == null || itemNamesMap.containsKey(item.id)) continue;
+      if (menuItemId != null) {
+        final menuItem = await (db.select(db.menuItemsTable)
+              ..where((m) => m.id.equals(menuItemId)))
+            .getSingleOrNull();
 
-      final menuItem = await (db.select(db.menuItemsTable)
-            ..where((m) => m.id.equals(menuItemId)))
-          .getSingleOrNull();
-
-      if (menuItem != null && menuItem.name.isNotEmpty) {
-        String name = menuItem.name;
-        if (item.selectedVariationId != null) {
-          final variation = await (db.select(db.menuItemVariationsTable)
-                ..where((v) => v.id.equals(item.selectedVariationId!)))
-              .getSingleOrNull();
-          if (variation != null &&
-              variation.name != null &&
-              variation.name!.isNotEmpty) {
-            name = '$name (${variation.name})';
+        if (menuItem != null && menuItem.name.isNotEmpty) {
+          String name = menuItem.name;
+          if (item.selectedVariationId != null) {
+            final variation = await (db.select(db.menuItemVariationsTable)
+                  ..where((v) => v.id.equals(item.selectedVariationId!)))
+                .getSingleOrNull();
+            if (variation != null &&
+                variation.name != null &&
+                variation.name!.isNotEmpty) {
+              name = '$name (${variation.name})';
+            }
           }
+          itemNamesMap[item.id] = name;
+          continue;
         }
-        itemNamesMap[item.id] = name;
+      }
+
+      // Fallback: If item is custom or menuItem record is absent, check item.remarks
+      if (item.remarks != null && item.remarks!.trim().isNotEmpty) {
+        itemNamesMap[item.id] = item.remarks!.trim();
       }
     }
     return itemNamesMap;

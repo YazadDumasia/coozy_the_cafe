@@ -85,3 +85,18 @@ export '../../shared/widgets/time_line_picker/time_line_picker_exports.dart';
 
 // up_down_hover_anim_widget
 export '../../shared/widgets/up_down_hover_anim_widget/up_down_hover_anim_widget.dart';
+
+// subtotal_summary_card
+export '../../shared/widgets/subtotal_summary_card/subtotal_summary_card.dart';
+
+// tax_dialog
+export '../../shared/widgets/tax_dialog/add_tax_dialog.dart';
+export '../../shared/widgets/tax_dialog/select_tax_dialog.dart';
+
+// discount_dialog
+export '../../shared/widgets/discount_dialog/add_discount_dialog.dart';
+export '../../shared/widgets/discount_dialog/select_discount_dialog.dart';
+
+// extra_charge_dialog
+export '../../shared/widgets/extra_charge_dialog/add_other_charge_dialog.dart';
+export '../../shared/widgets/extra_charge_dialog/select_charge_dialog.dart';

@@ -1,10 +1,9 @@
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
-import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../bloc/checkout_bloc.dart';
-import '../../../utils/responsive_modal.dart';
 import 'payment_sheet_modal.dart';
 
 class StickyChargeBar extends StatelessWidget {
@@ -30,10 +29,11 @@ class StickyChargeBar extends StatelessWidget {
                 ),
               ),
               onPressed: () async {
-                await showResponsiveModal(
+                final checkoutBloc = context.read<CheckoutBloc>();
+                await shared.showResponsiveModal(
                   context: context,
                   title: 'PAYMENT',
-                  child: const PaymentSheetModal(),
+                  child: PaymentSheetModal(checkoutBloc: checkoutBloc),
                 );
                 if (context.mounted) {
                   final bloc = context.read<CheckoutBloc>();

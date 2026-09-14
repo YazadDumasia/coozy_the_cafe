@@ -21,11 +21,12 @@ class OrderInfoScreenActions {
     Navigator.of(context).pop();
   }
 
-  static void onInvoiceInfo(
+  static Future<void> onInvoiceInfo(
     BuildContext context, {
     required String orderHashId,
-  }) {
-    Navigator.of(context).push(
+    int? orderId,
+  }) async {
+    await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (_) => BlocProvider(
           create: (_) => GetIt.instance<InvoiceManagementBloc>(),
@@ -33,6 +34,9 @@ class OrderInfoScreenActions {
         ),
       ),
     );
+    if (context.mounted && orderId != null) {
+      context.read<OrderManagementBloc>().add(LoadOrderDetailsEvent(orderId));
+    }
   }
 
   static void onShareOrder(

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:drift/drift.dart';
 import '../database.dart';
 import '../tables.dart';
@@ -244,7 +245,22 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
           modificationDate: Value(nowIso),
         );
 
-        await (update(ordersTable)..where((t) => t.id.equals(orderId))).write(orderCompanion);
+        // Also update otherChargesAmount if present in paymentMethodDetails JSON
+        double? extractedCharges;
+        if (invoice.paymentMethodDetails.present && invoice.paymentMethodDetails.value != null) {
+          try {
+            final dynamic decoded = jsonDecode(invoice.paymentMethodDetails.value!);
+            if (decoded is Map<String, dynamic> && decoded['totalOtherCharges'] != null) {
+              extractedCharges = (decoded['totalOtherCharges'] as num).toDouble();
+            }
+          } catch (_) {}
+        }
+
+        final finalOrderCompanion = extractedCharges != null
+            ? orderCompanion.copyWith(otherChargesAmount: Value(extractedCharges))
+            : orderCompanion;
+
+        await (update(ordersTable)..where((t) => t.id.equals(orderId))).write(finalOrderCompanion);
 
         // Also sync order items if items are provided
         if (items != null) {
@@ -260,6 +276,8 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
               }
             }
 
+            final itemNameStr = item.itemName.present ? item.itemName.value : null;
+
             await into(orderItemsTable).insert(
               OrderItemsTableCompanion(
                 orderId: Value(orderId),
@@ -267,6 +285,9 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
                 menuItemId: Value(validItemId),
                 quantity: item.quantity,
                 sellingPrice: item.sellingPrice,
+                remarks: itemNameStr != null && itemNameStr.isNotEmpty
+                    ? Value(itemNameStr)
+                    : const Value.absent(),
                 creationDate: Value(nowIso),
                 status: const Value('completed'),
               ),

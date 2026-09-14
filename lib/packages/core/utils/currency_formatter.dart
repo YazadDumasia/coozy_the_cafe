@@ -1,4 +1,6 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:world_countries/world_countries.dart';
 
 /// Enum to specify currency symbol placement position
@@ -13,9 +15,59 @@ enum CurrencySymbolPosition {
 class CurrencyFormatter {
   static String primarySymbol = '\$';
   static String? secondarySymbol;
-  static bool enableDualDisplay = false;
+  static bool enableSecondary = false;
 
-  /// Updates global active currency symbols (typically loaded from SharedPreferences).
+  /// The currently active symbol — secondary when enabled, primary otherwise.
+  /// Use this anywhere in the UI that needs to display the active currency symbol
+  /// without formatting a value (e.g. column headers, labels).
+  static String get activeSymbol =>
+      (enableSecondary && secondarySymbol != null && secondarySymbol!.isNotEmpty)
+          ? secondarySymbol!
+          : primarySymbol;
+
+  /// Notifier that fires whenever the active symbol changes.
+  /// Widgets can listen to this to reactively update currency labels.
+  static final ValueNotifier<String> activeSymbolNotifier =
+      ValueNotifier<String>(primarySymbol);
+
+  /// Initializes currency state from SharedPreferences (or device locale fallback).
+  /// Call this in `main()` after initializing Flutter bindings.
+  static Future<void> initFromPreferences([SharedPreferences? preferences]) async {
+    try {
+      final prefs = preferences ?? await SharedPreferences.getInstance();
+      String? savedPrimary = prefs.getString('appCurrencySymbol');
+      final savedSecondary = prefs.getString('appSecondaryCurrencySymbol');
+      final isSecondaryEnabled = prefs.getBool('enableSecondaryCurrency') ?? false;
+
+      if (savedPrimary == null || savedPrimary.isEmpty) {
+        // Fallback: detect from device locale
+        try {
+          final locale = WidgetsBinding.instance.platformDispatcher.locale;
+          final countryCode = locale.countryCode;
+          if (countryCode != null && countryCode.isNotEmpty) {
+            final country = WorldCountry.maybeFromCode(countryCode.toUpperCase());
+            final symbol = country?.currencies?.firstOrNull?.symbol;
+            if (symbol != null && symbol.isNotEmpty) {
+              savedPrimary = symbol;
+            }
+          }
+        } catch (_) {}
+      }
+
+      final resolvedPrimary = (savedPrimary != null && savedPrimary.isNotEmpty)
+          ? savedPrimary
+          : '₹';
+
+      updateSymbols(
+        primary: resolvedPrimary,
+        secondary: savedSecondary,
+        enableSecondary: isSecondaryEnabled,
+      );
+    } catch (_) {}
+  }
+
+  /// Updates the active currency state (typically called from Settings when the
+  /// user changes their currency preference).
   static void updateSymbols({
     required String primary,
     String? secondary,
@@ -23,21 +75,24 @@ class CurrencyFormatter {
   }) {
     primarySymbol = primary;
     secondarySymbol = secondary;
-    enableDualDisplay = enableSecondary && (secondary != null && secondary.isNotEmpty);
+    CurrencyFormatter.enableSecondary =
+        enableSecondary && (secondary != null && secondary.isNotEmpty);
+    activeSymbolNotifier.value = activeSymbol;
   }
 
-  /// Formats a numeric [value] (num, double, int, or String representation of a number)
-  /// with money formatting (comma separation for thousands, decimal precision) and currency symbol placement.
+  /// Formats a numeric [value] with the appropriate currency symbol.
+  ///
+  /// **Symbol selection** (driven entirely by SharedPreferences — no flag needed):
+  /// - If secondary currency is enabled → formats with the secondary symbol.
+  /// - Otherwise → formats with the primary symbol.
   ///
   /// Parameters:
-  /// - [value]: The numeric value to format (e.g., `1234567.89` or `"1234567.89"`).
-  /// - [currencyCode]: ISO 4217 currency code (e.g., `'USD'`, `'EUR'`, `'INR'`, `'JPY'`).
-  /// - [symbol]: Optional custom symbol (e.g. `'$'`, `'€'`, `'₹'`). If omitted, resolves automatically.
-  /// - [position]: `CurrencySymbolPosition.prefix` (default) or `CurrencySymbolPosition.suffix`.
-  /// - [decimalDigits]: Number of decimal places. If omitted, defaults to 2 (or 4 for very small amounts < 0.01).
-  /// - [locale]: Optional locale code for number pattern (e.g. `'en_US'`, `'de_DE'`).
-  /// - [withSecondary]: If true and secondary currency is enabled, appends secondary formatted amount e.g. `$ 100.00 (€ 100.00)`.
-  /// - [secondaryRate]: Exchange rate ratio for secondary currency conversion if applicable.
+  /// - [value]: The numeric value to format (e.g. `1234.56` or `"1234.56"`).
+  /// - [currencyCode]: ISO 4217 code (e.g. `'USD'`). Overrides automatic symbol selection.
+  /// - [symbol]: Explicit symbol override. Takes priority over everything else.
+  /// - [position]: `CurrencySymbolPosition.prefix` (default) or `suffix`.
+  /// - [decimalDigits]: Decimal places. Defaults to 2 (or 4 for values < 0.01).
+  /// - [locale]: Number pattern locale (e.g. `'en_US'`, `'de_DE'`).
   static String format({
     required dynamic value,
     String? currencyCode,
@@ -45,38 +100,33 @@ class CurrencyFormatter {
     CurrencySymbolPosition position = CurrencySymbolPosition.prefix,
     int? decimalDigits,
     String? locale,
-    bool showSecondaryIfEnabled = false,
-    double secondaryRate = 1.0,
   }) {
-    // Parse numeric value safely
     final double numericValue = _parseNumericValue(value);
 
-    // Resolve Fiat Currency details using world_countries
-    FiatCurrency? fiat;
-    if (currencyCode != null && currencyCode.isNotEmpty) {
+    // Resolve symbol priority:
+    // 1. Explicit [symbol] parameter
+    // 2. Symbol derived from [currencyCode]
+    // 3. Active symbol from settings (secondary if enabled, primary otherwise)
+    String resolvedSymbol;
+    if (symbol != null && symbol.isNotEmpty) {
+      resolvedSymbol = symbol;
+    } else if (currencyCode != null && currencyCode.isNotEmpty) {
       try {
-        fiat = FiatCurrency.maybeFromCode(currencyCode.toUpperCase());
+        final fiat = FiatCurrency.maybeFromCode(currencyCode.toUpperCase());
+        resolvedSymbol = fiat?.symbol?.isNotEmpty == true
+            ? fiat!.symbol!
+            : currencyCode.toUpperCase();
       } catch (_) {
-        fiat = null;
+        resolvedSymbol = currencyCode.toUpperCase();
       }
+    } else {
+      // Use secondary symbol when enabled, primary otherwise
+      resolvedSymbol = activeSymbol;
     }
 
-    // Resolve symbol:
-    // 1. Explicit symbol parameter if provided
-    // 2. FiatCurrency symbol from currencyCode if provided
-    // 3. Fallback to active primarySymbol
-    String resolvedSymbol = symbol ?? fiat?.symbol ?? '';
-    if (resolvedSymbol.isEmpty && (currencyCode == null || currencyCode.isEmpty)) {
-      resolvedSymbol = primarySymbol;
-    } else if (resolvedSymbol.isEmpty && currencyCode != null) {
-      resolvedSymbol = currencyCode.toUpperCase();
-    }
+    final int decimals =
+        decimalDigits ?? (numericValue != 0 && numericValue.abs() < 0.01 ? 4 : 2);
 
-    // Determine decimal digits
-    final int decimals = decimalDigits ??
-        (numericValue != 0 && numericValue.abs() < 0.01 ? 4 : 2);
-
-    // Create NumberFormat without embedded symbol first
     final NumberFormat numberFormatter = NumberFormat.decimalPatternDigits(
       locale: locale,
       decimalDigits: decimals,
@@ -84,34 +134,15 @@ class CurrencyFormatter {
 
     final String formattedNumber = numberFormatter.format(numericValue);
 
-    String primaryResult;
-    switch (position) {
-      case CurrencySymbolPosition.prefix:
-        primaryResult = '$resolvedSymbol $formattedNumber';
-        break;
-      case CurrencySymbolPosition.suffix:
-        primaryResult = '$formattedNumber $resolvedSymbol';
-        break;
-    }
-
-    if (showSecondaryIfEnabled && enableDualDisplay && secondarySymbol != null && secondarySymbol!.isNotEmpty) {
-      final double secValue = numericValue * secondaryRate;
-      final String secFormattedNumber = numberFormatter.format(secValue);
-      final String secResult = position == CurrencySymbolPosition.prefix
-          ? '$secondarySymbol $secFormattedNumber'
-          : '$secFormattedNumber $secondarySymbol';
-      return '$primaryResult ($secResult)';
-    }
-
-    return primaryResult;
+    return switch (position) {
+      CurrencySymbolPosition.prefix => '$resolvedSymbol $formattedNumber',
+      CurrencySymbolPosition.suffix => '$formattedNumber $resolvedSymbol',
+    };
   }
 
   static double _parseNumericValue(dynamic value) {
-    if (value is num) {
-      return value.toDouble();
-    } else if (value is String) {
-      return double.tryParse(value.replaceAll(',', '')) ?? 0.0;
-    }
+    if (value is num) return value.toDouble();
+    if (value is String) return double.tryParse(value.replaceAll(',', '')) ?? 0.0;
     return 0.0;
   }
 }

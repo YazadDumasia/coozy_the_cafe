@@ -99,11 +99,16 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   params: {'tableName': tName, 'orderId': oId},
                 ) ??
                 'Order placed successfully for $tName! (ID: #$oId)';
-            shared.SnackBarUtils.showSuccess(
-              context,
-              message: localizedMsg,
-            );
             context.go(core.AppRoutePath.homeRoute);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              final rootContext = shared.navigatorKey.currentContext;
+              if (rootContext != null) {
+                shared.SnackBarUtils.showSuccess(
+                  rootContext,
+                  message: localizedMsg,
+                );
+              }
+            });
           } else if (state.errorMessage != null &&
               state.errorMessage!.isNotEmpty) {
             final errText =

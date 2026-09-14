@@ -14,6 +14,7 @@ class _InvoicePdfComputeParams {
   final String? tableName;
   final pw.Font? ttfFont;
   final pw.Font? ttfBoldFont;
+  final List<pw.Font> fontFallback;
   final Uint8List? logoBytes;
 
   _InvoicePdfComputeParams({
@@ -22,6 +23,7 @@ class _InvoicePdfComputeParams {
     this.tableName,
     this.ttfFont,
     this.ttfBoldFont,
+    this.fontFallback = const [],
     this.logoBytes,
   });
 }
@@ -37,9 +39,15 @@ class InvoicePdfGenerator {
     // 1. Pre-load fonts and logo bytes asynchronously
     pw.Font? ttfFont;
     pw.Font? ttfBoldFont;
+    List<pw.Font> fontFallback = [];
     try {
-      ttfFont = await PdfGoogleFonts.openSansRegular();
-      ttfBoldFont = await PdfGoogleFonts.openSansBold();
+      ttfFont = await PdfGoogleFonts.notoSansRegular();
+      ttfBoldFont = await PdfGoogleFonts.notoSansBold();
+      // Add symbols font fallback for currency symbols (₹, €, etc.)
+      try {
+        final symbolsFont = await PdfGoogleFonts.notoSansSymbols2Regular();
+        fontFallback = [symbolsFont];
+      } catch (_) {}
     } catch (_) {
       try {
         final fontByteData = await rootBundle.load(
@@ -70,6 +78,7 @@ class InvoicePdfGenerator {
       tableName: details.tableName,
       ttfFont: ttfFont,
       ttfBoldFont: ttfBoldFont,
+      fontFallback: fontFallback,
       logoBytes: logoBytes,
     );
 
@@ -86,6 +95,7 @@ class InvoicePdfGenerator {
     final docTheme = pw.ThemeData.withFont(
       base: params.ttfFont,
       bold: params.ttfBoldFont,
+      fontFallback: params.fontFallback,
     );
 
     final pdf = pw.Document(theme: docTheme);
@@ -95,15 +105,16 @@ class InvoicePdfGenerator {
         ? params.tableName!
         : (inv.orderId != null ? 'Table ${inv.orderId}' : 'Dine-In');
 
-    final String receiptNo =
-        inv.hashId.isNotEmpty ? inv.hashId : 'MD-${inv.id}';
+    final String receiptNo = inv.hashId.isNotEmpty
+        ? inv.hashId
+        : 'MD-${inv.id}';
 
     final String createdDateStr = inv.createdDate != null
         ? (core.DateUtil.localFormat(
-              inv.createdDate,
-              'dd MMM yyyy - hh:mm a',
-            ) ??
-            '')
+                inv.createdDate,
+                'dd MMM yyyy - hh:mm a',
+              ) ??
+              '')
         : '';
 
     // Standard 80mm roll receipt page format
@@ -144,14 +155,20 @@ class InvoicePdfGenerator {
               pw.Center(
                 child: pw.Text(
                   'Shop 24, Marvella business hub, pal adajan',
-                  style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                  style: const pw.TextStyle(
+                    fontSize: 8,
+                    color: PdfColors.grey700,
+                  ),
                   textAlign: pw.TextAlign.center,
                 ),
               ),
               pw.Center(
                 child: pw.Text(
                   '+919725002491',
-                  style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey700),
+                  style: const pw.TextStyle(
+                    fontSize: 8,
+                    color: PdfColors.grey700,
+                  ),
                 ),
               ),
               pw.SizedBox(height: 6),
@@ -176,7 +193,10 @@ class InvoicePdfGenerator {
               // Items Header
               pw.Container(
                 color: PdfColors.grey200,
-                padding: const pw.EdgeInsets.symmetric(vertical: 3, horizontal: 2),
+                padding: const pw.EdgeInsets.symmetric(
+                  vertical: 3,
+                  horizontal: 2,
+                ),
                 child: pw.Row(
                   children: [
                     pw.Expanded(
@@ -233,13 +253,19 @@ class InvoicePdfGenerator {
                   padding: const pw.EdgeInsets.symmetric(vertical: 4),
                   child: pw.Text(
                     'No items recorded',
-                    style: const pw.TextStyle(fontSize: 8, color: PdfColors.grey600),
+                    style: const pw.TextStyle(
+                      fontSize: 8,
+                      color: PdfColors.grey600,
+                    ),
                   ),
                 )
               else
                 ...items.map(
                   (item) => pw.Padding(
-                    padding: const pw.EdgeInsets.symmetric(vertical: 2, horizontal: 2),
+                    padding: const pw.EdgeInsets.symmetric(
+                      vertical: 2,
+                      horizontal: 2,
+                    ),
                     child: pw.Row(
                       children: [
                         pw.Expanded(
@@ -252,7 +278,9 @@ class InvoicePdfGenerator {
                         pw.Expanded(
                           flex: 2,
                           child: pw.Text(
-                            core.CurrencyFormatter.format(value: item.unitPrice),
+                            core.CurrencyFormatter.format(
+                              value: item.unitPrice,
+                            ),
                             textAlign: pw.TextAlign.center,
                             style: const pw.TextStyle(fontSize: 8),
                           ),
@@ -268,7 +296,9 @@ class InvoicePdfGenerator {
                         pw.Expanded(
                           flex: 2,
                           child: pw.Text(
-                            core.CurrencyFormatter.format(value: item.totalPrice),
+                            core.CurrencyFormatter.format(
+                              value: item.totalPrice,
+                            ),
                             textAlign: pw.TextAlign.right,
                             style: const pw.TextStyle(fontSize: 8),
                           ),
@@ -290,8 +320,9 @@ class InvoicePdfGenerator {
                   inv.paymentMethodDetails!.isNotEmpty) ...[
                 () {
                   try {
-                    final detailsMap = jsonDecode(inv.paymentMethodDetails!)
-                        as Map<String, dynamic>;
+                    final detailsMap =
+                        jsonDecode(inv.paymentMethodDetails!)
+                            as Map<String, dynamic>;
                     final taxList =
                         (detailsMap['taxDetails'] as List<dynamic>?) ?? [];
                     final chargeList =
@@ -302,32 +333,41 @@ class InvoicePdfGenerator {
                     return pw.Column(
                       children: [
                         ...discountList
-                            .where((d) =>
-                                ((d['amount'] as num?)?.toDouble() ?? 0.0) > 0)
+                            .where(
+                              (d) =>
+                                  ((d['amount'] as num?)?.toDouble() ?? 0.0) >
+                                  0,
+                            )
                             .map((d) {
-                          final name = d['name'] ?? 'Discount';
-                          final amt =
-                              (d['amount'] as num?)?.toDouble() ?? 0.0;
-                          return _buildAmountRow('$name:', -amt);
-                        }),
+                              final name = d['name'] ?? 'Discount';
+                              final amt =
+                                  (d['amount'] as num?)?.toDouble() ?? 0.0;
+                              return _buildAmountRow('$name:', -amt);
+                            }),
                         ...taxList
-                            .where((t) =>
-                                ((t['amount'] as num?)?.toDouble() ?? 0.0) > 0)
+                            .where(
+                              (t) =>
+                                  ((t['amount'] as num?)?.toDouble() ?? 0.0) >
+                                  0,
+                            )
                             .map((t) {
-                          final name = t['name'] ?? 'Tax';
-                          final amt =
-                              (t['amount'] as num?)?.toDouble() ?? 0.0;
-                          return _buildAmountRow('$name:', amt);
-                        }),
+                              final name = t['name'] ?? 'Tax';
+                              final amt =
+                                  (t['amount'] as num?)?.toDouble() ?? 0.0;
+                              return _buildAmountRow('$name:', amt);
+                            }),
                         ...chargeList
-                            .where((c) =>
-                                ((c['amount'] as num?)?.toDouble() ?? 0.0) > 0)
+                            .where(
+                              (c) =>
+                                  ((c['amount'] as num?)?.toDouble() ?? 0.0) >
+                                  0,
+                            )
                             .map((c) {
-                          final name = c['name'] ?? 'Extra Charge';
-                          final amt =
-                              (c['amount'] as num?)?.toDouble() ?? 0.0;
-                          return _buildAmountRow('$name:', amt);
-                        }),
+                              final name = c['name'] ?? 'Extra Charge';
+                              final amt =
+                                  (c['amount'] as num?)?.toDouble() ?? 0.0;
+                              return _buildAmountRow('$name:', amt);
+                            }),
                       ],
                     );
                   } catch (_) {
@@ -371,9 +411,17 @@ class InvoicePdfGenerator {
 
               // Cash Breakdown if available
               if (inv.cashReceived != null && inv.cashReceived! > 0) ...[
-                _buildAmountRow('Cash Received:', inv.cashReceived!),
+                _buildAmountRow(
+                  'Cash Received:',
+                  inv.cashReceived!,
+                  showSign: false,
+                ),
                 if (inv.changeAmount != null && inv.changeAmount! > 0)
-                  _buildAmountRow('Change Returned:', inv.changeAmount!),
+                  _buildAmountRow(
+                    'Change Returned:',
+                    inv.changeAmount!,
+                    showSign: false,
+                  ),
                 pw.SizedBox(height: 2),
                 pw.Divider(thickness: 0.5, color: PdfColors.grey400),
               ],
@@ -434,13 +482,24 @@ class InvoicePdfGenerator {
     );
   }
 
-  static pw.Widget _buildAmountRow(String label, double amount) {
+  static pw.Widget _buildAmountRow(
+    String label,
+    double amount, {
+    bool showSign = false,
+  }) {
     final isNegative = amount < 0;
-    final formattedAmount = isNegative
-        ? '-${core.CurrencyFormatter.format(value: amount.abs())}'
-        : (amount > 0
-            ? '+${core.CurrencyFormatter.format(value: amount)}'
-            : core.CurrencyFormatter.format(value: amount));
+    final String formattedAmount;
+
+    if (!showSign) {
+      // Plain display — no + or - prefix (used for Cash Received / Change Returned)
+      formattedAmount = core.CurrencyFormatter.format(value: amount.abs());
+    } else {
+      formattedAmount = isNegative
+          ? '-${core.CurrencyFormatter.format(value: amount.abs())}'
+          : (amount > 0
+                ? '+${core.CurrencyFormatter.format(value: amount)}'
+                : core.CurrencyFormatter.format(value: amount));
+    }
 
     return pw.Padding(
       padding: const pw.EdgeInsets.symmetric(vertical: 1),
@@ -508,7 +567,8 @@ class InvoicePdfGenerator {
         ? details.invoice.hashId
         : 'MD-${details.invoice.id}';
     final pdfBytes =
-        bytes ?? (filePath == null ? await generatePdf(details: details) : null);
+        bytes ??
+        (filePath == null ? await generatePdf(details: details) : null);
 
     await shared.PdfSaveHelper.shareInvoice(
       bytes: pdfBytes,

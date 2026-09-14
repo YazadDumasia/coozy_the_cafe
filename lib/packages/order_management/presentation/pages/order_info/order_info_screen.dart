@@ -21,11 +21,9 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialOrder == null) {
-      context.read<OrderManagementBloc>().add(
-        LoadOrderDetailsEvent(widget.orderId),
-      );
-    }
+    context.read<OrderManagementBloc>().add(
+      LoadOrderDetailsEvent(widget.orderId),
+    );
   }
 
   Color _getStatusColor(BuildContext context, String status) {
@@ -104,6 +102,7 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                     OrderInfoScreenActions.onInvoiceInfo(
                       context,
                       orderHashId: hashId,
+                      orderId: widget.orderId,
                     );
                   }
                 },
@@ -211,6 +210,7 @@ class _OrderInfoScreenState extends State<OrderInfoScreen> {
                       OrderInfoScreenActions.onInvoiceInfo(
                         context,
                         orderHashId: hashId,
+                        orderId: order?.id ?? widget.orderId,
                       );
                     }
                   },

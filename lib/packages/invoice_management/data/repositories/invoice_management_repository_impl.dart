@@ -152,9 +152,14 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
   }) async {
     try {
       final companion = InvoicesTableCompanion(
+        orderId: invoice.orderId != null ? Value(invoice.orderId) : const Value.absent(),
         customerName: Value(invoice.customerName),
         phoneNumber: Value(invoice.phoneNumber),
+        isoCode: Value(invoice.isoCode),
         paymentMethodName: Value(invoice.paymentMethodName),
+        paymentMethodDetails: Value(invoice.paymentMethodDetails),
+        cashReceived: Value(invoice.cashReceived),
+        changeAmount: Value(invoice.changeAmount),
         taxPercentage: Value(invoice.taxPercentage),
         discountType: Value(invoice.discountType),
         discountAmount: Value(invoice.discountAmount),
