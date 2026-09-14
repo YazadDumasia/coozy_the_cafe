@@ -5,6 +5,8 @@ version: 1.0.0+1
 
 #  Android Studio Quail 2 | 2026.1.2 Patch 1
 #  Flutter stable channel,  3.44.9v,
+# flutter build web --wasm --release --tree-shake-icons
+# flutter build web --wasm --release --tree-shake-icons --base-href /coozy_the_cafe/
 #  flutter build apk --release --tree-shake-icons
 #  flutter pub upgrade --major-versions
 
