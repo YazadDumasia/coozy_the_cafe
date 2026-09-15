@@ -7,10 +7,7 @@ import '../../../bloc/invoice_management_bloc.dart';
 class InvoiceDateHeaderWidget extends StatelessWidget {
   final DateTimeRange? dateRange;
 
-  const InvoiceDateHeaderWidget({
-    super.key,
-    this.dateRange,
-  });
+  const InvoiceDateHeaderWidget({super.key, this.dateRange});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +17,11 @@ class InvoiceDateHeaderWidget extends StatelessWidget {
     final now = DateTime.now();
     final startText = dateRange != null
         ? (core.DateUtil.dateToString(dateRange!.start, 'dd MMM yyyy') ?? '')
-        : (core.DateUtil.dateToString(now.subtract(const Duration(days: 30)), 'dd MMM yyyy') ?? '');
+        : (core.DateUtil.dateToString(
+                now.subtract(const Duration(days: 30)),
+                'dd MMM yyyy',
+              ) ??
+              '');
     final endText = dateRange != null
         ? (core.DateUtil.dateToString(dateRange!.end, 'dd MMM yyyy') ?? '')
         : (core.DateUtil.dateToString(now, 'dd MMM yyyy') ?? '');
@@ -34,9 +35,14 @@ class InvoiceDateHeaderWidget extends StatelessWidget {
             child: InkWell(
               onTap: () => _pickDateRange(context),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.5),
+                  ),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Column(
@@ -73,9 +79,14 @@ class InvoiceDateHeaderWidget extends StatelessWidget {
             child: InkWell(
               onTap: () => _pickDateRange(context),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.5)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.5),
+                  ),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Column(
@@ -117,16 +128,17 @@ class InvoiceDateHeaderWidget extends StatelessWidget {
       context: context,
       firstDate: DateTime(2020),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      initialDateRange: dateRange ??
+      initialDateRange:
+          dateRange ??
           DateTimeRange(
             start: DateTime.now().subtract(const Duration(days: 2)),
             end: DateTime.now(),
           ),
     );
     if (picked != null && context.mounted) {
-      context
-          .read<InvoiceManagementBloc>()
-          .add(SelectInvoiceDateRangeEvent(picked));
+      context.read<InvoiceManagementBloc>().add(
+        SelectInvoiceDateRangeEvent(picked),
+      );
     }
   }
 }

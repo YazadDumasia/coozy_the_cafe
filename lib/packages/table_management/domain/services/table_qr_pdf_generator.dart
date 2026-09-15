@@ -82,7 +82,9 @@ class TableQrPdfGenerator {
   }
 
   /// Entry point for PDF generation.
-  static Future<Uint8List> _generateTableQrPdfInIsolate(_TableQrComputeParams params) async {
+  static Future<Uint8List> _generateTableQrPdfInIsolate(
+    _TableQrComputeParams params,
+  ) async {
     final int cols = params.columnsCount.clamp(2, 4);
 
     final docTheme = pw.ThemeData.withFont(
@@ -150,49 +152,49 @@ class TableQrPdfGenerator {
         );
       }
 
-    for (final pageTables in pages) {
-      pdf.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          theme: docTheme,
-          margin: const pw.EdgeInsets.all(20),
-          build: (pw.Context context) {
-            final List<List<TableInfo>> rows = [];
-            for (var j = 0; j < pageTables.length; j += cols) {
-              rows.add(
-                pageTables.sublist(
-                  j,
-                  j + cols > pageTables.length ? pageTables.length : j + cols,
-                ),
-              );
-            }
-
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-              children: [
-                pw.Header(
-                  level: 0,
-                  child: pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text(
-                        'Coozy The Cafe - Dining Table QR Cards ($cols Columns)',
-                        style: pw.TextStyle(
-                          fontSize: 13,
-                          fontWeight: pw.FontWeight.bold,
-                          color: PdfColors.brown900,
-                        ),
-                      ),
-                      pw.Text(
-                        'Total Tables: ${targetTables.length}',
-                        style: const pw.TextStyle(
-                          fontSize: 9,
-                          color: PdfColors.grey700,
-                        ),
-                      ),
-                    ],
+      for (final pageTables in pages) {
+        pdf.addPage(
+          pw.Page(
+            pageFormat: PdfPageFormat.a4,
+            theme: docTheme,
+            margin: const pw.EdgeInsets.all(20),
+            build: (pw.Context context) {
+              final List<List<TableInfo>> rows = [];
+              for (var j = 0; j < pageTables.length; j += cols) {
+                rows.add(
+                  pageTables.sublist(
+                    j,
+                    j + cols > pageTables.length ? pageTables.length : j + cols,
                   ),
-                ),
+                );
+              }
+
+              return pw.Column(
+                crossAxisAlignment: pw.CrossAxisAlignment.stretch,
+                children: [
+                  pw.Header(
+                    level: 0,
+                    child: pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text(
+                          'Coozy The Cafe - Dining Table QR Cards ($cols Columns)',
+                          style: pw.TextStyle(
+                            fontSize: 13,
+                            fontWeight: pw.FontWeight.bold,
+                            color: PdfColors.brown900,
+                          ),
+                        ),
+                        pw.Text(
+                          'Total Tables: ${targetTables.length}',
+                          style: const pw.TextStyle(
+                            fontSize: 9,
+                            color: PdfColors.grey700,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   pw.SizedBox(height: 10),
                   pw.Column(
                     children: rows.map((rowTables) {
@@ -253,10 +255,9 @@ class TableQrPdfGenerator {
     required double cardHeight,
     int cols = 2,
   }) {
-    final String tableNumDisplay =
-        table.tableNo?.isNotEmpty == true
-            ? table.tableNo!
-            : (table.id != null ? '${table.id}' : '1');
+    final String tableNumDisplay = table.tableNo?.isNotEmpty == true
+        ? table.tableNo!
+        : (table.id != null ? '${table.id}' : '1');
 
     final String qrPayload = 'coozy_table:${table.id ?? tableNumDisplay}';
 

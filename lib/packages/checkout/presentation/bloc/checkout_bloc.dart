@@ -26,9 +26,6 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     this.calculator = const CheckoutCalculator(),
     this.getOrderCheckoutData,
   }) : super(CheckoutState.initial()) {
-
-
-
     on<CheckoutStarted>(_onStarted);
     on<CheckoutFetchStarted>(_onFetchStarted);
     on<CheckoutItemAdded>(_onItemAdded);
@@ -58,7 +55,13 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     CheckoutFetchStarted event,
     Emitter<CheckoutState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, orderId: event.orderId, errorMessage: null));
+    emit(
+      state.copyWith(
+        isLoading: true,
+        orderId: event.orderId,
+        errorMessage: null,
+      ),
+    );
 
     // Load default taxes, discounts, and extra charges from DB
     List<Tax> defaultTaxes = [];
@@ -67,53 +70,67 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
     try {
       final db = sl<CoozyDatabase>();
-      final dbTaxes = await (db.select(db.taxesTable)
-            ..where((t) => t.isDefaultAdd.equals(true)))
-          .get();
+      final dbTaxes = await (db.select(
+        db.taxesTable,
+      )..where((t) => t.isDefaultAdd.equals(true))).get();
       defaultTaxes = dbTaxes
-          .map((t) => Tax(
-                id: t.id.toString(),
-                name: t.name,
-                ratePercent: t.ratePercent,
-                isDefaultAdd: t.isDefaultAdd,
-              ))
+          .map(
+            (t) => Tax(
+              id: t.id.toString(),
+              name: t.name,
+              ratePercent: t.ratePercent,
+              isDefaultAdd: t.isDefaultAdd,
+            ),
+          )
           .toList();
 
-      final dbDiscounts = await (db.select(db.discountsTable)
-            ..where((d) => d.isDefaultAdd.equals(true)))
-          .get();
+      final dbDiscounts = await (db.select(
+        db.discountsTable,
+      )..where((d) => d.isDefaultAdd.equals(true))).get();
       defaultDiscounts = dbDiscounts
-          .map((d) => Discount(
-                id: d.id.toString(),
-                name: d.name,
-                value: d.value,
-                isPercentage: d.isPercentage,
-                isDefaultAdd: d.isDefaultAdd,
-              ))
+          .map(
+            (d) => Discount(
+              id: d.id.toString(),
+              name: d.name,
+              value: d.value,
+              isPercentage: d.isPercentage,
+              isDefaultAdd: d.isDefaultAdd,
+            ),
+          )
           .toList();
 
-      final dbCharges = await (db.select(db.extraChargesTable)
-            ..where((c) => c.isDefaultAdd.equals(true)))
-          .get();
+      final dbCharges = await (db.select(
+        db.extraChargesTable,
+      )..where((c) => c.isDefaultAdd.equals(true))).get();
       defaultExtraCharges = dbCharges
-          .map((c) => ExtraCharge(
-                id: c.id.toString(),
-                name: c.name,
-                value: c.value,
-                isPercentage: c.isPercentage,
-                isDefaultAdd: c.isDefaultAdd,
-              ))
+          .map(
+            (c) => ExtraCharge(
+              id: c.id.toString(),
+              name: c.name,
+              value: c.value,
+              isPercentage: c.isPercentage,
+              isDefaultAdd: c.isDefaultAdd,
+            ),
+          )
           .toList();
     } catch (_) {}
 
     if (getOrderCheckoutData == null) {
       // Fallback if no remote/local repository provided
-      emit(state.copyWith(
-        isLoading: false,
-        appliedTaxes: defaultTaxes.isNotEmpty ? defaultTaxes : state.appliedTaxes,
-        appliedDiscounts: defaultDiscounts.isNotEmpty ? defaultDiscounts : state.appliedDiscounts,
-        appliedOtherCharges: defaultExtraCharges.isNotEmpty ? defaultExtraCharges : state.appliedOtherCharges,
-      ));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          appliedTaxes: defaultTaxes.isNotEmpty
+              ? defaultTaxes
+              : state.appliedTaxes,
+          appliedDiscounts: defaultDiscounts.isNotEmpty
+              ? defaultDiscounts
+              : state.appliedDiscounts,
+          appliedOtherCharges: defaultExtraCharges.isNotEmpty
+              ? defaultExtraCharges
+              : state.appliedOtherCharges,
+        ),
+      );
       _recalculateAndEmit(emit, state);
       return;
     }
@@ -122,35 +139,50 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
     result.fold(
       (failure) {
-        emit(state.copyWith(
-          isLoading: false,
-          errorMessage: failure.message,
-          appliedTaxes: defaultTaxes.isNotEmpty ? defaultTaxes : state.appliedTaxes,
-          appliedDiscounts: defaultDiscounts.isNotEmpty ? defaultDiscounts : state.appliedDiscounts,
-          appliedOtherCharges: defaultExtraCharges.isNotEmpty ? defaultExtraCharges : state.appliedOtherCharges,
-        ));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: failure.message,
+            appliedTaxes: defaultTaxes.isNotEmpty
+                ? defaultTaxes
+                : state.appliedTaxes,
+            appliedDiscounts: defaultDiscounts.isNotEmpty
+                ? defaultDiscounts
+                : state.appliedDiscounts,
+            appliedOtherCharges: defaultExtraCharges.isNotEmpty
+                ? defaultExtraCharges
+                : state.appliedOtherCharges,
+          ),
+        );
       },
       (data) {
         final newState = state.copyWith(
           isLoading: false,
           cartItems: data.items,
           customerDetails: data.customerDetails,
-          appliedTaxes: defaultTaxes.isNotEmpty ? defaultTaxes : state.appliedTaxes,
-          appliedDiscounts: defaultDiscounts.isNotEmpty ? defaultDiscounts : state.appliedDiscounts,
-          appliedOtherCharges: defaultExtraCharges.isNotEmpty ? defaultExtraCharges : state.appliedOtherCharges,
+          appliedTaxes: defaultTaxes.isNotEmpty
+              ? defaultTaxes
+              : state.appliedTaxes,
+          appliedDiscounts: defaultDiscounts.isNotEmpty
+              ? defaultDiscounts
+              : state.appliedDiscounts,
+          appliedOtherCharges: defaultExtraCharges.isNotEmpty
+              ? defaultExtraCharges
+              : state.appliedOtherCharges,
         );
         _recalculateAndEmit(emit, newState);
       },
     );
   }
 
-
   void _onItemAdded(CheckoutItemAdded event, Emitter<CheckoutState> emit) {
     final updatedCart = List<CartItem>.from(state.cartItems);
     final index = updatedCart.indexWhere((i) => i.id == event.item.id);
     if (index >= 0) {
       final existing = updatedCart[index];
-      updatedCart[index] = existing.copyWith(quantity: existing.quantity + event.item.quantity);
+      updatedCart[index] = existing.copyWith(
+        quantity: existing.quantity + event.item.quantity,
+      );
     } else {
       updatedCart.add(event.item);
     }
@@ -173,12 +205,17 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
   }
 
   void _onItemRemoved(CheckoutItemRemoved event, Emitter<CheckoutState> emit) {
-    final updatedCart = state.cartItems.where((i) => i.id != event.itemId).toList();
+    final updatedCart = state.cartItems
+        .where((i) => i.id != event.itemId)
+        .toList();
     _recalculateAndEmit(emit, state.copyWith(cartItems: updatedCart));
     _persistOrderCart(state.orderId, updatedCart);
   }
 
-  Future<void> _persistOrderCart(String? orderIdStr, List<CartItem> cartItems) async {
+  Future<void> _persistOrderCart(
+    String? orderIdStr,
+    List<CartItem> cartItems,
+  ) async {
     if (orderIdStr == null || orderIdStr.isEmpty) return;
     final orderId = int.tryParse(orderIdStr);
     if (orderId == null) return;
@@ -186,16 +223,20 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     try {
       final db = sl<CoozyDatabase>();
       await db.transaction(() async {
-        await (db.delete(db.orderItemsTable)
-              ..where((t) => t.orderId.equals(orderId)))
-            .go();
+        await (db.delete(
+          db.orderItemsTable,
+        )..where((t) => t.orderId.equals(orderId))).go();
 
         for (final cartItem in cartItems) {
           final isVar = cartItem.id.startsWith('var_');
-          final rawIdStr = cartItem.id.replaceAll('var_', '').replaceAll('item_', '');
+          final rawIdStr = cartItem.id
+              .replaceAll('var_', '')
+              .replaceAll('item_', '');
           final idInt = int.tryParse(rawIdStr);
 
-          await db.into(db.orderItemsTable).insert(
+          await db
+              .into(db.orderItemsTable)
+              .insert(
                 OrderItemsTableCompanion.insert(
                   orderId: Value(orderId),
                   itemId: Value(idInt),
@@ -213,39 +254,53 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     } catch (_) {}
   }
 
-  Future<void> _onTaxAdded(CheckoutTaxAdded event, Emitter<CheckoutState> emit) async {
+  Future<void> _onTaxAdded(
+    CheckoutTaxAdded event,
+    Emitter<CheckoutState> emit,
+  ) async {
     final updated = List<Tax>.from(state.appliedTaxes)..add(event.tax);
     _recalculateAndEmit(emit, state.copyWith(appliedTaxes: updated));
 
     try {
       final db = sl<CoozyDatabase>();
-      final existing = await (db.select(db.taxesTable)
-            ..where((t) => t.name.equals(event.tax.name)))
-          .getSingleOrNull();
+      final existing = await (db.select(
+        db.taxesTable,
+      )..where((t) => t.name.equals(event.tax.name))).getSingleOrNull();
 
       if (existing != null) {
-        await (db.update(db.taxesTable)
-              ..where((t) => t.id.equals(existing.id)))
-            .write(TaxesTableCompanion(
-          ratePercent: Value(event.tax.ratePercent),
-          isDefaultAdd: Value(event.tax.isDefaultAdd),
-        ));
+        await (db.update(
+          db.taxesTable,
+        )..where((t) => t.id.equals(existing.id))).write(
+          TaxesTableCompanion(
+            ratePercent: Value(event.tax.ratePercent),
+            isDefaultAdd: Value(event.tax.isDefaultAdd),
+          ),
+        );
       } else {
-        await db.into(db.taxesTable).insert(TaxesTableCompanion.insert(
-          name: event.tax.name,
-          ratePercent: event.tax.ratePercent,
-          isDefaultAdd: Value(event.tax.isDefaultAdd),
-        ));
+        await db
+            .into(db.taxesTable)
+            .insert(
+              TaxesTableCompanion.insert(
+                name: event.tax.name,
+                ratePercent: event.tax.ratePercent,
+                isDefaultAdd: Value(event.tax.isDefaultAdd),
+              ),
+            );
       }
     } catch (_) {}
   }
 
-  Future<void> _onTaxRemoved(CheckoutTaxRemoved event, Emitter<CheckoutState> emit) async {
+  Future<void> _onTaxRemoved(
+    CheckoutTaxRemoved event,
+    Emitter<CheckoutState> emit,
+  ) async {
     final removedTax = state.appliedTaxes.firstWhere(
       (t) => t.id == event.taxId,
       orElse: () => const Tax(id: '', name: '', ratePercent: 0),
     );
-    final updated = state.appliedTaxes.where((t) => t.id != event.taxId).toList();
+    final updated = state.appliedTaxes
+        .where((t) => t.id != event.taxId)
+        .toList();
     _recalculateAndEmit(emit, state.copyWith(appliedTaxes: updated));
 
     if (removedTax.name.isNotEmpty) {
@@ -258,41 +313,56 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-  Future<void> _onDiscountAdded(CheckoutDiscountAdded event, Emitter<CheckoutState> emit) async {
-    final updated = List<Discount>.from(state.appliedDiscounts)..add(event.discount);
+  Future<void> _onDiscountAdded(
+    CheckoutDiscountAdded event,
+    Emitter<CheckoutState> emit,
+  ) async {
+    final updated = List<Discount>.from(state.appliedDiscounts)
+      ..add(event.discount);
     _recalculateAndEmit(emit, state.copyWith(appliedDiscounts: updated));
 
     try {
       final db = sl<CoozyDatabase>();
-      final existing = await (db.select(db.discountsTable)
-            ..where((d) => d.name.equals(event.discount.name)))
-          .getSingleOrNull();
+      final existing = await (db.select(
+        db.discountsTable,
+      )..where((d) => d.name.equals(event.discount.name))).getSingleOrNull();
 
       if (existing != null) {
-        await (db.update(db.discountsTable)
-              ..where((d) => d.id.equals(existing.id)))
-            .write(DiscountsTableCompanion(
-          value: Value(event.discount.value),
-          isPercentage: Value(event.discount.isPercentage),
-          isDefaultAdd: Value(event.discount.isDefaultAdd),
-        ));
+        await (db.update(
+          db.discountsTable,
+        )..where((d) => d.id.equals(existing.id))).write(
+          DiscountsTableCompanion(
+            value: Value(event.discount.value),
+            isPercentage: Value(event.discount.isPercentage),
+            isDefaultAdd: Value(event.discount.isDefaultAdd),
+          ),
+        );
       } else {
-        await db.into(db.discountsTable).insert(DiscountsTableCompanion.insert(
-          name: event.discount.name,
-          value: event.discount.value,
-          isPercentage: Value(event.discount.isPercentage),
-          isDefaultAdd: Value(event.discount.isDefaultAdd),
-        ));
+        await db
+            .into(db.discountsTable)
+            .insert(
+              DiscountsTableCompanion.insert(
+                name: event.discount.name,
+                value: event.discount.value,
+                isPercentage: Value(event.discount.isPercentage),
+                isDefaultAdd: Value(event.discount.isDefaultAdd),
+              ),
+            );
       }
     } catch (_) {}
   }
 
-  Future<void> _onDiscountRemoved(CheckoutDiscountRemoved event, Emitter<CheckoutState> emit) async {
+  Future<void> _onDiscountRemoved(
+    CheckoutDiscountRemoved event,
+    Emitter<CheckoutState> emit,
+  ) async {
     final removedDiscount = state.appliedDiscounts.firstWhere(
       (d) => d.id == event.discountId,
       orElse: () => const Discount(id: '', name: '', value: 0),
     );
-    final updated = state.appliedDiscounts.where((d) => d.id != event.discountId).toList();
+    final updated = state.appliedDiscounts
+        .where((d) => d.id != event.discountId)
+        .toList();
     _recalculateAndEmit(emit, state.copyWith(appliedDiscounts: updated));
 
     if (removedDiscount.name.isNotEmpty) {
@@ -305,54 +375,74 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-  Future<void> _onOtherChargeAdded(CheckoutOtherChargeAdded event, Emitter<CheckoutState> emit) async {
-    final updated = List<ExtraCharge>.from(state.appliedOtherCharges)..add(event.extraCharge);
+  Future<void> _onOtherChargeAdded(
+    CheckoutOtherChargeAdded event,
+    Emitter<CheckoutState> emit,
+  ) async {
+    final updated = List<ExtraCharge>.from(state.appliedOtherCharges)
+      ..add(event.extraCharge);
     _recalculateAndEmit(emit, state.copyWith(appliedOtherCharges: updated));
 
     try {
       final db = sl<CoozyDatabase>();
-      final existing = await (db.select(db.extraChargesTable)
-            ..where((c) => c.name.equals(event.extraCharge.name)))
-          .getSingleOrNull();
+      final existing = await (db.select(
+        db.extraChargesTable,
+      )..where((c) => c.name.equals(event.extraCharge.name))).getSingleOrNull();
 
       if (existing != null) {
-        await (db.update(db.extraChargesTable)
-              ..where((c) => c.id.equals(existing.id)))
-            .write(ExtraChargesTableCompanion(
-          value: Value(event.extraCharge.value),
-          isPercentage: Value(event.extraCharge.isPercentage),
-          isDefaultAdd: Value(event.extraCharge.isDefaultAdd),
-        ));
+        await (db.update(
+          db.extraChargesTable,
+        )..where((c) => c.id.equals(existing.id))).write(
+          ExtraChargesTableCompanion(
+            value: Value(event.extraCharge.value),
+            isPercentage: Value(event.extraCharge.isPercentage),
+            isDefaultAdd: Value(event.extraCharge.isDefaultAdd),
+          ),
+        );
       } else {
-        await db.into(db.extraChargesTable).insert(ExtraChargesTableCompanion.insert(
-          name: event.extraCharge.name,
-          value: event.extraCharge.value,
-          isPercentage: Value(event.extraCharge.isPercentage),
-          isDefaultAdd: Value(event.extraCharge.isDefaultAdd),
-        ));
+        await db
+            .into(db.extraChargesTable)
+            .insert(
+              ExtraChargesTableCompanion.insert(
+                name: event.extraCharge.name,
+                value: event.extraCharge.value,
+                isPercentage: Value(event.extraCharge.isPercentage),
+                isDefaultAdd: Value(event.extraCharge.isDefaultAdd),
+              ),
+            );
       }
     } catch (_) {}
   }
 
-  Future<void> _onOtherChargeRemoved(CheckoutOtherChargeRemoved event, Emitter<CheckoutState> emit) async {
+  Future<void> _onOtherChargeRemoved(
+    CheckoutOtherChargeRemoved event,
+    Emitter<CheckoutState> emit,
+  ) async {
     final removedCharge = state.appliedOtherCharges.firstWhere(
       (c) => c.id == event.chargeId,
       orElse: () => const ExtraCharge(id: '', name: '', value: 0),
     );
-    final updated = state.appliedOtherCharges.where((c) => c.id != event.chargeId).toList();
+    final updated = state.appliedOtherCharges
+        .where((c) => c.id != event.chargeId)
+        .toList();
     _recalculateAndEmit(emit, state.copyWith(appliedOtherCharges: updated));
 
     if (removedCharge.name.isNotEmpty) {
       try {
         final db = sl<CoozyDatabase>();
-        await (db.update(db.extraChargesTable)
-              ..where((c) => c.name.equals(removedCharge.name)))
-            .write(const ExtraChargesTableCompanion(isDefaultAdd: Value(false)));
+        await (db.update(
+          db.extraChargesTable,
+        )..where((c) => c.name.equals(removedCharge.name))).write(
+          const ExtraChargesTableCompanion(isDefaultAdd: Value(false)),
+        );
       } catch (_) {}
     }
   }
 
-  void _onRoundOffToggled(CheckoutRoundOffToggled event, Emitter<CheckoutState> emit) {
+  void _onRoundOffToggled(
+    CheckoutRoundOffToggled event,
+    Emitter<CheckoutState> emit,
+  ) {
     final newValue = !state.isRoundOffEnabled;
     _recalculateAndEmit(emit, state.copyWith(isRoundOffEnabled: newValue));
   }
@@ -377,12 +467,20 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     emit(state.copyWith(customerDetails: event.customerDetails));
   }
 
-  void _onPaymentMethodAdded(CheckoutPaymentMethodAdded event, Emitter<CheckoutState> emit) {
-    final updatedMethods = List<PaymentMethod>.from(state.availablePaymentMethods)..add(event.method);
+  void _onPaymentMethodAdded(
+    CheckoutPaymentMethodAdded event,
+    Emitter<CheckoutState> emit,
+  ) {
+    final updatedMethods = List<PaymentMethod>.from(
+      state.availablePaymentMethods,
+    )..add(event.method);
     emit(state.copyWith(availablePaymentMethods: updatedMethods));
   }
 
-  void _onPaymentMethodToggled(CheckoutPaymentMethodToggled event, Emitter<CheckoutState> emit) {
+  void _onPaymentMethodToggled(
+    CheckoutPaymentMethodToggled event,
+    Emitter<CheckoutState> emit,
+  ) {
     final updatedMethods = state.availablePaymentMethods.map((m) {
       if (m.id == event.methodId) {
         return m.copyWith(isEnabled: !m.isEnabled);
@@ -392,19 +490,29 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
     PaymentMethod? currentSelected = state.selectedPaymentMethod;
     if (currentSelected != null && currentSelected.id == event.methodId) {
-      final updatedSel = updatedMethods.firstWhere((m) => m.id == event.methodId);
+      final updatedSel = updatedMethods.firstWhere(
+        (m) => m.id == event.methodId,
+      );
       if (!updatedSel.isEnabled) {
-        currentSelected = updatedMethods.firstWhere((m) => m.isEnabled, orElse: () => updatedMethods.first);
+        currentSelected = updatedMethods.firstWhere(
+          (m) => m.isEnabled,
+          orElse: () => updatedMethods.first,
+        );
       }
     }
 
-    emit(state.copyWith(
-      availablePaymentMethods: updatedMethods,
-      selectedPaymentMethod: currentSelected,
-    ));
+    emit(
+      state.copyWith(
+        availablePaymentMethods: updatedMethods,
+        selectedPaymentMethod: currentSelected,
+      ),
+    );
   }
 
-  void _onPaymentSelected(CheckoutPaymentSelected event, Emitter<CheckoutState> emit) {
+  void _onPaymentSelected(
+    CheckoutPaymentSelected event,
+    Emitter<CheckoutState> emit,
+  ) {
     emit(state.copyWith(selectedPaymentMethod: event.method));
   }
 
@@ -424,23 +532,19 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
           final breakdownDetails = jsonEncode({
             'taxDetails': summary.taxDetails
-                .map((t) => {
-                      'name': t.name,
-                      'ratePercent': t.ratePercent,
-                      'amount': t.calculatedAmount,
-                    })
+                .map(
+                  (t) => {
+                    'name': t.name,
+                    'ratePercent': t.ratePercent,
+                    'amount': t.calculatedAmount,
+                  },
+                )
                 .toList(),
             'discountDetails': summary.discountDetails
-                .map((d) => {
-                      'name': d.name,
-                      'amount': d.calculatedAmount,
-                    })
+                .map((d) => {'name': d.name, 'amount': d.calculatedAmount})
                 .toList(),
             'chargeDetails': summary.chargeDetails
-                .map((c) => {
-                      'name': c.name,
-                      'amount': c.calculatedAmount,
-                    })
+                .map((c) => {'name': c.name, 'amount': c.calculatedAmount})
                 .toList(),
             'roundingAmount': summary.roundingAmount,
             'cashReceived': event.cashReceived,
@@ -452,24 +556,34 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
 
           await db.transaction(() async {
             // Check existing order for any customerId or existing info
-            final existingOrder = await (db.select(db.ordersTable)..where((t) => t.id.equals(orderId))).getSingleOrNull();
+            final existingOrder = await (db.select(
+              db.ordersTable,
+            )..where((t) => t.id.equals(orderId))).getSingleOrNull();
 
             await db.ordersDao.markOrderCompleted(orderId);
 
             final cust = state.customerDetails;
             final customerName = cust.name.trim().isNotEmpty
                 ? cust.name.trim()
-                : (existingOrder?.customerName?.trim().isNotEmpty == true ? existingOrder!.customerName!.trim() : null);
+                : (existingOrder?.customerName?.trim().isNotEmpty == true
+                      ? existingOrder!.customerName!.trim()
+                      : null);
             final phoneNumber = cust.mobileNumber.trim().isNotEmpty
                 ? cust.mobileNumber.trim()
-                : (existingOrder?.phoneNumber?.trim().isNotEmpty == true ? existingOrder!.phoneNumber!.trim() : null);
+                : (existingOrder?.phoneNumber?.trim().isNotEmpty == true
+                      ? existingOrder!.phoneNumber!.trim()
+                      : null);
             final isoCode = cust.isoCode?.trim().isNotEmpty == true
                 ? cust.isoCode!.trim()
-                : (existingOrder?.isoCode?.trim().isNotEmpty == true ? existingOrder!.isoCode!.trim() : null);
+                : (existingOrder?.isoCode?.trim().isNotEmpty == true
+                      ? existingOrder!.isoCode!.trim()
+                      : null);
             final customerId = existingOrder?.customerId;
 
             // Update order with payment and breakdown details
-            await (db.update(db.ordersTable)..where((t) => t.id.equals(orderId))).write(
+            await (db.update(
+              db.ordersTable,
+            )..where((t) => t.id.equals(orderId))).write(
               OrdersTableCompanion(
                 paymentMethodName: Value(paymentName),
                 paymentMethodDetails: Value(breakdownDetails),
@@ -480,24 +594,33 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
                 taxAmount: Value(summary.totalTaxes),
                 otherChargesAmount: Value(summary.totalOtherCharges),
                 grandTotal: Value(summary.grandTotal),
-                customerName: customerName != null ? Value(customerName) : const Value.absent(),
-                phoneNumber: phoneNumber != null ? Value(phoneNumber) : const Value.absent(),
-                isoCode: isoCode != null ? Value(isoCode) : const Value.absent(),
+                customerName: customerName != null
+                    ? Value(customerName)
+                    : const Value.absent(),
+                phoneNumber: phoneNumber != null
+                    ? Value(phoneNumber)
+                    : const Value.absent(),
+                isoCode: isoCode != null
+                    ? Value(isoCode)
+                    : const Value.absent(),
                 modificationDate: Value(currentDate),
               ),
             );
 
-            final existingInvoices = await (db.select(db.invoicesTable)
-                  ..where((t) => t.orderId.equals(orderId)))
-                .get();
+            final existingInvoices = await (db.select(
+              db.invoicesTable,
+            )..where((t) => t.orderId.equals(orderId))).get();
 
-            final amountPaid = event.cashReceived != null && event.cashReceived! > 0
+            final amountPaid =
+                event.cashReceived != null && event.cashReceived! > 0
                 ? event.cashReceived!
                 : summary.grandTotal;
 
             if (existingInvoices.isNotEmpty) {
               targetInvoiceId = existingInvoices.first.id;
-              await (db.update(db.invoicesTable)..where((t) => t.id.equals(targetInvoiceId!))).write(
+              await (db.update(
+                db.invoicesTable,
+              )..where((t) => t.id.equals(targetInvoiceId!))).write(
                 InvoicesTableCompanion(
                   totalCost: Value(summary.subtotal),
                   discountAmount: Value(summary.totalDiscounts),
@@ -509,15 +632,25 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
                   changeAmount: Value(event.changeAmount ?? 0.0),
                   paymentMethodName: Value(paymentName),
                   paymentMethodDetails: Value(breakdownDetails),
-                  customerId: customerId != null ? Value(customerId) : const Value.absent(),
-                  customerName: customerName != null ? Value(customerName) : const Value.absent(),
-                  phoneNumber: phoneNumber != null ? Value(phoneNumber) : const Value.absent(),
-                  isoCode: isoCode != null ? Value(isoCode) : const Value.absent(),
+                  customerId: customerId != null
+                      ? Value(customerId)
+                      : const Value.absent(),
+                  customerName: customerName != null
+                      ? Value(customerName)
+                      : const Value.absent(),
+                  phoneNumber: phoneNumber != null
+                      ? Value(phoneNumber)
+                      : const Value.absent(),
+                  isoCode: isoCode != null
+                      ? Value(isoCode)
+                      : const Value.absent(),
                   modifiedDate: Value(currentDate),
                 ),
               );
             } else {
-              targetInvoiceId = await db.into(db.invoicesTable).insert(
+              targetInvoiceId = await db
+                  .into(db.invoicesTable)
+                  .insert(
                     InvoicesTableCompanion.insert(
                       orderId: Value(orderId),
                       totalCost: Value(summary.subtotal),
@@ -530,7 +663,9 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
                       changeAmount: Value(event.changeAmount ?? 0.0),
                       paymentMethodName: Value(paymentName),
                       paymentMethodDetails: Value(breakdownDetails),
-                      customerId: customerId != null ? Value(customerId) : const Value.absent(),
+                      customerId: customerId != null
+                          ? Value(customerId)
+                          : const Value.absent(),
                       customerName: Value(customerName),
                       phoneNumber: Value(phoneNumber),
                       isoCode: Value(isoCode),
@@ -540,15 +675,19 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
             }
 
             // Insert or replace Invoice Items for this invoice
-            await (db.delete(db.invoiceItemsTable)
-                  ..where((t) => t.invoiceId.equals(targetInvoiceId!)))
-                .go();
+            await (db.delete(
+              db.invoiceItemsTable,
+            )..where((t) => t.invoiceId.equals(targetInvoiceId!))).go();
 
             for (final item in state.cartItems) {
-              final rawIdStr = item.id.replaceAll('var_', '').replaceAll('item_', '');
+              final rawIdStr = item.id
+                  .replaceAll('var_', '')
+                  .replaceAll('item_', '');
               final idInt = int.tryParse(rawIdStr);
 
-              await db.into(db.invoiceItemsTable).insert(
+              await db
+                  .into(db.invoiceItemsTable)
+                  .insert(
                     InvoiceItemsTableCompanion.insert(
                       invoiceId: Value(targetInvoiceId!),
                       itemId: Value(idInt),
@@ -563,7 +702,9 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
             }
 
             // Insert explicit payment transaction into payment_transactions DB table
-            await db.into(db.paymentTransactionsTable).insert(
+            await db
+                .into(db.paymentTransactionsTable)
+                .insert(
                   PaymentTransactionsTableCompanion.insert(
                     invoiceId: Value(targetInvoiceId!),
                     paymentMethodName: Value(paymentName),
@@ -589,7 +730,10 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     }
   }
 
-  void _recalculateAndEmit(Emitter<CheckoutState> emit, CheckoutState newState) {
+  void _recalculateAndEmit(
+    Emitter<CheckoutState> emit,
+    CheckoutState newState,
+  ) {
     final newSummary = calculator.calculate(
       cartItems: newState.cartItems,
       appliedTaxes: newState.appliedTaxes,
@@ -599,5 +743,4 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
     );
     emit(newState.copyWith(summary: newSummary));
   }
-
 }

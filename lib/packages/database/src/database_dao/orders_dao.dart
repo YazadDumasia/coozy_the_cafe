@@ -46,8 +46,9 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
       await (update(ordersTable)..where((t) => t.id.equals(order.id))).write(
         OrdersTableCompanion(
           tableInfoId: Value(tableInfoId),
-          tableNameText:
-              tableNameText != null ? Value(tableNameText) : const Value.absent(),
+          tableNameText: tableNameText != null
+              ? Value(tableNameText)
+              : const Value.absent(),
           status: const Value('inProgress'),
           orderType: const Value('Dine-In'),
           modificationDate: Value(DateTime.now().toUtc().toIso8601String()),
@@ -60,7 +61,9 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
   Future<void> markOrderCompleted(int orderId) async {
     final currentDate = DateTime.now().toUtc().toIso8601String();
     await transaction(() async {
-      final order = await (select(ordersTable)..where((t) => t.id.equals(orderId))).getSingleOrNull();
+      final order = await (select(
+        ordersTable,
+      )..where((t) => t.id.equals(orderId))).getSingleOrNull();
       Value<String?> served = const Value.absent();
       Value<String?> ready = const Value.absent();
       if (order != null) {
@@ -75,7 +78,9 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
           servedAt: served,
         ),
       );
-      await (update(orderItemsTable)..where((t) => t.orderId.equals(orderId))).write(
+      await (update(
+        orderItemsTable,
+      )..where((t) => t.orderId.equals(orderId))).write(
         OrderItemsTableCompanion(
           status: const Value('completed'),
           servedAt: Value(currentDate),
@@ -118,10 +123,7 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
         if (!finalItem.placedAt.present || finalItem.placedAt.value == null) {
           finalItem = finalItem.copyWith(placedAt: Value(nowIso));
         }
-        await into(orderItemsTable).insert(
-          finalItem,
-          mode: InsertMode.replace,
-        );
+        await into(orderItemsTable).insert(finalItem, mode: InsertMode.replace);
       }
       return orderId;
     });
@@ -192,7 +194,9 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
           .write(OrderItemsTableCompanion(status: Value(itemStatus)));
 
       // Sync linked invoice soft delete status if present
-      await (update(invoicesTable)..where((t) => t.orderId.equals(orderId))).write(
+      await (update(
+        invoicesTable,
+      )..where((t) => t.orderId.equals(orderId))).write(
         InvoicesTableCompanion(
           isDeleted: Value(isDeleted),
           modifiedDate: Value(currentDate),
@@ -210,16 +214,24 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
 
   Future<int> permanentlyDeleteOrder(int orderId) async {
     return transaction(() async {
-      final invoices = await (select(invoicesTable)..where((t) => t.orderId.equals(orderId))).get();
+      final invoices = await (select(
+        invoicesTable,
+      )..where((t) => t.orderId.equals(orderId))).get();
       final invoiceIds = invoices.map((i) => i.id).toList();
 
       if (invoiceIds.isNotEmpty) {
-        await (delete(invoiceItemsTable)..where((t) => t.invoiceId.isIn(invoiceIds))).go();
-        await (delete(paymentTransactionsTable)..where((t) => t.invoiceId.isIn(invoiceIds))).go();
+        await (delete(
+          invoiceItemsTable,
+        )..where((t) => t.invoiceId.isIn(invoiceIds))).go();
+        await (delete(
+          paymentTransactionsTable,
+        )..where((t) => t.invoiceId.isIn(invoiceIds))).go();
         await (delete(invoicesTable)..where((t) => t.id.isIn(invoiceIds))).go();
       }
 
-      await (delete(orderItemsTable)..where((t) => t.orderId.equals(orderId))).go();
+      await (delete(
+        orderItemsTable,
+      )..where((t) => t.orderId.equals(orderId))).go();
       return (delete(ordersTable)..where((t) => t.id.equals(orderId))).go();
     });
   }
@@ -565,13 +577,22 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
     String? searchQuery,
     String? status,
   }) {
-    Expression<bool> expr = ordersTable.isDeleted.equals(false) | ordersTable.isDeleted.isNull();
+    Expression<bool> expr =
+        ordersTable.isDeleted.equals(false) | ordersTable.isDeleted.isNull();
 
     if (startDate != null) {
-      expr = expr & ordersTable.creationDate.isBiggerOrEqualValue(startDate.toUtc().toIso8601String());
+      expr =
+          expr &
+          ordersTable.creationDate.isBiggerOrEqualValue(
+            startDate.toUtc().toIso8601String(),
+          );
     }
     if (endDate != null) {
-      expr = expr & ordersTable.creationDate.isSmallerOrEqualValue(endDate.toUtc().toIso8601String());
+      expr =
+          expr &
+          ordersTable.creationDate.isSmallerOrEqualValue(
+            endDate.toUtc().toIso8601String(),
+          );
     }
 
     if (status != null && status.isNotEmpty && status.toLowerCase() != 'all') {
@@ -579,12 +600,12 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
     }
     if (searchQuery != null && searchQuery.trim().isNotEmpty) {
       final cleanQuery = '%${searchQuery.trim()}%';
-      expr = expr & (
-        ordersTable.tableNameText.like(cleanQuery) |
-        ordersTable.customerName.like(cleanQuery) |
-        ordersTable.phoneNumber.like(cleanQuery) |
-        ordersTable.hashId.like(cleanQuery)
-      );
+      expr =
+          expr &
+          (ordersTable.tableNameText.like(cleanQuery) |
+              ordersTable.customerName.like(cleanQuery) |
+              ordersTable.phoneNumber.like(cleanQuery) |
+              ordersTable.hashId.like(cleanQuery));
     }
     return expr;
   }
@@ -600,17 +621,17 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
     final offset = (pageNo - 1) * limit;
     return transaction(() async {
       final query = select(ordersTable)
-        ..where((t) => _buildOrderFilterExpression(
-              startDate: startDate,
-              endDate: endDate,
-              searchQuery: searchQuery,
-              status: status,
-            ))
+        ..where(
+          (t) => _buildOrderFilterExpression(
+            startDate: startDate,
+            endDate: endDate,
+            searchQuery: searchQuery,
+            status: status,
+          ),
+        )
         ..orderBy([
-          (t) => OrderingTerm(
-                expression: t.creationDate,
-                mode: OrderingMode.desc,
-              ),
+          (t) =>
+              OrderingTerm(expression: t.creationDate, mode: OrderingMode.desc),
         ])
         ..limit(limit, offset: offset);
 
@@ -618,9 +639,9 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
       if (orders.isEmpty) return [];
 
       final orderIds = orders.map((o) => o.id).toList();
-      final allItems = await (select(orderItemsTable)
-            ..where((t) => t.orderId.isIn(orderIds)))
-          .get();
+      final allItems = await (select(
+        orderItemsTable,
+      )..where((t) => t.orderId.isIn(orderIds))).get();
 
       final itemsMap = <int, List<OrderItem>>{};
       for (final item in allItems) {
@@ -644,14 +665,15 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
     final countExpr = ordersTable.id.count();
     final query = selectOnly(ordersTable)
       ..addColumns([countExpr])
-      ..where(_buildOrderFilterExpression(
-        startDate: startDate,
-        endDate: endDate,
-        searchQuery: searchQuery,
-        status: status,
-      ));
+      ..where(
+        _buildOrderFilterExpression(
+          startDate: startDate,
+          endDate: endDate,
+          searchQuery: searchQuery,
+          status: status,
+        ),
+      );
     final result = await query.getSingle();
     return result.read(countExpr) ?? 0;
   }
 }
-

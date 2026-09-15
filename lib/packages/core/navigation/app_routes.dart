@@ -38,12 +38,12 @@ class AppRoutePath {
   static const String reportScreenRoute = '/reports';
   static const String staffManagementScreenRoute = '/staff';
   static const String settingsScreenRoute = '/settings';
-  static const String currencyExchangeScreenRoute = '/settings/currency-exchange';
+  static const String currencyExchangeScreenRoute =
+      '/settings/currency-exchange';
   static const String waiterOrderPlacementScreenRoute =
       '/waiter-order-placement';
   static const String kitchenScreenRoute = '/kitchen';
   static const String checkoutScreenRoute = '/checkout';
-
 
   // Sub-routes for Table Info (Nested under Home -> Table Info)
   static const String addNewTableInfoScreenRoute = 'table-add';
@@ -86,11 +86,9 @@ class AppRoutePath {
 
   // Sub-routes for Orders
   static const String orderInfoScreenRoute = 'info/:id';
-  static String orderInfoRoute(dynamic id) =>
-      '$orderListScreenRoute/info/$id';
+  static String orderInfoRoute(dynamic id) => '$orderListScreenRoute/info/$id';
   static const String orderPickerPageRoute = 'order-picker';
   static const String orderStatusUpdateScreenRoute = 'order-status-update';
-
 
   // Sub-routes for Invoices
   static const String invoiceInfoScreenRoute = 'info/:id';

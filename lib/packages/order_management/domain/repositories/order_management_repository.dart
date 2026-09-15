@@ -6,10 +6,7 @@ class PaginatedOrdersResult {
   final List<OrderManagementEntity> orders;
   final int totalCount;
 
-  const PaginatedOrdersResult({
-    required this.orders,
-    required this.totalCount,
-  });
+  const PaginatedOrdersResult({required this.orders, required this.totalCount});
 }
 
 abstract class OrderManagementRepository {

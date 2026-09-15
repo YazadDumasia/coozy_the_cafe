@@ -14,7 +14,7 @@ class MenuItemDetailScreen extends StatefulWidget {
   final int itemId;
 
   const MenuItemDetailScreen({super.key, required this.itemId});
-  
+
   @override
   State<MenuItemDetailScreen> createState() => _MenuItemDetailScreenState();
 }
@@ -86,7 +86,6 @@ class _MenuItemDetailScreenState extends State<MenuItemDetailScreen> {
   }
 
   Widget _buildDetailContent(BuildContext context, MenuItem item) {
-   
     String? categoryName;
     String? subcategoryName;
 
@@ -131,7 +130,7 @@ class _MenuItemDetailScreenState extends State<MenuItemDetailScreen> {
                 MenuItemDetailActions.handleEditMenuItem(context, item),
           ),
           IconButton(
-            icon: Icon(Icons.delete_outline, ),
+            icon: Icon(Icons.delete_outline),
             tooltip:
                 context.tr(
                   shared.LocaleKeys.commonDelete,

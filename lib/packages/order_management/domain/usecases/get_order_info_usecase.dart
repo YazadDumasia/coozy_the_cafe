@@ -4,8 +4,7 @@ import 'package:coozy_the_cafe/packages/core/usecases/usecase.dart';
 import '../entities/order_management_entity.dart';
 import '../repositories/order_management_repository.dart';
 
-class GetOrderInfoUseCase
-    implements UseCase<OrderManagementEntity?, int> {
+class GetOrderInfoUseCase implements UseCase<OrderManagementEntity?, int> {
   final OrderManagementRepository repository;
 
   GetOrderInfoUseCase(this.repository);

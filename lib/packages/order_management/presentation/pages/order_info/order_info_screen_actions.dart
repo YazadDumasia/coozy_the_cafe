@@ -13,11 +13,8 @@ class OrderInfoScreenActions {
     required String status,
   }) {
     context.read<OrderManagementBloc>().add(
-          UpdateOrderStatusEvent(
-            orderId: orderId,
-            status: status,
-          ),
-        );
+      UpdateOrderStatusEvent(orderId: orderId, status: status),
+    );
     Navigator.of(context).pop();
   }
 
@@ -39,10 +36,7 @@ class OrderInfoScreenActions {
     }
   }
 
-  static void onShareOrder(
-    BuildContext context, {
-    required int orderId,
-  }) {
+  static void onShareOrder(BuildContext context, {required int orderId}) {
     // Action handler for Share Order functionality for later development
   }
 }

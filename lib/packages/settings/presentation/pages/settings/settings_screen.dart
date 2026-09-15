@@ -116,13 +116,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _enableSecondaryCurrencyNotifier.value = enableSecondary;
 
     // Check if we need to call IP location API (only if primary is missing OR (secondary is enabled AND secondary is missing))
-    final needsPrimaryFromIp = savedPrimarySymbol == null || savedPrimarySymbol.isEmpty;
-    final needsSecondaryFromIp = enableSecondary && (savedSecondarySymbol == null || savedSecondarySymbol.isEmpty);
+    final needsPrimaryFromIp =
+        savedPrimarySymbol == null || savedPrimarySymbol.isEmpty;
+    final needsSecondaryFromIp =
+        enableSecondary &&
+        (savedSecondarySymbol == null || savedSecondarySymbol.isEmpty);
 
     if (needsPrimaryFromIp || needsSecondaryFromIp) {
       // Fetch IP location once to fill missing currencies
       final ipDetectedSymbol = await _fetchCurrencySymbolFromIpLocation();
-      final fallbackSymbol = ipDetectedSymbol ?? _detectDefaultCurrencySymbolFromLocale() ?? '₹';
+      final fallbackSymbol =
+          ipDetectedSymbol ?? _detectDefaultCurrencySymbolFromLocale() ?? '₹';
 
       if (needsPrimaryFromIp) {
         _selectedCurrencySymbolNotifier.value = fallbackSymbol;
@@ -141,12 +145,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           fallbackSymbol,
         );
       } else {
-        _selectedSecondaryCurrencySymbolNotifier.value = savedSecondarySymbol ?? '₹';
+        _selectedSecondaryCurrencySymbolNotifier.value =
+            savedSecondarySymbol ?? '₹';
       }
     } else {
       // Both existing settings exist in preferences; load directly without any API call
       _selectedCurrencySymbolNotifier.value = savedPrimarySymbol;
-      _selectedSecondaryCurrencySymbolNotifier.value = savedSecondarySymbol ?? '₹';
+      _selectedSecondaryCurrencySymbolNotifier.value =
+          savedSecondarySymbol ?? '₹';
     }
 
     core.CurrencyFormatter.updateSymbols(
@@ -297,7 +303,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       shared.SnackBarUtils.showWarning(
         context,
-        message: context.tr(
+        message:
+            context.tr(
               shared.LocaleKeys.fakeDataSuccessfullyRemovedMsg,
               track: shared.TrackConstants.commonTrack,
             ) ??
@@ -309,7 +316,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _statusMessageNotifier.value = 'Error processing fake data: $e';
         shared.SnackBarUtils.showError(
           context,
-          message: context.tr(
+          message:
+              context.tr(
                 shared.LocaleKeys.commonCustomErrorMsg,
                 track: shared.TrackConstants.commonTrack,
                 params: {"error": e.toString()},
@@ -397,7 +405,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       shared.SnackBarUtils.showSuccess(
         context,
-        message: context.tr(
+        message:
+            context.tr(
               shared.LocaleKeys.fakedRecordsAddedSuccessfullyMsg,
               params: {'count': count.toString()},
               track: shared.TrackConstants.commonTrack,
@@ -798,7 +807,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (mounted) {
           shared.SnackBarUtils.showSuccess(
             context,
-            message: context.tr(
+            message:
+                context.tr(
                   shared.LocaleKeys.fakeDataActiveInDatabaseMsg,
                   params: {'name': name},
                   track: shared.TrackConstants.commonTrack,
@@ -824,7 +834,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         if (mounted) {
           shared.SnackBarUtils.showWarning(
             context,
-            message: context.tr(
+            message:
+                context.tr(
                   shared.LocaleKeys.fakeDataRemovedFromDatabaseMsg,
                   params: {'name': name},
                   track: shared.TrackConstants.commonTrack,
@@ -839,7 +850,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _statusMessageNotifier.value = 'Error updating $name fake data: $e';
         shared.SnackBarUtils.showError(
           context,
-          message: context.tr(
+          message:
+              context.tr(
                 shared.LocaleKeys.commonCustomErrorMsg,
                 track: shared.TrackConstants.commonTrack,
                 params: {"error": e.toString()},
@@ -1687,9 +1699,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       'View live Fawaz Ahmed exchange rates, calculator & spread rates',
                       style: TextStyle(fontSize: 12, color: Colors.grey),
                     ),
-                    trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 16),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                    ),
                     onTap: () {
-                      context.push(core.AppRoutePath.currencyExchangeScreenRoute);
+                      context.push(
+                        core.AppRoutePath.currencyExchangeScreenRoute,
+                      );
                     },
                   ),
                 ),

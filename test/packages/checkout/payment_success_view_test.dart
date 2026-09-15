@@ -3,27 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('PaymentSuccessView renders without infinite height assertion error in SingleChildScrollView',
-      (WidgetTester tester) async {
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: SingleChildScrollView(
-            child: PaymentSuccessView(
-              grandTotal: 150.0,
-              receiptId: 'EN-1001',
-              itemCount: 3,
+  testWidgets(
+    'PaymentSuccessView renders without infinite height assertion error in SingleChildScrollView',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: PaymentSuccessView(
+                grandTotal: 150.0,
+                receiptId: 'EN-1001',
+                itemCount: 3,
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
 
-    // Pump frames (avoid pumpAndSettle due to continuous floating particle animations)
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
+      // Pump frames (avoid pumpAndSettle due to continuous floating particle animations)
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
 
-    expect(find.byType(PaymentSuccessView), findsOneWidget);
-    expect(find.textContaining('150.00'), findsOneWidget);
-  });
+      expect(find.byType(PaymentSuccessView), findsOneWidget);
+      expect(find.textContaining('150.00'), findsOneWidget);
+    },
+  );
 }

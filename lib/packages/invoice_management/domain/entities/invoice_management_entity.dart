@@ -134,30 +134,30 @@ class InvoiceEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        orderId,
-        hashId,
-        taxPercentage,
-        discountType,
-        discountAmount,
-        totalCost,
-        taxCost,
-        taxableAmount,
-        netPaymentAmount,
-        createdDate,
-        modifiedDate,
-        customerId,
-        customerName,
-        phoneNumber,
-        isoCode,
-        paymentModeId,
-        paymentMethodName,
-        recordAmountPaid,
-        paymentMethodDetails,
-        cashReceived,
-        changeAmount,
-        isDeleted,
-      ];
+    id,
+    orderId,
+    hashId,
+    taxPercentage,
+    discountType,
+    discountAmount,
+    totalCost,
+    taxCost,
+    taxableAmount,
+    netPaymentAmount,
+    createdDate,
+    modifiedDate,
+    customerId,
+    customerName,
+    phoneNumber,
+    isoCode,
+    paymentModeId,
+    paymentMethodName,
+    recordAmountPaid,
+    paymentMethodDetails,
+    cashReceived,
+    changeAmount,
+    isDeleted,
+  ];
 }
 
 class InvoiceItemEntity extends Equatable {
@@ -218,15 +218,15 @@ class InvoiceItemEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        invoiceId,
-        orderItemId,
-        itemId,
-        itemName,
-        quantity,
-        unitPrice,
-        totalPrice,
-      ];
+    id,
+    invoiceId,
+    orderItemId,
+    itemId,
+    itemName,
+    quantity,
+    unitPrice,
+    totalPrice,
+  ];
 }
 
 class InvoiceDetailsEntity extends Equatable {

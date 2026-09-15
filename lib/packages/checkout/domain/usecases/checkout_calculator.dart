@@ -85,7 +85,8 @@ class CheckoutCalculator {
     }
 
     // 5. Grand Total = Taxable Base + Total Taxes + Total Other Fees (± Rounding if enabled)
-    final double unroundedGrandTotal = taxableBase + totalTaxes + totalOtherCharges;
+    final double unroundedGrandTotal =
+        taxableBase + totalTaxes + totalOtherCharges;
     double finalGrandTotal = unroundedGrandTotal;
     double roundingAmount = 0.0;
 

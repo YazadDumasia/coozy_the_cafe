@@ -59,10 +59,7 @@ class UpdateOrderStatusEvent extends OrderManagementEvent {
   final int orderId;
   final String status;
 
-  const UpdateOrderStatusEvent({
-    required this.orderId,
-    required this.status,
-  });
+  const UpdateOrderStatusEvent({required this.orderId, required this.status});
 
   @override
   List<Object?> get props => [orderId, status];

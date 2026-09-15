@@ -26,18 +26,11 @@ class PdfSaveResult {
     required String filePath,
     bool isWeb = false,
   }) {
-    return PdfSaveResult(
-      isSuccess: true,
-      filePath: filePath,
-      isWeb: isWeb,
-    );
+    return PdfSaveResult(isSuccess: true, filePath: filePath, isWeb: isWeb);
   }
 
   factory PdfSaveResult.failure(String errorMessage) {
-    return PdfSaveResult(
-      isSuccess: false,
-      errorMessage: errorMessage,
-    );
+    return PdfSaveResult(isSuccess: false, errorMessage: errorMessage);
   }
 }
 
@@ -59,14 +52,8 @@ class PdfSaveHelper {
   }) async {
     try {
       if (kIsWeb) {
-        await Printing.sharePdf(
-          bytes: bytes,
-          filename: filename,
-        );
-        return PdfSaveResult.success(
-          filePath: filename,
-          isWeb: true,
-        );
+        await Printing.sharePdf(bytes: bytes, filename: filename);
+        return PdfSaveResult.success(filePath: filename, isWeb: true);
       }
 
       if (Platform.isAndroid) {
@@ -138,9 +125,13 @@ class PdfSaveHelper {
 
     // 2. Attempt writing to public Downloads folder directly
     try {
-      final Directory publicDownloadDir = Directory('/storage/emulated/0/Download');
+      final Directory publicDownloadDir = Directory(
+        '/storage/emulated/0/Download',
+      );
       if (await publicDownloadDir.exists()) {
-        final File file = File('${publicDownloadDir.path}${Platform.pathSeparator}$filename');
+        final File file = File(
+          '${publicDownloadDir.path}${Platform.pathSeparator}$filename',
+        );
         await file.writeAsBytes(bytes, flush: true);
         core.PlatformUtils.debugLog(
           PdfSaveHelper,
@@ -161,7 +152,9 @@ class PdfSaveHelper {
         type: StorageDirectory.downloads,
       );
       if (extDownloads != null && extDownloads.isNotEmpty) {
-        final File file = File('${extDownloads.first.path}${Platform.pathSeparator}$filename');
+        final File file = File(
+          '${extDownloads.first.path}${Platform.pathSeparator}$filename',
+        );
         await file.writeAsBytes(bytes, flush: true);
         core.PlatformUtils.debugLog(
           PdfSaveHelper,
@@ -180,7 +173,9 @@ class PdfSaveHelper {
     try {
       final Directory? extDir = await getExternalStorageDirectory();
       if (extDir != null) {
-        final File file = File('${extDir.path}${Platform.pathSeparator}$filename');
+        final File file = File(
+          '${extDir.path}${Platform.pathSeparator}$filename',
+        );
         await file.writeAsBytes(bytes, flush: true);
         core.PlatformUtils.debugLog(
           PdfSaveHelper,
@@ -230,7 +225,9 @@ class PdfSaveHelper {
     } catch (_) {}
     targetDir ??= await getApplicationDocumentsDirectory();
 
-    final File file = File('${targetDir.path}${Platform.pathSeparator}$filename');
+    final File file = File(
+      '${targetDir.path}${Platform.pathSeparator}$filename',
+    );
     await file.writeAsBytes(bytes, flush: true);
     core.PlatformUtils.debugLog(
       PdfSaveHelper,
@@ -249,10 +246,7 @@ class PdfSaveHelper {
   }) async {
     if (kIsWeb) {
       if (fallbackBytes != null) {
-        await Printing.sharePdf(
-          bytes: fallbackBytes,
-          filename: filename,
-        );
+        await Printing.sharePdf(bytes: fallbackBytes, filename: filename);
       }
       return;
     }
@@ -262,11 +256,7 @@ class PdfSaveHelper {
       await SharePlus.instance.share(
         ShareParams(
           files: [
-            XFile(
-              file.path,
-              mimeType: 'application/pdf',
-              name: filename,
-            ),
+            XFile(file.path, mimeType: 'application/pdf', name: filename),
           ],
           subject: filename,
           sharePositionOrigin: sharePositionOrigin,
@@ -294,8 +284,10 @@ class PdfSaveHelper {
     required Uint8List bytes,
     required String invoiceNumber,
   }) async {
-    final String cleanNumber =
-        invoiceNumber.replaceAll(RegExp(r'[^\w\-]'), '_');
+    final String cleanNumber = invoiceNumber.replaceAll(
+      RegExp(r'[^\w\-]'),
+      '_',
+    );
     final String filename = 'Invoice_$cleanNumber.pdf';
     return await saveAndDownloadPdf(bytes: bytes, filename: filename);
   }
@@ -315,16 +307,15 @@ class PdfSaveHelper {
     String? filePath,
     Rect? sharePositionOrigin,
   }) async {
-    final String cleanNumber =
-        invoiceNumber.replaceAll(RegExp(r'[^\w\-]'), '_');
+    final String cleanNumber = invoiceNumber.replaceAll(
+      RegExp(r'[^\w\-]'),
+      '_',
+    );
     final String filename = 'Invoice_$cleanNumber.pdf';
 
     String? targetFilePath = filePath;
     if (targetFilePath == null && bytes != null) {
-      final result = await saveAndDownloadPdf(
-        bytes: bytes,
-        filename: filename,
-      );
+      final result = await saveAndDownloadPdf(bytes: bytes, filename: filename);
       targetFilePath = result.filePath;
     }
 
@@ -342,13 +333,12 @@ class PdfSaveHelper {
     required String invoiceNumber,
     String? filePath,
     Rect? sharePositionOrigin,
-  }) =>
-      shareInvoice(
-        bytes: bytes,
-        invoiceNumber: invoiceNumber,
-        filePath: filePath,
-        sharePositionOrigin: sharePositionOrigin,
-      );
+  }) => shareInvoice(
+    bytes: bytes,
+    invoiceNumber: invoiceNumber,
+    filePath: filePath,
+    sharePositionOrigin: sharePositionOrigin,
+  );
 }
 
 /// Checks and requests storage permission on mobile platforms (Android).
@@ -365,10 +355,9 @@ Future<void> shareInvoice({
   required String invoiceNumber,
   String? filePath,
   Rect? sharePositionOrigin,
-}) =>
-    PdfSaveHelper.shareInvoice(
-      bytes: bytes,
-      invoiceNumber: invoiceNumber,
-      filePath: filePath,
-      sharePositionOrigin: sharePositionOrigin,
-    );
+}) => PdfSaveHelper.shareInvoice(
+  bytes: bytes,
+  invoiceNumber: invoiceNumber,
+  filePath: filePath,
+  sharePositionOrigin: sharePositionOrigin,
+);

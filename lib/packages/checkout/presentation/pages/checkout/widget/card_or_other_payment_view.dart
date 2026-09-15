@@ -67,7 +67,8 @@ class _CardOrOtherPaymentViewState extends State<CardOrOtherPaymentView> {
                   IconButton(
                     icon: const Icon(Icons.arrow_back, color: Colors.white),
                     onPressed: widget.onBack,
-                    tooltip: context.tr(
+                    tooltip:
+                        context.tr(
                           shared.LocaleKeys.commonBack,
                           track: shared.TrackConstants.commonTrack,
                         ) ??
@@ -95,7 +96,11 @@ class _CardOrOtherPaymentViewState extends State<CardOrOtherPaymentView> {
                 elevation: 1,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
+                  side: BorderSide(
+                    color: theme.colorScheme.outlineVariant.withValues(
+                      alpha: 0.5,
+                    ),
+                  ),
                 ),
                 color: theme.colorScheme.surface,
                 child: Padding(
@@ -136,7 +141,11 @@ class _CardOrOtherPaymentViewState extends State<CardOrOtherPaymentView> {
                 elevation: 1,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
+                  side: BorderSide(
+                    color: theme.colorScheme.outlineVariant.withValues(
+                      alpha: 0.5,
+                    ),
+                  ),
                 ),
                 color: theme.colorScheme.surface,
                 child: Column(
@@ -148,7 +157,10 @@ class _CardOrOtherPaymentViewState extends State<CardOrOtherPaymentView> {
                         });
                       },
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 14.0,
+                        ),
                         child: Row(
                           children: [
                             Icon(
@@ -160,8 +172,11 @@ class _CardOrOtherPaymentViewState extends State<CardOrOtherPaymentView> {
                             const SizedBox(width: 8),
                             Text(
                               context.tr(
-                                    shared.LocaleKeys.checkoutReceiptNoteOptional,
-                                    track: shared.TrackConstants.checkoutPageTrack,
+                                    shared
+                                        .LocaleKeys
+                                        .checkoutReceiptNoteOptional,
+                                    track:
+                                        shared.TrackConstants.checkoutPageTrack,
                                   ) ??
                                   'Receipt Note (Optional)',
                               style: theme.textTheme.titleMedium?.copyWith(
@@ -175,11 +190,17 @@ class _CardOrOtherPaymentViewState extends State<CardOrOtherPaymentView> {
                     ),
                     if (_isNoteExpanded) ...[
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                        padding: const EdgeInsets.fromLTRB(
+                          16.0,
+                          0.0,
+                          16.0,
+                          16.0,
+                        ),
                         child: Container(
                           height: 70,
                           decoration: BoxDecoration(
-                            color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                            color: theme.colorScheme.surfaceContainerHighest
+                                .withValues(alpha: 0.5),
                             borderRadius: BorderRadius.circular(6),
                           ),
                           child: TextField(
@@ -209,7 +230,11 @@ class _CardOrOtherPaymentViewState extends State<CardOrOtherPaymentView> {
                 elevation: 1,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(color: theme.colorScheme.outlineVariant.withValues(alpha: 0.5)),
+                  side: BorderSide(
+                    color: theme.colorScheme.outlineVariant.withValues(
+                      alpha: 0.5,
+                    ),
+                  ),
                 ),
                 color: theme.colorScheme.surface,
                 child: CheckboxListTile(

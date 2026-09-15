@@ -10,10 +10,7 @@ class EditInvoiceScreenActions {
     required List<InvoiceItemEntity> items,
   }) {
     context.read<InvoiceManagementBloc>().add(
-          UpdateInvoiceEvent(
-            invoice: invoice,
-            items: items,
-          ),
-        );
+      UpdateInvoiceEvent(invoice: invoice, items: items),
+    );
   }
 }

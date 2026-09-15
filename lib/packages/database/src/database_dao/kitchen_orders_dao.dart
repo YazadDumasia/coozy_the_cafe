@@ -108,7 +108,9 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
     final itemStatus = OrderItemStatus.fromString(status);
 
     return await transaction(() async {
-      final existingItem = await (select(orderItemsTable)..where((t) => t.id.equals(orderItemId))).getSingleOrNull();
+      final existingItem = await (select(
+        orderItemsTable,
+      )..where((t) => t.id.equals(orderItemId))).getSingleOrNull();
       if (existingItem == null) return false;
 
       Value<String?> prepStarted = const Value.absent();
@@ -147,18 +149,23 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
           break;
       }
 
-      final rows = await (update(orderItemsTable)..where((t) => t.id.equals(orderItemId))).write(
-        OrderItemsTableCompanion(
-          status: Value(itemStatus.value),
-          preparationStartedAt: prepStarted,
-          readyAt: ready,
-          servedAt: served,
-        ),
-      );
+      final rows =
+          await (update(
+            orderItemsTable,
+          )..where((t) => t.id.equals(orderItemId))).write(
+            OrderItemsTableCompanion(
+              status: Value(itemStatus.value),
+              preparationStartedAt: prepStarted,
+              readyAt: ready,
+              servedAt: served,
+            ),
+          );
 
       final orderId = existingItem.orderId;
       if (orderId != null) {
-        final order = await (select(ordersTable)..where((t) => t.id.equals(orderId))).getSingleOrNull();
+        final order = await (select(
+          ordersTable,
+        )..where((t) => t.id.equals(orderId))).getSingleOrNull();
         if (order != null) {
           Value<String?> orderPrepStarted = const Value.absent();
           Value<String?> orderReady = const Value.absent();
@@ -175,23 +182,34 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
             }
           }
 
-          final orderItems = await (select(orderItemsTable)..where((t) => t.orderId.equals(orderId))).get();
-          final allReadyOrServed = orderItems.isNotEmpty && orderItems.every((item) {
-            final s = OrderItemStatus.fromString(item.status);
-            return s == OrderItemStatus.ready || s == OrderItemStatus.served;
-          });
-          final allServed = orderItems.isNotEmpty && orderItems.every((item) {
-            final s = OrderItemStatus.fromString(item.status);
-            return s == OrderItemStatus.served;
-          });
+          final orderItems = await (select(
+            orderItemsTable,
+          )..where((t) => t.orderId.equals(orderId))).get();
+          final allReadyOrServed =
+              orderItems.isNotEmpty &&
+              orderItems.every((item) {
+                final s = OrderItemStatus.fromString(item.status);
+                return s == OrderItemStatus.ready ||
+                    s == OrderItemStatus.served;
+              });
+          final allServed =
+              orderItems.isNotEmpty &&
+              orderItems.every((item) {
+                final s = OrderItemStatus.fromString(item.status);
+                return s == OrderItemStatus.served;
+              });
 
           if (allServed) {
-            if (order.preparationStartedAt == null) orderPrepStarted = Value(nowIso);
+            if (order.preparationStartedAt == null) {
+              orderPrepStarted = Value(nowIso);
+            }
             if (order.readyAt == null) orderReady = Value(nowIso);
             if (order.servedAt == null) orderServed = Value(nowIso);
             orderStatus = Value(OrderStatus.served.value);
           } else if (allReadyOrServed) {
-            if (order.preparationStartedAt == null) orderPrepStarted = Value(nowIso);
+            if (order.preparationStartedAt == null) {
+              orderPrepStarted = Value(nowIso);
+            }
             if (order.readyAt == null) orderReady = Value(nowIso);
             orderStatus = Value(OrderStatus.ready.value);
           }
@@ -241,26 +259,29 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
           break;
       }
 
-      final count = await (update(orderItemsTable)..where(
-            (t) =>
-                t.orderId.equals(orderId) &
-                (t.status.isIn([
-                      OrderItemStatus.pending.value,
-                      OrderItemStatus.preparing.value,
-                      'placed',
-                    ]) |
-                    t.status.isNull()),
-          ))
-          .write(
-            OrderItemsTableCompanion(
-              status: Value(itemStatus.value),
-              preparationStartedAt: prepStarted,
-              readyAt: ready,
-              servedAt: served,
-            ),
-          );
+      final count =
+          await (update(orderItemsTable)..where(
+                (t) =>
+                    t.orderId.equals(orderId) &
+                    (t.status.isIn([
+                          OrderItemStatus.pending.value,
+                          OrderItemStatus.preparing.value,
+                          'placed',
+                        ]) |
+                        t.status.isNull()),
+              ))
+              .write(
+                OrderItemsTableCompanion(
+                  status: Value(itemStatus.value),
+                  preparationStartedAt: prepStarted,
+                  readyAt: ready,
+                  servedAt: served,
+                ),
+              );
 
-      final order = await (select(ordersTable)..where((t) => t.id.equals(orderId))).getSingleOrNull();
+      final order = await (select(
+        ordersTable,
+      )..where((t) => t.id.equals(orderId))).getSingleOrNull();
       if (order != null) {
         Value<String?> orderPrepStarted = const Value.absent();
         Value<String?> orderReady = const Value.absent();
@@ -269,11 +290,15 @@ class KitchenOrdersDao extends DatabaseAccessor<CoozyDatabase>
 
         switch (itemStatus) {
           case OrderItemStatus.preparing:
-            if (order.preparationStartedAt == null) orderPrepStarted = Value(nowIso);
+            if (order.preparationStartedAt == null) {
+              orderPrepStarted = Value(nowIso);
+            }
             targetOrderStatus = OrderStatus.inProgress;
             break;
           case OrderItemStatus.ready:
-            if (order.preparationStartedAt == null) orderPrepStarted = Value(nowIso);
+            if (order.preparationStartedAt == null) {
+              orderPrepStarted = Value(nowIso);
+            }
             if (order.readyAt == null) orderReady = Value(nowIso);
             targetOrderStatus = OrderStatus.ready;
             break;

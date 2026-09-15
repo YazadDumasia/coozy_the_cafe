@@ -12,8 +12,9 @@ class OrderManagementRoutes {
       path: AppRoutePath.orderListScreenRoute,
       name: AppRouteName.orders,
       builder: (context, state) => BlocProvider<OrderManagementBloc>(
-        create: (_) => sl<OrderManagementBloc>()
-          ..add(const LoadOrdersEvent(isRefresh: true)),
+        create: (_) =>
+            sl<OrderManagementBloc>()
+              ..add(const LoadOrdersEvent(isRefresh: true)),
         child: const OrderListScreen(),
       ),
       routes: [
@@ -21,7 +22,6 @@ class OrderManagementRoutes {
           path: AppRoutePath.orderInfoScreenRoute,
           name: 'order-info',
           builder: (context, state) {
-
             final idStr = state.pathParameters['id'];
             final orderId = int.tryParse(idStr ?? '') ?? 0;
             final extraOrder = state.extra is OrderManagementEntity

@@ -275,9 +275,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
             title: 'Add Payment Mode',
             child: AddPaymentMethodDialog(
               onPaymentMethodAdded: (newMethod) {
-                widget.checkoutBloc.add(
-                  CheckoutPaymentMethodAdded(newMethod),
-                );
+                widget.checkoutBloc.add(CheckoutPaymentMethodAdded(newMethod));
               },
             ),
           );
@@ -309,7 +307,8 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
               if (Navigator.of(context).canPop()) {
                 Navigator.of(context).pop();
               }
-              final invoiceId = state.lastCreatedInvoiceId ??
+              final invoiceId =
+                  state.lastCreatedInvoiceId ??
                   (int.tryParse(state.orderId ?? '') ?? 1);
               context.push(
                 core.AppRoutePath.invoiceDetailRoute(
@@ -362,9 +361,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
               });
             },
             onPaymentConfirmed: (note) {
-              widget.checkoutBloc.add(
-                CheckoutPaymentConfirmed(note: note),
-              );
+              widget.checkoutBloc.add(CheckoutPaymentConfirmed(note: note));
               setState(() {
                 _activeStep = _PaymentStep.success;
               });
@@ -640,9 +637,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
 
                   return InkWell(
                     onTap: () {
-                      widget.checkoutBloc.add(
-                        CheckoutPaymentSelected(method),
-                      );
+                      widget.checkoutBloc.add(CheckoutPaymentSelected(method));
                     },
                     borderRadius: BorderRadius.circular(12),
                     child: AnimatedContainer(

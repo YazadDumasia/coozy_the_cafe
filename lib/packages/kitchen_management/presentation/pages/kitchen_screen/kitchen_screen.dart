@@ -33,7 +33,10 @@ class _KitchenScreenState extends State<KitchenScreen> {
             // const SizedBox(width: 8),
             Expanded(
               child: Text(
-                context.tr(shared.LocaleKeys.kitchenDisplaySystem, track: shared.TrackConstants.orderPageTrack) ??
+                context.tr(
+                      shared.LocaleKeys.kitchenDisplaySystem,
+                      track: shared.TrackConstants.orderPageTrack,
+                    ) ??
                     'Kitchen Display System',
                 overflow: TextOverflow.ellipsis,
               ),
@@ -44,7 +47,10 @@ class _KitchenScreenState extends State<KitchenScreen> {
           IconButton(
             icon: const Icon(Icons.refresh),
             tooltip:
-                context.tr(shared.LocaleKeys.kitchenRefreshOrders, track: shared.TrackConstants.orderPageTrack) ??
+                context.tr(
+                  shared.LocaleKeys.kitchenRefreshOrders,
+                  track: shared.TrackConstants.orderPageTrack,
+                ) ??
                 'Refresh Orders',
             onPressed: () => KitchenScreenActions.refreshOrders(context),
           ),
@@ -79,6 +85,8 @@ class _KitchenScreenState extends State<KitchenScreen> {
                               label: Text(
                                 context.tr(
                                       shared.LocaleKeys.kitchenViewTickets,
+                                      track:
+                                          shared.TrackConstants.orderPageTrack,
                                     ) ??
                                     'Tickets',
                               ),
@@ -89,6 +97,8 @@ class _KitchenScreenState extends State<KitchenScreen> {
                               label: Text(
                                 context.tr(
                                       shared.LocaleKeys.kitchenViewSummary,
+                                      track:
+                                          shared.TrackConstants.orderPageTrack,
                                     ) ??
                                     'Summary',
                               ),

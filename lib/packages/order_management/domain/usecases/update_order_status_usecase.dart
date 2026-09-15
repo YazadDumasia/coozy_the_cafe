@@ -8,10 +8,7 @@ class UpdateOrderStatusParams extends Equatable {
   final int orderId;
   final String status;
 
-  const UpdateOrderStatusParams({
-    required this.orderId,
-    required this.status,
-  });
+  const UpdateOrderStatusParams({required this.orderId, required this.status});
 
   @override
   List<Object?> get props => [orderId, status];

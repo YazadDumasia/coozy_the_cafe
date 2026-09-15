@@ -8,7 +8,6 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'order_cart_item_card.dart';
 
-
 class CurrentOrderTabView extends StatefulWidget {
   final List<OrderCartItem> cartItems;
   final int tableId;
@@ -165,7 +164,10 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
             ),
             const SizedBox(height: 12),
             Text(
-                  context.tr(shared.LocaleKeys.noItemsAddedToCurrentOrderMsg, track: shared.TrackConstants.tablePageTrack) ??
+                  context.tr(
+                        shared.LocaleKeys.noItemsAddedToCurrentOrderMsg,
+                        track: shared.TrackConstants.tablePageTrack,
+                      ) ??
                       'No items added to current order yet',
                   style: theme.textTheme.titleMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
@@ -179,7 +181,10 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
                 .paddingSymmetric(horizontal: 10),
             const SizedBox(height: 6),
             Text(
-                  context.tr(shared.LocaleKeys.selectCategoryTabToBrowseMsg, track: shared.TrackConstants.tablePageTrack) ??
+                  context.tr(
+                        shared.LocaleKeys.selectCategoryTabToBrowseMsg,
+                        track: shared.TrackConstants.tablePageTrack,
+                      ) ??
                       'Select a category tab above to browse and add items',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
@@ -241,7 +246,10 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      context.tr(shared.LocaleKeys.overallOrderRemarksLabel, track: shared.TrackConstants.tablePageTrack) ??
+                      context.tr(
+                            shared.LocaleKeys.overallOrderRemarksLabel,
+                            track: shared.TrackConstants.tablePageTrack,
+                          ) ??
                           'Overall Order Remarks',
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
@@ -307,7 +315,10 @@ class _CurrentOrderTabViewState extends State<CurrentOrderTabView> {
                   style: theme.textTheme.bodyMedium?.copyWith(fontSize: 13),
                   decoration: InputDecoration(
                     hintText:
-                        context.tr(shared.LocaleKeys.overallOrderRemarksHint, track: shared.TrackConstants.tablePageTrack) ??
+                        context.tr(
+                          shared.LocaleKeys.overallOrderRemarksHint,
+                          track: shared.TrackConstants.tablePageTrack,
+                        ) ??
                         'Add overall order remarks / instructions...',
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
                       fontSize: 12,

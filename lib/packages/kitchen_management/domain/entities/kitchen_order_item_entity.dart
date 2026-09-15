@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:coozy_the_cafe/packages/database/coozy_database.dart' show OrderItemStatus;
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart'
+    show OrderItemStatus;
 
 class KitchenOrderItemEntity extends Equatable {
   final int id;

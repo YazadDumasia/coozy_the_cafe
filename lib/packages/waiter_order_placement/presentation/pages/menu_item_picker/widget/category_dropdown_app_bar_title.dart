@@ -39,7 +39,10 @@ class CategoryDropdownAppBarTitle extends StatelessWidget {
                 ),
                 const SizedBox(width: 10),
                 Text(
-                  (context.tr(shared.LocaleKeys.currentOrderTabTitle, track: shared.TrackConstants.tablePageTrack) ??
+                  (context.tr(
+                            shared.LocaleKeys.currentOrderTabTitle,
+                            track: shared.TrackConstants.tablePageTrack,
+                          ) ??
                           'Current Order')
                       .toUpperCase(),
                   style: TextStyle(
@@ -84,7 +87,10 @@ class CategoryDropdownAppBarTitle extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              (context.tr(shared.LocaleKeys.selectCategoryTitle, track: shared.TrackConstants.tablePageTrack) ??
+              (context.tr(
+                        shared.LocaleKeys.selectCategoryTitle,
+                        track: shared.TrackConstants.tablePageTrack,
+                      ) ??
                       'Select Category')
                   .toUpperCase(),
               overflow: TextOverflow.ellipsis,

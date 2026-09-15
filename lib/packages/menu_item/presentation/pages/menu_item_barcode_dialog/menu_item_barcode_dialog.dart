@@ -85,23 +85,20 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
         // Abort if the dialog was dismissed while we were fetching the catalog.
         if (_cancelled || _generationId != myGeneration) return;
 
-        catalogRes.fold(
-          (failure) => _barcodeItems = [],
-          (catalog) {
-            var items = MenuItemBarcodePdfGenerator.extractBarcodeItems(catalog);
-            if (widget.filterCategoryName != null &&
-                widget.filterCategoryName!.isNotEmpty) {
-              items = items
-                  .where(
-                    (i) =>
-                        i.categoryName.toLowerCase() ==
-                        widget.filterCategoryName!.toLowerCase(),
-                  )
-                  .toList();
-            }
-            _barcodeItems = items;
-          },
-        );
+        catalogRes.fold((failure) => _barcodeItems = [], (catalog) {
+          var items = MenuItemBarcodePdfGenerator.extractBarcodeItems(catalog);
+          if (widget.filterCategoryName != null &&
+              widget.filterCategoryName!.isNotEmpty) {
+            items = items
+                .where(
+                  (i) =>
+                      i.categoryName.toLowerCase() ==
+                      widget.filterCategoryName!.toLowerCase(),
+                )
+                .toList();
+          }
+          _barcodeItems = items;
+        });
       }
 
       // Abort before the expensive PDF rendering step if already cancelled.
@@ -139,12 +136,11 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final String titleText =
-        widget.singleBarcodeInfo != null
-            ? '${widget.singleBarcodeInfo!.fullDisplayName} Barcode'
-            : (widget.filterCategoryName != null
-                ? '${widget.filterCategoryName} Barcode Cards'
-                : 'Menu Item Barcode Cards');
+    final String titleText = widget.singleBarcodeInfo != null
+        ? '${widget.singleBarcodeInfo!.fullDisplayName} Barcode'
+        : (widget.filterCategoryName != null
+              ? '${widget.filterCategoryName} Barcode Cards'
+              : 'Menu Item Barcode Cards');
 
     final now = DateTime.now();
     final String timeStampStr =
@@ -180,11 +176,8 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                       Flexible(
                         child: Text(
                           titleText,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.bold),
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
                         ),
@@ -268,36 +261,33 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
 
             // PDF Viewer Container using pdfrx
             Expanded(
-              child:
-                  _isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : _pdfBytes != null
-                      ? ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.outlineVariant,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _pdfBytes != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outlineVariant,
                           ),
-                          child: PdfViewer.data(
-                            _pdfBytes!,
-                            sourceName: _pdfSourceName!,
-                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      )
-                      : Center(
-                        child: Text(
-                          context.tr(
-                                shared.LocaleKeys.commonErrorMsg,
-                                track: shared.TrackConstants.commonTrack,
-                              ) ??
-                              'Failed to render Menu Barcode PDF preview',
+                        child: PdfViewer.data(
+                          _pdfBytes!,
+                          sourceName: _pdfSourceName!,
                         ),
                       ),
+                    )
+                  : Center(
+                      child: Text(
+                        context.tr(
+                              shared.LocaleKeys.commonErrorMsg,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Failed to render Menu Barcode PDF preview',
+                      ),
+                    ),
             ),
             const SizedBox(height: 16),
 
@@ -319,38 +309,36 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                   ),
                 ),
                 OutlinedButton.icon(
-                  onPressed:
-                      (_isSaving || _isSharing || _isLoading)
-                          ? null
-                          : () async {
-                            setState(() => _isSharing = true);
-                            try {
-                              await MenuItemBarcodePdfGenerator.sharePdf(
-                                barcodeItems: _barcodeItems,
-                                columnsCount: _selectedColumns,
-                                docName: docName,
+                  onPressed: (_isSaving || _isSharing || _isLoading)
+                      ? null
+                      : () async {
+                          setState(() => _isSharing = true);
+                          try {
+                            await MenuItemBarcodePdfGenerator.sharePdf(
+                              barcodeItems: _barcodeItems,
+                              columnsCount: _selectedColumns,
+                              docName: docName,
+                            );
+                          } catch (e) {
+                            if (context.mounted) {
+                              shared.SnackBarUtils.showError(
+                                context,
+                                message: 'Failed to share PDF: $e',
                               );
-                            } catch (e) {
-                              if (context.mounted) {
-                                shared.SnackBarUtils.showError(
-                                  context,
-                                  message: 'Failed to share PDF: $e',
-                                );
-                              }
-                            } finally {
-                              if (mounted) {
-                                setState(() => _isSharing = false);
-                              }
                             }
-                          },
-                  icon:
-                      _isSharing
-                          ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                          : const Icon(Icons.share_rounded),
+                          } finally {
+                            if (mounted) {
+                              setState(() => _isSharing = false);
+                            }
+                          }
+                        },
+                  icon: _isSharing
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.share_rounded),
                   label: Text(
                     context.tr(
                           shared.LocaleKeys.pdfShareBtn,
@@ -360,127 +348,117 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                   ),
                 ),
                 OutlinedButton.icon(
-                  onPressed:
-                      (_isSaving || _isSharing || _isLoading)
-                          ? null
-                          : () async {
-                            setState(() => _isSaving = true);
-                            try {
-                              final result =
-                                  await MenuItemBarcodePdfGenerator.downloadOrSavePdf(
-                                    barcodeItems: _barcodeItems,
-                                    columnsCount: _selectedColumns,
-                                    docName: docName,
-                                  );
-
-                              if (!context.mounted) return;
-
-                              if (result.isSuccess) {
-                                final String successText =
-                                    result.isWeb
-                                        ? 'PDF download started!'
-                                        : (context.tr(
-                                              shared.LocaleKeys.pdfSaveSuccessMsg,
-                                              params: {
-                                                'path':
-                                                    result.filePath ?? docName,
-                                              },
-                                              track:
-                                                  shared
-                                                      .TrackConstants
-                                                      .tablePageTrack,
-                                            ) ??
-                                            'PDF saved successfully: ${result.filePath}');
-
-                                shared.SnackBarUtils.showSuccess(
-                                  context,
-                                  message: successText,
-                                  duration: const Duration(seconds: 4),
-                                  actions: (!result.isWeb &&
-                                          result.filePath != null)
-                                      ? [
-                                          shared.SnackBarActionItem(
-                                            label: context.tr(
-                                                  shared
-                                                      .LocaleKeys
-                                                      .pdfShareBtn,
-                                                  track: shared
-                                                      .TrackConstants
-                                                      .tablePageTrack,
-                                                ) ??
-                                                'Share',
-                                            onPressed: () {
-                                              MenuItemBarcodePdfGenerator.sharePdf(
-                                                barcodeItems: _barcodeItems,
-                                                columnsCount:
-                                                    _selectedColumns,
-                                                docName: docName,
-                                              );
-                                            },
-                                          ),
-                                        ]
-                                      : const [],
+                  onPressed: (_isSaving || _isSharing || _isLoading)
+                      ? null
+                      : () async {
+                          setState(() => _isSaving = true);
+                          try {
+                            final result =
+                                await MenuItemBarcodePdfGenerator.downloadOrSavePdf(
+                                  barcodeItems: _barcodeItems,
+                                  columnsCount: _selectedColumns,
+                                  docName: docName,
                                 );
-                              } else {
-                                final String errorMsg =
-                                    result.errorMessage ?? 'Unknown error';
-                                shared.SnackBarUtils.showError(
-                                  context,
-                                  message: context.tr(
-                                        shared.LocaleKeys.pdfSaveFailedMsg,
-                                        params: {'error': errorMsg},
-                                        track: shared
-                                            .TrackConstants
-                                            .tablePageTrack,
-                                      ) ??
-                                      'Failed to save PDF: $errorMsg',
-                                );
-                              }
-                            } catch (e) {
-                              if (context.mounted) {
-                                shared.SnackBarUtils.showError(
-                                  context,
-                                  message: 'Failed to save PDF: $e',
-                                );
-                              }
-                            } finally {
-                              if (mounted) {
-                                setState(() => _isSaving = false);
-                              }
+
+                            if (!context.mounted) return;
+
+                            if (result.isSuccess) {
+                              final String successText = result.isWeb
+                                  ? 'PDF download started!'
+                                  : (context.tr(
+                                          shared.LocaleKeys.pdfSaveSuccessMsg,
+                                          params: {
+                                            'path': result.filePath ?? docName,
+                                          },
+                                          track: shared
+                                              .TrackConstants
+                                              .tablePageTrack,
+                                        ) ??
+                                        'PDF saved successfully: ${result.filePath}');
+
+                              shared.SnackBarUtils.showSuccess(
+                                context,
+                                message: successText,
+                                duration: const Duration(seconds: 4),
+                                actions:
+                                    (!result.isWeb && result.filePath != null)
+                                    ? [
+                                        shared.SnackBarActionItem(
+                                          label:
+                                              context.tr(
+                                                shared.LocaleKeys.pdfShareBtn,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .tablePageTrack,
+                                              ) ??
+                                              'Share',
+                                          onPressed: () {
+                                            MenuItemBarcodePdfGenerator.sharePdf(
+                                              barcodeItems: _barcodeItems,
+                                              columnsCount: _selectedColumns,
+                                              docName: docName,
+                                            );
+                                          },
+                                        ),
+                                      ]
+                                    : const [],
+                              );
+                            } else {
+                              final String errorMsg =
+                                  result.errorMessage ?? 'Unknown error';
+                              shared.SnackBarUtils.showError(
+                                context,
+                                message:
+                                    context.tr(
+                                      shared.LocaleKeys.pdfSaveFailedMsg,
+                                      params: {'error': errorMsg},
+                                      track:
+                                          shared.TrackConstants.tablePageTrack,
+                                    ) ??
+                                    'Failed to save PDF: $errorMsg',
+                              );
                             }
-                          },
-                  icon:
-                      _isSaving
-                          ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                          : const Icon(Icons.download_rounded),
-                  label: Text(
-                    _isSaving ? 'Saving...' : 'Save / Download PDF',
-                  ),
+                          } catch (e) {
+                            if (context.mounted) {
+                              shared.SnackBarUtils.showError(
+                                context,
+                                message: 'Failed to save PDF: $e',
+                              );
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() => _isSaving = false);
+                            }
+                          }
+                        },
+                  icon: _isSaving
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.download_rounded),
+                  label: Text(_isSaving ? 'Saving...' : 'Save / Download PDF'),
                 ),
                 ElevatedButton.icon(
-                  onPressed:
-                      (_isSaving || _isSharing || _isLoading)
-                          ? null
-                          : () async {
-                            try {
-                              await MenuItemBarcodePdfGenerator.printOrShareBarcodeCards(
-                                barcodeItems: _barcodeItems,
-                                columnsCount: _selectedColumns,
-                                docName: docName,
+                  onPressed: (_isSaving || _isSharing || _isLoading)
+                      ? null
+                      : () async {
+                          try {
+                            await MenuItemBarcodePdfGenerator.printOrShareBarcodeCards(
+                              barcodeItems: _barcodeItems,
+                              columnsCount: _selectedColumns,
+                              docName: docName,
+                            );
+                          } catch (e) {
+                            if (context.mounted) {
+                              shared.SnackBarUtils.showError(
+                                context,
+                                message: 'Failed to print PDF: $e',
                               );
-                            } catch (e) {
-                              if (context.mounted) {
-                                shared.SnackBarUtils.showError(
-                                  context,
-                                  message: 'Failed to print PDF: $e',
-                                );
-                              }
                             }
-                          },
+                          }
+                        },
                   icon: const Icon(Icons.print_rounded),
                   label: const Text('Print Barcode PDF'),
                 ),

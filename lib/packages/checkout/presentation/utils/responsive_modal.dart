@@ -12,10 +12,7 @@ Future<T?> showResponsiveModal<T>({
   Widget wrappedChild = child;
   try {
     final bloc = context.read<CheckoutBloc>();
-    wrappedChild = BlocProvider<CheckoutBloc>.value(
-      value: bloc,
-      child: child,
-    );
+    wrappedChild = BlocProvider<CheckoutBloc>.value(value: bloc, child: child);
   } catch (_) {
     // If context doesn't contain CheckoutBloc, proceed with child as-is
   }
@@ -42,7 +39,9 @@ Future<T?> showResponsiveModal<T>({
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(sheetContext).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  color: Theme.of(
+                    sheetContext,
+                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -74,9 +73,8 @@ Future<T?> showResponsiveModal<T>({
                     children: [
                       Text(
                         title,
-                        style: Theme.of(dialogContext).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(dialogContext).textTheme.titleLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       IconButton(
@@ -88,11 +86,7 @@ Future<T?> showResponsiveModal<T>({
                 ),
                 const Divider(height: 1),
               ],
-              Flexible(
-                child: SingleChildScrollView(
-                  child: wrappedChild,
-                ),
-              ),
+              Flexible(child: SingleChildScrollView(child: wrappedChild)),
             ],
           ),
         ),
@@ -100,4 +94,3 @@ Future<T?> showResponsiveModal<T>({
     );
   }
 }
-

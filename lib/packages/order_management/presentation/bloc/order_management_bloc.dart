@@ -60,23 +60,22 @@ class OrderManagementBloc
       ),
     );
 
-    result.fold(
-      (failure) => emit(OrderManagementErrorState(failure.message)),
-      (paginated) {
-        final hasReachedMax = paginated.orders.length >= paginated.totalCount;
-        emit(
-          OrderManagementLoadedState(
-            orders: paginated.orders,
-            totalCount: paginated.totalCount,
-            currentPage: 1,
-            hasReachedMax: hasReachedMax,
-            searchQuery: query,
-            dateRange: range,
-            selectedStatus: status,
-          ),
-        );
-      },
-    );
+    result.fold((failure) => emit(OrderManagementErrorState(failure.message)), (
+      paginated,
+    ) {
+      final hasReachedMax = paginated.orders.length >= paginated.totalCount;
+      emit(
+        OrderManagementLoadedState(
+          orders: paginated.orders,
+          totalCount: paginated.totalCount,
+          currentPage: 1,
+          hasReachedMax: hasReachedMax,
+          searchQuery: query,
+          dateRange: range,
+          selectedStatus: status,
+        ),
+      );
+    });
   }
 
   Future<void> _onLoadMoreOrders(
@@ -109,10 +108,7 @@ class OrderManagementBloc
         ),
       ),
       (paginated) {
-        final updatedOrders = [
-          ...currentState.orders,
-          ...paginated.orders,
-        ];
+        final updatedOrders = [...currentState.orders, ...paginated.orders];
         final hasReachedMax = updatedOrders.length >= paginated.totalCount;
 
         emit(
@@ -132,24 +128,14 @@ class OrderManagementBloc
     SelectDateRangeEvent event,
     Emitter<OrderManagementState> emit,
   ) async {
-    add(
-      LoadOrdersEvent(
-        isRefresh: true,
-        dateRange: event.dateRange,
-      ),
-    );
+    add(LoadOrdersEvent(isRefresh: true, dateRange: event.dateRange));
   }
 
   Future<void> _onChangeStatusFilter(
     ChangeStatusFilterEvent event,
     Emitter<OrderManagementState> emit,
   ) async {
-    add(
-      LoadOrdersEvent(
-        isRefresh: true,
-        statusFilter: event.status,
-      ),
-    );
+    add(LoadOrdersEvent(isRefresh: true, statusFilter: event.status));
   }
 
   Future<void> _onLoadOrderDetails(
@@ -182,10 +168,7 @@ class OrderManagementBloc
     Emitter<OrderManagementState> emit,
   ) async {
     final result = await updateOrderStatusUseCase(
-      UpdateOrderStatusParams(
-        orderId: event.orderId,
-        status: event.status,
-      ),
+      UpdateOrderStatusParams(orderId: event.orderId, status: event.status),
     );
 
     result.fold(

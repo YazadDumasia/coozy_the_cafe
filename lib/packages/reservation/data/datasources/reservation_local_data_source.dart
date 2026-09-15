@@ -175,8 +175,9 @@ class ReservationLocalDataSourceImpl implements ReservationLocalDataSource {
   Future<int> convertReservationToOrder(ReservationEntity reservation) async {
     if (reservation.id == null) return -1;
     final db = reservationsDao.attachedDatabase;
-    final existingOrder =
-        await db.ordersDao.getOrderByReservationId(reservation.id!);
+    final existingOrder = await db.ordersDao.getOrderByReservationId(
+      reservation.id!,
+    );
 
     int orderId = -1;
     final nowIso = DateTime.now().toUtc().toIso8601String();

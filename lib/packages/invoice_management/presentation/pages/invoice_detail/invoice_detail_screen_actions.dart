@@ -22,22 +22,25 @@ class InvoiceDetailScreenActions {
     int invoiceId, {
     bool fromCheckout = false,
   }) async {
-    final bool? isConfirmed =
-        await shared.DialogUtils.showConfirmationDialog<bool>(
+    final bool?
+    isConfirmed = await shared.DialogUtils.showConfirmationDialog<bool>(
       context: context,
-      title: context.tr(
+      title:
+          context.tr(
             shared.LocaleKeys.commonDelete,
             track: shared.TrackConstants.commonTrack,
           ) ??
           'Delete Receipt',
       content:
           'Are you sure you want to delete this receipt? This will soft delete the invoice and its linked order.',
-      cancelText: context.tr(
+      cancelText:
+          context.tr(
             shared.LocaleKeys.commonCancel,
             track: shared.TrackConstants.commonTrack,
           ) ??
           'Cancel',
-      confirmText: context.tr(
+      confirmText:
+          context.tr(
             shared.LocaleKeys.commonDelete,
             track: shared.TrackConstants.commonTrack,
           ) ??
@@ -67,12 +70,12 @@ class InvoiceDetailScreenActions {
     if (result == true && context.mounted) {
       if (details.invoice.id > 0) {
         context.read<InvoiceManagementBloc>().add(
-              LoadInvoiceDetailsEvent(details.invoice.id),
-            );
+          LoadInvoiceDetailsEvent(details.invoice.id),
+        );
       } else if (details.invoice.hashId.isNotEmpty) {
         context.read<InvoiceManagementBloc>().add(
-              LoadInvoiceDetailsByHashIdEvent(details.invoice.hashId),
-            );
+          LoadInvoiceDetailsByHashIdEvent(details.invoice.hashId),
+        );
       }
       return true;
     }
@@ -189,9 +192,8 @@ class InvoiceDetailScreenActions {
       await showDialog(
         context: context,
         barrierDismissible: true,
-        builder: (dialogCtx) => InvoicePdfPreviewDialog(
-          details: invoiceDetails,
-        ),
+        builder: (dialogCtx) =>
+            InvoicePdfPreviewDialog(details: invoiceDetails),
       );
     }
   }
@@ -266,23 +268,25 @@ class InvoiceDetailScreenActions {
             : '';
         final String successTitle = result.isWeb
             ? (context.tr(
-                  shared.LocaleKeys.invoiceDownloadSuccessWeb,
-                  track: shared.TrackConstants.invoicePageTrack,
-                ) ??
-                'Invoice PDF downloaded!')
+                    shared.LocaleKeys.invoiceDownloadSuccessWeb,
+                    track: shared.TrackConstants.invoicePageTrack,
+                  ) ??
+                  'Invoice PDF downloaded!')
             : (context.tr(
-                  shared.LocaleKeys.invoiceDownloadSuccess,
-                  track: shared.TrackConstants.invoicePageTrack,
-                ) ??
-                'Invoice PDF saved successfully!');
+                    shared.LocaleKeys.invoiceDownloadSuccess,
+                    track: shared.TrackConstants.invoicePageTrack,
+                  ) ??
+                  'Invoice PDF saved successfully!');
 
-        final openLabel = context.tr(
+        final openLabel =
+            context.tr(
               shared.LocaleKeys.invoiceActionOpen,
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
             'Open';
 
-        final shareLabel = context.tr(
+        final shareLabel =
+            context.tr(
               shared.LocaleKeys.invoiceActionShare,
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
@@ -309,9 +313,7 @@ class InvoiceDetailScreenActions {
               label: shareLabel,
               textColor: Colors.white,
               onPressed: () {
-                InvoicePdfGenerator.sharePdf(
-                  details: invoiceDetails,
-                );
+                InvoicePdfGenerator.sharePdf(details: invoiceDetails);
               },
             ),
           ],
@@ -379,14 +381,22 @@ class InvoiceDetailScreenActions {
       );
     }
     buffer.writeln('----------------------');
-    buffer.writeln('Subtotal: ${core.CurrencyFormatter.format(value: inv.totalCost)}');
+    buffer.writeln(
+      'Subtotal: ${core.CurrencyFormatter.format(value: inv.totalCost)}',
+    );
     if (inv.discountAmount > 0) {
-      buffer.writeln('Discount: -${core.CurrencyFormatter.format(value: inv.discountAmount)}');
+      buffer.writeln(
+        'Discount: -${core.CurrencyFormatter.format(value: inv.discountAmount)}',
+      );
     }
     if (inv.taxCost > 0) {
-      buffer.writeln('Tax: +${core.CurrencyFormatter.format(value: inv.taxCost)}');
+      buffer.writeln(
+        'Tax: +${core.CurrencyFormatter.format(value: inv.taxCost)}',
+      );
     }
-    buffer.writeln('Grand Total: ${core.CurrencyFormatter.format(value: inv.netPaymentAmount)}');
+    buffer.writeln(
+      'Grand Total: ${core.CurrencyFormatter.format(value: inv.netPaymentAmount)}',
+    );
     buffer.writeln('Payment: ${inv.paymentMethodName ?? 'Cash'}');
     buffer.writeln('Thank you for visiting Coozy The Cafe!');
     return buffer.toString();

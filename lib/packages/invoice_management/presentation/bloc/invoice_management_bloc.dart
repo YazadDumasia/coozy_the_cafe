@@ -20,7 +20,8 @@ class InvoiceManagementBloc
   final GetPaginatedInvoicesUseCase getPaginatedInvoicesUseCase;
   final GetInvoiceDetailsUseCase getInvoiceDetailsUseCase;
   final GetInvoiceDetailsByOrderIdUseCase getInvoiceDetailsByOrderIdUseCase;
-  final GetInvoiceDetailsByOrderHashIdUseCase getInvoiceDetailsByOrderHashIdUseCase;
+  final GetInvoiceDetailsByOrderHashIdUseCase
+  getInvoiceDetailsByOrderHashIdUseCase;
   final GetInvoiceDetailsByHashIdUseCase getInvoiceDetailsByHashIdUseCase;
   final UpdateInvoiceUseCase updateInvoiceUseCase;
   final DeleteInvoiceUseCase deleteInvoiceUseCase;
@@ -43,7 +44,9 @@ class InvoiceManagementBloc
     on<SelectInvoiceDateRangeEvent>(_onSelectDateRange);
     on<LoadInvoiceDetailsEvent>(_onLoadInvoiceDetails);
     on<LoadInvoiceDetailsByOrderIdEvent>(_onLoadInvoiceDetailsByOrderId);
-    on<LoadInvoiceDetailsByOrderHashIdEvent>(_onLoadInvoiceDetailsByOrderHashId);
+    on<LoadInvoiceDetailsByOrderHashIdEvent>(
+      _onLoadInvoiceDetailsByOrderHashId,
+    );
     on<LoadInvoiceDetailsByHashIdEvent>(_onLoadInvoiceDetailsByHashId);
     on<UpdateInvoiceEvent>(_onUpdateInvoice);
     on<DeleteInvoiceEvent>(_onDeleteInvoice);
@@ -61,7 +64,8 @@ class InvoiceManagementBloc
     if (currentState is InvoiceManagementLoadedState) {
       query = event.searchQuery ?? currentState.searchQuery;
       range = event.dateRange ?? currentState.dateRange;
-      paymentMethods = event.paymentMethods ?? currentState.selectedPaymentMethods;
+      paymentMethods =
+          event.paymentMethods ?? currentState.selectedPaymentMethods;
     } else {
       query = event.searchQuery ?? '';
       range = event.dateRange;
@@ -90,8 +94,7 @@ class InvoiceManagementBloc
     result.fold(
       (failure) => emit(InvoiceManagementErrorState(failure.message)),
       (paginated) {
-        final hasReachedMax =
-            paginated.invoices.length >= paginated.totalCount;
+        final hasReachedMax = paginated.invoices.length >= paginated.totalCount;
         emit(
           InvoiceManagementLoadedState(
             invoices: paginated.invoices,
@@ -140,10 +143,7 @@ class InvoiceManagementBloc
         ),
       ),
       (paginated) {
-        final updated = [
-          ...currentState.invoices,
-          ...paginated.invoices,
-        ];
+        final updated = [...currentState.invoices, ...paginated.invoices];
         final hasReachedMax = updated.length >= paginated.totalCount;
 
         emit(
@@ -163,12 +163,7 @@ class InvoiceManagementBloc
     SelectInvoiceDateRangeEvent event,
     Emitter<InvoiceManagementState> emit,
   ) async {
-    add(
-      LoadInvoicesEvent(
-        isRefresh: true,
-        dateRange: event.dateRange,
-      ),
-    );
+    add(LoadInvoicesEvent(isRefresh: true, dateRange: event.dateRange));
   }
 
   Future<void> _onLoadInvoiceDetails(
@@ -223,8 +218,7 @@ class InvoiceManagementBloc
     final currentState = state;
     if (currentState is InvoiceManagementLoadedState) {
       emit(currentState.copyWith(isLoadingDetails: true));
-      final result =
-          await getInvoiceDetailsByOrderIdUseCase(event.orderId);
+      final result = await getInvoiceDetailsByOrderIdUseCase(event.orderId);
       result.fold(
         (failure) => emit(
           currentState.copyWith(
@@ -245,8 +239,7 @@ class InvoiceManagementBloc
       List<PaymentMode> modes = [];
       modesResult.fold((_) {}, (data) => modes = data);
 
-      final result =
-          await getInvoiceDetailsByOrderIdUseCase(event.orderId);
+      final result = await getInvoiceDetailsByOrderIdUseCase(event.orderId);
       result.fold(
         (failure) => emit(InvoiceManagementErrorState(failure.message)),
         (details) => emit(
@@ -270,8 +263,9 @@ class InvoiceManagementBloc
     final currentState = state;
     if (currentState is InvoiceManagementLoadedState) {
       emit(currentState.copyWith(isLoadingDetails: true));
-      final result =
-          await getInvoiceDetailsByOrderHashIdUseCase(event.orderHashId);
+      final result = await getInvoiceDetailsByOrderHashIdUseCase(
+        event.orderHashId,
+      );
       result.fold(
         (failure) => emit(
           currentState.copyWith(
@@ -292,8 +286,9 @@ class InvoiceManagementBloc
       List<PaymentMode> modes = [];
       modesResult.fold((_) {}, (data) => modes = data);
 
-      final result =
-          await getInvoiceDetailsByOrderHashIdUseCase(event.orderHashId);
+      final result = await getInvoiceDetailsByOrderHashIdUseCase(
+        event.orderHashId,
+      );
       result.fold(
         (failure) => emit(InvoiceManagementErrorState(failure.message)),
         (details) => emit(
@@ -360,10 +355,7 @@ class InvoiceManagementBloc
     Emitter<InvoiceManagementState> emit,
   ) async {
     final result = await updateInvoiceUseCase(
-      UpdateInvoiceParams(
-        invoice: event.invoice,
-        items: event.items,
-      ),
+      UpdateInvoiceParams(invoice: event.invoice, items: event.items),
     );
 
     result.fold(

@@ -23,13 +23,13 @@ class GetPaginatedOrdersParams extends Equatable {
 
   @override
   List<Object?> get props => [
-        limit,
-        pageNo,
-        startDate,
-        endDate,
-        searchQuery,
-        status,
-      ];
+    limit,
+    pageNo,
+    startDate,
+    endDate,
+    searchQuery,
+    status,
+  ];
 }
 
 class GetPaginatedOrdersUseCase

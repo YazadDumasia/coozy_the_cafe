@@ -33,7 +33,10 @@ class HomeScreenActions {
         onUpdateBackPressTime(now);
         Fluttertoast.showToast(
           msg:
-              context.tr(shared.LocaleKeys.homepagePressBackAgainToExitMsg) ??
+              context.tr(
+                shared.LocaleKeys.homepagePressBackAgainToExitMsg,
+                track: shared.TrackConstants.homePageTrack,
+              ) ??
               'Press back again to exit.',
           toastLength: Toast.LENGTH_SHORT,
           timeInSecForIosWeb: 3,

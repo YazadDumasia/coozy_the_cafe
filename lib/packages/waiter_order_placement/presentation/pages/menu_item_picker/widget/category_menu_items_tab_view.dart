@@ -78,6 +78,7 @@ class CategoryMenuItemsTabView extends StatelessWidget {
                     child: Text(
                       context.tr(
                             shared.LocaleKeys.noItemsAvailableInCategoryMsg,
+                            track: shared.TrackConstants.tablePageTrack,
                           ) ??
                           'No items available in this category',
                       textAlign: TextAlign.center,
@@ -147,7 +148,10 @@ class CategoryMenuItemsTabView extends StatelessWidget {
                       ),
                       onPressed: onReviewOrder,
                       child: Text(
-                        context.tr(shared.LocaleKeys.reviewOrderBtnText, track: shared.TrackConstants.tablePageTrack) ??
+                        context.tr(
+                              shared.LocaleKeys.reviewOrderBtnText,
+                              track: shared.TrackConstants.tablePageTrack,
+                            ) ??
                             'Review Order',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onPrimary,

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
-
 import '../../bloc/order_management_bloc.dart';
 import 'order_list_screen_actions.dart';
 import 'widget/order_card_widget.dart';
@@ -38,8 +37,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<OrderManagementBloc>().add(
-              const LoadOrdersEvent(isRefresh: true),
-            );
+          const LoadOrdersEvent(isRefresh: true),
+        );
       }
     });
   }
@@ -98,7 +97,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     isLabelVisible: hasFilters,
                     child: const Icon(Icons.filter_list),
                   ),
-                  tooltip: context.tr(
+                  tooltip:
+                      context.tr(
                         shared.LocaleKeys.commonFilter,
                         track: shared.TrackConstants.commonTrack,
                       ) ??
@@ -133,15 +133,16 @@ class _OrderListScreenState extends State<OrderListScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.refresh),
-              tooltip: context.tr(
+              tooltip:
+                  context.tr(
                     shared.LocaleKeys.orderManagementRefreshOrders,
                     track: shared.TrackConstants.orderManagementPageTrack,
                   ) ??
                   'Refresh',
               onPressed: () {
                 context.read<OrderManagementBloc>().add(
-                      const LoadOrdersEvent(isRefresh: true),
-                    );
+                  const LoadOrdersEvent(isRefresh: true),
+                );
               },
             ),
           ],
@@ -156,7 +157,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 focusNode: _searchFocusNode,
                 onChanged: _onSearchChanged,
                 decoration: InputDecoration(
-                  hintText: context.tr(
+                  hintText:
+                      context.tr(
                         shared.LocaleKeys.orderManagementSearchOrdersHint,
                         track: shared.TrackConstants.orderManagementPageTrack,
                       ) ??
@@ -165,7 +167,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   suffixIcon: _searchController.text.isNotEmpty
                       ? IconButton(
                           icon: const Icon(Icons.clear),
-                          tooltip: context.tr(
+                          tooltip:
+                              context.tr(
                                 shared.LocaleKeys.commonClear,
                                 track: shared.TrackConstants.commonTrack,
                               ) ??
@@ -235,7 +238,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
                   (
                     'inProgress',
                     context.tr(
-                          shared.LocaleKeys.orderManagementOrderStatusInProgress,
+                          shared
+                              .LocaleKeys
+                              .orderManagementOrderStatusInProgress,
                           track: shared.TrackConstants.orderManagementPageTrack,
                         ) ??
                         'In Progress',
@@ -260,10 +265,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
                 return SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 4,
+                  ),
                   child: Row(
                     children: filterOptions.map((opt) {
-                      final isSelected = activeStatus.toLowerCase() == opt.$1.toLowerCase();
+                      final isSelected =
+                          activeStatus.toLowerCase() == opt.$1.toLowerCase();
                       return Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: FilterChip(
@@ -313,12 +322,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       errorMsg: state.message,
                       onPressedRetryButton: () {
                         context.read<OrderManagementBloc>().add(
-                              const LoadOrdersEvent(isRefresh: true),
-                            );
+                          const LoadOrdersEvent(isRefresh: true),
+                        );
                       },
                     );
                   }
-
 
                   if (state is OrderManagementLoadedState) {
                     if (state.orders.isEmpty) {
@@ -329,14 +337,19 @@ class _OrderListScreenState extends State<OrderListScreen> {
                             Icon(
                               Icons.receipt_long_outlined,
                               size: 64,
-                              color: colorScheme.onSurfaceVariant.withAlpha(120),
+                              color: colorScheme.onSurfaceVariant.withAlpha(
+                                120,
+                              ),
                             ),
                             const SizedBox(height: 16),
                             Text(
                               context.tr(
-                                    shared.LocaleKeys.orderManagementNoOrdersFound,
+                                    shared
+                                        .LocaleKeys
+                                        .orderManagementNoOrdersFound,
                                     track: shared
-                                        .TrackConstants.orderManagementPageTrack,
+                                        .TrackConstants
+                                        .orderManagementPageTrack,
                                   ) ??
                                   'No orders found',
                               style: theme.textTheme.titleMedium?.copyWith(
@@ -345,12 +358,17 @@ class _OrderListScreenState extends State<OrderListScreen> {
                             ),
                             const SizedBox(height: 8),
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 32),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 32,
+                              ),
                               child: Text(
                                 context.tr(
-                                      shared.LocaleKeys.orderManagementNoOrdersFoundSubtitle,
+                                      shared
+                                          .LocaleKeys
+                                          .orderManagementNoOrdersFoundSubtitle,
                                       track: shared
-                                          .TrackConstants.orderManagementPageTrack,
+                                          .TrackConstants
+                                          .orderManagementPageTrack,
                                     ) ??
                                     'Try adjusting your search query, status filter, or date range.',
                                 textAlign: TextAlign.center,
@@ -367,8 +385,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     return RefreshIndicator(
                       onRefresh: () async {
                         context.read<OrderManagementBloc>().add(
-                              const LoadOrdersEvent(isRefresh: true),
-                            );
+                          const LoadOrdersEvent(isRefresh: true),
+                        );
                       },
                       child: ListView.builder(
                         controller: _scrollController,

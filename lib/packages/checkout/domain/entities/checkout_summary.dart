@@ -14,7 +14,12 @@ class AppliedTaxDetail extends Equatable {
   });
 
   @override
-  List<Object?> get props => [name, ratePercent, taxableSubtotal, calculatedAmount];
+  List<Object?> get props => [
+    name,
+    ratePercent,
+    taxableSubtotal,
+    calculatedAmount,
+  ];
 }
 
 class AppliedDiscountDetail extends Equatable {
@@ -78,29 +83,29 @@ class CheckoutSummary extends Equatable {
   });
 
   factory CheckoutSummary.empty() => const CheckoutSummary(
-        subtotal: 0.0,
-        taxableBase: 0.0,
-        totalTaxes: 0.0,
-        totalDiscounts: 0.0,
-        totalOtherCharges: 0.0,
-        roundingAmount: 0.0,
-        grandTotal: 0.0,
-        taxDetails: [],
-        discountDetails: [],
-        chargeDetails: [],
-      );
+    subtotal: 0.0,
+    taxableBase: 0.0,
+    totalTaxes: 0.0,
+    totalDiscounts: 0.0,
+    totalOtherCharges: 0.0,
+    roundingAmount: 0.0,
+    grandTotal: 0.0,
+    taxDetails: [],
+    discountDetails: [],
+    chargeDetails: [],
+  );
 
   @override
   List<Object?> get props => [
-        subtotal,
-        taxableBase,
-        totalTaxes,
-        totalDiscounts,
-        totalOtherCharges,
-        roundingAmount,
-        grandTotal,
-        taxDetails,
-        discountDetails,
-        chargeDetails,
-      ];
+    subtotal,
+    taxableBase,
+    totalTaxes,
+    totalDiscounts,
+    totalOtherCharges,
+    roundingAmount,
+    grandTotal,
+    taxDetails,
+    discountDetails,
+    chargeDetails,
+  ];
 }

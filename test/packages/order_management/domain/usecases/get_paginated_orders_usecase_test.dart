@@ -29,7 +29,9 @@ class FakeOrderManagementRepository implements OrderManagementRepository {
   }
 
   @override
-  Future<Either<Failure, OrderManagementEntity?>> getOrderInfo(int orderId) async {
+  Future<Either<Failure, OrderManagementEntity?>> getOrderInfo(
+    int orderId,
+  ) async {
     return const Right(
       OrderManagementEntity(
         id: 1,
@@ -60,20 +62,14 @@ void main() {
 
   test('should return PaginatedOrdersResult from the repository', () async {
     final result = await useCase(
-      const GetPaginatedOrdersParams(
-        limit: 10,
-        pageNo: 1,
-      ),
+      const GetPaginatedOrdersParams(limit: 10, pageNo: 1),
     );
 
     expect(result.isRight(), true);
-    result.fold(
-      (failure) => fail('Should not fail'),
-      (paginated) {
-        expect(paginated.orders.length, 1);
-        expect(paginated.orders.first.id, 1);
-        expect(paginated.totalCount, 1);
-      },
-    );
+    result.fold((failure) => fail('Should not fail'), (paginated) {
+      expect(paginated.orders.length, 1);
+      expect(paginated.orders.first.id, 1);
+      expect(paginated.totalCount, 1);
+    });
   });
 }

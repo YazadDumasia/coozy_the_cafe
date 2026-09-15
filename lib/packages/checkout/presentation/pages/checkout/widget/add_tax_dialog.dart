@@ -35,8 +35,8 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
     _rateController = TextEditingController(
       text: widget.initialRate != null
           ? (widget.initialRate! % 1 == 0
-              ? widget.initialRate!.toInt().toString()
-              : widget.initialRate!.toString())
+                ? widget.initialRate!.toInt().toString()
+                : widget.initialRate!.toString())
           : '',
     );
     _isDefaultAdd = widget.initialIsDefaultAdd ?? false;
@@ -84,9 +84,9 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
                     track: shared.TrackConstants.checkoutPageTrack,
                   ) ??
                   'Add Tax Value',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -97,13 +97,16 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
                 border: OutlineInputBorder(),
               ),
               textInputAction: TextInputAction.next,
-              validator: (v) => v == null || v.trim().isEmpty ? 'Enter tax name' : null,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Enter tax name' : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _rateController,
               focusNode: _rateFocusNode,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Tax Value in %',
                 border: OutlineInputBorder(),
@@ -111,8 +114,12 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
               ),
               textInputAction: TextInputAction.done,
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Enter tax percentage';
-                if (double.tryParse(v.trim()) == null) return 'Enter valid number';
+                if (v == null || v.trim().isEmpty) {
+                  return 'Enter tax percentage';
+                }
+                if (double.tryParse(v.trim()) == null) {
+                  return 'Enter valid number';
+                }
                 return null;
               },
               onFieldSubmitted: (_) => _submit(),

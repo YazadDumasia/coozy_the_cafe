@@ -29,10 +29,10 @@ class OrderDateRangePickerBar extends StatelessWidget {
     final label = hasRange
         ? '$startStr to $endStr'
         : (context.tr(
-              shared.LocaleKeys.orderManagementSelectDateRange,
-              track: shared.TrackConstants.orderManagementPageTrack,
-            ) ??
-            'Select Date Range');
+                shared.LocaleKeys.orderManagementSelectDateRange,
+                track: shared.TrackConstants.orderManagementPageTrack,
+              ) ??
+              'Select Date Range');
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -54,7 +54,9 @@ class OrderDateRangePickerBar extends StatelessWidget {
           Icon(
             Icons.date_range,
             size: 20,
-            color: hasRange ? colorScheme.primary : colorScheme.onSurfaceVariant,
+            color: hasRange
+                ? colorScheme.primary
+                : colorScheme.onSurfaceVariant,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -80,7 +82,8 @@ class OrderDateRangePickerBar extends StatelessWidget {
               icon: const Icon(Icons.close, size: 18),
               padding: EdgeInsets.zero,
               constraints: const BoxConstraints(),
-              tooltip: context.tr(
+              tooltip:
+                  context.tr(
                     shared.LocaleKeys.orderManagementClearDateRange,
                     track: shared.TrackConstants.orderManagementPageTrack,
                   ) ??

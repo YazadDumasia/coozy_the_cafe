@@ -180,10 +180,7 @@ class _TableQrScannerScreenState extends State<TableQrScannerScreen> {
           ),
           IconButton(
             onPressed: () => _scannerController.switchCamera(),
-            icon: const Icon(
-              Icons.cameraswitch_rounded,
-              color: Colors.white,
-            ),
+            icon: const Icon(Icons.cameraswitch_rounded, color: Colors.white),
           ),
         ],
       ),

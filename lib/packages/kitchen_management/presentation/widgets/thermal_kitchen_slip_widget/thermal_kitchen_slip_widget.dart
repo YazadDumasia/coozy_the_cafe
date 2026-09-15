@@ -63,7 +63,10 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
-                      context.tr(shared.LocaleKeys.thermalKotDialogTitle, track: shared.TrackConstants.tablePageTrack) ??
+                      context.tr(
+                            shared.LocaleKeys.thermalKotDialogTitle,
+                            track: shared.TrackConstants.tablePageTrack,
+                          ) ??
                           'Thermal Printer KOT Slip Preview',
                       style: const TextStyle(
                         fontSize: 16,
@@ -86,7 +89,10 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                       children: [
                         ChoiceChip(
                           label: Text(
-                            context.tr(shared.LocaleKeys.thermalKot80mmWidth) ??
+                            context.tr(
+                                  shared.LocaleKeys.thermalKot80mmWidth,
+                                  track: shared.TrackConstants.tablePageTrack,
+                                ) ??
                                 '80mm Width',
                           ),
                           selected: !isWidth58mm,
@@ -97,7 +103,10 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                         const SizedBox(width: 10),
                         ChoiceChip(
                           label: Text(
-                            context.tr(shared.LocaleKeys.thermalKot58mmWidth) ??
+                            context.tr(
+                                  shared.LocaleKeys.thermalKot58mmWidth,
+                                  track: shared.TrackConstants.tablePageTrack,
+                                ) ??
                                 '58mm Width',
                           ),
                           selected: isWidth58mm,
@@ -116,15 +125,20 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                 TextButton.icon(
                   icon: const Icon(Icons.print_rounded),
                   label: Text(
-                    context.tr(shared.LocaleKeys.thermalKotSimulatePrintBtn, track: shared.TrackConstants.tablePageTrack) ??
+                    context.tr(
+                          shared.LocaleKeys.thermalKotSimulatePrintBtn,
+                          track: shared.TrackConstants.tablePageTrack,
+                        ) ??
                         'Simulate Print Job',
                   ),
                   onPressed: () {
                     Navigator.of(context).pop();
                     shared.SnackBarUtils.showSuccess(
                       context,
-                      message: context.tr(
+                      message:
+                          context.tr(
                             shared.LocaleKeys.thermalKotPrintSuccessMsg,
+                            track: shared.TrackConstants.tablePageTrack,
                           ) ??
                           'KOT Slip sent to Thermal Printer successfully!',
                     );

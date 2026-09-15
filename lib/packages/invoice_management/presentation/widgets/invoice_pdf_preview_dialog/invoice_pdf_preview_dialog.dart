@@ -238,31 +238,33 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.print_outlined),
-                    tooltip: context.tr(
+                    tooltip:
+                        context.tr(
                           shared.LocaleKeys.invoiceActionPrint,
                           track: shared.TrackConstants.invoicePageTrack,
                         ) ??
                         'Print',
                     onPressed: hasPdf
                         ? () => InvoicePdfGenerator.printPdf(
-                              details: widget.details,
-                              bytes: _pdfBytes,
-                            )
+                            details: widget.details,
+                            bytes: _pdfBytes,
+                          )
                         : null,
                   ),
                   IconButton(
                     icon: const Icon(Icons.share_outlined),
-                    tooltip: context.tr(
+                    tooltip:
+                        context.tr(
                           shared.LocaleKeys.invoiceActionShare,
                           track: shared.TrackConstants.invoicePageTrack,
                         ) ??
                         'Share',
                     onPressed: hasPdf
                         ? () => InvoicePdfGenerator.sharePdf(
-                              details: widget.details,
-                              filePath: _cachedFilePath,
-                              bytes: _pdfBytes,
-                            )
+                            details: widget.details,
+                            filePath: _cachedFilePath,
+                            bytes: _pdfBytes,
+                          )
                         : null,
                   ),
                   IconButton(
@@ -278,60 +280,57 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
             // Content Viewer
             Expanded(
               child: _isLoading
-                  ? const Center(
-                      child: shared.LoadingPage(isEmbedded: true),
-                    )
+                  ? const Center(child: shared.LoadingPage(isEmbedded: true))
                   : _errorMessage != null
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.error_outline_rounded,
-                                  color: Colors.redAccent,
-                                  size: 48,
-                                ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  context.tr(
-                                        shared.LocaleKeys.invoicePreviewError,
-                                        track: shared.TrackConstants.invoicePageTrack,
-                                      ) ??
-                                      'Failed to load invoice preview',
-                                  style: theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  _errorMessage!,
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.error,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.error_outline_rounded,
+                              color: Colors.redAccent,
+                              size: 48,
                             ),
-                          ),
-                        )
-                      : _cachedFilePath != null
-                          ? Container(
-                              color: colorScheme.surface,
-                              child: PdfViewer.file(
-                                _cachedFilePath!,
+                            const SizedBox(height: 12),
+                            Text(
+                              context.tr(
+                                    shared.LocaleKeys.invoicePreviewError,
+                                    track:
+                                        shared.TrackConstants.invoicePageTrack,
+                                  ) ??
+                                  'Failed to load invoice preview',
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
                               ),
-                            )
-                          : _pdfBytes != null
-                              ? Container(
-                                  color: colorScheme.surface,
-                                  child: PdfViewer.data(
-                                    _pdfBytes!,
-                                    sourceName: _sourceName,
-                                  ),
-                                )
-                              : const SizedBox.shrink(),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              _errorMessage!,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: colorScheme.error,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  : _cachedFilePath != null
+                  ? Container(
+                      color: colorScheme.surface,
+                      child: PdfViewer.file(_cachedFilePath!),
+                    )
+                  : _pdfBytes != null
+                  ? Container(
+                      color: colorScheme.surface,
+                      child: PdfViewer.data(
+                        _pdfBytes!,
+                        sourceName: _sourceName,
+                      ),
+                    )
+                  : const SizedBox.shrink(),
             ),
           ],
         ),

@@ -78,19 +78,19 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
 
   @override
   List<Object?> get props => [
-        invoices,
-        totalCount,
-        currentPage,
-        hasReachedMax,
-        isFetchingMore,
-        searchQuery,
-        dateRange,
-        selectedInvoiceDetails,
-        isLoadingDetails,
-        errorMessage,
-        paymentModes,
-        selectedPaymentMethods,
-      ];
+    invoices,
+    totalCount,
+    currentPage,
+    hasReachedMax,
+    isFetchingMore,
+    searchQuery,
+    dateRange,
+    selectedInvoiceDetails,
+    isLoadingDetails,
+    errorMessage,
+    paymentModes,
+    selectedPaymentMethods,
+  ];
 }
 
 class InvoiceManagementErrorState extends InvoiceManagementState {

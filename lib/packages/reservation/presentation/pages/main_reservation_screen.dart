@@ -81,305 +81,308 @@ class _MainReservationScreenState extends State<MainReservationScreen>
         }
       },
       child: Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(
-          kToolbarHeight + kTextTabBarHeight,
-        ),
-        child: ValueListenableBuilder<bool>(
-          valueListenable: _isSearchingNotifier,
-          builder: (context, isSearching, _) {
-            return AppBar(
-              title: isSearching
-                  ? TextField(
-                      controller: _searchController,
-                      autofocus: true,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      decoration: InputDecoration(
-                        hintText:
-                            context.tr(
-                              shared.LocaleKeys.searchReservationHint,
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(
+            kToolbarHeight + kTextTabBarHeight,
+          ),
+          child: ValueListenableBuilder<bool>(
+            valueListenable: _isSearchingNotifier,
+            builder: (context, isSearching, _) {
+              return AppBar(
+                title: isSearching
+                    ? TextField(
+                        controller: _searchController,
+                        autofocus: true,
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                        decoration: InputDecoration(
+                          hintText:
+                              context.tr(
+                                shared.LocaleKeys.searchReservationHint,
+                                track: track,
+                              ) ??
+                              'Search by name or phone...',
+                          hintStyle: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(color: Colors.white),
+                          border: InputBorder.none,
+                        ),
+                        onChanged: (query) =>
+                            MainReservationScreenActions.onSearchChanged(
+                              context,
+                              query,
+                            ),
+                      )
+                    : Text(
+                        context.tr(
+                              shared.LocaleKeys.reservationAppBarTitle,
                               track: track,
                             ) ??
-                            'Search by name or phone...',
-                        hintStyle: Theme.of(
-                          context,
-                        ).textTheme.titleMedium?.copyWith(color: Colors.white),
-                        border: InputBorder.none,
+                            'Reservations',
                       ),
-                      onChanged: (query) =>
-                          MainReservationScreenActions.onSearchChanged(
-                            context,
-                            query,
-                          ),
-                    )
-                  : Text(
-                      context.tr(
-                            shared.LocaleKeys.reservationAppBarTitle,
-                            track: track,
-                          ) ??
-                          'Reservations',
-                    ),
-              actions: [
-                ValueListenableBuilder<ReservationFilterCriteria>(
-                  valueListenable: _filterCriteriaNotifier,
-                  builder: (context, criteria, _) {
-                    return IconButton(
-                      icon: Icon(
-                        criteria.isActive
-                            ? Icons.filter_alt_rounded
-                            : Icons.filter_alt_outlined,
-                        color: criteria.isActive
-                            ? Theme.of(context).colorScheme.primary
-                            : null,
-                      ),
-                      tooltip:
-                          context.tr(
-                            shared.LocaleKeys.filterReservationsTitle,
-                            track: track,
-                          ) ??
-                          'Filter Reservations',
-                      onPressed: () {
-                        MainReservationScreenActions.showFilterBottomSheet(
-                          context: context,
-                          initialCriteria: criteria,
-                          onApply: (newCriteria) {
-                            _filterCriteriaNotifier.value = newCriteria;
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: Icon(isSearching ? Icons.close : Icons.search),
-                  onPressed: () {
-                    final next = !_isSearchingNotifier.value;
-                    _isSearchingNotifier.value = next;
-                    if (!next) {
-                      _searchController.clear();
-                      MainReservationScreenActions.onSearchChanged(context, '');
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  tooltip:
-                      context.tr(
-                        shared.LocaleKeys.addReservationTooltip,
-                        track: track,
-                      ) ??
-                      'Add Reservation',
-                  onPressed: () =>
-                      MainReservationScreenActions.openAddScreen(context),
-                ),
-              ],
-              bottom: TabBar(
-                controller: _tabController,
-                tabs: [
-                  Tab(
-                    child: ValueListenableBuilder<ReservationFilterCriteria>(
-                      valueListenable: _filterCriteriaNotifier,
-                      builder: (context, criteria, _) {
-                        return BlocBuilder<
-                          CurrentReservationCubit,
-                          CurrentReservationState
-                        >(
-                          builder: (context, state) {
-                            final count = state is CurrentReservationLoaded
-                                ? _filterReservationsSync(
-                                    state.reservations,
-                                    criteria,
-                                  ).length
-                                : 0;
-                            final label =
-                                context.tr(
-                                  shared.LocaleKeys.currentTab,
-                                  track: track,
-                                ) ??
-                                'Current';
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(label),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primaryContainer,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    '$count',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onPrimaryContainer,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                    ),
+                actions: [
+                  ValueListenableBuilder<ReservationFilterCriteria>(
+                    valueListenable: _filterCriteriaNotifier,
+                    builder: (context, criteria, _) {
+                      return IconButton(
+                        icon: Icon(
+                          criteria.isActive
+                              ? Icons.filter_alt_rounded
+                              : Icons.filter_alt_outlined,
+                          color: criteria.isActive
+                              ? Theme.of(context).colorScheme.primary
+                              : null,
+                        ),
+                        tooltip:
+                            context.tr(
+                              shared.LocaleKeys.filterReservationsTitle,
+                              track: track,
+                            ) ??
+                            'Filter Reservations',
+                        onPressed: () {
+                          MainReservationScreenActions.showFilterBottomSheet(
+                            context: context,
+                            initialCriteria: criteria,
+                            onApply: (newCriteria) {
+                              _filterCriteriaNotifier.value = newCriteria;
+                            },
+                          );
+                        },
+                      );
+                    },
                   ),
-                  Tab(
-                    child: ValueListenableBuilder<ReservationFilterCriteria>(
-                      valueListenable: _filterCriteriaNotifier,
-                      builder: (context, criteria, _) {
-                        return BlocBuilder<
-                          UpcomingReservationBloc,
-                          UpcomingReservationState
-                        >(
-                          builder: (context, state) {
-                            final count = state is UpcomingReservationLoaded
-                                ? (criteria.isActive
-                                      ? _filterReservationsSync(
-                                          state.reservations,
-                                          criteria,
-                                        ).length
-                                      : state.totalCount)
-                                : 0;
-                            final label =
-                                context.tr(
-                                  shared.LocaleKeys.upcomingTab,
-                                  track: track,
-                                ) ??
-                                'Upcoming';
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(label),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primaryContainer,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    '$count',
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.onPrimaryContainer,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
+                  IconButton(
+                    icon: Icon(isSearching ? Icons.close : Icons.search),
+                    onPressed: () {
+                      final next = !_isSearchingNotifier.value;
+                      _isSearchingNotifier.value = next;
+                      if (!next) {
+                        _searchController.clear();
+                        MainReservationScreenActions.onSearchChanged(
+                          context,
+                          '',
                         );
-                      },
-                    ),
+                      }
+                    },
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    tooltip:
+                        context.tr(
+                          shared.LocaleKeys.addReservationTooltip,
+                          track: track,
+                        ) ??
+                        'Add Reservation',
+                    onPressed: () =>
+                        MainReservationScreenActions.openAddScreen(context),
                   ),
                 ],
-              ),
+                bottom: TabBar(
+                  controller: _tabController,
+                  tabs: [
+                    Tab(
+                      child: ValueListenableBuilder<ReservationFilterCriteria>(
+                        valueListenable: _filterCriteriaNotifier,
+                        builder: (context, criteria, _) {
+                          return BlocBuilder<
+                            CurrentReservationCubit,
+                            CurrentReservationState
+                          >(
+                            builder: (context, state) {
+                              final count = state is CurrentReservationLoaded
+                                  ? _filterReservationsSync(
+                                      state.reservations,
+                                      criteria,
+                                    ).length
+                                  : 0;
+                              final label =
+                                  context.tr(
+                                    shared.LocaleKeys.currentTab,
+                                    track: track,
+                                  ) ??
+                                  'Current';
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(label),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primaryContainer,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      '$count',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    Tab(
+                      child: ValueListenableBuilder<ReservationFilterCriteria>(
+                        valueListenable: _filterCriteriaNotifier,
+                        builder: (context, criteria, _) {
+                          return BlocBuilder<
+                            UpcomingReservationBloc,
+                            UpcomingReservationState
+                          >(
+                            builder: (context, state) {
+                              final count = state is UpcomingReservationLoaded
+                                  ? (criteria.isActive
+                                        ? _filterReservationsSync(
+                                            state.reservations,
+                                            criteria,
+                                          ).length
+                                        : state.totalCount)
+                                  : 0;
+                              final label =
+                                  context.tr(
+                                    shared.LocaleKeys.upcomingTab,
+                                    track: track,
+                                  ) ??
+                                  'Upcoming';
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(label),
+                                  const SizedBox(width: 8),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(
+                                        context,
+                                      ).colorScheme.primaryContainer,
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text(
+                                      '$count',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimaryContainer,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+        body: ValueListenableBuilder<ReservationFilterCriteria>(
+          valueListenable: _filterCriteriaNotifier,
+          builder: (context, criteria, _) {
+            return Column(
+              children: [
+                if (criteria.isActive)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.filter_alt,
+                          size: 18,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _getFilterSummary(criteria),
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _filterCriteriaNotifier.value =
+                                const ReservationFilterCriteria();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(4),
+                            decoration: const BoxDecoration(
+                              color: Colors.redAccent,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: 12,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                Expanded(
+                  child:
+                      BlocListener<
+                        ReservationActionCubit,
+                        ReservationActionState
+                      >(
+                        listener: (context, state) {
+                          if (state is ReservationActionError) {
+                            shared.SnackBarUtils.showError(
+                              context,
+                              message: state.message,
+                            );
+                          }
+                        },
+                        child: TabBarView(
+                          controller: _tabController,
+                          children: [
+                            _buildCurrentTab(track, criteria),
+                            _buildUpcomingTab(track, criteria),
+                          ],
+                        ),
+                      ),
+                ),
+              ],
             );
           },
         ),
       ),
-      body: ValueListenableBuilder<ReservationFilterCriteria>(
-        valueListenable: _filterCriteriaNotifier,
-        builder: (context, criteria, _) {
-          return Column(
-            children: [
-              if (criteria.isActive)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer.withValues(alpha: 0.3),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.filter_alt,
-                        size: 18,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _getFilterSummary(criteria),
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          _filterCriteriaNotifier.value =
-                              const ReservationFilterCriteria();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.redAccent,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.close,
-                            size: 12,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              Expanded(
-                child:
-                    BlocListener<
-                      ReservationActionCubit,
-                      ReservationActionState
-                    >(
-                      listener: (context, state) {
-                        if (state is ReservationActionError) {
-                          shared.SnackBarUtils.showError(
-                            context,
-                            message: state.message,
-                          );
-                        }
-                      },
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-                          _buildCurrentTab(track, criteria),
-                          _buildUpcomingTab(track, criteria),
-                        ],
-                      ),
-                    ),
-              ),
-            ],
-          );
-        },
-      ),
-    ),
     );
   }
 

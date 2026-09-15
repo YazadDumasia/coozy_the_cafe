@@ -1,11 +1,12 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 
-typedef CashPaymentConfirmedCallback = void Function({
-  required double cashReceived,
-  required double changeAmount,
-  String? note,
-});
+typedef CashPaymentConfirmedCallback =
+    void Function({
+      required double cashReceived,
+      required double changeAmount,
+      String? note,
+    });
 
 class CashPaymentView extends StatefulWidget {
   final double grandTotal;
@@ -327,7 +328,9 @@ class _CashPaymentViewState extends State<CashPaymentView> {
                             const SizedBox(width: 8),
                             Text(
                               context.tr(
-                                    shared.LocaleKeys.checkoutReceiptNoteOptional,
+                                    shared
+                                        .LocaleKeys
+                                        .checkoutReceiptNoteOptional,
                                     track:
                                         shared.TrackConstants.checkoutPageTrack,
                                   ) ??
@@ -352,9 +355,7 @@ class _CashPaymentViewState extends State<CashPaymentView> {
                         child: Container(
                           height: 70,
                           decoration: BoxDecoration(
-                            color: theme
-                                .colorScheme
-                                .surfaceContainerHighest
+                            color: theme.colorScheme.surfaceContainerHighest
                                 .withValues(alpha: 0.5),
                             borderRadius: BorderRadius.circular(6),
                           ),

@@ -21,7 +21,12 @@ class LoadInvoicesEvent extends InvoiceManagementEvent {
   });
 
   @override
-  List<Object?> get props => [isRefresh, searchQuery, dateRange, paymentMethods];
+  List<Object?> get props => [
+    isRefresh,
+    searchQuery,
+    dateRange,
+    paymentMethods,
+  ];
 }
 
 class LoadMoreInvoicesEvent extends InvoiceManagementEvent {
@@ -77,10 +82,7 @@ class UpdateInvoiceEvent extends InvoiceManagementEvent {
   final InvoiceEntity invoice;
   final List<InvoiceItemEntity> items;
 
-  const UpdateInvoiceEvent({
-    required this.invoice,
-    required this.items,
-  });
+  const UpdateInvoiceEvent({required this.invoice, required this.items});
 
   @override
   List<Object?> get props => [invoice, items];

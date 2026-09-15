@@ -32,20 +32,20 @@ class ExtraCharge extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'value': value,
-        'isPercentage': isPercentage,
-        'isDefaultAdd': isDefaultAdd,
-      };
+    'id': id,
+    'name': name,
+    'value': value,
+    'isPercentage': isPercentage,
+    'isDefaultAdd': isDefaultAdd,
+  };
 
   factory ExtraCharge.fromJson(Map<String, dynamic> json) => ExtraCharge(
-        id: json['id']?.toString() ?? '',
-        name: json['name']?.toString() ?? '',
-        value: (json['value'] as num?)?.toDouble() ?? 0.0,
-        isPercentage: json['isPercentage'] == true,
-        isDefaultAdd: json['isDefaultAdd'] == true,
-      );
+    id: json['id']?.toString() ?? '',
+    name: json['name']?.toString() ?? '',
+    value: (json['value'] as num?)?.toDouble() ?? 0.0,
+    isPercentage: json['isPercentage'] == true,
+    isDefaultAdd: json['isDefaultAdd'] == true,
+  );
 
   @override
   List<Object?> get props => [id, name, value, isPercentage, isDefaultAdd];

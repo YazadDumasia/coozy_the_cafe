@@ -42,10 +42,12 @@ class SelectChargeDialog extends StatelessWidget {
       child: AddOtherChargeDialog(
         initialName: chargeName,
         initialValue: existing.name.isNotEmpty ? existing.value : null,
-        initialIsPercentage:
-            existing.name.isNotEmpty ? existing.isPercentage : null,
-        initialIsDefaultAdd:
-            existing.name.isNotEmpty ? existing.isDefaultAdd : null,
+        initialIsPercentage: existing.name.isNotEmpty
+            ? existing.isPercentage
+            : null,
+        initialIsDefaultAdd: existing.name.isNotEmpty
+            ? existing.isDefaultAdd
+            : null,
         onChargeAdded: onChargeAdded,
       ),
     );
@@ -79,7 +81,8 @@ class SelectChargeDialog extends StatelessWidget {
     final defaultOptions = [
       {
         'key': 'Delivery Charge',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutDeliveryCharge,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -87,7 +90,8 @@ class SelectChargeDialog extends StatelessWidget {
       },
       {
         'key': 'Packing Charge',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutPackingCharge,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -95,7 +99,8 @@ class SelectChargeDialog extends StatelessWidget {
       },
       {
         'key': 'Service Charge/Fee',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutServiceChargeFee,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -103,7 +108,8 @@ class SelectChargeDialog extends StatelessWidget {
       },
       {
         'key': 'Other Charge',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutOtherCharge,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -115,18 +121,16 @@ class SelectChargeDialog extends StatelessWidget {
       future: _getSavedCharges(),
       builder: (context, snapshot) {
         final savedCharges = snapshot.data ?? [];
-        final existingNames =
-            defaultOptions.map((e) => e['key']!.toLowerCase()).toSet();
+        final existingNames = defaultOptions
+            .map((e) => e['key']!.toLowerCase())
+            .toSet();
         final customOptions = <Map<String, String>>[];
 
         for (final charge in [...appliedOtherCharges, ...savedCharges]) {
           if (charge.name.trim().isNotEmpty &&
               !existingNames.contains(charge.name.trim().toLowerCase())) {
             existingNames.add(charge.name.trim().toLowerCase());
-            customOptions.add({
-              'key': charge.name,
-              'display': charge.name,
-            });
+            customOptions.add({'key': charge.name, 'display': charge.name});
           }
         }
 
@@ -161,12 +165,10 @@ class SelectChargeDialog extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(
-                        Icons.close,
-                        color: colorScheme.primary,
-                      ),
+                      icon: Icon(Icons.close, color: colorScheme.primary),
                       onPressed: () => Navigator.of(context).pop(),
-                      tooltip: context.tr(
+                      tooltip:
+                          context.tr(
                             shared.LocaleKeys.commonClose,
                             track: shared.TrackConstants.commonTrack,
                           ) ??

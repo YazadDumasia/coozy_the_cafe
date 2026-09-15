@@ -46,7 +46,10 @@ class SnackBarUtils {
     Duration duration = const Duration(seconds: 4),
     List<SnackBarActionItem> actions = const [],
     FlushbarPosition position = FlushbarPosition.BOTTOM,
-    EdgeInsets margin = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    EdgeInsets margin = const EdgeInsets.symmetric(
+      horizontal: 16,
+      vertical: 12,
+    ),
     BorderRadius? borderRadius,
   }) async {
     final effectiveContext =
@@ -163,7 +166,9 @@ class SnackBarUtils {
       message: message,
       duration: duration,
       position: position,
-      backgroundColor: isDark ? const Color(0xFF132A1C) : const Color(0xFF1B4332),
+      backgroundColor: isDark
+          ? const Color(0xFF132A1C)
+          : const Color(0xFF1B4332),
       leftBarIndicatorColor: Colors.greenAccent,
       leadingIcon: const Icon(
         Icons.check_circle_rounded,
@@ -192,7 +197,9 @@ class SnackBarUtils {
       message: message,
       duration: duration,
       position: position,
-      backgroundColor: isDark ? const Color(0xFF331414) : const Color(0xFF5C1D1D),
+      backgroundColor: isDark
+          ? const Color(0xFF331414)
+          : const Color(0xFF5C1D1D),
       leftBarIndicatorColor: Colors.redAccent,
       leadingIcon: const Icon(
         Icons.error_outline_rounded,
@@ -221,7 +228,9 @@ class SnackBarUtils {
       message: message,
       duration: duration,
       position: position,
-      backgroundColor: isDark ? const Color(0xFF382A14) : const Color(0xFF6B4E1B),
+      backgroundColor: isDark
+          ? const Color(0xFF382A14)
+          : const Color(0xFF6B4E1B),
       leftBarIndicatorColor: Colors.amberAccent,
       leadingIcon: const Icon(
         Icons.warning_amber_rounded,
@@ -250,7 +259,9 @@ class SnackBarUtils {
       message: message,
       duration: duration,
       position: position,
-      backgroundColor: isDark ? const Color(0xFF152238) : const Color(0xFF1E3A5F),
+      backgroundColor: isDark
+          ? const Color(0xFF152238)
+          : const Color(0xFF1E3A5F),
       leftBarIndicatorColor: Colors.lightBlueAccent,
       leadingIcon: const Icon(
         Icons.info_outline_rounded,
@@ -282,10 +293,12 @@ class SnackBarUtils {
       message: subtitle ?? '',
       duration: duration,
       position: position,
-      backgroundColor: backgroundColor ??
+      backgroundColor:
+          backgroundColor ??
           (isDark ? const Color(0xFF132A1C) : const Color(0xFF1B4332)),
       leftBarIndicatorColor: Colors.greenAccent,
-      leadingIcon: leadingIcon ??
+      leadingIcon:
+          leadingIcon ??
           const Icon(
             Icons.check_circle_rounded,
             color: Colors.greenAccent,

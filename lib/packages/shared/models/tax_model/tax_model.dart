@@ -28,18 +28,18 @@ class Tax extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'ratePercent': ratePercent,
-        'isDefaultAdd': isDefaultAdd,
-      };
+    'id': id,
+    'name': name,
+    'ratePercent': ratePercent,
+    'isDefaultAdd': isDefaultAdd,
+  };
 
   factory Tax.fromJson(Map<String, dynamic> json) => Tax(
-        id: json['id']?.toString() ?? '',
-        name: json['name']?.toString() ?? '',
-        ratePercent: (json['ratePercent'] as num?)?.toDouble() ?? 0.0,
-        isDefaultAdd: json['isDefaultAdd'] == true,
-      );
+    id: json['id']?.toString() ?? '',
+    name: json['name']?.toString() ?? '',
+    ratePercent: (json['ratePercent'] as num?)?.toDouble() ?? 0.0,
+    isDefaultAdd: json['isDefaultAdd'] == true,
+  );
 
   @override
   List<Object?> get props => [id, name, ratePercent, isDefaultAdd];

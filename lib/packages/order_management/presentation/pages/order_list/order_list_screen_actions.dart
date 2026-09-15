@@ -25,34 +25,29 @@ class OrderListScreenActions {
 
     if (pickedRange != null && context.mounted) {
       context.read<OrderManagementBloc>().add(
-            SelectDateRangeEvent(pickedRange),
-          );
+        SelectDateRangeEvent(pickedRange),
+      );
     }
   }
 
   static void onClearDateRange(BuildContext context) {
-    context.read<OrderManagementBloc>().add(
-          const SelectDateRangeEvent(null),
-        );
+    context.read<OrderManagementBloc>().add(const SelectDateRangeEvent(null));
   }
 
   static void onStatusFilterChanged(BuildContext context, String status) {
-    context.read<OrderManagementBloc>().add(
-          ChangeStatusFilterEvent(status),
-        );
+    context.read<OrderManagementBloc>().add(ChangeStatusFilterEvent(status));
   }
 
   static void onSearchQueryChanged(BuildContext context, String query) {
     context.read<OrderManagementBloc>().add(
-          LoadOrdersEvent(isRefresh: true, searchQuery: query),
-        );
-  }
-
-  static void onOrderCardTap(BuildContext context, OrderManagementEntity order) {
-    context.push(
-      AppRoutePath.orderInfoRoute(order.id),
-      extra: order,
+      LoadOrdersEvent(isRefresh: true, searchQuery: query),
     );
   }
 
+  static void onOrderCardTap(
+    BuildContext context,
+    OrderManagementEntity order,
+  ) {
+    context.push(AppRoutePath.orderInfoRoute(order.id), extra: order);
+  }
 }

@@ -11,10 +11,7 @@ import 'add_other_charge_dialog.dart';
 class SelectChargeDialog extends StatelessWidget {
   final Function(ExtraCharge) onChargeAdded;
 
-  const SelectChargeDialog({
-    super.key,
-    required this.onChargeAdded,
-  });
+  const SelectChargeDialog({super.key, required this.onChargeAdded});
 
   Future<void> _onOptionSelected(
     BuildContext context,
@@ -43,10 +40,12 @@ class SelectChargeDialog extends StatelessWidget {
       child: AddOtherChargeDialog(
         initialName: chargeName,
         initialValue: existing.name.isNotEmpty ? existing.value : null,
-        initialIsPercentage:
-            existing.name.isNotEmpty ? existing.isPercentage : null,
-        initialIsDefaultAdd:
-            existing.name.isNotEmpty ? existing.isDefaultAdd : null,
+        initialIsPercentage: existing.name.isNotEmpty
+            ? existing.isPercentage
+            : null,
+        initialIsDefaultAdd: existing.name.isNotEmpty
+            ? existing.isDefaultAdd
+            : null,
         onChargeAdded: onChargeAdded,
       ),
     );
@@ -81,7 +80,8 @@ class SelectChargeDialog extends StatelessWidget {
         final defaultOptions = [
           {
             'key': 'Delivery Charge',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutDeliveryCharge,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -89,7 +89,8 @@ class SelectChargeDialog extends StatelessWidget {
           },
           {
             'key': 'Packing Charge',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutPackingCharge,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -97,7 +98,8 @@ class SelectChargeDialog extends StatelessWidget {
           },
           {
             'key': 'Service Charge/Fee',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutServiceChargeFee,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -105,7 +107,8 @@ class SelectChargeDialog extends StatelessWidget {
           },
           {
             'key': 'Other Charge',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutOtherCharge,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -122,14 +125,14 @@ class SelectChargeDialog extends StatelessWidget {
                 .toSet();
             final customOptions = <Map<String, String>>[];
 
-            for (final charge in [...state.appliedOtherCharges, ...savedCharges]) {
+            for (final charge in [
+              ...state.appliedOtherCharges,
+              ...savedCharges,
+            ]) {
               if (charge.name.trim().isNotEmpty &&
                   !existingNames.contains(charge.name.trim().toLowerCase())) {
                 existingNames.add(charge.name.trim().toLowerCase());
-                customOptions.add({
-                  'key': charge.name,
-                  'display': charge.name,
-                });
+                customOptions.add({'key': charge.name, 'display': charge.name});
               }
             }
 
@@ -152,7 +155,8 @@ class SelectChargeDialog extends StatelessWidget {
                           child: Text(
                             context.tr(
                                   shared.LocaleKeys.checkoutSelectCharge,
-                                  track: shared.TrackConstants.checkoutPageTrack,
+                                  track:
+                                      shared.TrackConstants.checkoutPageTrack,
                                 ) ??
                                 'SELECT CHARGE',
                             textAlign: TextAlign.center,
@@ -169,7 +173,8 @@ class SelectChargeDialog extends StatelessWidget {
                             color: theme.colorScheme.primary,
                           ),
                           onPressed: () => Navigator.of(context).pop(),
-                          tooltip: context.tr(
+                          tooltip:
+                              context.tr(
                                 shared.LocaleKeys.commonClose,
                                 track: shared.TrackConstants.commonTrack,
                               ) ??
@@ -199,8 +204,9 @@ class SelectChargeDialog extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.85),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.85,
+                            ),
                           ),
                         ),
                       ),

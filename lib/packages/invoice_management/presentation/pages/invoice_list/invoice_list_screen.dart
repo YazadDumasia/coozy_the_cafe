@@ -29,8 +29,8 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         context.read<InvoiceManagementBloc>().add(
-              const LoadInvoicesEvent(isRefresh: true),
-            );
+          const LoadInvoicesEvent(isRefresh: true),
+        );
       }
     });
   }
@@ -80,7 +80,8 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                         isLabelVisible: hasFilters,
                         child: const Icon(Icons.filter_list),
                       ),
-                      tooltip: context.tr(
+                      tooltip:
+                          context.tr(
                             shared.LocaleKeys.commonFilter,
                             track: shared.TrackConstants.commonTrack,
                           ) ??
@@ -99,15 +100,16 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
             ),
             IconButton(
               icon: const Icon(Icons.refresh),
-              tooltip: context.tr(
+              tooltip:
+                  context.tr(
                     shared.LocaleKeys.commonRefresh,
                     track: shared.TrackConstants.commonTrack,
                   ) ??
                   'Refresh',
               onPressed: () {
                 context.read<InvoiceManagementBloc>().add(
-                      const LoadInvoicesEvent(isRefresh: true),
-                    );
+                  const LoadInvoicesEvent(isRefresh: true),
+                );
               },
             ),
           ],
@@ -131,8 +133,8 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                 errorMsg: state.message,
                 onPressedRetryButton: () {
                   context.read<InvoiceManagementBloc>().add(
-                        const LoadInvoicesEvent(isRefresh: true),
-                      );
+                    const LoadInvoicesEvent(isRefresh: true),
+                  );
                 },
               );
             } else if (state is InvoiceManagementLoadedState) {
@@ -177,7 +179,8 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                             controller: _scrollController,
                             addAutomaticKeepAlives: false,
                             addRepaintBoundaries: true,
-                            itemCount: invoices.length +
+                            itemCount:
+                                invoices.length +
                                 (state.isFetchingMore ? 1 : 0),
                             itemBuilder: (context, index) {
                               if (index >= invoices.length) {

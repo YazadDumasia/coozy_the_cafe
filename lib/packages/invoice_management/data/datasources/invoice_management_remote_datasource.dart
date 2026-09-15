@@ -27,7 +27,9 @@ abstract class InvoiceManagementRemoteDataSource {
 
   Future<List<InvoiceItem>> getInvoiceItemsByInvoiceId(int invoiceId);
 
-  Future<List<PaymentTransaction>> getPaymentTransactionsByInvoiceId(int invoiceId);
+  Future<List<PaymentTransaction>> getPaymentTransactionsByInvoiceId(
+    int invoiceId,
+  );
 
   Future<bool> updateInvoice(
     int id,
@@ -135,7 +137,8 @@ class InvoiceManagementRemoteDataSourceImpl
 
   @override
   Future<Order?> getOrderById(int orderId) async {
-    final orderWithItems = await invoicesDao.attachedDatabase.ordersDao.getOrderInfo(orderId);
+    final orderWithItems = await invoicesDao.attachedDatabase.ordersDao
+        .getOrderInfo(orderId);
     return orderWithItems?.order;
   }
 }

@@ -19,7 +19,6 @@ final class CheckoutFetchStarted extends CheckoutEvent {
   List<Object?> get props => [orderId];
 }
 
-
 final class CheckoutItemAdded extends CheckoutEvent {
   final CartItem item;
   const CheckoutItemAdded(this.item);

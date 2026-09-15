@@ -138,8 +138,9 @@ class _AddInvoiceItemDialogState extends State<AddInvoiceItemDialog> {
             TextFormField(
               controller: _priceController,
               focusNode: _priceFocusNode,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
                 labelText: 'Unit Price',
@@ -162,7 +163,9 @@ class _AddInvoiceItemDialogState extends State<AddInvoiceItemDialog> {
                 return Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                    color: colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.5,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(

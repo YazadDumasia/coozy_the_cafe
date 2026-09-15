@@ -38,8 +38,8 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
     _valueController = TextEditingController(
       text: widget.initialValue != null
           ? (widget.initialValue! % 1 == 0
-              ? widget.initialValue!.toInt().toString()
-              : widget.initialValue!.toString())
+                ? widget.initialValue!.toInt().toString()
+                : widget.initialValue!.toString())
           : '',
     );
     _isPercentage = widget.initialIsPercentage ?? false;
@@ -89,9 +89,9 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
                     track: shared.TrackConstants.checkoutPageTrack,
                   ) ??
                   'Add Discount Value',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -102,22 +102,31 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
                 border: OutlineInputBorder(),
               ),
               textInputAction: TextInputAction.next,
-              validator: (v) => v == null || v.trim().isEmpty ? 'Enter discount name' : null,
+              validator: (v) =>
+                  v == null || v.trim().isEmpty ? 'Enter discount name' : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _valueController,
               focusNode: _valueFocusNode,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: InputDecoration(
-                labelText: _isPercentage ? 'Discount Value in %' : 'Discount Value',
+                labelText: _isPercentage
+                    ? 'Discount Value in %'
+                    : 'Discount Value',
                 border: const OutlineInputBorder(),
                 suffixText: _isPercentage ? '%' : null,
               ),
               textInputAction: TextInputAction.done,
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Enter discount value';
-                if (double.tryParse(v.trim()) == null) return 'Enter valid number';
+                if (v == null || v.trim().isEmpty) {
+                  return 'Enter discount value';
+                }
+                if (double.tryParse(v.trim()) == null) {
+                  return 'Enter valid number';
+                }
                 return null;
               },
               onFieldSubmitted: (_) => _submit(),

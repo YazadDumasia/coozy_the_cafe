@@ -26,10 +26,6 @@ void registerCheckoutDependencies(GetIt sl) {
 
   // BLoC
   sl.registerFactory(
-    () => CheckoutBloc(
-      calculator: sl(),
-      getOrderCheckoutData: sl(),
-    ),
+    () => CheckoutBloc(calculator: sl(), getOrderCheckoutData: sl()),
   );
 }
-

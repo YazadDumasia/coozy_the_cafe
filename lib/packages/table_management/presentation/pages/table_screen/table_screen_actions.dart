@@ -39,6 +39,7 @@ class TableScreenActions {
   static Future<void> openQrScanner(BuildContext context) async {
     context.push('/table-qr-scanner');
   }
+
   static Future<void> onReorder(
     BuildContext context,
     int oldIndex,

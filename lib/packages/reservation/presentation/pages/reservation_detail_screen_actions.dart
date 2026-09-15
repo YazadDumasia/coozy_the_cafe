@@ -107,10 +107,7 @@ class ReservationDetailScreenActions {
             ) ??
             'Success',
         descriptions:
-            context.tr(
-              shared.LocaleKeys.customerShowUpSuccess,
-              track: track,
-            ) ??
+            context.tr(shared.LocaleKeys.customerShowUpSuccess, track: track) ??
             'Reservation converted to active order successfully!',
         titleIcon: Lottie.asset(
           MediaQuery.of(context).platformBrightness == Brightness.light

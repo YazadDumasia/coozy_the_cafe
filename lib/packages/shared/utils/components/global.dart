@@ -9,9 +9,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(
 );
 
 final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-    GlobalKey<ScaffoldMessengerState>(
-  debugLabel: 'scaffoldMessengerKey',
-);
+    GlobalKey<ScaffoldMessengerState>(debugLabel: 'scaffoldMessengerKey');
 
 // Define a list of language objects
 List<Map<String, String>> jsonLanguagesData = <Map<String, String>>[

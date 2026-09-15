@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
-import 'package:coozy_the_cafe/packages/database/coozy_database.dart' show OrderItemStatus;
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart'
+    show OrderItemStatus;
 import '../../../../domain/entities/kitchen_order_item_entity.dart';
 
 class KitchenItemTile extends StatelessWidget {
@@ -31,16 +32,27 @@ class KitchenItemTile extends StatelessWidget {
   String _getStatusLabel(BuildContext context, OrderItemStatus status) {
     switch (status) {
       case OrderItemStatus.preparing:
-        return context.tr(shared.LocaleKeys.kitchenStatusPreparing, track: shared.TrackConstants.orderPageTrack) ??
+        return context.tr(
+              shared.LocaleKeys.kitchenStatusPreparing,
+              track: shared.TrackConstants.orderPageTrack,
+            ) ??
             'Preparing';
       case OrderItemStatus.ready:
-        return context.tr(shared.LocaleKeys.kitchenStatusReady, track: shared.TrackConstants.orderPageTrack) ?? 'Ready';
+        return context.tr(
+              shared.LocaleKeys.kitchenStatusReady,
+              track: shared.TrackConstants.orderPageTrack,
+            ) ??
+            'Ready';
       case OrderItemStatus.served:
         return 'Served';
       case OrderItemStatus.cancelled:
         return 'Cancelled';
       case OrderItemStatus.pending:
-        return context.tr(shared.LocaleKeys.kitchenStatusPending, track: shared.TrackConstants.orderPageTrack) ?? 'Pending';
+        return context.tr(
+              shared.LocaleKeys.kitchenStatusPending,
+              track: shared.TrackConstants.orderPageTrack,
+            ) ??
+            'Pending';
     }
   }
 
@@ -124,21 +136,30 @@ class KitchenItemTile extends StatelessWidget {
                   PopupMenuItem(
                     value: 'pending',
                     child: Text(
-                      context.tr(shared.LocaleKeys.kitchenStatusPending, track: shared.TrackConstants.orderPageTrack) ??
+                      context.tr(
+                            shared.LocaleKeys.kitchenStatusPending,
+                            track: shared.TrackConstants.orderPageTrack,
+                          ) ??
                           'Pending',
                     ),
                   ),
                   PopupMenuItem(
                     value: 'preparing',
                     child: Text(
-                      context.tr(shared.LocaleKeys.kitchenStatusPreparing, track: shared.TrackConstants.orderPageTrack) ??
+                      context.tr(
+                            shared.LocaleKeys.kitchenStatusPreparing,
+                            track: shared.TrackConstants.orderPageTrack,
+                          ) ??
                           'Preparing',
                     ),
                   ),
                   PopupMenuItem(
                     value: 'ready',
                     child: Text(
-                      context.tr(shared.LocaleKeys.kitchenStatusReady, track: shared.TrackConstants.orderPageTrack) ??
+                      context.tr(
+                            shared.LocaleKeys.kitchenStatusReady,
+                            track: shared.TrackConstants.orderPageTrack,
+                          ) ??
                           'Ready',
                     ),
                   ),
@@ -146,12 +167,17 @@ class KitchenItemTile extends StatelessWidget {
               ),
             ],
           ),
-          if (item.waitingDuration != null || item.preparationDuration != null) ...[
+          if (item.waitingDuration != null ||
+              item.preparationDuration != null) ...[
             const SizedBox(height: 4),
             Row(
               children: [
                 if (item.waitingDuration != null) ...[
-                  Icon(Icons.hourglass_empty, size: 12, color: theme.colorScheme.onSurfaceVariant),
+                  Icon(
+                    Icons.hourglass_empty,
+                    size: 12,
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
                   const SizedBox(width: 2),
                   Text(
                     'Wait: ${item.waitingDuration!.inMinutes}m ${item.waitingDuration!.inSeconds.remainder(60)}s',
@@ -163,7 +189,11 @@ class KitchenItemTile extends StatelessWidget {
                   const SizedBox(width: 8),
                 ],
                 if (item.preparationDuration != null) ...[
-                  Icon(Icons.timer_outlined, size: 12, color: Colors.blue.shade700),
+                  Icon(
+                    Icons.timer_outlined,
+                    size: 12,
+                    color: Colors.blue.shade700,
+                  ),
                   const SizedBox(width: 2),
                   Text(
                     'Prep: ${item.preparationDuration!.inMinutes}m ${item.preparationDuration!.inSeconds.remainder(60)}s',
@@ -199,6 +229,7 @@ class KitchenItemTile extends StatelessWidget {
                       context.tr(
                             shared.LocaleKeys.kitchenNotePrefix,
                             params: {'note': item.remarks!},
+                            track: shared.TrackConstants.orderPageTrack,
                           ) ??
                           'Note: ${item.remarks}',
                       style: theme.textTheme.bodySmall?.copyWith(

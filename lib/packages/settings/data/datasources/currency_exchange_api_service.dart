@@ -13,7 +13,8 @@ class CurrencyExchangeApiService {
 
   static const String _cacheKeyRatesPrefix = 'cache_exchange_rates_';
   static const String _cacheKeyLastUpdatePrefix = 'cache_exchange_last_update_';
-  static const String _cacheKeyCurrenciesList = 'cache_exchange_currencies_list';
+  static const String _cacheKeyCurrenciesList =
+      'cache_exchange_currencies_list';
 
   /// Fetches available currency list from CDN or fallback, with caching.
   Future<Map<String, String>> fetchCurrencies() async {
@@ -27,7 +28,9 @@ class CurrencyExchangeApiService {
 
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body) as Map<String, dynamic>;
-        final result = decoded.map((k, v) => MapEntry(k.toString(), v.toString()));
+        final result = decoded.map(
+          (k, v) => MapEntry(k.toString(), v.toString()),
+        );
         await prefs.setString(_cacheKeyCurrenciesList, json.encode(result));
         return result;
       }
@@ -42,7 +45,9 @@ class CurrencyExchangeApiService {
 
       if (response.statusCode == 200) {
         final decoded = json.decode(response.body) as Map<String, dynamic>;
-        final result = decoded.map((k, v) => MapEntry(k.toString(), v.toString()));
+        final result = decoded.map(
+          (k, v) => MapEntry(k.toString(), v.toString()),
+        );
         await prefs.setString(_cacheKeyCurrenciesList, json.encode(result));
         return result;
       }
@@ -113,7 +118,8 @@ class CurrencyExchangeApiService {
 
         if (response.statusCode == 200) {
           final decoded = json.decode(response.body) as Map<String, dynamic>;
-          final dateStr = decoded['date']?.toString() ?? DateTime.now().toIso8601String();
+          final dateStr =
+              decoded['date']?.toString() ?? DateTime.now().toIso8601String();
           final rawRates = decoded[base] as Map<String, dynamic>? ?? {};
 
           final ratesMap = <String, double>{};

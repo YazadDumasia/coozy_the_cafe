@@ -229,10 +229,9 @@ class TableListItem extends StatelessWidget {
                                     Text(
                                       context.tr(
                                             shared.LocaleKeys.viewTableQrCard,
-                                            track:
-                                                shared
-                                                    .TrackConstants
-                                                    .tablePageTrack,
+                                            track: shared
+                                                .TrackConstants
+                                                .tablePageTrack,
                                           ) ??
                                           'View QR Card',
                                     ),

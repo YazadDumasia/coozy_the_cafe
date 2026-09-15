@@ -35,11 +35,13 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
     _rateController = TextEditingController(
       text: widget.initialRate != null
           ? (widget.initialRate! % 1 == 0
-              ? widget.initialRate!.toInt().toString()
-              : widget.initialRate!.toString())
+                ? widget.initialRate!.toInt().toString()
+                : widget.initialRate!.toString())
           : '',
     );
-    _isDefaultAddNotifier = ValueNotifier<bool>(widget.initialIsDefaultAdd ?? false);
+    _isDefaultAddNotifier = ValueNotifier<bool>(
+      widget.initialIsDefaultAdd ?? false,
+    );
     _nameFocusNode = FocusNode();
     _rateFocusNode = FocusNode();
   }
@@ -89,8 +91,8 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
                   ) ??
                   'Add Tax Value',
               style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -109,8 +111,9 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
             TextFormField(
               controller: _rateController,
               focusNode: _rateFocusNode,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: const InputDecoration(
                 labelText: 'Tax Rate in %',
                 border: OutlineInputBorder(),
@@ -119,7 +122,9 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
               ),
               textInputAction: TextInputAction.done,
               validator: (v) {
-                if (v == null || v.trim().isEmpty) return 'Enter tax percentage';
+                if (v == null || v.trim().isEmpty) {
+                  return 'Enter tax percentage';
+                }
                 if (double.tryParse(v.trim()) == null) {
                   return 'Enter valid percentage';
                 }

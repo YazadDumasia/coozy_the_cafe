@@ -52,7 +52,9 @@ class OrderManagementLocalDataSourceImpl
     final allItems = rawOrders.expand((o) => o.items).toList();
     final itemNamesMap = await _getItemNamesMap(allItems);
     final models = rawOrders
-        .map((o) => OrderManagementModel.fromDrift(o, itemNamesMap: itemNamesMap))
+        .map(
+          (o) => OrderManagementModel.fromDrift(o, itemNamesMap: itemNamesMap),
+        )
         .toList();
 
     return (models, count);
@@ -77,16 +79,17 @@ class OrderManagementLocalDataSourceImpl
 
       final menuItemId = item.menuItemId ?? item.itemId;
       if (menuItemId != null) {
-        final menuItem = await (db.select(db.menuItemsTable)
-              ..where((m) => m.id.equals(menuItemId)))
-            .getSingleOrNull();
+        final menuItem = await (db.select(
+          db.menuItemsTable,
+        )..where((m) => m.id.equals(menuItemId))).getSingleOrNull();
 
         if (menuItem != null && menuItem.name.isNotEmpty) {
           String name = menuItem.name;
           if (item.selectedVariationId != null) {
-            final variation = await (db.select(db.menuItemVariationsTable)
-                  ..where((v) => v.id.equals(item.selectedVariationId!)))
-                .getSingleOrNull();
+            final variation =
+                await (db.select(db.menuItemVariationsTable)
+                      ..where((v) => v.id.equals(item.selectedVariationId!)))
+                    .getSingleOrNull();
             if (variation != null &&
                 variation.name != null &&
                 variation.name!.isNotEmpty) {

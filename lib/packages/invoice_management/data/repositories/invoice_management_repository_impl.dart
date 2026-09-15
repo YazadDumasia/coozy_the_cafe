@@ -37,14 +37,12 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
         paymentMethods: paymentMethods,
       );
 
-      final entities =
-          invoiceRows.map((row) => InvoiceEntity.fromDrift(row)).toList();
+      final entities = invoiceRows
+          .map((row) => InvoiceEntity.fromDrift(row))
+          .toList();
 
       return Right(
-        PaginatedInvoicesEntity(
-          invoices: entities,
-          totalCount: totalCount,
-        ),
+        PaginatedInvoicesEntity(invoices: entities, totalCount: totalCount),
       );
     } catch (e) {
       return Left(DatabaseFailure(message: e.toString()));
@@ -61,20 +59,26 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
         return const Left(UnexpectedFailure(message: 'Invoice not found'));
       }
 
-      final itemRows =
-          await remoteDataSource.getInvoiceItemsByInvoiceId(invoiceId);
-      final paymentRows =
-          await remoteDataSource.getPaymentTransactionsByInvoiceId(invoiceId);
+      final itemRows = await remoteDataSource.getInvoiceItemsByInvoiceId(
+        invoiceId,
+      );
+      final paymentRows = await remoteDataSource
+          .getPaymentTransactionsByInvoiceId(invoiceId);
 
       final invoiceEntity = InvoiceEntity.fromDrift(invoiceRow);
-      final itemEntities =
-          itemRows.map((item) => InvoiceItemEntity.fromDrift(item)).toList();
+      final itemEntities = itemRows
+          .map((item) => InvoiceItemEntity.fromDrift(item))
+          .toList();
 
       String? tableName;
       if (invoiceRow.orderId != null) {
         try {
-          final order = await remoteDataSource.getOrderById(invoiceRow.orderId!);
-          if (order != null && order.tableNameText != null && order.tableNameText!.isNotEmpty) {
+          final order = await remoteDataSource.getOrderById(
+            invoiceRow.orderId!,
+          );
+          if (order != null &&
+              order.tableNameText != null &&
+              order.tableNameText!.isNotEmpty) {
             tableName = order.tableNameText;
           }
         } catch (_) {}
@@ -132,8 +136,9 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
     String orderHashId,
   ) async {
     try {
-      final invoiceRow =
-          await remoteDataSource.getInvoiceByOrderHashId(orderHashId);
+      final invoiceRow = await remoteDataSource.getInvoiceByOrderHashId(
+        orderHashId,
+      );
       if (invoiceRow == null) {
         return const Left(
           UnexpectedFailure(message: 'No invoice found for this order'),
@@ -152,7 +157,9 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
   }) async {
     try {
       final companion = InvoicesTableCompanion(
-        orderId: invoice.orderId != null ? Value(invoice.orderId) : const Value.absent(),
+        orderId: invoice.orderId != null
+            ? Value(invoice.orderId)
+            : const Value.absent(),
         customerName: Value(invoice.customerName),
         phoneNumber: Value(invoice.phoneNumber),
         isoCode: Value(invoice.isoCode),

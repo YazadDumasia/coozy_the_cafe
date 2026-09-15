@@ -15,7 +15,10 @@ class OrderItemManagementModel extends OrderItemManagementEntity {
     super.notes,
   });
 
-  factory OrderItemManagementModel.fromDrift(OrderItem item, {String? itemName}) {
+  factory OrderItemManagementModel.fromDrift(
+    OrderItem item, {
+    String? itemName,
+  }) {
     final qty = item.quantity ?? 1;
     final price = item.sellingPrice ?? 0.0;
     return OrderItemManagementModel(
@@ -75,10 +78,12 @@ class OrderManagementModel extends OrderManagementEntity {
     final o = orderWithItems.order;
     final inv = orderWithItems.invoice;
     final itemModels = orderWithItems.items
-        .map((i) => OrderItemManagementModel.fromDrift(
-              i,
-              itemName: itemNamesMap?[i.id],
-            ))
+        .map(
+          (i) => OrderItemManagementModel.fromDrift(
+            i,
+            itemName: itemNamesMap?[i.id],
+          ),
+        )
         .toList();
 
     final subtotal = itemModels.fold<double>(
@@ -103,8 +108,8 @@ class OrderManagementModel extends OrderManagementEntity {
     double cashReceived = (inv?.cashReceived != null && inv!.cashReceived! > 0)
         ? inv.cashReceived!
         : ((o.cashReceived != null && o.cashReceived! > 0)
-            ? o.cashReceived!
-            : (inv?.recordAmountPaid ?? 0.0));
+              ? o.cashReceived!
+              : (inv?.recordAmountPaid ?? 0.0));
     double changeAmount = (inv?.changeAmount != null && inv!.changeAmount! > 0)
         ? inv.changeAmount!
         : (o.changeAmount ?? 0.0);
@@ -114,32 +119,44 @@ class OrderManagementModel extends OrderManagementEntity {
       try {
         final decoded = jsonDecode(detailsStr);
         if (decoded is Map) {
-          if (decoded.containsKey('cashReceived') && decoded['cashReceived'] != null) {
+          if (decoded.containsKey('cashReceived') &&
+              decoded['cashReceived'] != null) {
             cashReceived = (decoded['cashReceived'] as num).toDouble();
           }
-          if (decoded.containsKey('changeAmount') && decoded['changeAmount'] != null) {
+          if (decoded.containsKey('changeAmount') &&
+              decoded['changeAmount'] != null) {
             changeAmount = (decoded['changeAmount'] as num).toDouble();
           }
-          if (decoded.containsKey('taxDetails') && decoded['taxDetails'] is List) {
+          if (decoded.containsKey('taxDetails') &&
+              decoded['taxDetails'] is List) {
             parsedTaxDetails = List<Map<String, dynamic>>.from(
-              (decoded['taxDetails'] as List).map((e) => Map<String, dynamic>.from(e as Map)),
+              (decoded['taxDetails'] as List).map(
+                (e) => Map<String, dynamic>.from(e as Map),
+              ),
             );
           }
-          if (decoded.containsKey('discountDetails') && decoded['discountDetails'] is List) {
+          if (decoded.containsKey('discountDetails') &&
+              decoded['discountDetails'] is List) {
             parsedDiscountDetails = List<Map<String, dynamic>>.from(
-              (decoded['discountDetails'] as List).map((e) => Map<String, dynamic>.from(e as Map)),
+              (decoded['discountDetails'] as List).map(
+                (e) => Map<String, dynamic>.from(e as Map),
+              ),
             );
           }
-          if (decoded.containsKey('chargeDetails') && decoded['chargeDetails'] is List) {
+          if (decoded.containsKey('chargeDetails') &&
+              decoded['chargeDetails'] is List) {
             parsedChargeDetails = List<Map<String, dynamic>>.from(
-              (decoded['chargeDetails'] as List).map((e) => Map<String, dynamic>.from(e as Map)),
+              (decoded['chargeDetails'] as List).map(
+                (e) => Map<String, dynamic>.from(e as Map),
+              ),
             );
           }
         }
       } catch (_) {}
     }
 
-    final paymentName = (o.paymentMethodName != null && o.paymentMethodName!.isNotEmpty)
+    final paymentName =
+        (o.paymentMethodName != null && o.paymentMethodName!.isNotEmpty)
         ? o.paymentMethodName
         : inv?.paymentMethodName;
 
@@ -166,7 +183,9 @@ class OrderManagementModel extends OrderManagementEntity {
       totalAmount: grandTotal,
       subtotalAmount: (o.subtotalAmount != null && o.subtotalAmount! > 0)
           ? o.subtotalAmount!
-          : (inv?.totalCost != null && inv!.totalCost > 0 ? inv.totalCost : subtotal),
+          : (inv?.totalCost != null && inv!.totalCost > 0
+                ? inv.totalCost
+                : subtotal),
       discountAmount: (o.discountAmount != null && o.discountAmount! > 0)
           ? o.discountAmount!
           : discount,
@@ -174,7 +193,8 @@ class OrderManagementModel extends OrderManagementEntity {
           ? o.taxAmount!
           : taxCost,
       taxPercentage: taxPct,
-      otherChargesAmount: (o.otherChargesAmount != null && o.otherChargesAmount! > 0)
+      otherChargesAmount:
+          (o.otherChargesAmount != null && o.otherChargesAmount! > 0)
           ? o.otherChargesAmount!
           : otherCharges,
       cashReceivedAmount: cashReceived,

@@ -43,8 +43,9 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
     super.initState();
     final invoice = widget.details.invoice;
     _invoiceNotifier = ValueNotifier<InvoiceEntity>(invoice);
-    _itemsNotifier =
-        ValueNotifier<List<InvoiceItemEntity>>(List.from(widget.details.items));
+    _itemsNotifier = ValueNotifier<List<InvoiceItemEntity>>(
+      List.from(widget.details.items),
+    );
 
     String initialPaymentMethod = 'UPI';
     if (invoice.paymentMethodName != null &&
@@ -75,11 +76,13 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
               if (t is Map<String, dynamic>) {
                 final rate = (t['ratePercent'] as num?)?.toDouble() ?? 0.0;
                 final name = t['name']?.toString() ?? 'Tax';
-                initialTaxes.add(shared.Tax(
-                  id: 'tax_${initialTaxes.length}_${DateTime.now().millisecondsSinceEpoch}',
-                  name: name,
-                  ratePercent: rate,
-                ));
+                initialTaxes.add(
+                  shared.Tax(
+                    id: 'tax_${initialTaxes.length}_${DateTime.now().millisecondsSinceEpoch}',
+                    name: name,
+                    ratePercent: rate,
+                  ),
+                );
               }
             }
           }
@@ -88,12 +91,14 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
               if (d is Map<String, dynamic>) {
                 final val = (d['amount'] as num?)?.toDouble() ?? 0.0;
                 final name = d['name']?.toString() ?? 'Discount';
-                initialDiscounts.add(shared.Discount(
-                  id: 'disc_${initialDiscounts.length}_${DateTime.now().millisecondsSinceEpoch}',
-                  name: name,
-                  value: val,
-                  isPercentage: false,
-                ));
+                initialDiscounts.add(
+                  shared.Discount(
+                    id: 'disc_${initialDiscounts.length}_${DateTime.now().millisecondsSinceEpoch}',
+                    name: name,
+                    value: val,
+                    isPercentage: false,
+                  ),
+                );
               }
             }
           }
@@ -102,12 +107,14 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
               if (c is Map<String, dynamic>) {
                 final val = (c['amount'] as num?)?.toDouble() ?? 0.0;
                 final name = c['name']?.toString() ?? 'Charge';
-                initialCharges.add(shared.ExtraCharge(
-                  id: 'chg_${initialCharges.length}_${DateTime.now().millisecondsSinceEpoch}',
-                  name: name,
-                  value: val,
-                  isPercentage: false,
-                ));
+                initialCharges.add(
+                  shared.ExtraCharge(
+                    id: 'chg_${initialCharges.length}_${DateTime.now().millisecondsSinceEpoch}',
+                    name: name,
+                    value: val,
+                    isPercentage: false,
+                  ),
+                );
               }
             }
           }
@@ -121,28 +128,36 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
 
     // Fallbacks if breakdown was not in paymentMethodDetails
     if (initialTaxes.isEmpty && invoice.taxPercentage > 0) {
-      initialTaxes.add(shared.Tax(
-        id: 'tax_legacy_1',
-        name: 'Tax (${invoice.taxPercentage.toStringAsFixed(1)}%)',
-        ratePercent: invoice.taxPercentage,
-      ));
+      initialTaxes.add(
+        shared.Tax(
+          id: 'tax_legacy_1',
+          name: 'Tax (${invoice.taxPercentage.toStringAsFixed(1)}%)',
+          ratePercent: invoice.taxPercentage,
+        ),
+      );
     }
     if (initialDiscounts.isEmpty && invoice.discountAmount > 0) {
-      initialDiscounts.add(shared.Discount(
-        id: 'disc_legacy_1',
-        name: 'Discount',
-        value: invoice.discountAmount,
-        isPercentage: false,
-      ));
+      initialDiscounts.add(
+        shared.Discount(
+          id: 'disc_legacy_1',
+          name: 'Discount',
+          value: invoice.discountAmount,
+          isPercentage: false,
+        ),
+      );
     }
 
     _appliedTaxesNotifier = ValueNotifier<List<shared.Tax>>(initialTaxes);
-    _appliedDiscountsNotifier =
-        ValueNotifier<List<shared.Discount>>(initialDiscounts);
-    _appliedChargesNotifier =
-        ValueNotifier<List<shared.ExtraCharge>>(initialCharges);
+    _appliedDiscountsNotifier = ValueNotifier<List<shared.Discount>>(
+      initialDiscounts,
+    );
+    _appliedChargesNotifier = ValueNotifier<List<shared.ExtraCharge>>(
+      initialCharges,
+    );
     _isRoundOffEnabledNotifier = ValueNotifier<bool>(initialRoundOff);
-    _summaryNotifier = ValueNotifier<shared.BillSummary>(shared.BillSummary.empty());
+    _summaryNotifier = ValueNotifier<shared.BillSummary>(
+      shared.BillSummary.empty(),
+    );
 
     _recalculateTotals();
   }
@@ -183,23 +198,19 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
 
     final breakdownJson = jsonEncode({
       'taxDetails': summary.taxDetails
-          .map((t) => {
-                'name': t.name,
-                'ratePercent': t.ratePercent,
-                'amount': t.calculatedAmount,
-              })
+          .map(
+            (t) => {
+              'name': t.name,
+              'ratePercent': t.ratePercent,
+              'amount': t.calculatedAmount,
+            },
+          )
           .toList(),
       'discountDetails': summary.discountDetails
-          .map((d) => {
-                'name': d.name,
-                'amount': d.calculatedAmount,
-              })
+          .map((d) => {'name': d.name, 'amount': d.calculatedAmount})
           .toList(),
       'chargeDetails': summary.chargeDetails
-          .map((c) => {
-                'name': c.name,
-                'amount': c.calculatedAmount,
-              })
+          .map((c) => {'name': c.name, 'amount': c.calculatedAmount})
           .toList(),
       'roundingAmount': summary.roundingAmount,
     });
@@ -251,10 +262,7 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
   Future<void> _onAddItem() async {
     final result = await context.push(
       WaiterOrderPlacementRoutes.menuItemPickerRoute,
-      extra: {
-        'isPickerOnly': true,
-        'orderId': _invoiceNotifier.value.orderId,
-      },
+      extra: {'isPickerOnly': true, 'orderId': _invoiceNotifier.value.orderId},
     );
 
     if (result is List<OrderCartItem> && result.isNotEmpty && mounted) {
@@ -320,7 +328,8 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
       child: shared.SelectTaxDialog(
         appliedTaxes: _appliedTaxesNotifier.value,
         onTaxAdded: (tax) {
-          final updated = List<shared.Tax>.from(_appliedTaxesNotifier.value)..add(tax);
+          final updated = List<shared.Tax>.from(_appliedTaxesNotifier.value)
+            ..add(tax);
           _appliedTaxesNotifier.value = updated;
           _recalculateTotals();
         },
@@ -334,8 +343,9 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
       child: shared.SelectDiscountDialog(
         appliedDiscounts: _appliedDiscountsNotifier.value,
         onDiscountAdded: (discount) {
-          final updated =
-              List<shared.Discount>.from(_appliedDiscountsNotifier.value)..add(discount);
+          final updated = List<shared.Discount>.from(
+            _appliedDiscountsNotifier.value,
+          )..add(discount);
           _appliedDiscountsNotifier.value = updated;
           _recalculateTotals();
         },
@@ -349,8 +359,9 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
       child: shared.SelectChargeDialog(
         appliedOtherCharges: _appliedChargesNotifier.value,
         onChargeAdded: (charge) {
-          final updated =
-              List<shared.ExtraCharge>.from(_appliedChargesNotifier.value)..add(charge);
+          final updated = List<shared.ExtraCharge>.from(
+            _appliedChargesNotifier.value,
+          )..add(charge);
           _appliedChargesNotifier.value = updated;
           _recalculateTotals();
         },
@@ -396,12 +407,13 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
                         ? null
                         : () {
                             _isSavingNotifier.value = true;
-                            final updatedInvoice =
-                                _invoiceNotifier.value.copyWith(
-                              phoneNumber: _phoneController.text.trim(),
-                              customerName: _nameController.text.trim(),
-                              paymentMethodName: _paymentMethodNotifier.value,
-                            );
+                            final updatedInvoice = _invoiceNotifier.value
+                                .copyWith(
+                                  phoneNumber: _phoneController.text.trim(),
+                                  customerName: _nameController.text.trim(),
+                                  paymentMethodName:
+                                      _paymentMethodNotifier.value,
+                                );
                             EditInvoiceScreenActions.onSave(
                               context,
                               invoice: updatedInvoice,
@@ -460,363 +472,379 @@ class _EditInvoiceScreenState extends State<EditInvoiceScreen> {
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(12),
             child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Items editable list card
-                ValueListenableBuilder<List<InvoiceItemEntity>>(
-                  valueListenable: _itemsNotifier,
-                  builder: (context, items, _) {
-                    if (items.isEmpty) {
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Items editable list card
+                  ValueListenableBuilder<List<InvoiceItemEntity>>(
+                    valueListenable: _itemsNotifier,
+                    builder: (context, items, _) {
+                      if (items.isEmpty) {
+                        return Card(
+                          elevation: 1,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide(color: colorScheme.outlineVariant),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Center(
+                              child: Text(
+                                'No items in this invoice. Tap ADD ITEM to add.',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+
                       return Card(
                         elevation: 1,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                           side: BorderSide(color: colorScheme.outlineVariant),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(24),
-                          child: Center(
-                            child: Text(
-                              'No items in this invoice. Tap ADD ITEM to add.',
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                            ),
+                        child: ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          addAutomaticKeepAlives: false,
+                          addRepaintBoundaries: true,
+                          itemCount: items.length,
+                          separatorBuilder: (_, _) => Divider(
+                            height: 1,
+                            color: colorScheme.outlineVariant,
                           ),
+                          itemBuilder: (context, idx) {
+                            final item = items[idx];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 12,
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.itemName,
+                                          style: theme.textTheme.titleSmall
+                                              ?.copyWith(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          '${item.quantity} x ${core.CurrencyFormatter.format(value: item.unitPrice)}',
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                                color: colorScheme.primary,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Text(
+                                    core.CurrencyFormatter.format(
+                                      value: item.totalPrice,
+                                    ),
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.edit_outlined,
+                                      color: colorScheme.primary,
+                                    ),
+                                    tooltip: 'Edit Item',
+                                    onPressed: () => _onEditItem(item, idx),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       );
-                    }
+                    },
+                  ),
+                  const SizedBox(height: 12),
 
-                    return Card(
-                      elevation: 1,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: BorderSide(color: colorScheme.outlineVariant),
-                      ),
-                      child: ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        addAutomaticKeepAlives: false,
-                        addRepaintBoundaries: true,
-                        itemCount: items.length,
-                        separatorBuilder: (_, _) => Divider(
-                          height: 1,
-                          color: colorScheme.outlineVariant,
+                  // Add Item buttons
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colorScheme.primaryContainer,
+                            foregroundColor: colorScheme.onPrimaryContainer,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: _onAddItem,
+                          icon: const Icon(Icons.restaurant_menu),
+                          label: Text(
+                            context.tr(
+                                  shared.LocaleKeys.invoiceAddItem,
+                                  track: shared.TrackConstants.invoicePageTrack,
+                                ) ??
+                                'ADD ITEM',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
-                        itemBuilder: (context, idx) {
-                          final item = items[idx];
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 12,
-                            ),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.itemName,
-                                        style: theme.textTheme.titleSmall
-                                            ?.copyWith(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        '${item.quantity} x ${core.CurrencyFormatter.format(value: item.unitPrice)}',
-                                        style: theme.textTheme.bodySmall
-                                            ?.copyWith(
-                                          color: colorScheme.primary,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Text(
-                                  core.CurrencyFormatter.format(
-                                    value: item.totalPrice,
-                                  ),
-                                  style:
-                                      theme.textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(width: 8),
-                                IconButton(
-                                  icon: Icon(
-                                    Icons.edit_outlined,
-                                    color: colorScheme.primary,
-                                  ),
-                                  tooltip: 'Edit Item',
-                                  onPressed: () => _onEditItem(item, idx),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
                       ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-
-                // Add Item buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorScheme.primaryContainer,
-                          foregroundColor: colorScheme.onPrimaryContainer,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
+                      const SizedBox(width: 8),
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 14,
+                            horizontal: 12,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: _onAddItem,
-                        icon: const Icon(Icons.restaurant_menu),
-                        label: Text(
-                          context.tr(
-                                shared.LocaleKeys.invoiceAddItem,
-                                track: shared.TrackConstants.invoicePageTrack,
-                              ) ??
-                              'ADD ITEM',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        onPressed: _onAddCustomItem,
+                        icon: const Icon(Icons.add),
+                        label: const Text('CUSTOM'),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 14,
-                          horizontal: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      onPressed: _onAddCustomItem,
-                      icon: const Icon(Icons.add),
-                      label: const Text('CUSTOM'),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-
-                // Shared Subtotal & Breakdown Summary Card matching Checkout page
-                ValueListenableBuilder<shared.BillSummary>(
-                  valueListenable: _summaryNotifier,
-                  builder: (context, summary, _) {
-                    return ValueListenableBuilder<List<InvoiceItemEntity>>(
-                      valueListenable: _itemsNotifier,
-                      builder: (context, items, _) {
-                        return ValueListenableBuilder<bool>(
-                          valueListenable: _isRoundOffEnabledNotifier,
-                          builder: (context, isRoundOffEnabled, _) {
-                            final totalUnits =
-                                items.fold(0, (sum, i) => sum + i.quantity);
-                            final totalItems = items.length;
-
-                            return shared.SubtotalSummaryCard(
-                              subtotal: summary.subtotal,
-                              taxDetails: summary.taxDetails,
-                              discountDetails: summary.discountDetails,
-                              chargeDetails: summary.chargeDetails,
-                              grandTotal: summary.grandTotal,
-                              totalItemCount: totalItems,
-                              totalUnitCount: totalUnits,
-                              isRoundOffEnabled: isRoundOffEnabled,
-                              roundingAmount: summary.roundingAmount,
-                              showClearButton: false,
-                              onRoundOffToggled: () {
-                                _isRoundOffEnabledNotifier.value =
-                                    !_isRoundOffEnabledNotifier.value;
-                                _recalculateTotals();
-                              },
-                              onAddTax: _onAdjustTax,
-                              onAddDiscount: _onAdjustDiscount,
-                              onAddOtherCharges: _onAdjustCharges,
-                              onRemoveTax: (taxDetail) {
-                                final updated = _appliedTaxesNotifier.value
-                                    .where((t) => t.name != taxDetail.name)
-                                    .toList();
-                                _appliedTaxesNotifier.value = updated;
-                                _recalculateTotals();
-                              },
-                              onRemoveDiscount: (discountDetail) {
-                                final updated = _appliedDiscountsNotifier.value
-                                    .where((d) => d.name != discountDetail.name)
-                                    .toList();
-                                _appliedDiscountsNotifier.value = updated;
-                                _recalculateTotals();
-                              },
-                              onRemoveCharge: (chargeDetail) {
-                                final updated = _appliedChargesNotifier.value
-                                    .where((c) => c.name != chargeDetail.name)
-                                    .toList();
-                                _appliedChargesNotifier.value = updated;
-                                _recalculateTotals();
-                              },
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                ),
-                const SizedBox(height: 12),
-
-                // Payment mode dropdown
-                Card(
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(color: colorScheme.outlineVariant),
+                    ],
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 6,
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.payments_outlined,
-                            color: colorScheme.primary),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: BlocBuilder<InvoiceManagementBloc,
-                              InvoiceManagementState>(
-                            builder: (context, state) {
-                              final availableModes = <String>{
-                                'UPI',
-                                'Cash',
-                                'Card',
-                              };
-                              if (state is InvoiceManagementLoadedState) {
-                                for (final mode in state.paymentModes) {
-                                  if (mode.paymentMethodName.isNotEmpty) {
-                                    availableModes
-                                        .add(mode.paymentMethodName);
-                                  }
-                                }
-                              }
+                  const SizedBox(height: 12),
 
-                              return ValueListenableBuilder<String>(
-                                valueListenable: _paymentMethodNotifier,
-                                builder: (context, selectedMethod, _) {
-                                  final currentVal =
-                                      availableModes.contains(selectedMethod)
-                                          ? selectedMethod
-                                          : availableModes.first;
+                  // Shared Subtotal & Breakdown Summary Card matching Checkout page
+                  ValueListenableBuilder<shared.BillSummary>(
+                    valueListenable: _summaryNotifier,
+                    builder: (context, summary, _) {
+                      return ValueListenableBuilder<List<InvoiceItemEntity>>(
+                        valueListenable: _itemsNotifier,
+                        builder: (context, items, _) {
+                          return ValueListenableBuilder<bool>(
+                            valueListenable: _isRoundOffEnabledNotifier,
+                            builder: (context, isRoundOffEnabled, _) {
+                              final totalUnits = items.fold(
+                                0,
+                                (sum, i) => sum + i.quantity,
+                              );
+                              final totalItems = items.length;
 
-                                  return DropdownButtonHideUnderline(
-                                    child: DropdownButton<String>(
-                                      value: currentVal,
-                                      isExpanded: true,
-                                      items: availableModes
-                                          .map(
-                                            (m) => DropdownMenuItem(
-                                              value: m,
-                                              child: Text(m),
-                                            ),
-                                          )
-                                          .toList(),
-                                      onChanged: (val) {
-                                        if (val != null) {
-                                          _paymentMethodNotifier.value = val;
-                                        }
-                                      },
-                                    ),
-                                  );
+                              return shared.SubtotalSummaryCard(
+                                subtotal: summary.subtotal,
+                                taxDetails: summary.taxDetails,
+                                discountDetails: summary.discountDetails,
+                                chargeDetails: summary.chargeDetails,
+                                grandTotal: summary.grandTotal,
+                                totalItemCount: totalItems,
+                                totalUnitCount: totalUnits,
+                                isRoundOffEnabled: isRoundOffEnabled,
+                                roundingAmount: summary.roundingAmount,
+                                showClearButton: false,
+                                onRoundOffToggled: () {
+                                  _isRoundOffEnabledNotifier.value =
+                                      !_isRoundOffEnabledNotifier.value;
+                                  _recalculateTotals();
+                                },
+                                onAddTax: _onAdjustTax,
+                                onAddDiscount: _onAdjustDiscount,
+                                onAddOtherCharges: _onAdjustCharges,
+                                onRemoveTax: (taxDetail) {
+                                  final updated = _appliedTaxesNotifier.value
+                                      .where((t) => t.name != taxDetail.name)
+                                      .toList();
+                                  _appliedTaxesNotifier.value = updated;
+                                  _recalculateTotals();
+                                },
+                                onRemoveDiscount: (discountDetail) {
+                                  final updated = _appliedDiscountsNotifier
+                                      .value
+                                      .where(
+                                        (d) => d.name != discountDetail.name,
+                                      )
+                                      .toList();
+                                  _appliedDiscountsNotifier.value = updated;
+                                  _recalculateTotals();
+                                },
+                                onRemoveCharge: (chargeDetail) {
+                                  final updated = _appliedChargesNotifier.value
+                                      .where((c) => c.name != chargeDetail.name)
+                                      .toList();
+                                  _appliedChargesNotifier.value = updated;
+                                  _recalculateTotals();
                                 },
                               );
                             },
-                          ),
-                        ),
-                      ],
-                    ),
+                          );
+                        },
+                      );
+                    },
                   ),
-                ),
-                const SizedBox(height: 16),
+                  const SizedBox(height: 12),
 
-                // Customer details title
-                Center(
-                  child: Text(
-                    context.tr(
-                          shared.LocaleKeys.invoiceCustomerDetailsTitle,
-                          track: shared.TrackConstants.invoicePageTrack,
-                        ) ??
-                        'CUSTOMER DETAILS (OPTIONAL)',
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
+                  // Payment mode dropdown
+                  Card(
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: colorScheme.outlineVariant),
                     ),
-                  ),
-                ),
-                const SizedBox(height: 12),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 6,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.payments_outlined,
+                            color: colorScheme.primary,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child:
+                                BlocBuilder<
+                                  InvoiceManagementBloc,
+                                  InvoiceManagementState
+                                >(
+                                  builder: (context, state) {
+                                    final availableModes = <String>{
+                                      'UPI',
+                                      'Cash',
+                                      'Card',
+                                    };
+                                    if (state is InvoiceManagementLoadedState) {
+                                      for (final mode in state.paymentModes) {
+                                        if (mode.paymentMethodName.isNotEmpty) {
+                                          availableModes.add(
+                                            mode.paymentMethodName,
+                                          );
+                                        }
+                                      }
+                                    }
 
-                // Customer detail inputs
-                Card(
-                  elevation: 1,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: BorderSide(color: colorScheme.outlineVariant),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          controller: _phoneController,
-                          focusNode: _phoneFocusNode,
-                          keyboardType: TextInputType.phone,
-                          textInputAction: TextInputAction.next,
-                          decoration: InputDecoration(
-                            labelText: context.tr(
-                                  shared.LocaleKeys.invoiceCustomerPhoneHint,
-                                  track: shared.TrackConstants.invoicePageTrack,
-                                ) ??
-                                'Mobile Number',
-                            border: const OutlineInputBorder(),
-                            prefixIcon: const Icon(Icons.phone_outlined),
+                                    return ValueListenableBuilder<String>(
+                                      valueListenable: _paymentMethodNotifier,
+                                      builder: (context, selectedMethod, _) {
+                                        final currentVal =
+                                            availableModes.contains(
+                                              selectedMethod,
+                                            )
+                                            ? selectedMethod
+                                            : availableModes.first;
+
+                                        return DropdownButtonHideUnderline(
+                                          child: DropdownButton<String>(
+                                            value: currentVal,
+                                            isExpanded: true,
+                                            items: availableModes
+                                                .map(
+                                                  (m) => DropdownMenuItem(
+                                                    value: m,
+                                                    child: Text(m),
+                                                  ),
+                                                )
+                                                .toList(),
+                                            onChanged: (val) {
+                                              if (val != null) {
+                                                _paymentMethodNotifier.value =
+                                                    val;
+                                              }
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          controller: _nameController,
-                          focusNode: _nameFocusNode,
-                          textCapitalization: TextCapitalization.words,
-                          textInputAction: TextInputAction.done,
-                          decoration: InputDecoration(
-                            labelText: context.tr(
-                                  shared.LocaleKeys.invoiceCustomerNameHint,
-                                  track: shared.TrackConstants.invoicePageTrack,
-                                ) ??
-                                'Customer name',
-                            border: const OutlineInputBorder(),
-                            prefixIcon: const Icon(Icons.person_outline),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const SizedBox(height: 16),
+
+                  // Customer details title
+                  Center(
+                    child: Text(
+                      context.tr(
+                            shared.LocaleKeys.invoiceCustomerDetailsTitle,
+                            track: shared.TrackConstants.invoicePageTrack,
+                          ) ??
+                          'CUSTOMER DETAILS (OPTIONAL)',
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Customer detail inputs
+                  Card(
+                    elevation: 1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: BorderSide(color: colorScheme.outlineVariant),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            controller: _phoneController,
+                            focusNode: _phoneFocusNode,
+                            keyboardType: TextInputType.phone,
+                            textInputAction: TextInputAction.next,
+                            decoration: InputDecoration(
+                              labelText:
+                                  context.tr(
+                                    shared.LocaleKeys.invoiceCustomerPhoneHint,
+                                    track:
+                                        shared.TrackConstants.invoicePageTrack,
+                                  ) ??
+                                  'Mobile Number',
+                              border: const OutlineInputBorder(),
+                              prefixIcon: const Icon(Icons.phone_outlined),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TextFormField(
+                            controller: _nameController,
+                            focusNode: _nameFocusNode,
+                            textCapitalization: TextCapitalization.words,
+                            textInputAction: TextInputAction.done,
+                            decoration: InputDecoration(
+                              labelText:
+                                  context.tr(
+                                    shared.LocaleKeys.invoiceCustomerNameHint,
+                                    track:
+                                        shared.TrackConstants.invoicePageTrack,
+                                  ) ??
+                                  'Customer name',
+                              border: const OutlineInputBorder(),
+                              prefixIcon: const Icon(Icons.person_outline),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
-  );
+    );
   }
 }

@@ -16,5 +16,7 @@ class OrderCheckoutData {
 }
 
 abstract class CheckoutRepository {
-  Future<Either<Failure, OrderCheckoutData>> getOrderCheckoutData(String orderId);
+  Future<Either<Failure, OrderCheckoutData>> getOrderCheckoutData(
+    String orderId,
+  );
 }

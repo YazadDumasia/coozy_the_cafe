@@ -44,75 +44,81 @@ void main() {
   });
 
   group('CurrentOrderTabView isPickerOnly Tests', () {
-    testWidgets('shows Submit button inplace of Bill Now when isPickerOnly is true', (tester) async {
-      const sampleItem = OrderCartItem(
-        menuItemId: 1,
-        name: 'Cappuccino',
-        price: 150.0,
-        quantity: 2,
-      );
+    testWidgets(
+      'shows Submit button inplace of Bill Now when isPickerOnly is true',
+      (tester) async {
+        const sampleItem = OrderCartItem(
+          menuItemId: 1,
+          name: 'Cappuccino',
+          price: 150.0,
+          quantity: 2,
+        );
 
-      final bloc = createTestBloc();
+        final bloc = createTestBloc();
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: BlocProvider<MenuItemPickerBloc>.value(
-              value: bloc,
-              child: const CurrentOrderTabView(
-                cartItems: [sampleItem],
-                tableId: 1,
-                tableName: 'Table 1',
-                orderId: 101,
-                isPickerOnly: true,
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: BlocProvider<MenuItemPickerBloc>.value(
+                value: bloc,
+                child: const CurrentOrderTabView(
+                  cartItems: [sampleItem],
+                  tableId: 1,
+                  tableName: 'Table 1',
+                  orderId: 101,
+                  isPickerOnly: true,
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pump();
+        );
+        await tester.pump();
 
-      // Verify "Submit" button is present and "Bill Now" / "Send Order" are NOT present
-      expect(find.text('Submit'), findsOneWidget);
-      expect(find.text('Bill Now'), findsNothing);
-      expect(find.text('SEND ORDER'), findsNothing);
+        // Verify "Submit" button is present and "Bill Now" / "Send Order" are NOT present
+        expect(find.text('Submit'), findsOneWidget);
+        expect(find.text('Bill Now'), findsNothing);
+        expect(find.text('SEND ORDER'), findsNothing);
 
-      await bloc.close();
-    });
+        await bloc.close();
+      },
+    );
 
-    testWidgets('shows Bill Now and Send Order when isPickerOnly is false and orderId != null', (tester) async {
-      const sampleItem = OrderCartItem(
-        menuItemId: 1,
-        name: 'Espresso',
-        price: 100.0,
-        quantity: 1,
-      );
+    testWidgets(
+      'shows Bill Now and Send Order when isPickerOnly is false and orderId != null',
+      (tester) async {
+        const sampleItem = OrderCartItem(
+          menuItemId: 1,
+          name: 'Espresso',
+          price: 100.0,
+          quantity: 1,
+        );
 
-      final bloc = createTestBloc();
+        final bloc = createTestBloc();
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: BlocProvider<MenuItemPickerBloc>.value(
-              value: bloc,
-              child: const CurrentOrderTabView(
-                cartItems: [sampleItem],
-                tableId: 1,
-                tableName: 'Table 1',
-                orderId: 101,
-                isPickerOnly: false,
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: BlocProvider<MenuItemPickerBloc>.value(
+                value: bloc,
+                child: const CurrentOrderTabView(
+                  cartItems: [sampleItem],
+                  tableId: 1,
+                  tableName: 'Table 1',
+                  orderId: 101,
+                  isPickerOnly: false,
+                ),
               ),
             ),
           ),
-        ),
-      );
-      await tester.pump();
+        );
+        await tester.pump();
 
-      // Verify Bill Now is present
-      expect(find.text('Bill Now'), findsOneWidget);
-      expect(find.text('Submit'), findsNothing);
+        // Verify Bill Now is present
+        expect(find.text('Bill Now'), findsOneWidget);
+        expect(find.text('Submit'), findsNothing);
 
-      await bloc.close();
-    });
+        await bloc.close();
+      },
+    );
   });
 }

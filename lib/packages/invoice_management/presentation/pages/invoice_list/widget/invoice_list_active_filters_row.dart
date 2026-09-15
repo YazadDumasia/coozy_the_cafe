@@ -27,14 +27,12 @@ class InvoiceListActiveFiltersRow extends StatelessWidget {
       for (final item in filter.applied) {
         chips.add(
           InputChip(
-            label: Text(
-              item.filterTitle,
-              style: const TextStyle(fontSize: 12),
-            ),
+            label: Text(item.filterTitle, style: const TextStyle(fontSize: 12)),
             selected: true,
             showCheckmark: false,
             avatar: const Icon(Icons.tune, size: 14),
-            deleteButtonTooltipMessage: context.tr(
+            deleteButtonTooltipMessage:
+                context.tr(
                   shared.LocaleKeys.commonDelete,
                   track: shared.TrackConstants.commonTrack,
                 ) ??
@@ -48,7 +46,8 @@ class InvoiceListActiveFiltersRow extends StatelessWidget {
     if (chips.isNotEmpty) {
       chips.add(
         ActionChip(
-          tooltip: context.tr(
+          tooltip:
+              context.tr(
                 shared.LocaleKeys.commonReset,
                 track: shared.TrackConstants.commonTrack,
               ) ??

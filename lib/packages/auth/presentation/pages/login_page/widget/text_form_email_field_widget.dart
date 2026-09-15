@@ -42,7 +42,10 @@ class _TextFormEmailFieldWidgetState extends State<TextFormEmailFieldWidget> {
                   'Email',
             ),
             hintText:
-                context.tr(shared.LocaleKeys.loginEmailHint, track: shared.TrackConstants.loginPageTrack) ??
+                context.tr(
+                  shared.LocaleKeys.loginEmailHint,
+                  track: shared.TrackConstants.loginPageTrack,
+                ) ??
                 'Enter your Email address.',
             isDense: true,
             border: OutlineInputBorder(

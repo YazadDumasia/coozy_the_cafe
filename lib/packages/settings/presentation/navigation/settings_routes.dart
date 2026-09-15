@@ -5,17 +5,17 @@ import '../pages/settings/settings_screen.dart';
 
 class SettingsRoutes {
   static List<RouteBase> get routes => [
+    GoRoute(
+      path: AppRoutePath.settingsScreenRoute,
+      name: AppRouteName.settings,
+      builder: (context, state) => const SettingsScreen(),
+      routes: [
         GoRoute(
-          path: AppRoutePath.settingsScreenRoute,
-          name: AppRouteName.settings,
-          builder: (context, state) => const SettingsScreen(),
-          routes: [
-            GoRoute(
-              path: 'currency-exchange',
-              name: AppRouteName.currencyExchange,
-              builder: (context, state) => const CurrencyExchangeScreen(),
-            ),
-          ],
+          path: 'currency-exchange',
+          name: AppRouteName.currencyExchange,
+          builder: (context, state) => const CurrencyExchangeScreen(),
         ),
-      ];
+      ],
+    ),
+  ];
 }

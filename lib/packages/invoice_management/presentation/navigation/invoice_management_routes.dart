@@ -15,8 +15,9 @@ class InvoiceManagementRoutes {
       path: AppRoutePath.invoiceListScreenRoute,
       name: 'invoice-list',
       builder: (context, state) => BlocProvider<InvoiceManagementBloc>(
-        create: (_) => sl<InvoiceManagementBloc>()
-          ..add(const LoadInvoicesEvent(isRefresh: true)),
+        create: (_) =>
+            sl<InvoiceManagementBloc>()
+              ..add(const LoadInvoicesEvent(isRefresh: true)),
         child: const InvoiceListScreen(),
       ),
       routes: [
@@ -73,21 +74,23 @@ class InvoiceManagementRoutes {
                 if (extraDetails != null) {
                   return BlocProvider<InvoiceManagementBloc>(
                     create: (_) => sl<InvoiceManagementBloc>(),
-                    child: EditInvoiceScreen(
-                      details: extraDetails,
-                    ),
+                    child: EditInvoiceScreen(details: extraDetails),
                   );
                 }
-                final idStr = state.pathParameters['id'] ??
+                final idStr =
+                    state.pathParameters['id'] ??
                     state.uri.queryParameters['id'];
                 final invoiceId = int.tryParse(idStr ?? '') ?? 0;
                 return BlocProvider<InvoiceManagementBloc>(
-                  create: (_) => sl<InvoiceManagementBloc>()
-                    ..add(LoadInvoiceDetailsEvent(invoiceId)),
+                  create: (_) =>
+                      sl<InvoiceManagementBloc>()
+                        ..add(LoadInvoiceDetailsEvent(invoiceId)),
                   child: Builder(
                     builder: (context) {
-                      return BlocBuilder<InvoiceManagementBloc,
-                          InvoiceManagementState>(
+                      return BlocBuilder<
+                        InvoiceManagementBloc,
+                        InvoiceManagementState
+                      >(
                         builder: (context, state) {
                           if (state is InvoiceManagementLoadedState &&
                               state.selectedInvoiceDetails != null) {
@@ -115,20 +118,21 @@ class InvoiceManagementRoutes {
             if (extraDetails != null) {
               return BlocProvider<InvoiceManagementBloc>(
                 create: (_) => sl<InvoiceManagementBloc>(),
-                child: EditInvoiceScreen(
-                  details: extraDetails,
-                ),
+                child: EditInvoiceScreen(details: extraDetails),
               );
             }
             final idStr = state.uri.queryParameters['id'];
             final invoiceId = int.tryParse(idStr ?? '') ?? 0;
             return BlocProvider<InvoiceManagementBloc>(
-              create: (_) => sl<InvoiceManagementBloc>()
-                ..add(LoadInvoiceDetailsEvent(invoiceId)),
+              create: (_) =>
+                  sl<InvoiceManagementBloc>()
+                    ..add(LoadInvoiceDetailsEvent(invoiceId)),
               child: Builder(
                 builder: (context) {
-                  return BlocBuilder<InvoiceManagementBloc,
-                      InvoiceManagementState>(
+                  return BlocBuilder<
+                    InvoiceManagementBloc,
+                    InvoiceManagementState
+                  >(
                     builder: (context, state) {
                       if (state is InvoiceManagementLoadedState &&
                           state.selectedInvoiceDetails != null) {

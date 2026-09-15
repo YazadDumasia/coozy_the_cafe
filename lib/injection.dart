@@ -69,5 +69,3 @@ Future<void> initDI() async {
   // Invoice Management Package Dependencies
   registerInvoiceManagementDependencies(sl);
 }
-
-

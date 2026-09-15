@@ -28,8 +28,8 @@ class MenuItemBarcodeInfo {
 
   String get fullDisplayName =>
       variationName != null && variationName!.isNotEmpty
-          ? '$name ($variationName)'
-          : name;
+      ? '$name ($variationName)'
+      : name;
 
   String get categorySubcategoryDisplay {
     if (subcategoryName != null && subcategoryName!.isNotEmpty) {
@@ -61,7 +61,9 @@ class MenuItemBarcodePdfGenerator {
   static const String logoAssetPath = 'assets/images/app_logo_clear_bg.png';
 
   /// Extracts flat list of barcode info items from catalog data, handling individual variations separately.
-  static List<MenuItemBarcodeInfo> extractBarcodeItems(MenuCatalogData catalog) {
+  static List<MenuItemBarcodeInfo> extractBarcodeItems(
+    MenuCatalogData catalog,
+  ) {
     final List<MenuItemBarcodeInfo> result = [];
 
     for (final categoryData in catalog.categoryDataList) {
@@ -104,10 +106,7 @@ class MenuItemBarcodePdfGenerator {
     final variations = itemWithVar.variations;
 
     if (variations.isEmpty) {
-      final payload =
-          item.hashId.isNotEmpty
-              ? item.hashId
-              : 'ITEM_${item.id}';
+      final payload = item.hashId.isNotEmpty ? item.hashId : 'ITEM_${item.id}';
 
       result.add(
         MenuItemBarcodeInfo(
@@ -122,10 +121,9 @@ class MenuItemBarcodePdfGenerator {
       );
     } else {
       for (final variation in variations) {
-        final payload =
-            variation.hashId.isNotEmpty
-                ? variation.hashId
-                : 'VAR_${variation.id}';
+        final payload = variation.hashId.isNotEmpty
+            ? variation.hashId
+            : 'VAR_${variation.id}';
 
         final varPrice = variation.sellingPrice ?? item.sellingPrice ?? 0.0;
 
@@ -133,10 +131,9 @@ class MenuItemBarcodePdfGenerator {
           MenuItemBarcodeInfo(
             id: item.id,
             name: item.name.isNotEmpty ? item.name : 'Item #${item.id}',
-            variationName:
-                variation.name?.isNotEmpty == true
-                    ? variation.name!
-                    : 'Variation #${variation.id}',
+            variationName: variation.name?.isNotEmpty == true
+                ? variation.name!
+                : 'Variation #${variation.id}',
             categoryName: categoryName,
             subcategoryName: subcategoryName,
             price: varPrice,
@@ -200,7 +197,9 @@ class MenuItemBarcodePdfGenerator {
   }
 
   /// Entry point for PDF generation.
-  static Future<Uint8List> _generatePdfInIsolate(_BarcodeComputeParams params) async {
+  static Future<Uint8List> _generatePdfInIsolate(
+    _BarcodeComputeParams params,
+  ) async {
     final int cols = params.columnsCount.clamp(2, 4);
 
     final docTheme = pw.ThemeData.withFont(

@@ -6,11 +6,7 @@ class CartItemTile extends StatelessWidget {
   final CartItem item;
   final VoidCallback onEdit;
 
-  const CartItemTile({
-    super.key,
-    required this.item,
-    required this.onEdit,
-  });
+  const CartItemTile({super.key, required this.item, required this.onEdit});
 
   @override
   Widget build(BuildContext context) {

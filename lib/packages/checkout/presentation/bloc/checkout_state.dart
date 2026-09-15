@@ -32,14 +32,43 @@ class CheckoutState extends Equatable {
   });
 
   factory CheckoutState.initial() {
-
     final defaultMethods = [
-      const PaymentMethod(id: 'cash', name: 'Cash', icon: Icons.payments, isEnabled: true),
-      const PaymentMethod(id: 'debit_card', name: 'Debit Card', icon: Icons.credit_card, isEnabled: true),
-      const PaymentMethod(id: 'credit_card', name: 'Credit Card', icon: Icons.credit_card, isEnabled: true),
-      const PaymentMethod(id: 'credit', name: 'Credit', icon: Icons.account_balance_wallet, isEnabled: true),
-      const PaymentMethod(id: 'upi', name: 'UPI', icon: Icons.qr_code, isEnabled: true),
-      const PaymentMethod(id: 'bitcoin', name: 'Bitcoin', icon: Icons.currency_bitcoin, isEnabled: true),
+      const PaymentMethod(
+        id: 'cash',
+        name: 'Cash',
+        icon: Icons.payments,
+        isEnabled: true,
+      ),
+      const PaymentMethod(
+        id: 'debit_card',
+        name: 'Debit Card',
+        icon: Icons.credit_card,
+        isEnabled: true,
+      ),
+      const PaymentMethod(
+        id: 'credit_card',
+        name: 'Credit Card',
+        icon: Icons.credit_card,
+        isEnabled: true,
+      ),
+      const PaymentMethod(
+        id: 'credit',
+        name: 'Credit',
+        icon: Icons.account_balance_wallet,
+        isEnabled: true,
+      ),
+      const PaymentMethod(
+        id: 'upi',
+        name: 'UPI',
+        icon: Icons.qr_code,
+        isEnabled: true,
+      ),
+      const PaymentMethod(
+        id: 'bitcoin',
+        name: 'Bitcoin',
+        icon: Icons.currency_bitcoin,
+        isEnabled: true,
+      ),
     ];
 
     return CheckoutState(
@@ -89,8 +118,10 @@ class CheckoutState extends Equatable {
       appliedTaxes: appliedTaxes ?? this.appliedTaxes,
       appliedDiscounts: appliedDiscounts ?? this.appliedDiscounts,
       appliedOtherCharges: appliedOtherCharges ?? this.appliedOtherCharges,
-      availablePaymentMethods: availablePaymentMethods ?? this.availablePaymentMethods,
-      selectedPaymentMethod: selectedPaymentMethod ?? this.selectedPaymentMethod,
+      availablePaymentMethods:
+          availablePaymentMethods ?? this.availablePaymentMethods,
+      selectedPaymentMethod:
+          selectedPaymentMethod ?? this.selectedPaymentMethod,
       customerDetails: customerDetails ?? this.customerDetails,
       isRoundOffEnabled: isRoundOffEnabled ?? this.isRoundOffEnabled,
       summary: summary ?? this.summary,
@@ -99,19 +130,18 @@ class CheckoutState extends Equatable {
 
   @override
   List<Object?> get props => [
-        orderId,
-        lastCreatedInvoiceId,
-        isLoading,
-        errorMessage,
-        cartItems,
-        appliedTaxes,
-        appliedDiscounts,
-        appliedOtherCharges,
-        availablePaymentMethods,
-        selectedPaymentMethod,
-        customerDetails,
-        isRoundOffEnabled,
-        summary,
-      ];
+    orderId,
+    lastCreatedInvoiceId,
+    isLoading,
+    errorMessage,
+    cartItems,
+    appliedTaxes,
+    appliedDiscounts,
+    appliedOtherCharges,
+    availablePaymentMethods,
+    selectedPaymentMethod,
+    customerDetails,
+    isRoundOffEnabled,
+    summary,
+  ];
 }
-

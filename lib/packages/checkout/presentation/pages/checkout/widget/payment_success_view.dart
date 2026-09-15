@@ -68,8 +68,9 @@ class PaymentSuccessView extends StatefulWidget {
 class _PaymentSuccessViewState extends State<PaymentSuccessView>
     with SingleTickerProviderStateMixin {
   late final AnimationController _lottieController;
-  final ValueNotifier<bool> _isParticleEnabledNotifier =
-      ValueNotifier<bool>(true);
+  final ValueNotifier<bool> _isParticleEnabledNotifier = ValueNotifier<bool>(
+    true,
+  );
   Timer? _disableTimer;
 
   @override
@@ -116,7 +117,9 @@ class _PaymentSuccessViewState extends State<PaymentSuccessView>
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final formattedAmount = core.CurrencyFormatter.format(value: widget.grandTotal);
+    final formattedAmount = core.CurrencyFormatter.format(
+      value: widget.grandTotal,
+    );
 
     final lottieAssetPath = isDark
         ? 'assets/lottie/success_dark.json'

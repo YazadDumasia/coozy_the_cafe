@@ -17,7 +17,12 @@ class AppliedTaxDetail extends Equatable {
   });
 
   @override
-  List<Object?> get props => [name, ratePercent, taxableSubtotal, calculatedAmount];
+  List<Object?> get props => [
+    name,
+    ratePercent,
+    taxableSubtotal,
+    calculatedAmount,
+  ];
 }
 
 class AppliedDiscountDetail extends Equatable {
@@ -81,31 +86,31 @@ class BillSummary extends Equatable {
   });
 
   factory BillSummary.empty() => const BillSummary(
-        subtotal: 0.0,
-        taxableBase: 0.0,
-        totalTaxes: 0.0,
-        totalDiscounts: 0.0,
-        totalOtherCharges: 0.0,
-        roundingAmount: 0.0,
-        grandTotal: 0.0,
-        taxDetails: [],
-        discountDetails: [],
-        chargeDetails: [],
-      );
+    subtotal: 0.0,
+    taxableBase: 0.0,
+    totalTaxes: 0.0,
+    totalDiscounts: 0.0,
+    totalOtherCharges: 0.0,
+    roundingAmount: 0.0,
+    grandTotal: 0.0,
+    taxDetails: [],
+    discountDetails: [],
+    chargeDetails: [],
+  );
 
   @override
   List<Object?> get props => [
-        subtotal,
-        taxableBase,
-        totalTaxes,
-        totalDiscounts,
-        totalOtherCharges,
-        roundingAmount,
-        grandTotal,
-        taxDetails,
-        discountDetails,
-        chargeDetails,
-      ];
+    subtotal,
+    taxableBase,
+    totalTaxes,
+    totalDiscounts,
+    totalOtherCharges,
+    roundingAmount,
+    grandTotal,
+    taxDetails,
+    discountDetails,
+    chargeDetails,
+  ];
 }
 
 class BillCalculator {
@@ -183,7 +188,8 @@ class BillCalculator {
     }
 
     // 4. Grand Total = Taxable Base + Total Taxes + Total Other Fees (± Rounding if enabled)
-    final double unroundedGrandTotal = taxableBase + totalTaxes + totalOtherCharges;
+    final double unroundedGrandTotal =
+        taxableBase + totalTaxes + totalOtherCharges;
     double finalGrandTotal = unroundedGrandTotal;
     double roundingAmount = 0.0;
 

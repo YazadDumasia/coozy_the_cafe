@@ -11,10 +11,7 @@ import 'add_tax_dialog.dart';
 class SelectTaxDialog extends StatelessWidget {
   final Function(Tax) onTaxAdded;
 
-  const SelectTaxDialog({
-    super.key,
-    required this.onTaxAdded,
-  });
+  const SelectTaxDialog({super.key, required this.onTaxAdded});
 
   Future<void> _onOptionSelected(
     BuildContext context,
@@ -43,8 +40,9 @@ class SelectTaxDialog extends StatelessWidget {
       child: AddTaxDialog(
         initialName: taxName,
         initialRate: existing.name.isNotEmpty ? existing.ratePercent : null,
-        initialIsDefaultAdd:
-            existing.name.isNotEmpty ? existing.isDefaultAdd : null,
+        initialIsDefaultAdd: existing.name.isNotEmpty
+            ? existing.isDefaultAdd
+            : null,
         onTaxAdded: onTaxAdded,
       ),
     );
@@ -78,7 +76,8 @@ class SelectTaxDialog extends StatelessWidget {
         final defaultOptions = [
           {
             'key': 'CGST',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutCgst,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -86,7 +85,8 @@ class SelectTaxDialog extends StatelessWidget {
           },
           {
             'key': 'SGST',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutSgst,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -94,7 +94,8 @@ class SelectTaxDialog extends StatelessWidget {
           },
           {
             'key': 'IGST',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutIgst,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -102,7 +103,8 @@ class SelectTaxDialog extends StatelessWidget {
           },
           {
             'key': 'VAT',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutVat,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -110,7 +112,8 @@ class SelectTaxDialog extends StatelessWidget {
           },
           {
             'key': 'Other Tax',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutOtherTax,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -131,10 +134,7 @@ class SelectTaxDialog extends StatelessWidget {
               if (tax.name.trim().isNotEmpty &&
                   !existingNames.contains(tax.name.trim().toLowerCase())) {
                 existingNames.add(tax.name.trim().toLowerCase());
-                customOptions.add({
-                  'key': tax.name,
-                  'display': tax.name,
-                });
+                customOptions.add({'key': tax.name, 'display': tax.name});
               }
             }
 
@@ -157,7 +157,8 @@ class SelectTaxDialog extends StatelessWidget {
                           child: Text(
                             context.tr(
                                   shared.LocaleKeys.checkoutSelectTax,
-                                  track: shared.TrackConstants.checkoutPageTrack,
+                                  track:
+                                      shared.TrackConstants.checkoutPageTrack,
                                 ) ??
                                 'SELECT TAX',
                             textAlign: TextAlign.center,
@@ -174,7 +175,8 @@ class SelectTaxDialog extends StatelessWidget {
                             color: theme.colorScheme.primary,
                           ),
                           onPressed: () => Navigator.of(context).pop(),
-                          tooltip: context.tr(
+                          tooltip:
+                              context.tr(
                                 shared.LocaleKeys.commonClose,
                                 track: shared.TrackConstants.commonTrack,
                               ) ??
@@ -204,8 +206,9 @@ class SelectTaxDialog extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.85),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.85,
+                            ),
                           ),
                         ),
                       ),

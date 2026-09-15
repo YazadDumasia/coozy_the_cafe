@@ -14,59 +14,71 @@ class CheckoutSummaryCard extends StatelessWidget {
         final summary = state.summary;
 
         final sharedTaxDetails = summary.taxDetails
-            .map((t) => shared.AppliedTaxDetail(
-                  name: t.name,
-                  ratePercent: t.ratePercent,
-                  taxableSubtotal: t.taxableSubtotal,
-                  calculatedAmount: t.calculatedAmount,
-                ))
+            .map(
+              (t) => shared.AppliedTaxDetail(
+                name: t.name,
+                ratePercent: t.ratePercent,
+                taxableSubtotal: t.taxableSubtotal,
+                calculatedAmount: t.calculatedAmount,
+              ),
+            )
             .toList();
 
         final sharedDiscountDetails = summary.discountDetails
-            .map((d) => shared.AppliedDiscountDetail(
-                  name: d.name,
-                  value: d.value,
-                  isPercentage: d.isPercentage,
-                  calculatedAmount: d.calculatedAmount,
-                ))
+            .map(
+              (d) => shared.AppliedDiscountDetail(
+                name: d.name,
+                value: d.value,
+                isPercentage: d.isPercentage,
+                calculatedAmount: d.calculatedAmount,
+              ),
+            )
             .toList();
 
         final sharedChargeDetails = summary.chargeDetails
-            .map((c) => shared.AppliedChargeDetail(
-                  name: c.name,
-                  value: c.value,
-                  isPercentage: c.isPercentage,
-                  calculatedAmount: c.calculatedAmount,
-                ))
+            .map(
+              (c) => shared.AppliedChargeDetail(
+                name: c.name,
+                value: c.value,
+                isPercentage: c.isPercentage,
+                calculatedAmount: c.calculatedAmount,
+              ),
+            )
             .toList();
 
         final sharedAppliedTaxes = state.appliedTaxes
-            .map((t) => shared.Tax(
-                  id: t.id,
-                  name: t.name,
-                  ratePercent: t.ratePercent,
-                  isDefaultAdd: t.isDefaultAdd,
-                ))
+            .map(
+              (t) => shared.Tax(
+                id: t.id,
+                name: t.name,
+                ratePercent: t.ratePercent,
+                isDefaultAdd: t.isDefaultAdd,
+              ),
+            )
             .toList();
 
         final sharedAppliedDiscounts = state.appliedDiscounts
-            .map((d) => shared.Discount(
-                  id: d.id,
-                  name: d.name,
-                  value: d.value,
-                  isPercentage: d.isPercentage,
-                  isDefaultAdd: d.isDefaultAdd,
-                ))
+            .map(
+              (d) => shared.Discount(
+                id: d.id,
+                name: d.name,
+                value: d.value,
+                isPercentage: d.isPercentage,
+                isDefaultAdd: d.isDefaultAdd,
+              ),
+            )
             .toList();
 
         final sharedAppliedCharges = state.appliedOtherCharges
-            .map((c) => shared.ExtraCharge(
-                  id: c.id,
-                  name: c.name,
-                  value: c.value,
-                  isPercentage: c.isPercentage,
-                  isDefaultAdd: c.isDefaultAdd,
-                ))
+            .map(
+              (c) => shared.ExtraCharge(
+                id: c.id,
+                name: c.name,
+                value: c.value,
+                isPercentage: c.isPercentage,
+                isDefaultAdd: c.isDefaultAdd,
+              ),
+            )
             .toList();
 
         return Padding(
@@ -92,15 +104,15 @@ class CheckoutSummaryCard extends StatelessWidget {
                   appliedTaxes: sharedAppliedTaxes,
                   onTaxAdded: (tax) {
                     context.read<CheckoutBloc>().add(
-                          CheckoutTaxAdded(
-                            checkout.Tax(
-                              id: tax.id,
-                              name: tax.name,
-                              ratePercent: tax.ratePercent,
-                              isDefaultAdd: tax.isDefaultAdd,
-                            ),
-                          ),
-                        );
+                      CheckoutTaxAdded(
+                        checkout.Tax(
+                          id: tax.id,
+                          name: tax.name,
+                          ratePercent: tax.ratePercent,
+                          isDefaultAdd: tax.isDefaultAdd,
+                        ),
+                      ),
+                    );
                   },
                 ),
               );
@@ -112,16 +124,16 @@ class CheckoutSummaryCard extends StatelessWidget {
                   appliedDiscounts: sharedAppliedDiscounts,
                   onDiscountAdded: (discount) {
                     context.read<CheckoutBloc>().add(
-                          CheckoutDiscountAdded(
-                            checkout.Discount(
-                              id: discount.id,
-                              name: discount.name,
-                              value: discount.value,
-                              isPercentage: discount.isPercentage,
-                              isDefaultAdd: discount.isDefaultAdd,
-                            ),
-                          ),
-                        );
+                      CheckoutDiscountAdded(
+                        checkout.Discount(
+                          id: discount.id,
+                          name: discount.name,
+                          value: discount.value,
+                          isPercentage: discount.isPercentage,
+                          isDefaultAdd: discount.isDefaultAdd,
+                        ),
+                      ),
+                    );
                   },
                 ),
               );
@@ -133,16 +145,16 @@ class CheckoutSummaryCard extends StatelessWidget {
                   appliedOtherCharges: sharedAppliedCharges,
                   onChargeAdded: (charge) {
                     context.read<CheckoutBloc>().add(
-                          CheckoutOtherChargeAdded(
-                            checkout.ExtraCharge(
-                              id: charge.id,
-                              name: charge.name,
-                              value: charge.value,
-                              isPercentage: charge.isPercentage,
-                              isDefaultAdd: charge.isDefaultAdd,
-                            ),
-                          ),
-                        );
+                      CheckoutOtherChargeAdded(
+                        checkout.ExtraCharge(
+                          id: charge.id,
+                          name: charge.name,
+                          value: charge.value,
+                          isPercentage: charge.isPercentage,
+                          isDefaultAdd: charge.isDefaultAdd,
+                        ),
+                      ),
+                    );
                   },
                 ),
               );
@@ -159,19 +171,25 @@ class CheckoutSummaryCard extends StatelessWidget {
             onRemoveDiscount: (discountDetail) {
               final target = state.appliedDiscounts.firstWhere(
                 (d) => d.name == discountDetail.name,
-                orElse: () => const checkout.Discount(id: '', name: '', value: 0),
+                orElse: () =>
+                    const checkout.Discount(id: '', name: '', value: 0),
               );
               if (target.id.isNotEmpty) {
-                context.read<CheckoutBloc>().add(CheckoutDiscountRemoved(target.id));
+                context.read<CheckoutBloc>().add(
+                  CheckoutDiscountRemoved(target.id),
+                );
               }
             },
             onRemoveCharge: (chargeDetail) {
               final target = state.appliedOtherCharges.firstWhere(
                 (c) => c.name == chargeDetail.name,
-                orElse: () => const checkout.ExtraCharge(id: '', name: '', value: 0),
+                orElse: () =>
+                    const checkout.ExtraCharge(id: '', name: '', value: 0),
               );
               if (target.id.isNotEmpty) {
-                context.read<CheckoutBloc>().add(CheckoutOtherChargeRemoved(target.id));
+                context.read<CheckoutBloc>().add(
+                  CheckoutOtherChargeRemoved(target.id),
+                );
               }
             },
             onClearCart: () {

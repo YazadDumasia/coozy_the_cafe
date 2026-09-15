@@ -7,12 +7,13 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() {
-    const MethodChannel pathProviderChannel =
-        MethodChannel('plugins.flutter.io/path_provider');
+    const MethodChannel pathProviderChannel = MethodChannel(
+      'plugins.flutter.io/path_provider',
+    );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(pathProviderChannel, (MethodCall call) async {
-      return Directory.systemTemp.path;
-    });
+          return Directory.systemTemp.path;
+        });
   });
 
   group('PdfSaveHelper and checkPdfStoragePermission tests', () {
@@ -31,24 +32,33 @@ void main() {
       expect(result.filePath, isNull);
     });
 
-    test('checkPdfStoragePermission returns true on non-Android/desktop test runner', () async {
-      final granted = await checkPdfStoragePermission();
-      expect(granted, isTrue);
-    });
+    test(
+      'checkPdfStoragePermission returns true on non-Android/desktop test runner',
+      () async {
+        final granted = await checkPdfStoragePermission();
+        expect(granted, isTrue);
+      },
+    );
 
-    test('PdfSaveHelper.checkPdfStoragePermission matches top-level checkPdfStoragePermission', () async {
-      final granted = await PdfSaveHelper.checkPdfStoragePermission();
-      expect(granted, isTrue);
-    });
+    test(
+      'PdfSaveHelper.checkPdfStoragePermission matches top-level checkPdfStoragePermission',
+      () async {
+        final granted = await PdfSaveHelper.checkPdfStoragePermission();
+        expect(granted, isTrue);
+      },
+    );
 
-    test('PdfSaveHelper.saveInvoicePdf saves invoice PDF bytes and returns success', () async {
-      final bytes = Uint8List.fromList([37, 80, 68, 70]); // %PDF
-      final result = await PdfSaveHelper.saveInvoicePdf(
-        bytes: bytes,
-        invoiceNumber: 'MD-11788',
-      );
-      expect(result.isSuccess, isTrue);
-      expect(result.filePath, contains('Invoice_MD-11788.pdf'));
-    });
+    test(
+      'PdfSaveHelper.saveInvoicePdf saves invoice PDF bytes and returns success',
+      () async {
+        final bytes = Uint8List.fromList([37, 80, 68, 70]); // %PDF
+        final result = await PdfSaveHelper.saveInvoicePdf(
+          bytes: bytes,
+          invoiceNumber: 'MD-11788',
+        );
+        expect(result.isSuccess, isTrue);
+        expect(result.filePath, contains('Invoice_MD-11788.pdf'));
+      },
+    );
   });
 }

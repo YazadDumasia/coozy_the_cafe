@@ -12,9 +12,9 @@ mixin CurrencyExchangeActions {
 
   void onRefreshPressed(BuildContext context, String baseCurrency) {
     context.read<CurrencyExchangeCubit>().loadExchangeData(
-          baseCurrency: baseCurrency,
-          forceRefresh: true,
-        );
+      baseCurrency: baseCurrency,
+      forceRefresh: true,
+    );
   }
 
   void copyToClipboard(BuildContext context, String text, String label) {

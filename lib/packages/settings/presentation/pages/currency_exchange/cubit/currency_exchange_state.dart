@@ -80,17 +80,17 @@ class CurrencyExchangeLoaded extends CurrencyExchangeState {
 
   @override
   List<Object?> get props => [
-        currencies,
-        rates,
-        baseCurrency,
-        targetCurrency,
-        amount,
-        date,
-        isOffline,
-        spreadPercentage,
-        searchQuery,
-        isChangingBase,
-      ];
+    currencies,
+    rates,
+    baseCurrency,
+    targetCurrency,
+    amount,
+    date,
+    isOffline,
+    spreadPercentage,
+    searchQuery,
+    isChangingBase,
+  ];
 }
 
 class CurrencyExchangeError extends CurrencyExchangeState {

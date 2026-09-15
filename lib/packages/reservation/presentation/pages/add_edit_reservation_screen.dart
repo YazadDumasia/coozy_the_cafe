@@ -219,7 +219,8 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
     if (_dateTimeNotifier.value == null) {
       shared.SnackBarUtils.showWarning(
         context,
-        message: context.tr(
+        message:
+            context.tr(
               shared.LocaleKeys.selectDateAndTimeMsg,
               track: shared.TrackConstants.reservationPageTrack,
             ) ??

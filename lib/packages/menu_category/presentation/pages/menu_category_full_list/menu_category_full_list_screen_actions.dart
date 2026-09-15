@@ -194,7 +194,8 @@ class MenuCategoryFullListScreenActions {
         if (context.mounted) {
           shared.SnackBarUtils.showError(
             context,
-            message: context.tr(
+            message:
+                context.tr(
                   shared
                       .LocaleKeys
                       .menuCategoryFullListFailedToUpdateCategoryMsg,

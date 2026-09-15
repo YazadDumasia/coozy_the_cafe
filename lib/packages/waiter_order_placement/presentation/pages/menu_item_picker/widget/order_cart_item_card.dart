@@ -304,7 +304,10 @@ class _OrderCartItemCardState extends State<OrderCartItemCard> {
                 style: theme.textTheme.bodyMedium?.copyWith(fontSize: 13),
                 decoration: InputDecoration(
                   hintText:
-                      context.tr(shared.LocaleKeys.itemRemarksHint, track: shared.TrackConstants.tablePageTrack) ??
+                      context.tr(
+                        shared.LocaleKeys.itemRemarksHint,
+                        track: shared.TrackConstants.tablePageTrack,
+                      ) ??
                       'Add special instruction or remark...',
                   hintStyle: theme.textTheme.bodyMedium?.copyWith(
                     fontSize: 13,

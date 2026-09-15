@@ -199,6 +199,7 @@ class PurchaseListScreenActions {
       content:
           context.tr(
             shared.LocaleKeys.purchaseThisWillRevertTheInventoryStockUpd,
+            track: shared.TrackConstants.purchasePageTrack,
           ) ??
           'Deleting this purchase will restore the inventory stock to its previous quantity. This action cannot be undone.',
       cancelText:

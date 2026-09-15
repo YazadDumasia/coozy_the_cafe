@@ -4,11 +4,11 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 void showInvoiceFilterBottomSheet({
   required BuildContext context,
-  required ValueNotifier<List<shared.AppliedFilterModel>> appliedFiltersNotifier,
+  required ValueNotifier<List<shared.AppliedFilterModel>>
+  appliedFiltersNotifier,
   required List<PaymentMode> paymentModes,
   required void Function(List<shared.AppliedFilterModel> applied) onApply,
 }) {
-
   final Set<String> modeNames = {};
   for (final mode in paymentModes) {
     if (mode.paymentMethodName.trim().isNotEmpty) {
@@ -17,14 +17,18 @@ void showInvoiceFilterBottomSheet({
   }
 
   if (modeNames.isEmpty) {
-    modeNames.addAll(['Cash', 'UPI', 'Credit Card', 'Debit Card', 'Net Banking', 'Cheque']);
+    modeNames.addAll([
+      'Cash',
+      'UPI',
+      'Credit Card',
+      'Debit Card',
+      'Net Banking',
+      'Cheque',
+    ]);
   }
 
   final filterOptions = modeNames.map((name) {
-    return shared.FilterItemModel(
-      filterKey: name,
-      filterTitle: name,
-    );
+    return shared.FilterItemModel(filterKey: name, filterTitle: name);
   }).toList();
 
   showModalBottomSheet(
@@ -36,7 +40,8 @@ void showInvoiceFilterBottomSheet({
         heightFactor: 0.8,
         child: shared.FilterWidget(
           filterProps: shared.FilterProps(
-            title: context.tr(
+            title:
+                context.tr(
                   shared.LocaleKeys.commonFilters,
                   track: shared.TrackConstants.commonTrack,
                 ) ??
@@ -49,7 +54,8 @@ void showInvoiceFilterBottomSheet({
             filters: [
               shared.FilterListModel(
                 filterKey: 'payment_mode',
-                title: context.tr(
+                title:
+                    context.tr(
                       shared.LocaleKeys.invoiceTablePMode,
                       track: shared.TrackConstants.invoicePageTrack,
                     ) ??

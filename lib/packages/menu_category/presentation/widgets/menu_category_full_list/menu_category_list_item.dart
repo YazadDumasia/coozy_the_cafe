@@ -257,7 +257,8 @@ class MenuCategoryListItem extends StatelessWidget {
                                   if (context.mounted) {
                                     shared.SnackBarUtils.showError(
                                       context,
-                                      message: context.tr(
+                                      message:
+                                          context.tr(
                                             shared
                                                 .LocaleKeys
                                                 .menuCategoryFullListFailedToReorderCategoryMsg,
@@ -290,7 +291,8 @@ class MenuCategoryListItem extends StatelessWidget {
                                     if (context.mounted) {
                                       shared.SnackBarUtils.showError(
                                         context,
-                                        message: context.tr(
+                                        message:
+                                            context.tr(
                                               shared
                                                   .LocaleKeys
                                                   .menuCategoryFullListFailedToReorderCategoryMsg,

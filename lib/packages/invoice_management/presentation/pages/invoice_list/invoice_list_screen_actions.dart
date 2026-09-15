@@ -11,11 +11,8 @@ import 'widget/invoice_list_filter_bottom_sheet.dart';
 class InvoiceListScreenActions {
   static void onSearchQueryChanged(BuildContext context, String query) {
     context.read<InvoiceManagementBloc>().add(
-          LoadInvoicesEvent(
-            isRefresh: true,
-            searchQuery: query,
-          ),
-        );
+      LoadInvoicesEvent(isRefresh: true, searchQuery: query),
+    );
   }
 
   static Future<void> onInvoiceTapped(
@@ -30,14 +27,15 @@ class InvoiceListScreenActions {
     );
     if (context.mounted) {
       context.read<InvoiceManagementBloc>().add(
-            const LoadInvoicesEvent(isRefresh: true),
-          );
+        const LoadInvoicesEvent(isRefresh: true),
+      );
     }
   }
 
   static void openFilterBottomSheet({
     required BuildContext context,
-    required ValueNotifier<List<shared.AppliedFilterModel>> appliedFiltersNotifier,
+    required ValueNotifier<List<shared.AppliedFilterModel>>
+    appliedFiltersNotifier,
     required List<PaymentMode> paymentModes,
   }) {
     showInvoiceFilterBottomSheet(
@@ -54,24 +52,26 @@ class InvoiceListScreenActions {
           }
         }
         context.read<InvoiceManagementBloc>().add(
-              LoadInvoicesEvent(
-                isRefresh: true,
-                paymentMethods: methods,
-              ),
-            );
+          LoadInvoicesEvent(isRefresh: true, paymentMethods: methods),
+        );
       },
     );
   }
 
   static void removeAppliedFilterKey({
     required BuildContext context,
-    required ValueNotifier<List<shared.AppliedFilterModel>> appliedFiltersNotifier,
+    required ValueNotifier<List<shared.AppliedFilterModel>>
+    appliedFiltersNotifier,
     required String filterKey,
   }) {
-    final current = List<shared.AppliedFilterModel>.from(appliedFiltersNotifier.value);
+    final current = List<shared.AppliedFilterModel>.from(
+      appliedFiltersNotifier.value,
+    );
     for (int i = 0; i < current.length; i++) {
       final f = current[i];
-      final newApplied = f.applied.where((item) => item.filterKey != filterKey).toList();
+      final newApplied = f.applied
+          .where((item) => item.filterKey != filterKey)
+          .toList();
       current[i] = shared.AppliedFilterModel(
         filterKey: f.filterKey,
         applied: newApplied,
@@ -90,23 +90,18 @@ class InvoiceListScreenActions {
       }
     }
     context.read<InvoiceManagementBloc>().add(
-          LoadInvoicesEvent(
-            isRefresh: true,
-            paymentMethods: methods,
-          ),
-        );
+      LoadInvoicesEvent(isRefresh: true, paymentMethods: methods),
+    );
   }
 
   static void clearAllFilters({
     required BuildContext context,
-    required ValueNotifier<List<shared.AppliedFilterModel>> appliedFiltersNotifier,
+    required ValueNotifier<List<shared.AppliedFilterModel>>
+    appliedFiltersNotifier,
   }) {
     appliedFiltersNotifier.value = [];
     context.read<InvoiceManagementBloc>().add(
-          const LoadInvoicesEvent(
-            isRefresh: true,
-            paymentMethods: [],
-          ),
-        );
+      const LoadInvoicesEvent(isRefresh: true, paymentMethods: []),
+    );
   }
 }

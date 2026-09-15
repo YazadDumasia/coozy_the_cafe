@@ -188,7 +188,8 @@ class _MenuSubCategoryExpansionChildListViewWidgetState
                                                     final message = isEnable
                                                         ? '$subName sub-category is activated successfully.'
                                                         : '$subName sub-category is deactivated successfully.';
-                                                    shared.SnackBarUtils.showSuccess(
+                                                    shared
+                                                        .SnackBarUtils.showSuccess(
                                                       context,
                                                       message: message,
                                                       duration: const Duration(
@@ -199,7 +200,8 @@ class _MenuSubCategoryExpansionChildListViewWidgetState
                                                 },
                                                 onError: (error) {
                                                   if (context.mounted) {
-                                                    shared.SnackBarUtils.showError(
+                                                    shared
+                                                        .SnackBarUtils.showError(
                                                       context,
                                                       message:
                                                           context.tr(

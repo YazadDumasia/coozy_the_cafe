@@ -21,9 +21,11 @@ class CurrencyFormatter {
   /// Use this anywhere in the UI that needs to display the active currency symbol
   /// without formatting a value (e.g. column headers, labels).
   static String get activeSymbol =>
-      (enableSecondary && secondarySymbol != null && secondarySymbol!.isNotEmpty)
-          ? secondarySymbol!
-          : primarySymbol;
+      (enableSecondary &&
+          secondarySymbol != null &&
+          secondarySymbol!.isNotEmpty)
+      ? secondarySymbol!
+      : primarySymbol;
 
   /// Notifier that fires whenever the active symbol changes.
   /// Widgets can listen to this to reactively update currency labels.
@@ -32,12 +34,15 @@ class CurrencyFormatter {
 
   /// Initializes currency state from SharedPreferences (or device locale fallback).
   /// Call this in `main()` after initializing Flutter bindings.
-  static Future<void> initFromPreferences([SharedPreferences? preferences]) async {
+  static Future<void> initFromPreferences([
+    SharedPreferences? preferences,
+  ]) async {
     try {
       final prefs = preferences ?? await SharedPreferences.getInstance();
       String? savedPrimary = prefs.getString('appCurrencySymbol');
       final savedSecondary = prefs.getString('appSecondaryCurrencySymbol');
-      final isSecondaryEnabled = prefs.getBool('enableSecondaryCurrency') ?? false;
+      final isSecondaryEnabled =
+          prefs.getBool('enableSecondaryCurrency') ?? false;
 
       if (savedPrimary == null || savedPrimary.isEmpty) {
         // Fallback: detect from device locale
@@ -45,7 +50,9 @@ class CurrencyFormatter {
           final locale = WidgetsBinding.instance.platformDispatcher.locale;
           final countryCode = locale.countryCode;
           if (countryCode != null && countryCode.isNotEmpty) {
-            final country = WorldCountry.maybeFromCode(countryCode.toUpperCase());
+            final country = WorldCountry.maybeFromCode(
+              countryCode.toUpperCase(),
+            );
             final symbol = country?.currencies?.firstOrNull?.symbol;
             if (symbol != null && symbol.isNotEmpty) {
               savedPrimary = symbol;
@@ -125,7 +132,8 @@ class CurrencyFormatter {
     }
 
     final int decimals =
-        decimalDigits ?? (numericValue != 0 && numericValue.abs() < 0.01 ? 4 : 2);
+        decimalDigits ??
+        (numericValue != 0 && numericValue.abs() < 0.01 ? 4 : 2);
 
     final NumberFormat numberFormatter = NumberFormat.decimalPatternDigits(
       locale: locale,
@@ -142,7 +150,9 @@ class CurrencyFormatter {
 
   static double _parseNumericValue(dynamic value) {
     if (value is num) return value.toDouble();
-    if (value is String) return double.tryParse(value.replaceAll(',', '')) ?? 0.0;
+    if (value is String) {
+      return double.tryParse(value.replaceAll(',', '')) ?? 0.0;
+    }
     return 0.0;
   }
 }

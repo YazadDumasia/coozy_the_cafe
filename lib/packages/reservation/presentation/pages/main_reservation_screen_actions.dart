@@ -194,7 +194,8 @@ class MainReservationScreenActions {
     ReservationEntity item,
   ) {
     final track = shared.TrackConstants.reservationPageTrack;
-    final customerName = item.customerName ??
+    final customerName =
+        item.customerName ??
         (context.tr(shared.LocaleKeys.guestLabel, track: track) ?? 'Guest');
 
     showDialog(
@@ -240,15 +241,14 @@ class MainReservationScreenActions {
           ElevatedButton.icon(
             icon: const Icon(Icons.check_circle_outline, size: 18),
             label: Text(
-              context.tr(
-                    shared.LocaleKeys.confirmSeatAndOrder,
-                    track: track,
-                  ) ??
+              context.tr(shared.LocaleKeys.confirmSeatAndOrder, track: track) ??
                   'Seat & Create Order',
             ),
             onPressed: () {
               Navigator.pop(dialogCtx);
-              context.read<ReservationActionCubit>().convertReservationToOrder(item);
+              context.read<ReservationActionCubit>().convertReservationToOrder(
+                item,
+              );
             },
           ),
         ],

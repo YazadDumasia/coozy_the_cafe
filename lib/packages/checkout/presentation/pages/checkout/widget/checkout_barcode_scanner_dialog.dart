@@ -9,10 +9,7 @@ import '../../../../domain/entities/cart_item.dart';
 class CheckoutBarcodeScannerDialog extends StatefulWidget {
   final CheckoutBloc checkoutBloc;
 
-  const CheckoutBarcodeScannerDialog({
-    super.key,
-    required this.checkoutBloc,
-  });
+  const CheckoutBarcodeScannerDialog({super.key, required this.checkoutBloc});
 
   @override
   State<CheckoutBarcodeScannerDialog> createState() =>
@@ -95,15 +92,14 @@ class _CheckoutBarcodeScannerDialogState
       }
 
       // Create CartItem
-      final String itemIdStr =
-          matchedVariation != null
-              ? 'var_${matchedVariation.id}'
-              : 'item_${matchedItem.id}';
+      final String itemIdStr = matchedVariation != null
+          ? 'var_${matchedVariation.id}'
+          : 'item_${matchedItem.id}';
 
       final String displayName =
           matchedVariation != null && matchedVariation.name?.isNotEmpty == true
-              ? '${matchedItem.name} (${matchedVariation.name})'
-              : matchedItem.name;
+          ? '${matchedItem.name} (${matchedVariation.name})'
+          : matchedItem.name;
 
       final double unitPrice =
           matchedVariation?.sellingPrice ?? matchedItem.sellingPrice ?? 0.0;
@@ -121,7 +117,8 @@ class _CheckoutBarcodeScannerDialogState
         Navigator.pop(context);
         core.SnackBarUtils.showSuccess(
           context,
-          message: '✓ Added "$displayName" (${core.CurrencyFormatter.format(value: unitPrice)})',
+          message:
+              '✓ Added "$displayName" (${core.CurrencyFormatter.format(value: unitPrice)})',
           duration: const Duration(seconds: 2),
         );
       }
@@ -286,10 +283,9 @@ class _CheckoutBarcodeScannerDialogState
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton.icon(
-                  onPressed:
-                      _isProcessing
-                          ? null
-                          : () => _processBarcode(_manualInputController.text),
+                  onPressed: _isProcessing
+                      ? null
+                      : () => _processBarcode(_manualInputController.text),
                   icon: const Icon(Icons.check_rounded, size: 18),
                   label: const Text('Add'),
                 ),

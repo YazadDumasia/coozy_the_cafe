@@ -38,8 +38,8 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
     _valueController = TextEditingController(
       text: widget.initialValue != null
           ? (widget.initialValue! % 1 == 0
-              ? widget.initialValue!.toInt().toString()
-              : widget.initialValue!.toString())
+                ? widget.initialValue!.toInt().toString()
+                : widget.initialValue!.toString())
           : '',
     );
     _isPercentage = widget.initialIsPercentage ?? false;
@@ -89,16 +89,17 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
                     track: shared.TrackConstants.checkoutPageTrack,
                   ) ??
                   'Add Other Fee',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextFormField(
               controller: _nameController,
               focusNode: _nameFocusNode,
               decoration: InputDecoration(
-                labelText: context.tr(
+                labelText:
+                    context.tr(
                       shared.LocaleKeys.checkoutOtherName,
                       track: shared.TrackConstants.checkoutPageTrack,
                     ) ??
@@ -108,29 +109,31 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
               textInputAction: TextInputAction.next,
               validator: (v) => v == null || v.trim().isEmpty
                   ? (context.tr(
-                        shared.LocaleKeys.checkoutEnterFeeName,
-                        track: shared.TrackConstants.checkoutPageTrack,
-                      ) ??
-                      'Enter fee name')
+                          shared.LocaleKeys.checkoutEnterFeeName,
+                          track: shared.TrackConstants.checkoutPageTrack,
+                        ) ??
+                        'Enter fee name')
                   : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _valueController,
               focusNode: _valueFocusNode,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               decoration: InputDecoration(
                 labelText: _isPercentage
                     ? (context.tr(
-                          shared.LocaleKeys.checkoutOtherValuePercent,
-                          track: shared.TrackConstants.checkoutPageTrack,
-                        ) ??
-                        'Other Value in %')
+                            shared.LocaleKeys.checkoutOtherValuePercent,
+                            track: shared.TrackConstants.checkoutPageTrack,
+                          ) ??
+                          'Other Value in %')
                     : (context.tr(
-                          shared.LocaleKeys.checkoutOtherValue,
-                          track: shared.TrackConstants.checkoutPageTrack,
-                        ) ??
-                        'Other Value'),
+                            shared.LocaleKeys.checkoutOtherValue,
+                            track: shared.TrackConstants.checkoutPageTrack,
+                          ) ??
+                          'Other Value'),
                 border: const OutlineInputBorder(),
                 suffixText: _isPercentage ? '%' : null,
               ),
@@ -143,7 +146,9 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
                       ) ??
                       'Enter fee value';
                 }
-                if (double.tryParse(v.trim()) == null) return 'Enter valid number';
+                if (double.tryParse(v.trim()) == null) {
+                  return 'Enter valid number';
+                }
                 return null;
               },
               onFieldSubmitted: (_) => _submit(),

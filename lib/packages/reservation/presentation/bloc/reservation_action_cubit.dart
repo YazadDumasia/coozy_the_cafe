@@ -102,10 +102,12 @@ class ReservationActionCubit extends Cubit<ReservationActionState> {
     emit(ReservationActionLoading());
     try {
       final orderId = await convertReservationToOrderUseCase(reservation);
-      emit(ReservationConvertedToOrderSuccess(
-        orderId: orderId,
-        message: 'Reservation converted to active order successfully!',
-      ));
+      emit(
+        ReservationConvertedToOrderSuccess(
+          orderId: orderId,
+          message: 'Reservation converted to active order successfully!',
+        ),
+      );
     } catch (e) {
       emit(ReservationActionError(e.toString()));
     }

@@ -25,9 +25,9 @@ class InvoiceDetailScreen extends StatefulWidget {
     this.initialInvoice,
     this.fromCheckout = false,
   }) : assert(
-          invoiceId != 0 || hashId != null || orderHashId != null,
-          'Either invoiceId, hashId, or orderHashId must be provided',
-        );
+         invoiceId != 0 || hashId != null || orderHashId != null,
+         'Either invoiceId, hashId, or orderHashId must be provided',
+       );
 
   @override
   State<InvoiceDetailScreen> createState() => _InvoiceDetailScreenState();
@@ -82,7 +82,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       return [
         IconButton(
           icon: const Icon(Icons.share_outlined),
-          tooltip: context.tr(
+          tooltip:
+              context.tr(
                 shared.LocaleKeys.invoiceActionShare,
                 track: shared.TrackConstants.invoicePageTrack,
               ) ??
@@ -91,7 +92,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
         ),
         PopupMenuButton<String>(
           icon: const Icon(Icons.more_vert),
-          tooltip: context.tr(
+          tooltip:
+              context.tr(
                 shared.LocaleKeys.invoiceActionMoreOptions,
                 track: shared.TrackConstants.invoicePageTrack,
               ) ??
@@ -225,7 +227,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     return [
       IconButton(
         icon: const Icon(Icons.picture_as_pdf_outlined),
-        tooltip: context.tr(
+        tooltip:
+            context.tr(
               shared.LocaleKeys.invoiceActionPreviewPdf,
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
@@ -234,7 +237,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       ),
       IconButton(
         icon: const Icon(Icons.share_outlined),
-        tooltip: context.tr(
+        tooltip:
+            context.tr(
               shared.LocaleKeys.invoiceActionShare,
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
@@ -243,7 +247,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       ),
       IconButton(
         icon: const Icon(Icons.sms_outlined),
-        tooltip: context.tr(
+        tooltip:
+            context.tr(
               shared.LocaleKeys.invoiceActionSms,
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
@@ -252,7 +257,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       ),
       IconButton(
         icon: Icon(FontAwesomeIcons.whatsapp.data),
-        tooltip: context.tr(
+        tooltip:
+            context.tr(
               shared.LocaleKeys.invoiceActionWhatsapp,
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
@@ -261,7 +267,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       ),
       IconButton(
         icon: const Icon(Icons.file_download_outlined),
-        tooltip: context.tr(
+        tooltip:
+            context.tr(
               shared.LocaleKeys.invoiceActionDownload,
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
@@ -270,7 +277,8 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
       ),
       IconButton(
         icon: const Icon(Icons.print_outlined),
-        tooltip: context.tr(
+        tooltip:
+            context.tr(
               shared.LocaleKeys.invoiceActionPrint,
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
@@ -297,8 +305,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
             title: Text(
               context.tr(
                     shared.LocaleKeys.invoiceDetailTitle,
-                    track:
-                        shared.TrackConstants.invoicePageTrack,
+                    track: shared.TrackConstants.invoicePageTrack,
                   ) ??
                   'Invoice Details',
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -377,8 +384,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                               child: Text(
                                 context.tr(
                                       shared.LocaleKeys.invoiceActionReturn,
-                                      track:
-                                          shared.TrackConstants.invoicePageTrack,
+                                      track: shared
+                                          .TrackConstants
+                                          .invoicePageTrack,
                                     ) ??
                                     'RETURN',
                                 maxLines: 1,
@@ -410,8 +418,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                               child: Text(
                                 context.tr(
                                       shared.LocaleKeys.invoiceActionDelete,
-                                      track:
-                                          shared.TrackConstants.invoicePageTrack,
+                                      track: shared
+                                          .TrackConstants
+                                          .invoicePageTrack,
                                     ) ??
                                     'DELETE',
                                 maxLines: 1,
@@ -436,9 +445,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 ? () async {
                                     final updated =
                                         await InvoiceDetailScreenActions.onEdit(
-                                      context,
-                                      details!,
-                                    );
+                                          context,
+                                          details!,
+                                        );
                                     if (updated == true && mounted) {
                                       _hasUpdated = true;
                                     }
@@ -449,8 +458,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                               child: Text(
                                 context.tr(
                                       shared.LocaleKeys.invoiceActionEdit,
-                                      track:
-                                          shared.TrackConstants.invoicePageTrack,
+                                      track: shared
+                                          .TrackConstants
+                                          .invoicePageTrack,
                                     ) ??
                                     'EDIT',
                                 maxLines: 1,
@@ -478,8 +488,10 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                           children: [
                             CircleAvatar(
                               radius: 36,
-                              backgroundColor: const Color(0xFF6D4C41),                              
-                              child:Image.asset(Assets.images.appLogoClearBg.path).paddingAll(5)
+                              backgroundColor: const Color(0xFF6D4C41),
+                              child: Image.asset(
+                                Assets.images.appLogoClearBg.path,
+                              ).paddingAll(5),
                             ),
                             const SizedBox(height: 8),
                             Text(
@@ -522,12 +534,15 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     fit: BoxFit.scaleDown,
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      inv.hashId.isNotEmpty ? inv.hashId : 'MD-${inv.id}',
+                                      inv.hashId.isNotEmpty
+                                          ? inv.hashId
+                                          : 'MD-${inv.id}',
                                       textAlign: TextAlign.end,
                                       maxLines: 1,
-                                      style: theme.textTheme.titleSmall?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: theme.textTheme.titleSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                     ),
                                   ),
                                 ),
@@ -554,9 +569,10 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                       createdDateStr,
                                       textAlign: TextAlign.end,
                                       maxLines: 1,
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: colorScheme.onSurface,
-                                      ),
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: colorScheme.onSurface,
+                                          ),
                                     ),
                                   ),
                                 ),
@@ -565,18 +581,23 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                             const SizedBox(height: 6),
                             // Table row below Date
                             () {
-                              final tableName = (details?.tableName != null && details!.tableName!.isNotEmpty)
+                              final tableName =
+                                  (details?.tableName != null &&
+                                      details!.tableName!.isNotEmpty)
                                   ? details.tableName!
-                                  : (inv.orderId != null ? 'Table ${inv.orderId}' : 'Dine-In');
+                                  : (inv.orderId != null
+                                        ? 'Table ${inv.orderId}'
+                                        : 'Dine-In');
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
                                     'Table / Dine-In',
-                                    style: theme.textTheme.labelMedium?.copyWith(
-                                      color: colorScheme.onSurfaceVariant,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    style: theme.textTheme.labelMedium
+                                        ?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(
@@ -587,10 +608,11 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                         tableName,
                                         textAlign: TextAlign.end,
                                         maxLines: 1,
-                                        style: theme.textTheme.titleSmall?.copyWith(
-                                          fontWeight: FontWeight.bold,
-                                          color: colorScheme.primary,
-                                        ),
+                                        style: theme.textTheme.titleSmall
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: colorScheme.primary,
+                                            ),
                                       ),
                                     ),
                                   ),
@@ -618,10 +640,11 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                       inv.paymentMethodName ?? 'Cash',
                                       textAlign: TextAlign.end,
                                       maxLines: 1,
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.w600,
-                                        color: colorScheme.onSurface,
-                                      ),
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w600,
+                                            color: colorScheme.onSurface,
+                                          ),
                                     ),
                                   ),
                                 ),
@@ -711,7 +734,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          core.CurrencyFormatter.format(value: item.unitPrice),
+                                          core.CurrencyFormatter.format(
+                                            value: item.unitPrice,
+                                          ),
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -724,7 +749,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                       Expanded(
                                         flex: 2,
                                         child: Text(
-                                          core.CurrencyFormatter.format(value: item.totalPrice),
+                                          core.CurrencyFormatter.format(
+                                            value: item.totalPrice,
+                                          ),
                                           textAlign: TextAlign.right,
                                         ),
                                       ),
@@ -741,83 +768,174 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                   'Subtotal',
                                   style: TextStyle(color: Colors.grey),
                                 ),
-                                Text(core.CurrencyFormatter.format(value: inv.totalCost)),
+                                Text(
+                                  core.CurrencyFormatter.format(
+                                    value: inv.totalCost,
+                                  ),
+                                ),
                               ],
                             ),
                             if (inv.paymentMethodDetails != null &&
                                 inv.paymentMethodDetails!.isNotEmpty) ...[
                               () {
                                 try {
-                                  final detailsMap = jsonDecode(inv.paymentMethodDetails!) as Map<String, dynamic>;
-                                  final taxList = (detailsMap['taxDetails'] as List<dynamic>?) ?? [];
-                                  final chargeList = (detailsMap['chargeDetails'] as List<dynamic>?) ?? [];
-                                  final discountList = (detailsMap['discountDetails'] as List<dynamic>?) ?? [];
+                                  final detailsMap =
+                                      jsonDecode(inv.paymentMethodDetails!)
+                                          as Map<String, dynamic>;
+                                  final taxList =
+                                      (detailsMap['taxDetails']
+                                          as List<dynamic>?) ??
+                                      [];
+                                  final chargeList =
+                                      (detailsMap['chargeDetails']
+                                          as List<dynamic>?) ??
+                                      [];
+                                  final discountList =
+                                      (detailsMap['discountDetails']
+                                          as List<dynamic>?) ??
+                                      [];
 
                                   return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: [
-                                      ...discountList.where((d) => ((d['amount'] as num?)?.toDouble() ?? 0.0) > 0).map((d) {
-                                        final name = d['name'] ?? 'Discount';
-                                        final amt = (d['amount'] as num?)?.toDouble() ?? 0.0;
-                                        return Padding(
-                                          padding: const EdgeInsets.only(top: 4),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(name.toString(), style: const TextStyle(color: Colors.grey)),
-                                              Text(
-                                                '-${core.CurrencyFormatter.format(value: amt)}',
-                                                style: const TextStyle(color: Colors.green),
+                                      ...discountList
+                                          .where(
+                                            (d) =>
+                                                ((d['amount'] as num?)
+                                                        ?.toDouble() ??
+                                                    0.0) >
+                                                0,
+                                          )
+                                          .map((d) {
+                                            final name =
+                                                d['name'] ?? 'Discount';
+                                            final amt =
+                                                (d['amount'] as num?)
+                                                    ?.toDouble() ??
+                                                0.0;
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 4,
                                               ),
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                      ...taxList.where((t) => ((t['amount'] as num?)?.toDouble() ?? 0.0) > 0).map((t) {
-                                        final name = t['name'] ?? 'Tax';
-                                        final amt = (t['amount'] as num?)?.toDouble() ?? 0.0;
-                                        return Padding(
-                                          padding: const EdgeInsets.only(top: 4),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(name.toString(), style: const TextStyle(color: Colors.grey)),
-                                              Text('+${core.CurrencyFormatter.format(value: amt)}'),
-                                            ],
-                                          ),
-                                        );
-                                      }),
-                                      ...chargeList.where((c) => ((c['amount'] as num?)?.toDouble() ?? 0.0) > 0).map((c) {
-                                        final name = c['name'] ?? 'Extra Charge';
-                                        final amt = (c['amount'] as num?)?.toDouble() ?? 0.0;
-                                        return Padding(
-                                          padding: const EdgeInsets.only(top: 4),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(name.toString(), style: const TextStyle(color: Colors.grey)),
-                                              Text('+${core.CurrencyFormatter.format(value: amt)}'),
-                                            ],
-                                          ),
-                                        );
-                                      }),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    name.toString(),
+                                                    style: const TextStyle(
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '-${core.CurrencyFormatter.format(value: amt)}',
+                                                    style: const TextStyle(
+                                                      color: Colors.green,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                      ...taxList
+                                          .where(
+                                            (t) =>
+                                                ((t['amount'] as num?)
+                                                        ?.toDouble() ??
+                                                    0.0) >
+                                                0,
+                                          )
+                                          .map((t) {
+                                            final name = t['name'] ?? 'Tax';
+                                            final amt =
+                                                (t['amount'] as num?)
+                                                    ?.toDouble() ??
+                                                0.0;
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 4,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    name.toString(),
+                                                    style: const TextStyle(
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '+${core.CurrencyFormatter.format(value: amt)}',
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                      ...chargeList
+                                          .where(
+                                            (c) =>
+                                                ((c['amount'] as num?)
+                                                        ?.toDouble() ??
+                                                    0.0) >
+                                                0,
+                                          )
+                                          .map((c) {
+                                            final name =
+                                                c['name'] ?? 'Extra Charge';
+                                            final amt =
+                                                (c['amount'] as num?)
+                                                    ?.toDouble() ??
+                                                0.0;
+                                            return Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 4,
+                                              ),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    name.toString(),
+                                                    style: const TextStyle(
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '+${core.CurrencyFormatter.format(value: amt)}',
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }),
                                     ],
                                   );
                                 } catch (_) {
                                   return const SizedBox.shrink();
                                 }
                               }(),
-                            ] else if (inv.taxCost > 0 || inv.discountAmount > 0) ...[
+                            ] else if (inv.taxCost > 0 ||
+                                inv.discountAmount > 0) ...[
                               if (inv.discountAmount > 0)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 4),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text('Discount', style: TextStyle(color: Colors.grey)),
+                                      const Text(
+                                        'Discount',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
                                       Text(
                                         '-${core.CurrencyFormatter.format(value: inv.discountAmount)}',
-                                        style: const TextStyle(color: Colors.green),
+                                        style: const TextStyle(
+                                          color: Colors.green,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -826,10 +944,16 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 4),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text('Tax', style: TextStyle(color: Colors.grey)),
-                                      Text('+${core.CurrencyFormatter.format(value: inv.taxCost)}'),
+                                      const Text(
+                                        'Tax',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                      Text(
+                                        '+${core.CurrencyFormatter.format(value: inv.taxCost)}',
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -851,7 +975,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     fit: BoxFit.scaleDown,
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      core.CurrencyFormatter.format(value: inv.netPaymentAmount),
+                                      core.CurrencyFormatter.format(
+                                        value: inv.netPaymentAmount,
+                                      ),
                                       maxLines: 1,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -875,16 +1001,20 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     child: Text(
                                       inv.paymentMethodName ?? 'Cash',
                                       maxLines: 1,
-                                      style: const TextStyle(fontWeight: FontWeight.w600),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                            if (inv.cashReceived != null && inv.cashReceived! > 0) ...[
+                            if (inv.cashReceived != null &&
+                                inv.cashReceived! > 0) ...[
                               const SizedBox(height: 4),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Cash Received'),
                                   const SizedBox(width: 12),
@@ -893,7 +1023,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                       fit: BoxFit.scaleDown,
                                       alignment: Alignment.centerRight,
                                       child: Text(
-                                        core.CurrencyFormatter.format(value: inv.cashReceived!),
+                                        core.CurrencyFormatter.format(
+                                          value: inv.cashReceived!,
+                                        ),
                                         maxLines: 1,
                                       ),
                                     ),
@@ -901,10 +1033,12 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                 ],
                               ),
                             ],
-                            if (inv.changeAmount != null && inv.changeAmount! > 0) ...[
+                            if (inv.changeAmount != null &&
+                                inv.changeAmount! > 0) ...[
                               const SizedBox(height: 4),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Change Amount'),
                                   const SizedBox(width: 12),
@@ -913,7 +1047,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                       fit: BoxFit.scaleDown,
                                       alignment: Alignment.centerRight,
                                       child: Text(
-                                        core.CurrencyFormatter.format(value: inv.changeAmount!),
+                                        core.CurrencyFormatter.format(
+                                          value: inv.changeAmount!,
+                                        ),
                                         maxLines: 1,
                                       ),
                                     ),

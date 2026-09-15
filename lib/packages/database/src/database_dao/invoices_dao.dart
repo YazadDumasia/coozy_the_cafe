@@ -92,9 +92,9 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
   }
 
   Future<Invoice?> getInvoiceByOrderHashId(String orderHashId) async {
-    final order = await (select(ordersTable)
-          ..where((t) => t.hashId.equals(orderHashId)))
-        .getSingleOrNull();
+    final order = await (select(
+      ordersTable,
+    )..where((t) => t.hashId.equals(orderHashId))).getSingleOrNull();
     if (order == null) return null;
     return getInvoiceByOrderId(order.id);
   }
@@ -106,15 +106,39 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     List<String>? paymentMethods,
   }) {
     Expression<bool> expr =
-        invoicesTable.isDeleted.equals(false) | invoicesTable.isDeleted.isNull();
+        invoicesTable.isDeleted.equals(false) |
+        invoicesTable.isDeleted.isNull();
 
     if (startDate != null) {
-      final startOfDay = DateTime.utc(startDate.year, startDate.month, startDate.day, 0, 0, 0);
-      expr = expr & invoicesTable.createdDate.isBiggerOrEqualValue(startOfDay.toIso8601String());
+      final startOfDay = DateTime.utc(
+        startDate.year,
+        startDate.month,
+        startDate.day,
+        0,
+        0,
+        0,
+      );
+      expr =
+          expr &
+          invoicesTable.createdDate.isBiggerOrEqualValue(
+            startOfDay.toIso8601String(),
+          );
     }
     if (endDate != null) {
-      final endOfDay = DateTime.utc(endDate.year, endDate.month, endDate.day, 23, 59, 59, 999);
-      expr = expr & invoicesTable.createdDate.isSmallerOrEqualValue(endOfDay.toIso8601String());
+      final endOfDay = DateTime.utc(
+        endDate.year,
+        endDate.month,
+        endDate.day,
+        23,
+        59,
+        59,
+        999,
+      );
+      expr =
+          expr &
+          invoicesTable.createdDate.isSmallerOrEqualValue(
+            endOfDay.toIso8601String(),
+          );
     }
 
     if (paymentMethods != null && paymentMethods.isNotEmpty) {
@@ -132,7 +156,8 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
 
     if (searchQuery != null && searchQuery.trim().isNotEmpty) {
       final clean = '%${searchQuery.trim()}%';
-      expr = expr &
+      expr =
+          expr &
           (invoicesTable.hashId.like(clean) |
               invoicesTable.customerName.like(clean) |
               invoicesTable.phoneNumber.like(clean) |
@@ -152,12 +177,14 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
   }) {
     final offset = (pageNo - 1) * limit;
     final query = select(invoicesTable)
-      ..where((t) => _buildInvoiceFilterExpression(
-            startDate: startDate,
-            endDate: endDate,
-            searchQuery: searchQuery,
-            paymentMethods: paymentMethods,
-          ))
+      ..where(
+        (t) => _buildInvoiceFilterExpression(
+          startDate: startDate,
+          endDate: endDate,
+          searchQuery: searchQuery,
+          paymentMethods: paymentMethods,
+        ),
+      )
       ..orderBy([
         (t) => OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc),
         (t) => OrderingTerm(expression: t.id, mode: OrderingMode.desc),
@@ -176,12 +203,14 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     final countExpr = invoicesTable.id.count();
     final query = selectOnly(invoicesTable)
       ..addColumns([countExpr])
-      ..where(_buildInvoiceFilterExpression(
-        startDate: startDate,
-        endDate: endDate,
-        searchQuery: searchQuery,
-        paymentMethods: paymentMethods,
-      ));
+      ..where(
+        _buildInvoiceFilterExpression(
+          startDate: startDate,
+          endDate: endDate,
+          searchQuery: searchQuery,
+          paymentMethods: paymentMethods,
+        ),
+      );
     final row = await query.getSingle();
     return row.read(countExpr) ?? 0;
   }
@@ -209,74 +238,118 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
   }) async {
     return transaction(() async {
       // 1. Fetch current invoice to retrieve linked orderId
-      final existingInvoice = await (select(invoicesTable)..where((t) => t.id.equals(id))).getSingleOrNull();
+      final existingInvoice = await (select(
+        invoicesTable,
+      )..where((t) => t.id.equals(id))).getSingleOrNull();
 
       // 2. Update invoice record
-      final rowsUpdated = await (update(invoicesTable)..where((t) => t.id.equals(id))).write(invoice);
+      final rowsUpdated = await (update(
+        invoicesTable,
+      )..where((t) => t.id.equals(id))).write(invoice);
       if (rowsUpdated <= 0) return false;
 
       // 2b. Sync invoice items if provided
       if (items != null) {
-        await (delete(invoiceItemsTable)..where((t) => t.invoiceId.equals(id))).go();
+        await (delete(
+          invoiceItemsTable,
+        )..where((t) => t.invoiceId.equals(id))).go();
         for (final item in items) {
-          await into(invoiceItemsTable).insert(
-            item.copyWith(invoiceId: Value(id)),
-          );
+          await into(
+            invoiceItemsTable,
+          ).insert(item.copyWith(invoiceId: Value(id)));
         }
       }
 
       // 3. Sync linked Order record if orderId exists
-      final orderId = invoice.orderId.present ? invoice.orderId.value : existingInvoice?.orderId;
+      final orderId = invoice.orderId.present
+          ? invoice.orderId.value
+          : existingInvoice?.orderId;
       if (orderId != null) {
         final nowIso = DateTime.now().toUtc().toIso8601String();
 
         final orderCompanion = OrdersTableCompanion(
-          customerName: invoice.customerName.present ? invoice.customerName : const Value.absent(),
-          phoneNumber: invoice.phoneNumber.present ? invoice.phoneNumber : const Value.absent(),
-          isoCode: invoice.isoCode.present ? invoice.isoCode : const Value.absent(),
-          paymentMethodName: invoice.paymentMethodName.present ? invoice.paymentMethodName : const Value.absent(),
-          paymentMethodDetails: invoice.paymentMethodDetails.present ? invoice.paymentMethodDetails : const Value.absent(),
-          cashReceived: invoice.cashReceived.present ? invoice.cashReceived : const Value.absent(),
-          changeAmount: invoice.changeAmount.present ? invoice.changeAmount : const Value.absent(),
-          subtotalAmount: invoice.totalCost.present ? invoice.totalCost : const Value.absent(),
-          discountAmount: invoice.discountAmount.present ? invoice.discountAmount : const Value.absent(),
-          taxAmount: invoice.taxCost.present ? invoice.taxCost : const Value.absent(),
-          grandTotal: invoice.netPaymentAmount.present ? invoice.netPaymentAmount : const Value.absent(),
+          customerName: invoice.customerName.present
+              ? invoice.customerName
+              : const Value.absent(),
+          phoneNumber: invoice.phoneNumber.present
+              ? invoice.phoneNumber
+              : const Value.absent(),
+          isoCode: invoice.isoCode.present
+              ? invoice.isoCode
+              : const Value.absent(),
+          paymentMethodName: invoice.paymentMethodName.present
+              ? invoice.paymentMethodName
+              : const Value.absent(),
+          paymentMethodDetails: invoice.paymentMethodDetails.present
+              ? invoice.paymentMethodDetails
+              : const Value.absent(),
+          cashReceived: invoice.cashReceived.present
+              ? invoice.cashReceived
+              : const Value.absent(),
+          changeAmount: invoice.changeAmount.present
+              ? invoice.changeAmount
+              : const Value.absent(),
+          subtotalAmount: invoice.totalCost.present
+              ? invoice.totalCost
+              : const Value.absent(),
+          discountAmount: invoice.discountAmount.present
+              ? invoice.discountAmount
+              : const Value.absent(),
+          taxAmount: invoice.taxCost.present
+              ? invoice.taxCost
+              : const Value.absent(),
+          grandTotal: invoice.netPaymentAmount.present
+              ? invoice.netPaymentAmount
+              : const Value.absent(),
           modificationDate: Value(nowIso),
         );
 
         // Also update otherChargesAmount if present in paymentMethodDetails JSON
         double? extractedCharges;
-        if (invoice.paymentMethodDetails.present && invoice.paymentMethodDetails.value != null) {
+        if (invoice.paymentMethodDetails.present &&
+            invoice.paymentMethodDetails.value != null) {
           try {
-            final dynamic decoded = jsonDecode(invoice.paymentMethodDetails.value!);
-            if (decoded is Map<String, dynamic> && decoded['totalOtherCharges'] != null) {
-              extractedCharges = (decoded['totalOtherCharges'] as num).toDouble();
+            final dynamic decoded = jsonDecode(
+              invoice.paymentMethodDetails.value!,
+            );
+            if (decoded is Map<String, dynamic> &&
+                decoded['totalOtherCharges'] != null) {
+              extractedCharges = (decoded['totalOtherCharges'] as num)
+                  .toDouble();
             }
           } catch (_) {}
         }
 
         final finalOrderCompanion = extractedCharges != null
-            ? orderCompanion.copyWith(otherChargesAmount: Value(extractedCharges))
+            ? orderCompanion.copyWith(
+                otherChargesAmount: Value(extractedCharges),
+              )
             : orderCompanion;
 
-        await (update(ordersTable)..where((t) => t.id.equals(orderId))).write(finalOrderCompanion);
+        await (update(
+          ordersTable,
+        )..where((t) => t.id.equals(orderId))).write(finalOrderCompanion);
 
         // Also sync order items if items are provided
         if (items != null) {
-          await (delete(orderItemsTable)..where((t) => t.orderId.equals(orderId))).go();
+          await (delete(
+            orderItemsTable,
+          )..where((t) => t.orderId.equals(orderId))).go();
           for (final item in items) {
             int? validItemId;
             if (item.itemId.present && item.itemId.value != null) {
-              final exists = await (select(attachedDatabase.menuItemsTable)
-                    ..where((m) => m.id.equals(item.itemId.value!)))
-                  .getSingleOrNull();
+              final exists =
+                  await (select(attachedDatabase.menuItemsTable)
+                        ..where((m) => m.id.equals(item.itemId.value!)))
+                      .getSingleOrNull();
               if (exists != null) {
                 validItemId = item.itemId.value;
               }
             }
 
-            final itemNameStr = item.itemName.present ? item.itemName.value : null;
+            final itemNameStr = item.itemName.present
+                ? item.itemName.value
+                : null;
 
             await into(orderItemsTable).insert(
               OrderItemsTableCompanion(
@@ -305,21 +378,26 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
       final nowUtcIso = DateTime.now().toUtc().toIso8601String();
 
       // 1. Fetch invoice to get linked orderId
-      final invoice = await (select(invoicesTable)..where((t) => t.id.equals(id))).getSingleOrNull();
+      final invoice = await (select(
+        invoicesTable,
+      )..where((t) => t.id.equals(id))).getSingleOrNull();
       if (invoice == null) return 0;
 
       // 2. Soft delete the invoice
-      final rowsUpdated = await (update(invoicesTable)..where((t) => t.id.equals(id))).write(
-        InvoicesTableCompanion(
-          isDeleted: const Value(true),
-          modifiedDate: Value(nowUtcIso),
-        ),
-      );
+      final rowsUpdated =
+          await (update(invoicesTable)..where((t) => t.id.equals(id))).write(
+            InvoicesTableCompanion(
+              isDeleted: const Value(true),
+              modifiedDate: Value(nowUtcIso),
+            ),
+          );
 
       // 3. If invoice is linked to an order, soft delete the order and order items
       final linkedOrderId = invoice.orderId;
       if (linkedOrderId != null) {
-        await (update(ordersTable)..where((t) => t.id.equals(linkedOrderId))).write(
+        await (update(
+          ordersTable,
+        )..where((t) => t.id.equals(linkedOrderId))).write(
           OrdersTableCompanion(
             isDeleted: const Value(true),
             status: const Value('deleted'),
@@ -327,11 +405,9 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
           ),
         );
 
-        await (update(orderItemsTable)..where((t) => t.orderId.equals(linkedOrderId))).write(
-          const OrderItemsTableCompanion(
-            status: Value('deleted'),
-          ),
-        );
+        await (update(orderItemsTable)
+              ..where((t) => t.orderId.equals(linkedOrderId)))
+            .write(const OrderItemsTableCompanion(status: Value('deleted')));
       }
 
       return rowsUpdated;

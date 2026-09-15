@@ -54,7 +54,8 @@ abstract class LocaleKeys {
   static String pdfSaveSuccessMsg = 'pdf_save_success_msg';
   static String pdfSaveFailedMsg = 'pdf_save_failed_msg';
   static String pdfShareBtn = 'pdf_share_btn';
-  static String storagePermissionRequiredMsg = 'storage_permission_required_msg';
+  static String storagePermissionRequiredMsg =
+      'storage_permission_required_msg';
   static String viewTableQrCard = 'view_table_qr_card';
   static String printTableQrCardsTooltip = 'print_table_qr_cards_tooltip';
   static String scanTableQrTooltip = 'scan_table_qr_tooltip';
@@ -1225,11 +1226,13 @@ abstract class LocaleKeys {
   static const String checkoutAddOtherFee = 'checkout_add_other_fee';
   static const String checkoutAddTax = 'checkout_add_tax';
   static const String checkoutCash = 'checkout_cash';
-  static const String checkoutCashReceivedOptional = 'checkout_cash_received_optional';
+  static const String checkoutCashReceivedOptional =
+      'checkout_cash_received_optional';
   static const String checkoutCgst = 'checkout_cgst';
   static const String checkoutChange = 'checkout_change';
   static const String checkoutConfirmPayment = 'checkout_confirm_payment';
-  static const String checkoutCustomerDetailsOptional = 'checkout_customer_details_optional';
+  static const String checkoutCustomerDetailsOptional =
+      'checkout_customer_details_optional';
   static const String checkoutDefaultAddToBill = 'checkout_default_add_to_bill';
   static const String checkoutDeliveryCharge = 'checkout_delivery_charge';
   static const String checkoutEnterFeeName = 'checkout_enter_fee_name';
@@ -1246,20 +1249,26 @@ abstract class LocaleKeys {
   static const String checkoutOtherName = 'checkout_other_name';
   static const String checkoutOtherTax = 'checkout_other_tax';
   static const String checkoutOtherValue = 'checkout_other_value';
-  static const String checkoutOtherValuePercent = 'checkout_other_value_percent';
+  static const String checkoutOtherValuePercent =
+      'checkout_other_value_percent';
   static const String checkoutPackingCharge = 'checkout_packing_charge';
-  static const String checkoutPercentageDiscount = 'checkout_percentage_discount';
-  static const String checkoutPercentageQuestion = 'checkout_percentage_question';
+  static const String checkoutPercentageDiscount =
+      'checkout_percentage_discount';
+  static const String checkoutPercentageQuestion =
+      'checkout_percentage_question';
   static const String checkoutReceiptId = 'checkout_receipt_id';
-  static const String checkoutReceiptNoteOptional = 'checkout_receipt_note_optional';
+  static const String checkoutReceiptNoteOptional =
+      'checkout_receipt_note_optional';
   static const String checkoutReceivedByCash = 'checkout_received_by_cash';
   static const String checkoutReceivedByMode = 'checkout_received_by_mode';
   static const String checkoutRoundOff = 'checkout_round_off';
   static const String checkoutSelectCharge = 'checkout_select_charge';
   static const String checkoutSelectDiscount = 'checkout_select_discount';
-  static const String checkoutSelectPaymentMode = 'checkout_select_payment_mode';
+  static const String checkoutSelectPaymentMode =
+      'checkout_select_payment_mode';
   static const String checkoutSelectTax = 'checkout_select_tax';
-  static const String checkoutSendTransactionSms = 'checkout_send_transaction_sms';
+  static const String checkoutSendTransactionSms =
+      'checkout_send_transaction_sms';
   static const String checkoutServiceChargeFee = 'checkout_service_charge_fee';
   static const String checkoutSgst = 'checkout_sgst';
   static const String checkoutSmsLeftZero = 'checkout_sms_left_zero';
@@ -1271,26 +1280,34 @@ abstract class LocaleKeys {
   static const String orderManagementAllStatuses = 'all_statuses';
   static const String orderManagementClearDateRange = 'clear_date_range';
   static const String orderManagementCustomerNameLabel = 'customer_name_label';
-  static const String orderManagementDateRangePickerTitle = 'date_range_picker_title';
+  static const String orderManagementDateRangePickerTitle =
+      'date_range_picker_title';
   static const String orderManagementFilterByStatus = 'filter_by_status';
   static const String orderManagementInvoiceInfoButton = 'invoice_info_button';
   static const String orderManagementNoOrdersFound = 'no_orders_found';
-  static const String orderManagementNoOrdersFoundSubtitle = 'no_orders_found_subtitle';
+  static const String orderManagementNoOrdersFoundSubtitle =
+      'no_orders_found_subtitle';
   static const String orderManagementOrderAmount = 'order_amount';
   static const String orderManagementOrderCreatedAt = 'order_created_at';
   static const String orderManagementOrderDetailsTitle = 'order_details_title';
   static const String orderManagementOrderIdPrefix = 'order_id_prefix';
-  static const String orderManagementOrderInfoAppbarTitle = 'order_info_appbar_title';
+  static const String orderManagementOrderInfoAppbarTitle =
+      'order_info_appbar_title';
   static const String orderManagementOrderItemsCount = 'order_items_count';
-  static const String orderManagementOrderItemsSectionHeader = 'order_items_section_header';
+  static const String orderManagementOrderItemsSectionHeader =
+      'order_items_section_header';
   static const String orderManagementOrderListTitle = 'order_list_title';
-  static const String orderManagementOrderStatusCancelled = 'order_status_cancelled';
-  static const String orderManagementOrderStatusCompleted = 'order_status_completed';
-  static const String orderManagementOrderStatusInProgress = 'order_status_in_progress';
+  static const String orderManagementOrderStatusCancelled =
+      'order_status_cancelled';
+  static const String orderManagementOrderStatusCompleted =
+      'order_status_completed';
+  static const String orderManagementOrderStatusInProgress =
+      'order_status_in_progress';
   static const String orderManagementOrderStatusNew = 'order_status_new';
   static const String orderManagementOrderTableLabel = 'order_table_label';
   static const String orderManagementOrderTypeLabel = 'order_type_label';
-  static const String orderManagementPaymentMethodLabel = 'payment_method_label';
+  static const String orderManagementPaymentMethodLabel =
+      'payment_method_label';
   static const String orderManagementPhoneNumberLabel = 'phone_number_label';
   static const String orderManagementRefreshOrders = 'refresh_orders';
   static const String orderManagementSearchOrdersHint = 'search_orders_hint';
@@ -1316,21 +1333,24 @@ abstract class LocaleKeys {
   static const String invoiceAmountPaid = 'invoice_amount_paid';
   static const String invoiceCashReceived = 'invoice_cash_received';
   static const String invoiceChangeAmount = 'invoice_change_amount';
-  static const String invoiceCustomerDetailsTitle = 'invoice_customer_details_title';
+  static const String invoiceCustomerDetailsTitle =
+      'invoice_customer_details_title';
   static const String invoiceCustomerNameHint = 'invoice_customer_name_hint';
   static const String invoiceCustomerPhoneHint = 'invoice_customer_phone_hint';
   static const String invoiceDateFrom = 'invoice_date_from';
   static const String invoiceDateTo = 'invoice_date_to';
   static const String invoiceDetailTitle = 'invoice_detail_title';
   static const String invoiceDownloadSuccess = 'invoice_download_success';
-  static const String invoiceDownloadSuccessWeb = 'invoice_download_success_web';
+  static const String invoiceDownloadSuccessWeb =
+      'invoice_download_success_web';
   static const String invoiceEditTitle = 'invoice_edit_title';
   static const String invoiceFilterAll = 'invoice_filter_all';
   static const String invoiceFooterPoweredBy = 'invoice_footer_powered_by';
   static const String invoiceFooterThankYou = 'invoice_footer_thank_you';
   static const String invoiceGrandTotal = 'invoice_grand_total';
   static const String invoiceItemCountUnit = 'invoice_item_count_unit';
-  static const String invoiceItemCountUnitsShort = 'invoice_item_count_units_short';
+  static const String invoiceItemCountUnitsShort =
+      'invoice_item_count_units_short';
   static const String invoiceListTitle = 'invoice_list_title';
   static const String invoicePreviewError = 'invoice_preview_error';
   static const String invoicePreviewTitle = 'invoice_preview_title';
@@ -1344,5 +1364,3 @@ abstract class LocaleKeys {
   static const String invoiceTableUnitsCount = 'invoice_table_units_count';
   static const String invoiceSubtotal = 'invoice_subtotal';
 }
-
-

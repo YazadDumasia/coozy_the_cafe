@@ -7,10 +7,7 @@ class UpdateInvoiceParams {
   final InvoiceEntity invoice;
   final List<InvoiceItemEntity> items;
 
-  const UpdateInvoiceParams({
-    required this.invoice,
-    required this.items,
-  });
+  const UpdateInvoiceParams({required this.invoice, required this.items});
 }
 
 class UpdateInvoiceUseCase {

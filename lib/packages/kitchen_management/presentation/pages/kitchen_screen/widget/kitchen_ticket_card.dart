@@ -24,9 +24,13 @@ class KitchenTicketCard extends StatelessWidget {
         ? context.tr(
                 shared.LocaleKeys.kitchenTableLabel,
                 params: {'name': order.tableNameText!},
+                track: shared.TrackConstants.orderPageTrack,
               ) ??
               'Table: ${order.tableNameText}'
-        : context.tr(shared.LocaleKeys.kitchenTakeawayParcel, track: shared.TrackConstants.orderPageTrack) ??
+        : context.tr(
+                shared.LocaleKeys.kitchenTakeawayParcel,
+                track: shared.TrackConstants.orderPageTrack,
+              ) ??
               'Takeaway / Parcel';
 
     return Card(
@@ -60,6 +64,7 @@ class KitchenTicketCard extends StatelessWidget {
                         context.tr(
                               shared.LocaleKeys.kitchenTicketNumber,
                               params: {'id': '${order.id}'},
+                              track: shared.TrackConstants.orderPageTrack,
                             ) ??
                             'Ticket #${order.id}',
                         style: theme.textTheme.bodySmall?.copyWith(
@@ -94,7 +99,10 @@ class KitchenTicketCard extends StatelessWidget {
                 onPressed: () => onBumpOrder(order.id, 'ready'),
                 icon: const Icon(Icons.check_circle_outline, size: 18),
                 label: Text(
-                  context.tr(shared.LocaleKeys.kitchenBumpAllReadyBtn, track: shared.TrackConstants.orderPageTrack) ??
+                  context.tr(
+                        shared.LocaleKeys.kitchenBumpAllReadyBtn,
+                        track: shared.TrackConstants.orderPageTrack,
+                      ) ??
                       'BUMP (ALL READY)',
                 ),
                 style: ElevatedButton.styleFrom(

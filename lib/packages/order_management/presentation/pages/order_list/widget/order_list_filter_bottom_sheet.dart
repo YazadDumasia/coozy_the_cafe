@@ -3,13 +3,15 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 void showOrderFilterBottomSheet({
   required BuildContext context,
-  required ValueNotifier<List<shared.AppliedFilterModel>> appliedFiltersNotifier,
+  required ValueNotifier<List<shared.AppliedFilterModel>>
+  appliedFiltersNotifier,
   required void Function(List<shared.AppliedFilterModel> applied) onApply,
 }) {
   final List<shared.FilterItemModel> statusFilterOptions = [
     shared.FilterItemModel(
       filterKey: 'all',
-      filterTitle: context.tr(
+      filterTitle:
+          context.tr(
             shared.LocaleKeys.orderManagementAllStatuses,
             track: shared.TrackConstants.orderManagementPageTrack,
           ) ??
@@ -17,7 +19,8 @@ void showOrderFilterBottomSheet({
     ),
     shared.FilterItemModel(
       filterKey: 'newOrder',
-      filterTitle: context.tr(
+      filterTitle:
+          context.tr(
             shared.LocaleKeys.orderManagementOrderStatusNew,
             track: shared.TrackConstants.orderManagementPageTrack,
           ) ??
@@ -25,7 +28,8 @@ void showOrderFilterBottomSheet({
     ),
     shared.FilterItemModel(
       filterKey: 'inProgress',
-      filterTitle: context.tr(
+      filterTitle:
+          context.tr(
             shared.LocaleKeys.orderManagementOrderStatusInProgress,
             track: shared.TrackConstants.orderManagementPageTrack,
           ) ??
@@ -33,7 +37,8 @@ void showOrderFilterBottomSheet({
     ),
     shared.FilterItemModel(
       filterKey: 'completed',
-      filterTitle: context.tr(
+      filterTitle:
+          context.tr(
             shared.LocaleKeys.orderManagementOrderStatusCompleted,
             track: shared.TrackConstants.orderManagementPageTrack,
           ) ??
@@ -41,7 +46,8 @@ void showOrderFilterBottomSheet({
     ),
     shared.FilterItemModel(
       filterKey: 'cancelled',
-      filterTitle: context.tr(
+      filterTitle:
+          context.tr(
             shared.LocaleKeys.orderManagementOrderStatusCancelled,
             track: shared.TrackConstants.orderManagementPageTrack,
           ) ??
@@ -72,7 +78,8 @@ void showOrderFilterBottomSheet({
         heightFactor: 0.8,
         child: shared.FilterWidget(
           filterProps: shared.FilterProps(
-            title: context.tr(
+            title:
+                context.tr(
                   shared.LocaleKeys.commonFilters,
                   track: shared.TrackConstants.commonTrack,
                 ) ??
@@ -85,7 +92,8 @@ void showOrderFilterBottomSheet({
             filters: [
               shared.FilterListModel(
                 filterKey: 'order_status',
-                title: context.tr(
+                title:
+                    context.tr(
                       shared.LocaleKeys.orderManagementFilterByStatus,
                       track: shared.TrackConstants.orderManagementPageTrack,
                     ) ??

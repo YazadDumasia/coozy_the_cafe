@@ -39,14 +39,16 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
     _valueController = TextEditingController(
       text: widget.initialValue != null
           ? (widget.initialValue! % 1 == 0
-              ? widget.initialValue!.toInt().toString()
-              : widget.initialValue!.toString())
+                ? widget.initialValue!.toInt().toString()
+                : widget.initialValue!.toString())
           : '',
     );
-    _isPercentageNotifier =
-        ValueNotifier<bool>(widget.initialIsPercentage ?? false);
-    _isDefaultAddNotifier =
-        ValueNotifier<bool>(widget.initialIsDefaultAdd ?? false);
+    _isPercentageNotifier = ValueNotifier<bool>(
+      widget.initialIsPercentage ?? false,
+    );
+    _isDefaultAddNotifier = ValueNotifier<bool>(
+      widget.initialIsDefaultAdd ?? false,
+    );
     _nameFocusNode = FocusNode();
     _valueFocusNode = FocusNode();
   }
@@ -98,8 +100,8 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
                   ) ??
                   'Add Discount Value',
               style: theme.textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -121,8 +123,9 @@ class _AddDiscountDialogState extends State<AddDiscountDialog> {
                 return TextFormField(
                   controller: _valueController,
                   focusNode: _valueFocusNode,
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: InputDecoration(
                     labelText: isPercentage
                         ? 'Discount Value in %'

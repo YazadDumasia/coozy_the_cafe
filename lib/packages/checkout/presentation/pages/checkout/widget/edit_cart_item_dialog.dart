@@ -30,10 +30,12 @@ class _EditCartItemDialogState extends State<EditCartItemDialog> {
   @override
   void initState() {
     super.initState();
-    _qtyController =
-        TextEditingController(text: widget.initialQuantity.toString());
-    _priceController =
-        TextEditingController(text: widget.initialUnitPrice.toStringAsFixed(2));
+    _qtyController = TextEditingController(
+      text: widget.initialQuantity.toString(),
+    );
+    _priceController = TextEditingController(
+      text: widget.initialUnitPrice.toStringAsFixed(2),
+    );
     _qtyFocusNode = FocusNode();
     _priceFocusNode = FocusNode();
     _totalNotifier = ValueNotifier<double>(
@@ -125,8 +127,9 @@ class _EditCartItemDialogState extends State<EditCartItemDialog> {
             TextFormField(
               controller: _priceController,
               focusNode: _priceFocusNode,
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               textInputAction: TextInputAction.done,
               decoration: InputDecoration(
                 labelText: 'Unit Price',
@@ -149,7 +152,9 @@ class _EditCartItemDialogState extends State<EditCartItemDialog> {
                 return Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                    color: colorScheme.surfaceContainerHighest.withValues(
+                      alpha: 0.5,
+                    ),
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
                       color: colorScheme.outlineVariant.withValues(alpha: 0.5),
@@ -189,9 +194,11 @@ class _EditCartItemDialogState extends State<EditCartItemDialog> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
-                      final q = int.tryParse(_qtyController.text) ??
+                      final q =
+                          int.tryParse(_qtyController.text) ??
                           widget.initialQuantity;
-                      final p = double.tryParse(_priceController.text) ??
+                      final p =
+                          double.tryParse(_priceController.text) ??
                           widget.initialUnitPrice;
                       widget.onSave(q, p);
                       Navigator.of(context).pop();

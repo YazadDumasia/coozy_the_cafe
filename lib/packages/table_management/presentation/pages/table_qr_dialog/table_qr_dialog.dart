@@ -72,10 +72,9 @@ class _TableQrDialogState extends State<TableQrDialog> {
     if (_cancelled || _generationId != myGeneration) return;
 
     try {
-      final List<TableInfo> targetTables =
-          widget.table != null
-              ? [widget.table!]
-              : (widget.tables ?? <TableInfo>[]);
+      final List<TableInfo> targetTables = widget.table != null
+          ? [widget.table!]
+          : (widget.tables ?? <TableInfo>[]);
 
       final bytes = await TableQrPdfGenerator.generatePdf(
         tables: targetTables,
@@ -109,31 +108,28 @@ class _TableQrDialogState extends State<TableQrDialog> {
   @override
   Widget build(BuildContext context) {
     final bool isSingle = widget.table != null;
-    final String tableNoDisplay =
-        isSingle
-            ? (widget.table!.tableNo?.isNotEmpty == true
-                ? widget.table!.tableNo!
-                : (widget.table!.id != null ? '${widget.table!.id}' : '1'))
-            : 'All';
+    final String tableNoDisplay = isSingle
+        ? (widget.table!.tableNo?.isNotEmpty == true
+              ? widget.table!.tableNo!
+              : (widget.table!.id != null ? '${widget.table!.id}' : '1'))
+        : 'All';
 
-    final String titleText =
-        isSingle
-            ? (context.tr(
-                  shared.LocaleKeys.tableQrDialogTitle,
-                  params: {'tableNo': tableNoDisplay},
-                  track: shared.TrackConstants.tablePageTrack,
-                ) ??
-                'Table $tableNoDisplay QR Card')
-            : 'All Tables QR Cards PDF';
+    final String titleText = isSingle
+        ? (context.tr(
+                shared.LocaleKeys.tableQrDialogTitle,
+                params: {'tableNo': tableNoDisplay},
+                track: shared.TrackConstants.tablePageTrack,
+              ) ??
+              'Table $tableNoDisplay QR Card')
+        : 'All Tables QR Cards PDF';
 
     final now = DateTime.now();
     final String timeStampStr =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}_${now.hour.toString().padLeft(2, '0')}-${now.minute.toString().padLeft(2, '0')}';
 
-    final String docName =
-        isSingle
-            ? 'Table_${tableNoDisplay}_QR_Card_$timeStampStr.pdf'
-            : 'Coozy_All_Table_QR_Cards_$timeStampStr.pdf';
+    final String docName = isSingle
+        ? 'Table_${tableNoDisplay}_QR_Card_$timeStampStr.pdf'
+        : 'Coozy_All_Table_QR_Cards_$timeStampStr.pdf';
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -250,63 +246,60 @@ class _TableQrDialogState extends State<TableQrDialog> {
 
             // PDF Viewer Container using pdfrx
             Expanded(
-              child:
-                  _isLoading
-                      ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Lottie.asset(
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? Assets.lottie.qrcodeDark
-                                  : Assets.lottie.qrcodeLight,
-                              width: 160,
-                              height: 160,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              context.tr(
-                                    shared.LocaleKeys.commonPleaseWait,
-                                    track: shared.TrackConstants.commonTrack,
-                                  ) ??
-                                  'Please wait...',
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.onSurfaceVariant,
-                                  ),
-                            ),
-                          ],
-                        ),
-                      )
-                      : _pdfBytes != null
-                      ? ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.outlineVariant,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
+              child: _isLoading
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Lottie.asset(
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Assets.lottie.qrcodeDark
+                                : Assets.lottie.qrcodeLight,
+                            width: 160,
+                            height: 160,
                           ),
-                          child: PdfViewer.data(
-                            _pdfBytes!,
-                            sourceName: _pdfSourceName!,
+                          const SizedBox(height: 12),
+                          Text(
+                            context.tr(
+                                  shared.LocaleKeys.commonPleaseWait,
+                                  track: shared.TrackConstants.commonTrack,
+                                ) ??
+                                'Please wait...',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.onSurfaceVariant,
+                                ),
                           ),
+                        ],
+                      ),
+                    )
+                  : _pdfBytes != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.outlineVariant,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                      )
-                      : Center(
-                        child: Text(
-                          context.tr(
-                                shared.LocaleKeys.commonErrorMsg,
-                                track: shared.TrackConstants.commonTrack,
-                              ) ??
-                              'Failed to render QR Card PDF preview',
+                        child: PdfViewer.data(
+                          _pdfBytes!,
+                          sourceName: _pdfSourceName!,
                         ),
                       ),
+                    )
+                  : Center(
+                      child: Text(
+                        context.tr(
+                              shared.LocaleKeys.commonErrorMsg,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Failed to render QR Card PDF preview',
+                      ),
+                    ),
             ),
             const SizedBox(height: 16),
 
@@ -328,44 +321,42 @@ class _TableQrDialogState extends State<TableQrDialog> {
                   ),
                 ),
                 OutlinedButton.icon(
-                  onPressed:
-                      (_isSaving || _isSharing || _isLoading)
-                          ? null
-                          : () async {
-                            setState(() => _isSharing = true);
-                            try {
-                              final List<TableInfo> targetTables =
-                                  widget.table != null
-                                      ? [widget.table!]
-                                      : (widget.tables ?? <TableInfo>[]);
+                  onPressed: (_isSaving || _isSharing || _isLoading)
+                      ? null
+                      : () async {
+                          setState(() => _isSharing = true);
+                          try {
+                            final List<TableInfo> targetTables =
+                                widget.table != null
+                                ? [widget.table!]
+                                : (widget.tables ?? <TableInfo>[]);
 
-                              await TableQrPdfGenerator.sharePdf(
-                                tables: targetTables,
-                                singleTable: widget.table,
-                                columnsCount: _selectedColumns,
-                                docName: docName,
+                            await TableQrPdfGenerator.sharePdf(
+                              tables: targetTables,
+                              singleTable: widget.table,
+                              columnsCount: _selectedColumns,
+                              docName: docName,
+                            );
+                          } catch (e) {
+                            if (context.mounted) {
+                              shared.SnackBarUtils.showError(
+                                context,
+                                message: 'Failed to share PDF: $e',
                               );
-                            } catch (e) {
-                              if (context.mounted) {
-                                shared.SnackBarUtils.showError(
-                                  context,
-                                  message: 'Failed to share PDF: $e',
-                                );
-                              }
-                            } finally {
-                              if (mounted) {
-                                setState(() => _isSharing = false);
-                              }
                             }
-                          },
-                  icon:
-                      _isSharing
-                          ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                          : const Icon(Icons.share_rounded),
+                          } finally {
+                            if (mounted) {
+                              setState(() => _isSharing = false);
+                            }
+                          }
+                        },
+                  icon: _isSharing
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.share_rounded),
                   label: Text(
                     context.tr(
                           shared.LocaleKeys.pdfShareBtn,
@@ -375,140 +366,130 @@ class _TableQrDialogState extends State<TableQrDialog> {
                   ),
                 ),
                 OutlinedButton.icon(
-                  onPressed:
-                      (_isSaving || _isSharing || _isLoading)
-                          ? null
-                          : () async {
-                            setState(() => _isSaving = true);
-                            try {
-                              final List<TableInfo> targetTables =
-                                  widget.table != null
-                                      ? [widget.table!]
-                                      : (widget.tables ?? <TableInfo>[]);
+                  onPressed: (_isSaving || _isSharing || _isLoading)
+                      ? null
+                      : () async {
+                          setState(() => _isSaving = true);
+                          try {
+                            final List<TableInfo> targetTables =
+                                widget.table != null
+                                ? [widget.table!]
+                                : (widget.tables ?? <TableInfo>[]);
 
-                              final result =
-                                  await TableQrPdfGenerator.downloadOrSavePdf(
-                                    tables: targetTables,
-                                    singleTable: widget.table,
-                                    columnsCount: _selectedColumns,
-                                    docName: docName,
-                                  );
-
-                              if (!context.mounted) return;
-
-                              if (result.isSuccess) {
-                                final String successText =
-                                    result.isWeb
-                                        ? 'PDF download started!'
-                                        : (context.tr(
-                                              shared.LocaleKeys.pdfSaveSuccessMsg,
-                                              params: {
-                                                'path':
-                                                    result.filePath ?? docName,
-                                              },
-                                              track:
-                                                  shared
-                                                      .TrackConstants
-                                                      .tablePageTrack,
-                                            ) ??
-                                            'PDF saved successfully: ${result.filePath}');
-
-                                shared.SnackBarUtils.showSuccess(
-                                  context,
-                                  message: successText,
-                                  duration: const Duration(seconds: 4),
-                                  actions: (!result.isWeb &&
-                                          result.filePath != null)
-                                      ? [
-                                          shared.SnackBarActionItem(
-                                            label: context.tr(
-                                                  shared
-                                                      .LocaleKeys
-                                                      .pdfShareBtn,
-                                                  track: shared
-                                                      .TrackConstants
-                                                      .tablePageTrack,
-                                                ) ??
-                                                'Share',
-                                            onPressed: () {
-                                              TableQrPdfGenerator.sharePdf(
-                                                tables: targetTables,
-                                                singleTable: widget.table,
-                                                columnsCount:
-                                                    _selectedColumns,
-                                                docName: docName,
-                                              );
-                                            },
-                                          ),
-                                        ]
-                                      : const [],
+                            final result =
+                                await TableQrPdfGenerator.downloadOrSavePdf(
+                                  tables: targetTables,
+                                  singleTable: widget.table,
+                                  columnsCount: _selectedColumns,
+                                  docName: docName,
                                 );
-                              } else {
-                                final String errorMsg =
-                                    result.errorMessage ?? 'Unknown error';
-                                shared.SnackBarUtils.showError(
-                                  context,
-                                  message: context.tr(
-                                        shared.LocaleKeys.pdfSaveFailedMsg,
-                                        params: {'error': errorMsg},
-                                        track: shared
-                                            .TrackConstants
-                                            .tablePageTrack,
-                                      ) ??
-                                      'Failed to save PDF: $errorMsg',
-                                );
-                              }
-                            } catch (e) {
-                              if (context.mounted) {
-                                shared.SnackBarUtils.showError(
-                                  context,
-                                  message: 'Failed to save PDF: $e',
-                                );
-                              }
-                            } finally {
-                              if (mounted) {
-                                setState(() => _isSaving = false);
-                              }
+
+                            if (!context.mounted) return;
+
+                            if (result.isSuccess) {
+                              final String successText = result.isWeb
+                                  ? 'PDF download started!'
+                                  : (context.tr(
+                                          shared.LocaleKeys.pdfSaveSuccessMsg,
+                                          params: {
+                                            'path': result.filePath ?? docName,
+                                          },
+                                          track: shared
+                                              .TrackConstants
+                                              .tablePageTrack,
+                                        ) ??
+                                        'PDF saved successfully: ${result.filePath}');
+
+                              shared.SnackBarUtils.showSuccess(
+                                context,
+                                message: successText,
+                                duration: const Duration(seconds: 4),
+                                actions:
+                                    (!result.isWeb && result.filePath != null)
+                                    ? [
+                                        shared.SnackBarActionItem(
+                                          label:
+                                              context.tr(
+                                                shared.LocaleKeys.pdfShareBtn,
+                                                track: shared
+                                                    .TrackConstants
+                                                    .tablePageTrack,
+                                              ) ??
+                                              'Share',
+                                          onPressed: () {
+                                            TableQrPdfGenerator.sharePdf(
+                                              tables: targetTables,
+                                              singleTable: widget.table,
+                                              columnsCount: _selectedColumns,
+                                              docName: docName,
+                                            );
+                                          },
+                                        ),
+                                      ]
+                                    : const [],
+                              );
+                            } else {
+                              final String errorMsg =
+                                  result.errorMessage ?? 'Unknown error';
+                              shared.SnackBarUtils.showError(
+                                context,
+                                message:
+                                    context.tr(
+                                      shared.LocaleKeys.pdfSaveFailedMsg,
+                                      params: {'error': errorMsg},
+                                      track:
+                                          shared.TrackConstants.tablePageTrack,
+                                    ) ??
+                                    'Failed to save PDF: $errorMsg',
+                              );
                             }
-                          },
-                  icon:
-                      _isSaving
-                          ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                          : const Icon(Icons.download_rounded),
-                  label: Text(
-                    _isSaving ? 'Saving...' : 'Save / Download PDF',
-                  ),
+                          } catch (e) {
+                            if (context.mounted) {
+                              shared.SnackBarUtils.showError(
+                                context,
+                                message: 'Failed to save PDF: $e',
+                              );
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() => _isSaving = false);
+                            }
+                          }
+                        },
+                  icon: _isSaving
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Icon(Icons.download_rounded),
+                  label: Text(_isSaving ? 'Saving...' : 'Save / Download PDF'),
                 ),
                 ElevatedButton.icon(
-                  onPressed:
-                      (_isSaving || _isSharing || _isLoading)
-                          ? null
-                          : () async {
-                            try {
-                              final List<TableInfo> targetTables =
-                                  widget.table != null
-                                      ? [widget.table!]
-                                      : (widget.tables ?? <TableInfo>[]);
+                  onPressed: (_isSaving || _isSharing || _isLoading)
+                      ? null
+                      : () async {
+                          try {
+                            final List<TableInfo> targetTables =
+                                widget.table != null
+                                ? [widget.table!]
+                                : (widget.tables ?? <TableInfo>[]);
 
-                              await TableQrPdfGenerator.printOrShareTableCards(
-                                tables: targetTables,
-                                singleTable: widget.table,
-                                columnsCount: _selectedColumns,
-                                docName: docName,
+                            await TableQrPdfGenerator.printOrShareTableCards(
+                              tables: targetTables,
+                              singleTable: widget.table,
+                              columnsCount: _selectedColumns,
+                              docName: docName,
+                            );
+                          } catch (e) {
+                            if (context.mounted) {
+                              shared.SnackBarUtils.showError(
+                                context,
+                                message: 'Failed to print PDF: $e',
                               );
-                            } catch (e) {
-                              if (context.mounted) {
-                                shared.SnackBarUtils.showError(
-                                  context,
-                                  message: 'Failed to print PDF: $e',
-                                );
-                              }
                             }
-                          },
+                          }
+                        },
                   icon: const Icon(Icons.print_rounded),
                   label: Text(
                     context.tr(

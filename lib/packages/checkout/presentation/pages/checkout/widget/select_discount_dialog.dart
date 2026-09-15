@@ -11,10 +11,7 @@ import 'add_discount_dialog.dart';
 class SelectDiscountDialog extends StatelessWidget {
   final Function(Discount) onDiscountAdded;
 
-  const SelectDiscountDialog({
-    super.key,
-    required this.onDiscountAdded,
-  });
+  const SelectDiscountDialog({super.key, required this.onDiscountAdded});
 
   Future<void> _onOptionSelected(
     BuildContext context,
@@ -43,10 +40,12 @@ class SelectDiscountDialog extends StatelessWidget {
       child: AddDiscountDialog(
         initialName: discountName,
         initialValue: existing.name.isNotEmpty ? existing.value : null,
-        initialIsPercentage:
-            existing.name.isNotEmpty ? existing.isPercentage : null,
-        initialIsDefaultAdd:
-            existing.name.isNotEmpty ? existing.isDefaultAdd : null,
+        initialIsPercentage: existing.name.isNotEmpty
+            ? existing.isPercentage
+            : null,
+        initialIsDefaultAdd: existing.name.isNotEmpty
+            ? existing.isDefaultAdd
+            : null,
         onDiscountAdded: onDiscountAdded,
       ),
     );
@@ -81,7 +80,8 @@ class SelectDiscountDialog extends StatelessWidget {
         final defaultOptions = [
           {
             'key': 'Flat Discount',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutFlatDiscount,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -89,7 +89,8 @@ class SelectDiscountDialog extends StatelessWidget {
           },
           {
             'key': 'Percentage Discount',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutPercentageDiscount,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -97,7 +98,8 @@ class SelectDiscountDialog extends StatelessWidget {
           },
           {
             'key': 'Staff Discount',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutStaffDiscount,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -105,7 +107,8 @@ class SelectDiscountDialog extends StatelessWidget {
           },
           {
             'key': 'Festival Offer',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutFestivalOffer,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -113,7 +116,8 @@ class SelectDiscountDialog extends StatelessWidget {
           },
           {
             'key': 'Other Discount',
-            'display': context.tr(
+            'display':
+                context.tr(
                   shared.LocaleKeys.checkoutOtherDiscount,
                   track: shared.TrackConstants.checkoutPageTrack,
                 ) ??
@@ -130,7 +134,10 @@ class SelectDiscountDialog extends StatelessWidget {
                 .toSet();
             final customOptions = <Map<String, String>>[];
 
-            for (final discount in [...state.appliedDiscounts, ...savedDiscounts]) {
+            for (final discount in [
+              ...state.appliedDiscounts,
+              ...savedDiscounts,
+            ]) {
               if (discount.name.trim().isNotEmpty &&
                   !existingNames.contains(discount.name.trim().toLowerCase())) {
                 existingNames.add(discount.name.trim().toLowerCase());
@@ -160,7 +167,8 @@ class SelectDiscountDialog extends StatelessWidget {
                           child: Text(
                             context.tr(
                                   shared.LocaleKeys.checkoutSelectDiscount,
-                                  track: shared.TrackConstants.checkoutPageTrack,
+                                  track:
+                                      shared.TrackConstants.checkoutPageTrack,
                                 ) ??
                                 'SELECT DISCOUNT',
                             textAlign: TextAlign.center,
@@ -177,7 +185,8 @@ class SelectDiscountDialog extends StatelessWidget {
                             color: theme.colorScheme.primary,
                           ),
                           onPressed: () => Navigator.of(context).pop(),
-                          tooltip: context.tr(
+                          tooltip:
+                              context.tr(
                                 shared.LocaleKeys.commonClose,
                                 track: shared.TrackConstants.commonTrack,
                               ) ??
@@ -207,8 +216,9 @@ class SelectDiscountDialog extends StatelessWidget {
                           textAlign: TextAlign.center,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: theme.colorScheme.onSurface
-                                .withValues(alpha: 0.85),
+                            color: theme.colorScheme.onSurface.withValues(
+                              alpha: 0.85,
+                            ),
                           ),
                         ),
                       ),

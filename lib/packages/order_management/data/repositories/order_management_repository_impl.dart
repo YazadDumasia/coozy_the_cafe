@@ -27,12 +27,7 @@ class OrderManagementRepositoryImpl implements OrderManagementRepository {
         searchQuery: searchQuery,
         status: status,
       );
-      return Right(
-        PaginatedOrdersResult(
-          orders: models,
-          totalCount: count,
-        ),
-      );
+      return Right(PaginatedOrdersResult(orders: models, totalCount: count));
     } catch (e) {
       return Left(CacheFailure(message: e.toString()));
     }
@@ -40,7 +35,8 @@ class OrderManagementRepositoryImpl implements OrderManagementRepository {
 
   @override
   Future<Either<Failure, OrderManagementEntity?>> getOrderInfo(
-      int orderId) async {
+    int orderId,
+  ) async {
     try {
       final model = await localDataSource.getOrderInfo(orderId);
       return Right(model);
@@ -55,10 +51,7 @@ class OrderManagementRepositoryImpl implements OrderManagementRepository {
     required String status,
   }) async {
     try {
-      await localDataSource.updateOrderStatus(
-        orderId: orderId,
-        status: status,
-      );
+      await localDataSource.updateOrderStatus(orderId: orderId, status: status);
       return const Right(null);
     } catch (e) {
       return Left(CacheFailure(message: e.toString()));

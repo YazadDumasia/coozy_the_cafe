@@ -42,8 +42,9 @@ class SelectTaxDialog extends StatelessWidget {
       child: AddTaxDialog(
         initialName: taxName,
         initialRate: existing.name.isNotEmpty ? existing.ratePercent : null,
-        initialIsDefaultAdd:
-            existing.name.isNotEmpty ? existing.isDefaultAdd : null,
+        initialIsDefaultAdd: existing.name.isNotEmpty
+            ? existing.isDefaultAdd
+            : null,
         onTaxAdded: onTaxAdded,
       ),
     );
@@ -76,7 +77,8 @@ class SelectTaxDialog extends StatelessWidget {
     final defaultOptions = [
       {
         'key': 'CGST',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutCgst,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -84,7 +86,8 @@ class SelectTaxDialog extends StatelessWidget {
       },
       {
         'key': 'SGST',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutSgst,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -92,7 +95,8 @@ class SelectTaxDialog extends StatelessWidget {
       },
       {
         'key': 'IGST',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutIgst,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -100,7 +104,8 @@ class SelectTaxDialog extends StatelessWidget {
       },
       {
         'key': 'VAT',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutVat,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -108,7 +113,8 @@ class SelectTaxDialog extends StatelessWidget {
       },
       {
         'key': 'Other Tax',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutOtherTax,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -120,18 +126,16 @@ class SelectTaxDialog extends StatelessWidget {
       future: _getSavedTaxes(),
       builder: (context, snapshot) {
         final savedTaxes = snapshot.data ?? [];
-        final existingNames =
-            defaultOptions.map((e) => e['key']!.toLowerCase()).toSet();
+        final existingNames = defaultOptions
+            .map((e) => e['key']!.toLowerCase())
+            .toSet();
         final customOptions = <Map<String, String>>[];
 
         for (final tax in [...appliedTaxes, ...savedTaxes]) {
           if (tax.name.trim().isNotEmpty &&
               !existingNames.contains(tax.name.trim().toLowerCase())) {
             existingNames.add(tax.name.trim().toLowerCase());
-            customOptions.add({
-              'key': tax.name,
-              'display': tax.name,
-            });
+            customOptions.add({'key': tax.name, 'display': tax.name});
           }
         }
 
@@ -166,12 +170,10 @@ class SelectTaxDialog extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(
-                        Icons.close,
-                        color: colorScheme.primary,
-                      ),
+                      icon: Icon(Icons.close, color: colorScheme.primary),
                       onPressed: () => Navigator.of(context).pop(),
-                      tooltip: context.tr(
+                      tooltip:
+                          context.tr(
                             shared.LocaleKeys.commonClose,
                             track: shared.TrackConstants.commonTrack,
                           ) ??

@@ -30,10 +30,9 @@ Future<T?> showResponsiveModal<T>({
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(sheetContext)
-                      .colorScheme
-                      .onSurfaceVariant
-                      .withValues(alpha: 0.4),
+                  color: Theme.of(
+                    sheetContext,
+                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -65,12 +64,8 @@ Future<T?> showResponsiveModal<T>({
                     children: [
                       Text(
                         title,
-                        style: Theme.of(dialogContext)
-                            .textTheme
-                            .titleLarge
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                        style: Theme.of(dialogContext).textTheme.titleLarge
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const Spacer(),
                       IconButton(
@@ -82,11 +77,7 @@ Future<T?> showResponsiveModal<T>({
                 ),
                 const Divider(height: 1),
               ],
-              Flexible(
-                child: SingleChildScrollView(
-                  child: child,
-                ),
-              ),
+              Flexible(child: SingleChildScrollView(child: child)),
             ],
           ),
         ),

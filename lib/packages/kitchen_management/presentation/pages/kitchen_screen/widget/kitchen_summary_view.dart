@@ -12,13 +12,24 @@ class KitchenSummaryView extends StatelessWidget {
   String _getStatusLabel(BuildContext context, String status) {
     switch (status.toLowerCase()) {
       case 'preparing':
-        return context.tr(shared.LocaleKeys.kitchenStatusPreparing, track: shared.TrackConstants.orderPageTrack) ??
+        return context.tr(
+              shared.LocaleKeys.kitchenStatusPreparing,
+              track: shared.TrackConstants.orderPageTrack,
+            ) ??
             'Preparing';
       case 'ready':
-        return context.tr(shared.LocaleKeys.kitchenStatusReady, track: shared.TrackConstants.orderPageTrack) ?? 'Ready';
+        return context.tr(
+              shared.LocaleKeys.kitchenStatusReady,
+              track: shared.TrackConstants.orderPageTrack,
+            ) ??
+            'Ready';
       case 'pending':
       default:
-        return context.tr(shared.LocaleKeys.kitchenStatusPending, track: shared.TrackConstants.orderPageTrack) ?? 'Pending';
+        return context.tr(
+              shared.LocaleKeys.kitchenStatusPending,
+              track: shared.TrackConstants.orderPageTrack,
+            ) ??
+            'Pending';
     }
   }
 
@@ -38,7 +49,10 @@ class KitchenSummaryView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              context.tr(shared.LocaleKeys.kitchenNoItemsPendingSummary, track: shared.TrackConstants.orderPageTrack) ??
+              context.tr(
+                    shared.LocaleKeys.kitchenNoItemsPendingSummary,
+                    track: shared.TrackConstants.orderPageTrack,
+                  ) ??
                   'No items currently pending preparation',
               style: theme.textTheme.titleMedium?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
@@ -116,7 +130,10 @@ class KitchenSummaryView extends StatelessWidget {
                     color: theme.colorScheme.primary,
                   ),
                   title: Text(
-                    context.tr(shared.LocaleKeys.kitchenSummaryAllHeader, track: shared.TrackConstants.orderPageTrack) ??
+                    context.tr(
+                          shared.LocaleKeys.kitchenSummaryAllHeader,
+                          track: shared.TrackConstants.orderPageTrack,
+                        ) ??
                         'All',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
@@ -130,6 +147,7 @@ class KitchenSummaryView extends StatelessWidget {
                             'totalQty': '$grandTotalQty',
                             'uniqueCount': '${grandTotals.length}',
                           },
+                          track: shared.TrackConstants.orderPageTrack,
                         ) ??
                         'Grand Total: $grandTotalQty items across ${grandTotals.length} unique dishes',
                     style: theme.textTheme.bodySmall,
@@ -201,6 +219,7 @@ class KitchenSummaryView extends StatelessWidget {
                 title:
                     context.tr(
                       shared.LocaleKeys.kitchenSummaryPreparingHeader,
+                      track: shared.TrackConstants.orderPageTrack,
                     ) ??
                     'Preparing',
                 icon: Icons.soup_kitchen_outlined,
@@ -214,7 +233,10 @@ class KitchenSummaryView extends StatelessWidget {
               _buildStatusSection(
                 context,
                 title:
-                    context.tr(shared.LocaleKeys.kitchenSummaryPendingHeader, track: shared.TrackConstants.orderPageTrack) ??
+                    context.tr(
+                      shared.LocaleKeys.kitchenSummaryPendingHeader,
+                      track: shared.TrackConstants.orderPageTrack,
+                    ) ??
                     'Pending',
                 icon: Icons.hourglass_top_outlined,
                 color: Colors.orange,
@@ -227,7 +249,10 @@ class KitchenSummaryView extends StatelessWidget {
               _buildStatusSection(
                 context,
                 title:
-                    context.tr(shared.LocaleKeys.kitchenSummaryReadyHeader, track: shared.TrackConstants.orderPageTrack) ??
+                    context.tr(
+                      shared.LocaleKeys.kitchenSummaryReadyHeader,
+                      track: shared.TrackConstants.orderPageTrack,
+                    ) ??
                     'Ready to Serve',
                 icon: Icons.check_circle_outline,
                 color: Colors.green,
@@ -240,7 +265,10 @@ class KitchenSummaryView extends StatelessWidget {
               _buildStatusSection(
                 context,
                 title:
-                    context.tr(shared.LocaleKeys.kitchenSummaryOtherHeader, track: shared.TrackConstants.orderPageTrack) ??
+                    context.tr(
+                      shared.LocaleKeys.kitchenSummaryOtherHeader,
+                      track: shared.TrackConstants.orderPageTrack,
+                    ) ??
                     'Other',
                 icon: Icons.list_alt,
                 color: Colors.grey,
@@ -300,6 +328,7 @@ class KitchenSummaryView extends StatelessWidget {
                     context.tr(
                           shared.LocaleKeys.kitchenSummaryItemsCount,
                           params: {'count': '$totalQty'},
+                          track: shared.TrackConstants.orderPageTrack,
                         ) ??
                         '$totalQty items',
                     style: TextStyle(
@@ -377,6 +406,8 @@ class KitchenSummaryView extends StatelessWidget {
                                 context.tr(
                                       shared.LocaleKeys.kitchenSummaryOrderType,
                                       params: {'type': item.orderType!},
+                                      track:
+                                          shared.TrackConstants.orderPageTrack,
                                     ) ??
                                     'Type: ${item.orderType}',
                               ),

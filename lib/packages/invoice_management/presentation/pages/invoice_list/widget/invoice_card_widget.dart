@@ -17,14 +17,26 @@ class InvoiceCardWidget extends StatelessWidget {
     return switch (method) {
       'upi' || 'qr' || 'qr code' || 'online' => Icons.qr_code,
       'card' || 'debit card' || 'credit card' => Icons.credit_card,
-      'bank' || 'net banking' || 'netbanking' || 'bank transfer' => Icons.account_balance,
+      'bank' ||
+      'net banking' ||
+      'netbanking' ||
+      'bank transfer' => Icons.account_balance,
       'wallet' || 'e-wallet' => Icons.account_balance_wallet,
       'cash' => Icons.payments,
       'cheque' || 'check' => Icons.receipt_long,
       'gift card' || 'voucher' => Icons.card_giftcard,
-      _ when method.contains('upi') || method.contains('qr') || method.contains('online') => Icons.qr_code,
-      _ when method.contains('card') || method.contains('debit') || method.contains('credit') => Icons.credit_card,
-      _ when method.contains('bank') || method.contains('transfer') => Icons.account_balance,
+      _
+          when method.contains('upi') ||
+              method.contains('qr') ||
+              method.contains('online') =>
+        Icons.qr_code,
+      _
+          when method.contains('card') ||
+              method.contains('debit') ||
+              method.contains('credit') =>
+        Icons.credit_card,
+      _ when method.contains('bank') || method.contains('transfer') =>
+        Icons.account_balance,
       _ when method.contains('wallet') => Icons.account_balance_wallet,
       _ => Icons.payment,
     };
@@ -36,23 +48,27 @@ class InvoiceCardWidget extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     final rawPaymentMethod = invoice.paymentMethodName?.toString() ?? '';
-    final methodText = rawPaymentMethod.trim().isNotEmpty ? rawPaymentMethod : 'Cash';
+    final methodText = rawPaymentMethod.trim().isNotEmpty
+        ? rawPaymentMethod
+        : 'Cash';
     final paymentIcon = _getPaymentIcon(rawPaymentMethod);
 
     final hashIdVal = invoice.hashId;
-    final receiptTitle =
-        hashIdVal.isNotEmpty ? hashIdVal : 'MD-${invoice.id}';
+    final receiptTitle = hashIdVal.isNotEmpty ? hashIdVal : 'MD-${invoice.id}';
 
     final createdDateStr = invoice.createdDate != null
         ? core.DateUtil.dateToString(
-            DateTime.tryParse(invoice.createdDate!) ?? DateTime.now(),
-            'dd MMM yyyy - hh:mm a',
-          ) ?? ''
+                DateTime.tryParse(invoice.createdDate!) ?? DateTime.now(),
+                'dd MMM yyyy - hh:mm a',
+              ) ??
+              ''
         : '';
     final netAmount = invoice.netPaymentAmount;
 
-    final hasCustomerName = invoice.customerName != null && invoice.customerName!.trim().isNotEmpty;
-    final hasPhone = invoice.phoneNumber != null && invoice.phoneNumber!.trim().isNotEmpty;
+    final hasCustomerName =
+        invoice.customerName != null && invoice.customerName!.trim().isNotEmpty;
+    final hasPhone =
+        invoice.phoneNumber != null && invoice.phoneNumber!.trim().isNotEmpty;
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -79,13 +95,17 @@ class InvoiceCardWidget extends StatelessWidget {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withValues(alpha: 0.3),
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: 0.3,
+                      ),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     alignment: Alignment.center,
                     child: Icon(
                       paymentIcon,
-                      color: paymentIcon == Icons.payments ? Colors.green : colorScheme.primary,
+                      color: paymentIcon == Icons.payments
+                          ? Colors.green
+                          : colorScheme.primary,
                       size: 22,
                     ),
                   ),
@@ -150,14 +170,17 @@ class InvoiceCardWidget extends StatelessWidget {
                               Icon(
                                 Icons.access_time,
                                 size: 14,
-                                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                                color: colorScheme.onSurfaceVariant.withValues(
+                                  alpha: 0.7,
+                                ),
                               ),
                               const SizedBox(width: 4),
                               Expanded(
                                 child: Text(
                                   createdDateStr,
                                   style: theme.textTheme.bodySmall?.copyWith(
-                                    color: colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+                                    color: colorScheme.onSurfaceVariant
+                                        .withValues(alpha: 0.7),
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -183,7 +206,9 @@ class InvoiceCardWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      hasCustomerName ? invoice.customerName!.trim() : 'Customer',
+                      hasCustomerName
+                          ? invoice.customerName!.trim()
+                          : 'Customer',
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),

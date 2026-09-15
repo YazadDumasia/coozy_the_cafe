@@ -379,7 +379,8 @@ class _StaffReportSubScreenState extends State<StaffReportSubScreen>
                               _refreshAllData();
                               shared.SnackBarUtils.showSuccess(
                                 context,
-                                message: context.tr(
+                                message:
+                                    context.tr(
                                       shared
                                           .LocaleKeys
                                           .staffReportsReloadedSuccess,

@@ -76,18 +76,18 @@ class OrderManagementLoadedState extends OrderManagementState {
 
   @override
   List<Object?> get props => [
-        orders,
-        totalCount,
-        currentPage,
-        hasReachedMax,
-        isFetchingMore,
-        searchQuery,
-        dateRange,
-        selectedStatus,
-        selectedOrderDetails,
-        isLoadingDetails,
-        errorMessage,
-      ];
+    orders,
+    totalCount,
+    currentPage,
+    hasReachedMax,
+    isFetchingMore,
+    searchQuery,
+    dateRange,
+    selectedStatus,
+    selectedOrderDetails,
+    isLoadingDetails,
+    errorMessage,
+  ];
 }
 
 class OrderManagementErrorState extends OrderManagementState {

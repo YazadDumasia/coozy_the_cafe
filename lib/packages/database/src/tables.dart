@@ -211,13 +211,20 @@ class OrdersTable extends BaseTable {
   TextColumn get orderType => text().nullable()();
   TextColumn get paymentMethodName => text().nullable()();
   TextColumn get paymentMethodDetails => text().nullable()();
-  RealColumn get cashReceived => real().nullable().withDefault(const Constant(0.0))();
-  RealColumn get changeAmount => real().nullable().withDefault(const Constant(0.0))();
-  RealColumn get subtotalAmount => real().nullable().withDefault(const Constant(0.0))();
-  RealColumn get discountAmount => real().nullable().withDefault(const Constant(0.0))();
-  RealColumn get taxAmount => real().nullable().withDefault(const Constant(0.0))();
-  RealColumn get otherChargesAmount => real().nullable().withDefault(const Constant(0.0))();
-  RealColumn get grandTotal => real().nullable().withDefault(const Constant(0.0))();
+  RealColumn get cashReceived =>
+      real().nullable().withDefault(const Constant(0.0))();
+  RealColumn get changeAmount =>
+      real().nullable().withDefault(const Constant(0.0))();
+  RealColumn get subtotalAmount =>
+      real().nullable().withDefault(const Constant(0.0))();
+  RealColumn get discountAmount =>
+      real().nullable().withDefault(const Constant(0.0))();
+  RealColumn get taxAmount =>
+      real().nullable().withDefault(const Constant(0.0))();
+  RealColumn get otherChargesAmount =>
+      real().nullable().withDefault(const Constant(0.0))();
+  RealColumn get grandTotal =>
+      real().nullable().withDefault(const Constant(0.0))();
   TextColumn get deliveryAddress => text().nullable()();
   IntColumn get customerId =>
       integer().nullable().references(CustomersTable, #id)();
@@ -328,9 +335,12 @@ class InvoicesTable extends BaseTable {
   TextColumn get paymentMethodName => text().nullable()();
   RealColumn get recordAmountPaid => real().withDefault(const Constant(0.0))();
   TextColumn get paymentMethodDetails => text().nullable()();
-  RealColumn get cashReceived => real().nullable().withDefault(const Constant(0.0))();
-  RealColumn get changeAmount => real().nullable().withDefault(const Constant(0.0))();
-  BoolColumn get isDeleted => boolean().nullable().withDefault(const Constant(false))();
+  RealColumn get cashReceived =>
+      real().nullable().withDefault(const Constant(0.0))();
+  RealColumn get changeAmount =>
+      real().nullable().withDefault(const Constant(0.0))();
+  BoolColumn get isDeleted =>
+      boolean().nullable().withDefault(const Constant(false))();
 }
 
 @DataClassName('InvoiceItem')
@@ -679,4 +689,3 @@ class PaymentMethodsTable extends BaseTable {
   TextColumn get iconFontPackage => text().nullable()();
   BoolColumn get isEnabled => boolean().withDefault(const Constant(true))();
 }
-

@@ -8,7 +8,7 @@ class CurrencyExchangeCubit extends Cubit<CurrencyExchangeState> {
   final CurrencyExchangeApiService apiService;
 
   CurrencyExchangeCubit({required this.apiService})
-      : super(const CurrencyExchangeInitial());
+    : super(const CurrencyExchangeInitial());
 
   Future<void> loadExchangeData({
     String baseCurrency = 'usd',
@@ -47,7 +47,10 @@ class CurrencyExchangeCubit extends Cubit<CurrencyExchangeState> {
     }
   }
 
-  Future<void> changeBaseCurrency(String newBase, {bool forceRefresh = true}) async {
+  Future<void> changeBaseCurrency(
+    String newBase, {
+    bool forceRefresh = true,
+  }) async {
     if (state is! CurrencyExchangeLoaded) return;
     final currentState = state as CurrencyExchangeLoaded;
 
@@ -85,7 +88,9 @@ class CurrencyExchangeCubit extends Cubit<CurrencyExchangeState> {
     final newTarget = currentState.baseCurrency;
     changeBaseCurrency(newBase).then((_) {
       if (state is CurrencyExchangeLoaded) {
-        emit((state as CurrencyExchangeLoaded).copyWith(targetCurrency: newTarget));
+        emit(
+          (state as CurrencyExchangeLoaded).copyWith(targetCurrency: newTarget),
+        );
       }
     });
   }

@@ -97,6 +97,7 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                 context.tr(
                   shared.LocaleKeys.orderPlacedSuccessfullyForTableMsg,
                   params: {'tableName': tName, 'orderId': oId},
+                  track: shared.TrackConstants.tablePageTrack,
                 ) ??
                 'Order placed successfully for $tName! (ID: #$oId)';
             context.go(core.AppRoutePath.homeRoute);
@@ -114,13 +115,13 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
             final errText =
                 (state.errorMessage ==
                     'Cart is empty. Please add items to place order.')
-                ? (context.tr(shared.LocaleKeys.cartIsEmptyMsg, track: shared.TrackConstants.tablePageTrack) ??
+                ? (context.tr(
+                        shared.LocaleKeys.cartIsEmptyMsg,
+                        track: shared.TrackConstants.tablePageTrack,
+                      ) ??
                       state.errorMessage!)
                 : state.errorMessage!;
-            shared.SnackBarUtils.showError(
-              context,
-              message: errText,
-            );
+            shared.SnackBarUtils.showError(context, message: errText);
           }
 
           if (_tabController != null &&
@@ -205,6 +206,7 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                           hintText:
                               context.tr(
                                 shared.LocaleKeys.searchDishNameHint,
+                                track: shared.TrackConstants.tablePageTrack,
                               ) ??
                               'Search dish name...',
                           border: InputBorder.none,
@@ -247,7 +249,10 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   // Fast Forward / Order Summary Action Button (>> icon)
                   IconButton(
                     tooltip:
-                        context.tr(shared.LocaleKeys.currentOrderTabTitle, track: shared.TrackConstants.tablePageTrack) ??
+                        context.tr(
+                          shared.LocaleKeys.currentOrderTabTitle,
+                          track: shared.TrackConstants.tablePageTrack,
+                        ) ??
                         'Current Order',
                     icon: Icon(
                       Icons.fast_forward_rounded,
@@ -287,7 +292,10 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                   tabs: [
                     Tab(
                       text:
-                          (context.tr(shared.LocaleKeys.currentOrderTabTitle, track: shared.TrackConstants.tablePageTrack) ??
+                          (context.tr(
+                                    shared.LocaleKeys.currentOrderTabTitle,
+                                    track: shared.TrackConstants.tablePageTrack,
+                                  ) ??
                                   'CURRENT ORDER')
                               .toUpperCase(),
                     ),

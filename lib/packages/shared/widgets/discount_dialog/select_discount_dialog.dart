@@ -42,10 +42,12 @@ class SelectDiscountDialog extends StatelessWidget {
       child: AddDiscountDialog(
         initialName: discountName,
         initialValue: existing.name.isNotEmpty ? existing.value : null,
-        initialIsPercentage:
-            existing.name.isNotEmpty ? existing.isPercentage : null,
-        initialIsDefaultAdd:
-            existing.name.isNotEmpty ? existing.isDefaultAdd : null,
+        initialIsPercentage: existing.name.isNotEmpty
+            ? existing.isPercentage
+            : null,
+        initialIsDefaultAdd: existing.name.isNotEmpty
+            ? existing.isDefaultAdd
+            : null,
         onDiscountAdded: onDiscountAdded,
       ),
     );
@@ -79,7 +81,8 @@ class SelectDiscountDialog extends StatelessWidget {
     final defaultOptions = [
       {
         'key': 'Flat Discount',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutFlatDiscount,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -87,7 +90,8 @@ class SelectDiscountDialog extends StatelessWidget {
       },
       {
         'key': 'Percentage Discount',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutPercentageDiscount,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -95,7 +99,8 @@ class SelectDiscountDialog extends StatelessWidget {
       },
       {
         'key': 'Staff Discount',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutStaffDiscount,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -103,19 +108,18 @@ class SelectDiscountDialog extends StatelessWidget {
       },
       {
         'key': 'Festival Offer',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutFestivalOffer,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
             'Festival Offer',
       },
-      {
-        'key': 'Special Coupon',
-        'display': 'Special Coupon',
-      },
+      {'key': 'Special Coupon', 'display': 'Special Coupon'},
       {
         'key': 'Other Discount',
-        'display': context.tr(
+        'display':
+            context.tr(
               shared.LocaleKeys.checkoutOtherDiscount,
               track: shared.TrackConstants.checkoutPageTrack,
             ) ??
@@ -127,18 +131,16 @@ class SelectDiscountDialog extends StatelessWidget {
       future: _getSavedDiscounts(),
       builder: (context, snapshot) {
         final savedDiscounts = snapshot.data ?? [];
-        final existingNames =
-            defaultOptions.map((e) => e['key']!.toLowerCase()).toSet();
+        final existingNames = defaultOptions
+            .map((e) => e['key']!.toLowerCase())
+            .toSet();
         final customOptions = <Map<String, String>>[];
 
         for (final discount in [...appliedDiscounts, ...savedDiscounts]) {
           if (discount.name.trim().isNotEmpty &&
               !existingNames.contains(discount.name.trim().toLowerCase())) {
             existingNames.add(discount.name.trim().toLowerCase());
-            customOptions.add({
-              'key': discount.name,
-              'display': discount.name,
-            });
+            customOptions.add({'key': discount.name, 'display': discount.name});
           }
         }
 
@@ -173,12 +175,10 @@ class SelectDiscountDialog extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: Icon(
-                        Icons.close,
-                        color: colorScheme.primary,
-                      ),
+                      icon: Icon(Icons.close, color: colorScheme.primary),
                       onPressed: () => Navigator.of(context).pop(),
-                      tooltip: context.tr(
+                      tooltip:
+                          context.tr(
                             shared.LocaleKeys.commonClose,
                             track: shared.TrackConstants.commonTrack,
                           ) ??

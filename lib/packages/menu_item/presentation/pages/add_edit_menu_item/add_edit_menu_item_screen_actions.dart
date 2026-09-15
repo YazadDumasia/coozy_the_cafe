@@ -60,10 +60,9 @@ class AddEditMenuItemScreenActions {
     if (categoryId == null) {
       shared.SnackBarUtils.showError(
         context,
-        message: context.tr(
-              shared
-                  .LocaleKeys
-                  .menuItemPageAddEditMenuItemPleaseSelectCategory,
+        message:
+            context.tr(
+              shared.LocaleKeys.menuItemPageAddEditMenuItemPleaseSelectCategory,
               track: shared.TrackConstants.menuItemPageTrack,
             ) ??
             'Please select a category',
@@ -74,10 +73,9 @@ class AddEditMenuItemScreenActions {
     if (foodType == null || foodType.trim().isEmpty) {
       shared.SnackBarUtils.showError(
         context,
-        message: context.tr(
-              shared
-                  .LocaleKeys
-                  .menuItemPageAddEditMenuItemPleaseSelectFoodType,
+        message:
+            context.tr(
+              shared.LocaleKeys.menuItemPageAddEditMenuItemPleaseSelectFoodType,
               track: shared.TrackConstants.menuItemPageTrack,
             ) ??
             'Please select a food type',
@@ -88,7 +86,8 @@ class AddEditMenuItemScreenActions {
     if (variations != null && variations.isEmpty) {
       shared.SnackBarUtils.showError(
         context,
-        message: context.tr(
+        message:
+            context.tr(
               shared.LocaleKeys.menuItemPageAddEditMenuItemAdd,
               track: shared.TrackConstants.menuItemPageTrack,
             ) ??

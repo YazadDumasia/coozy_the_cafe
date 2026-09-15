@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:coozy_the_cafe/packages/database/coozy_database.dart' show OrderStatus;
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart'
+    show OrderStatus;
 import 'kitchen_order_item_entity.dart';
 
 class KitchenOrderEntity extends Equatable {

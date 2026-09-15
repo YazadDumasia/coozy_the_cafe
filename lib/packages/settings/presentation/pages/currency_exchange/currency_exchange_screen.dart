@@ -41,8 +41,6 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
     super.dispose();
   }
 
-
-
   /// Resolve FiatCurrency symbol and flag using world_countries package
   FiatCurrency? _resolveFiatCurrency(String code) {
     try {
@@ -312,7 +310,9 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
                       onChanged: (val) {
                         final parsed = double.tryParse(val.trim());
                         if (parsed != null && parsed >= 0) {
-                          context.read<CurrencyExchangeCubit>().updateAmount(parsed);
+                          context.read<CurrencyExchangeCubit>().updateAmount(
+                            parsed,
+                          );
                         }
                       },
                       decoration: InputDecoration(
@@ -396,7 +396,11 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
                           if (!state.hasTargetRate) ...[
                             Row(
                               children: [
-                                const Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 20),
+                                const Icon(
+                                  Icons.warning_amber_rounded,
+                                  color: Colors.orange,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
@@ -423,7 +427,10 @@ class _CurrencyExchangeScreenState extends State<CurrencyExchangeScreen>
                                   ),
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.copy_rounded, size: 18),
+                                  icon: const Icon(
+                                    Icons.copy_rounded,
+                                    size: 18,
+                                  ),
                                   tooltip: 'Copy converted amount',
                                   onPressed: () => copyToClipboard(
                                     context,

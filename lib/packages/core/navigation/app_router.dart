@@ -79,8 +79,6 @@ class AppRouter {
       ...InvoiceManagementRoutes.routes,
     ],
 
-
-
     errorBuilder: (context, state) => Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
