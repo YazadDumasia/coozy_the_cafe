@@ -105,6 +105,25 @@ class LoginFormCardWidget extends StatelessWidget {
                           ),
                         ],
                       ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.end,
+                      //   crossAxisAlignment: CrossAxisAlignment.end,
+                      //   children: <Widget>[
+                      //     TextButton(
+                      //       onPressed: () {},
+                      //       child: Text(
+                      //       context.tr(
+                      //             shared.LocaleKeys.loginForgetPassword,
+                      //             track: shared
+                      //                 .TrackConstants
+                      //                 .loginPageTrack,
+                      //           ) ??
+                      //           "Forget password?",
+                      //         textAlign: TextAlign.end,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       SignInButtonWidget(
                         formKey: formKey,
                         callLoginApi: callLoginApi,

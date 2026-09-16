@@ -250,6 +250,7 @@ abstract class LocaleKeys {
   static String loginViaPhoneNumberTooltip = 'login_via_phone_number_tooltip';
   static String loginGoogleLoginError = 'login_google_login_error';
   static String loginOk = 'login_Ok';
+  static String loginForgetPassword = 'login_forget_password';
 
   // login_via_phone_number_page
   static String loginViaPhoneNumberPageOtpVerificationTitle =

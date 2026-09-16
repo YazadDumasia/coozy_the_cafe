@@ -279,6 +279,7 @@
   },
   "login_page": {
     "login_Ok": "Login ok",
+    "login_forget_password": "Forget password?",
     "login_captcha_hint": "Login captcha hint",
     "login_captcha_label": "Login captcha label",
     "login_did_account": "Don't have an account ?",
