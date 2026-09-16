@@ -124,15 +124,8 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                           ) ??
                           'Kitchen Display System',
 
-                      isSelected: _isRouteActive(
-                        currentLocation,
-                        core.AppRoutePath.kitchenScreenRoute,
-                      ),
-                      onTap: () => _navigateToRoute(
-                        context,
-                        currentLocation,
-                        core.AppRoutePath.kitchenScreenRoute,
-                      ),
+                      isSelected: false,
+                      onTap: () {},
                     ),
                     _buildDrawerItem(
                       context,

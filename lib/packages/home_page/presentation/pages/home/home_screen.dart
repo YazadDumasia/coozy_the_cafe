@@ -2,6 +2,9 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/coozy_core.dart';
+import '../../../../kitchen_management/kitchen_management.dart';
 import '../../../../shared/coozy_shared.dart' as shared;
 import 'home_screen_drawer.dart';
 import '../../widgets/home_screen_bottom_nav_bar.dart';
@@ -52,58 +55,64 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: PopScope(
-        canPop: false,
-        onPopInvokedWithResult: (bool didPop, dynamic result) async {
-          if (didPop) return;
-          final bool shouldPop = await HomeScreenActions.handleBackPress(
-            context,
-            _scaffoldKey,
-            _tabController,
-            currentBackPressTime,
-            (time) => currentBackPressTime = time,
-          );
-          if (shouldPop) {
-            if (context.mounted) {
-              if (kIsWeb) {
-                // Exit app might not make sense in a browser, but handling gracefully
-              } else {
-                SystemNavigator.pop();
+    return BlocProvider<KitchenBloc>(
+      create: (_) => sl<KitchenBloc>()..add(const LoadKitchenOrdersEvent()),
+      child: SafeArea(
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (bool didPop, dynamic result) async {
+            if (didPop) return;
+            final bool shouldPop = await HomeScreenActions.handleBackPress(
+              context,
+              _scaffoldKey,
+              _tabController,
+              currentBackPressTime,
+              (time) => currentBackPressTime = time,
+            );
+            if (shouldPop) {
+              if (context.mounted) {
+                if (kIsWeb) {
+                  // Exit app might not make sense in a browser, but handling gracefully
+                } else {
+                  SystemNavigator.pop();
+                }
               }
             }
-          }
-        },
-        child: Scaffold(
-          key: _scaffoldKey,
-          resizeToAvoidBottomInset: true,
-          drawer: const HomeScreenDrawer(),
-          bottomNavigationBar: ValueListenableBuilder<int>(
-            valueListenable: currentTabIndex,
-            builder: (context, tabIndex, child) {
-              return HomeScreenBottomNavBar(
+          },
+          child: Scaffold(
+            key: _scaffoldKey,
+            resizeToAvoidBottomInset: true,
+            drawer: const HomeScreenDrawer(),
+            bottomNavigationBar: ValueListenableBuilder<int>(
+              valueListenable: currentTabIndex,
+              builder: (context, tabIndex, child) {
+                return HomeScreenBottomNavBar(
+                  tabController: _tabController,
+                  currentTabIndex: tabIndex,
+                );
+              },
+            ),
+            body: shared.ResponsiveLayout(
+              mobile: HomeScreenMobileBody(
+                scrollController: _scrollController,
                 tabController: _tabController,
-                currentTabIndex: tabIndex,
-              );
-            },
-          ),
-          body: shared.ResponsiveLayout(
-            mobile: HomeScreenMobileBody(
-              scrollController: _scrollController,
-              tabController: _tabController,
+                currentTabIndex: currentTabIndex,
+              ),
+              tablet: HomeScreenMobileBody(
+                scrollController: _scrollController,
+                tabController: _tabController,
+                currentTabIndex: currentTabIndex,
+              ),
+              desktop: HomeScreenMobileBody(
+                scrollController: _scrollController,
+                tabController: _tabController,
+                currentTabIndex: currentTabIndex,
+              ),
+              // desktop: HomeScreenWebBody(
+              //   tabController: _tabController,
+              //   scrollController: _scrollController,
+              // ),
             ),
-            tablet: HomeScreenMobileBody(
-              scrollController: _scrollController,
-              tabController: _tabController,
-            ),
-            desktop: HomeScreenMobileBody(
-              scrollController: _scrollController,
-              tabController: _tabController,
-            ),
-            // desktop: HomeScreenWebBody(
-            //   tabController: _tabController,
-            //   scrollController: _scrollController,
-            // ),
           ),
         ),
       ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../bloc/kitchen_bloc.dart';
 
-class KitchenScreenActions {
+class KitchenPageActions {
   static void refreshOrders(BuildContext context) {
     context.read<KitchenBloc>().add(const LoadKitchenOrdersEvent());
   }
