@@ -1,11 +1,11 @@
 {
-    "name": "coozy_the_cafe",
-    "short_name": "coozy_the_cafe",
+    "name": "Coozy The Cafe",
+    "short_name": "Coozy The Cafe",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Coozy The Cafe",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
