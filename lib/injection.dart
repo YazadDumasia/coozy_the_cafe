@@ -19,6 +19,7 @@ import 'package:coozy_the_cafe/packages/kitchen_management/kitchen_management.da
 import 'package:coozy_the_cafe/packages/checkout/checkout.dart';
 import 'package:coozy_the_cafe/packages/order_management/order_management.dart';
 import 'package:coozy_the_cafe/packages/invoice_management/invoice_management.dart';
+import 'package:coozy_the_cafe/packages/expenditure/expenditure.dart';
 
 Future<void> initDI() async {
   // Auth Package Dependencies
@@ -68,4 +69,7 @@ Future<void> initDI() async {
 
   // Invoice Management Package Dependencies
   registerInvoiceManagementDependencies(sl);
+
+  // Expenditure Package Dependencies
+  registerExpenditureDependencies(sl);
 }

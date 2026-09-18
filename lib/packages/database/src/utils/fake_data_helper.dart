@@ -67,6 +67,7 @@ class FakeDataHelper {
     'reservations',
     'orders',
     'invoices',
+    'expenditures',
   ];
 
   /// Generates seed records across all modules with stage progress updates.
@@ -364,6 +365,27 @@ class FakeDataHelper {
         random,
         token,
         now,
+        getRandomDate,
+      );
+      await Future.delayed(const Duration(milliseconds: 1));
+    }
+
+    // 15. Expenditures & Cash Flow
+    if (stageKeys.contains('expenditures')) {
+      stepIndex++;
+      onProgress?.call(
+        'expenditures',
+        'Generating Expenditures & Cash Flow Records...',
+        stepIndex,
+        totalSteps,
+      );
+      totalInserted += await _generateExpenditures(
+        db,
+        faker,
+        random,
+        token,
+        now,
+        startDate,
         getRandomDate,
       );
       await Future.delayed(const Duration(milliseconds: 1));
@@ -2633,6 +2655,2161 @@ class FakeDataHelper {
     return inserted;
   }
 
+  static Future<int> _generateExpenditures(
+    CoozyDatabase db,
+    Faker faker,
+    Random random,
+    String token,
+    DateTime now,
+    DateTime startDate,
+    DateTime Function() getRandomDate,
+  ) async {
+    // 1. Ensure categories are available
+    var categories = await db.select(db.expenditureCategoriesTable).get();
+    if (categories.isEmpty) {
+      // Seed categories if needed
+      final defaultExpenses = [
+        'Tax',
+        'Fuel',
+        'Food',
+        'Bill',
+        'Transportation',
+        'Insurance',
+        'Salary',
+        'Rent',
+        'Repairs',
+        'Commissions',
+        'Advertising',
+        'Fee',
+        'Interest',
+        'Loan',
+        'Supplies',
+        'Transfer',
+        'Contract',
+        'Miscellaneous',
+        'Disposable',
+        'Bread',
+        'Vegetables',
+        'Milk',
+        'Cold Drinks',
+        'Sauce',
+      ];
+      final defaultIncomes = [
+        'Profit',
+        'Salary',
+        'Awards',
+        'Rental',
+        'Sale',
+        'Refund',
+        'Lottery',
+        'Dividend',
+        'Investment',
+        'Interest',
+        'Commission',
+        'Fee',
+        'Loan',
+        'Miscellaneous',
+      ];
+      await db.batch((batch) {
+        for (final exp in defaultExpenses) {
+          batch.insert(
+            db.expenditureCategoriesTable,
+            ExpenditureCategoriesTableCompanion.insert(
+              name: exp,
+              type: 'EXPENSE',
+              isCustom: const Value(false),
+              isEnabled: const Value(true),
+            ),
+          );
+        }
+        for (final inc in defaultIncomes) {
+          batch.insert(
+            db.expenditureCategoriesTable,
+            ExpenditureCategoriesTableCompanion.insert(
+              name: inc,
+              type: 'INCOME',
+              isCustom: const Value(false),
+              isEnabled: const Value(true),
+            ),
+          );
+        }
+      });
+      categories = await db.select(db.expenditureCategoriesTable).get();
+    }
+
+    final expenseCategories = categories
+        .where((c) => c.type == 'EXPENSE')
+        .toList();
+    final incomeCategories = categories
+        .where((c) => c.type == 'INCOME')
+        .toList();
+
+    // Fetch employee names if available for salary expenses
+    final employees = await db.select(db.employeesTable).get();
+    final staffNames = employees.map((e) => e.name ?? 'Staff Member').toList();
+
+    final paymentMethods = [
+      'Cash',
+      'UPI',
+      'Bank Transfer',
+      'Credit Card',
+      'Debit Card',
+      'Cheque',
+    ];
+
+    final expenseParties = [
+      'Fresh Farms Market',
+      'Daily Dairy Supplies',
+      'City Electricity Board',
+      'Metro Gas Agency',
+      'Green Valley Veggies',
+      'Baker’s Pride Bakery',
+      'CleanPro Housekeeping',
+      'Commercial Property Landlord',
+      'Coozy Equipment Repair',
+      'Prime Packaging Solutions',
+      'Quick Transport Courier',
+      'Social Pulse Marketing',
+      'Wholesale Spice Market',
+      'CoolAir Tech Refrigeration',
+      'Roasted Bean Co.',
+      'Gourmet Flavors Hub',
+      'City Cold Storage',
+    ];
+
+    final incomeParties = [
+      'Walk-in Cafe Customers',
+      'Morning Coffee Walk-ins',
+      'Breakfast Rush POS',
+      'Dining Hall Register',
+      'Corporate Event Booking',
+      'Weekend Birthday Catering',
+      'Outdoor Festival Pop-up',
+      'Private Terrace Rental',
+      'Coffee Bean Retail Sale',
+      'Special Occasion Booking',
+      'Merchandise Commission',
+      'Beverage Counter Sales',
+      'Pastry & Dessert Shelf',
+      'Private Lounge Party',
+      'Creative Media Labs',
+      'Horizon Tech Corp',
+    ];
+
+    final companions = <ExpendituresTableCompanion>[];
+
+    void addRecord({
+      required String type,
+      required String catName,
+      required double amount,
+      required String party,
+      required DateTime date,
+      required String payMethod,
+      required String note,
+      String refType = 'MANUAL',
+    }) {
+      final isExp = type == 'EXPENSE';
+      final catList = isExp ? expenseCategories : incomeCategories;
+      final cat = catList.cast<ExpenditureCategoryTableData?>().firstWhere(
+        (c) => c?.name.toLowerCase() == catName.toLowerCase(),
+        orElse: () => catList.isNotEmpty ? catList.first : null,
+      );
+
+      final isoDate = date.toIso8601String();
+      companions.add(
+        ExpendituresTableCompanion.insert(
+          hashId: Value(_seedId(token)),
+          type: type,
+          categoryId: Value(cat?.id),
+          categoryName: cat?.name ?? catName,
+          amount: double.parse(amount.toStringAsFixed(2)),
+          partyName: Value(party),
+          date: isoDate,
+          paymentMethod: Value(payMethod),
+          notes: Value(note),
+          referenceType: Value(refType),
+          createdAt: Value(isoDate),
+          modifiedAt: Value(isoDate),
+        ),
+      );
+    }
+
+    final today = DateTime(now.year, now.month, now.day);
+
+    // =========================================================================
+    // 1. BIG DATA FOR SINGLE DAY: TODAY (26 diverse transactions throughout day)
+    // =========================================================================
+    final todayTransactions = [
+      (
+        type: 'EXPENSE',
+        cat: 'Milk',
+        amt: 1200.0,
+        party: 'Daily Dairy Supplies',
+        pay: 'Cash',
+        hour: 7,
+        min: 0,
+        note: '25 Liters Full Cream Milk & Malai',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Bread',
+        amt: 850.0,
+        party: 'Baker’s Pride Bakery',
+        pay: 'UPI',
+        hour: 7,
+        min: 30,
+        note: 'Fresh burger buns, multi-grain loaves & croissants',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Vegetables',
+        amt: 1450.0,
+        party: 'Green Valley Veggies',
+        pay: 'UPI',
+        hour: 8,
+        min: 0,
+        note: 'Fresh salad leaves, bell peppers, tomatoes & mint',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2350.0,
+        party: 'Morning Coffee Walk-ins',
+        pay: 'Cash',
+        hour: 8,
+        min: 30,
+        note: 'Morning walker espresso & cappuccino counter',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 3500.0,
+        party: 'Roasted Bean Co.',
+        pay: 'Bank Transfer',
+        hour: 9,
+        min: 0,
+        note: '5kg Colombian Arabica whole coffee beans',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 4100.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 9,
+        min: 30,
+        note: 'Omelette & breakfast sandwich combos',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Sauce',
+        amt: 1200.0,
+        party: 'Gourmet Flavors Hub',
+        pay: 'UPI',
+        hour: 10,
+        min: 0,
+        note: 'Caramel, chocolate and hazelnut syrup bottles',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 5500.0,
+        party: 'Horizon Tech Corp',
+        pay: 'Bank Transfer',
+        hour: 10,
+        min: 30,
+        note: 'Private conference booth morning workspace booking',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Disposable',
+        amt: 2450.0,
+        party: 'Prime Packaging Solutions',
+        pay: 'Credit Card',
+        hour: 11,
+        min: 0,
+        note: 'Kraft paper bags, cups, wooden stirrers & boxes',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3600.0,
+        party: 'Beverage Counter Sales',
+        pay: 'UPI',
+        hour: 11,
+        min: 30,
+        note: 'Iced teas, cold brews & smoothies',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Fuel',
+        amt: 2150.0,
+        party: 'Metro Gas Agency',
+        pay: 'UPI',
+        hour: 12,
+        min: 0,
+        note: 'Commercial kitchen LPG cylinder refill',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Repairs',
+        amt: 1800.0,
+        party: 'Coozy Equipment Repair',
+        pay: 'Cash',
+        hour: 12,
+        min: 30,
+        note: 'Blender motor repair & grinder calibration',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 8200.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 13,
+        min: 0,
+        note: 'Peak lunch pasta, pizza & rice bowls collection',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 9500.0,
+        party: 'Corporate Office Lunch Catering',
+        pay: 'Bank Transfer',
+        hour: 13,
+        min: 30,
+        note: '30 Packed executive meal boxes dispatched',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Cold Drinks',
+        amt: 1750.0,
+        party: 'City Cold Storage',
+        pay: 'Cash',
+        hour: 14,
+        min: 0,
+        note: 'Canned sodas, tonic water & artisan ginger ale',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2900.0,
+        party: 'Pastry & Dessert Shelf',
+        pay: 'UPI',
+        hour: 14,
+        min: 45,
+        note: 'Cheesecakes, brownies & tea cakes counter',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Bill',
+        amt: 950.0,
+        party: 'City Electricity Board',
+        pay: 'UPI',
+        hour: 15,
+        min: 30,
+        note: 'Commercial water purification filter servicing',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 4200.0,
+        party: 'Creative Media Labs',
+        pay: 'Bank Transfer',
+        hour: 16,
+        min: 15,
+        note: 'Afternoon terrace video shoot reservation',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3150.0,
+        party: 'Coffee Bean Retail Sale',
+        pay: 'UPI',
+        hour: 17,
+        min: 0,
+        note: 'Specialty pour-over kits & roasted bean packets',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Advertising',
+        amt: 1500.0,
+        party: 'Social Pulse Marketing',
+        pay: 'Credit Card',
+        hour: 17,
+        min: 45,
+        note: 'Targeted weekend event promo boost campaign',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6800.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 18,
+        min: 30,
+        note: 'Evening shakes, waffles & finger foods',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 3000.0,
+        party: staffNames.isNotEmpty ? staffNames.first : 'Head Barista',
+        pay: 'Bank Transfer',
+        hour: 19,
+        min: 15,
+        note: 'Weekly performance incentive payout',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 8500.0,
+        party: 'Private Lounge Party',
+        pay: 'UPI',
+        hour: 20,
+        min: 0,
+        note: 'Family anniversary celebration dinner',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6400.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 20,
+        min: 45,
+        note: 'Late evening dinner service register',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Miscellaneous',
+        amt: 1200.0,
+        party: 'Night Shift Crew',
+        pay: 'Cash',
+        hour: 21,
+        min: 30,
+        note: 'Night staff meal & taxi transport allowance',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3950.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'Cash',
+        hour: 22,
+        min: 15,
+        note: 'End of day counter balance settlement',
+      ),
+    ];
+
+    for (final item in todayTransactions) {
+      addRecord(
+        type: item.type,
+        catName: item.cat,
+        amount: item.amt,
+        party: item.party,
+        date: today.add(Duration(hours: item.hour, minutes: item.min)),
+        payMethod: item.pay,
+        note: item.note,
+        refType: item.cat == 'Salary' ? 'SALARY' : 'MANUAL',
+      );
+    }
+
+    // =========================================================================
+    // 2. MULTI-RECORD CLUSTERS FOR DIFFERENT DATES (Yesterday, Days 2..7, etc.)
+    // =========================================================================
+    void generateCluster(
+      int dayOffset,
+      List<
+        ({
+          String type,
+          String cat,
+          double amt,
+          String party,
+          String pay,
+          int hour,
+          int min,
+          String note,
+        })
+      >
+      items,
+    ) {
+      final baseDate = today.subtract(Duration(days: dayOffset));
+      for (final item in items) {
+        addRecord(
+          type: item.type,
+          catName: item.cat,
+          amount: item.amt,
+          party: item.party,
+          date: baseDate.add(Duration(hours: item.hour, minutes: item.min)),
+          payMethod: item.pay,
+          note: item.note,
+          refType: item.cat == 'Salary' ? 'SALARY' : 'MANUAL',
+        );
+      }
+    }
+
+    // Yesterday (dayOffset: 1) - 16 records
+    generateCluster(1, [
+      (
+        type: 'EXPENSE',
+        cat: 'Milk',
+        amt: 1100.0,
+        party: 'Daily Dairy Supplies',
+        pay: 'Cash',
+        hour: 7,
+        min: 0,
+        note: '22L Dairy milk & whipping cream',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Bread',
+        amt: 780.0,
+        party: 'Baker’s Pride Bakery',
+        pay: 'UPI',
+        hour: 7,
+        min: 30,
+        note: 'Sandwich bread loaves & burger buns',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Vegetables',
+        amt: 1350.0,
+        party: 'Green Valley Veggies',
+        pay: 'UPI',
+        hour: 8,
+        min: 0,
+        note: 'Tomatoes, cucumbers, bell peppers & lettuce',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2100.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'Cash',
+        hour: 8,
+        min: 45,
+        note: 'Morning tea & coffee sales',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3850.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 9,
+        min: 30,
+        note: 'Morning breakfast orders',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 1400.0,
+        party: 'CleanPro Housekeeping',
+        pay: 'UPI',
+        hour: 10,
+        min: 15,
+        note: 'Kitchen sanitizers & floor cleaning supplies',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3200.0,
+        party: 'Beverage Counter Sales',
+        pay: 'UPI',
+        hour: 11,
+        min: 0,
+        note: 'Midday smoothies & iced coffees',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Disposable',
+        amt: 1850.0,
+        party: 'Prime Packaging Solutions',
+        pay: 'Debit Card',
+        hour: 12,
+        min: 0,
+        note: 'Paper containers & bag delivery',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7400.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 15,
+        note: 'Lunch service dining revenue',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Food',
+        amt: 2600.0,
+        party: 'Fresh Farms Market',
+        pay: 'UPI',
+        hour: 14,
+        min: 0,
+        note: 'Chicken fillets, paneer & gourmet cheese',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 3500.0,
+        party: 'Creative Media Labs',
+        pay: 'Bank Transfer',
+        hour: 15,
+        min: 30,
+        note: 'Reading lounge private session',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2650.0,
+        party: 'Pastry & Dessert Shelf',
+        pay: 'Cash',
+        hour: 16,
+        min: 30,
+        note: 'Cupcakes & brownies counter',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5900.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 18,
+        min: 0,
+        note: 'Evening rush billing collection',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 2500.0,
+        party: staffNames.length > 1 ? staffNames[1] : 'Kitchen Assistant',
+        pay: 'Cash',
+        hour: 19,
+        min: 30,
+        note: 'Overtime allowance settlement',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6100.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 20,
+        min: 30,
+        note: 'Dinner main course bills',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Miscellaneous',
+        amt: 850.0,
+        party: 'Night Shift Crew',
+        pay: 'Cash',
+        hour: 22,
+        min: 0,
+        note: 'Night cleaning crew transport reimbursement',
+      ),
+    ]);
+
+    // 2 Days Ago (dayOffset: 2) - 12 records
+    generateCluster(2, [
+      (
+        type: 'EXPENSE',
+        cat: 'Milk',
+        amt: 950.0,
+        party: 'Daily Dairy Supplies',
+        pay: 'Cash',
+        hour: 7,
+        min: 15,
+        note: 'Daily dairy supply batch',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Vegetables',
+        amt: 1200.0,
+        party: 'Green Valley Veggies',
+        pay: 'UPI',
+        hour: 8,
+        min: 0,
+        note: 'Daily fresh produce herbs & veggies',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 1950.0,
+        party: 'Morning Coffee Walk-ins',
+        pay: 'Cash',
+        hour: 8,
+        min: 45,
+        note: 'Early morning coffee register',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3400.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 10,
+        min: 0,
+        note: 'Breakfast combos & pancakes',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Fuel',
+        amt: 2100.0,
+        party: 'Metro Gas Agency',
+        pay: 'UPI',
+        hour: 11,
+        min: 30,
+        note: 'Commercial kitchen LPG cylinder refill',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6800.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 0,
+        note: 'Lunch time dine-in collection',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Repairs',
+        amt: 1250.0,
+        party: 'Coozy Equipment Repair',
+        pay: 'Cash',
+        hour: 14,
+        min: 30,
+        note: 'Coffee grinder burr replacement',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2800.0,
+        party: 'Beverage Counter Sales',
+        pay: 'UPI',
+        hour: 16,
+        min: 0,
+        note: 'Afternoon coffee & dessert sales',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Advertising',
+        amt: 1000.0,
+        party: 'Social Pulse Marketing',
+        pay: 'Credit Card',
+        hour: 17,
+        min: 30,
+        note: 'Social media story promotions',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5200.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 18,
+        min: 45,
+        note: 'Evening cafe drinks & burgers',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7500.0,
+        party: 'Weekend Birthday Catering',
+        pay: 'Bank Transfer',
+        hour: 20,
+        min: 15,
+        note: 'Private birthday celebration banquet',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 4800.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'Cash',
+        hour: 21,
+        min: 45,
+        note: 'Dinner register closing cash',
+      ),
+    ]);
+
+    // 3 Days Ago (dayOffset: 3) - 10 records
+    generateCluster(3, [
+      (
+        type: 'EXPENSE',
+        cat: 'Bread',
+        amt: 820.0,
+        party: 'Baker’s Pride Bakery',
+        pay: 'UPI',
+        hour: 7,
+        min: 30,
+        note: 'Sandwich loaves and baguettes',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Food',
+        amt: 2400.0,
+        party: 'Fresh Farms Market',
+        pay: 'UPI',
+        hour: 8,
+        min: 15,
+        note: 'Specialty pasta ingredients and herbs',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2200.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'Cash',
+        hour: 9,
+        min: 0,
+        note: 'Morning walk-in beverage counter',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3600.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 10,
+        min: 30,
+        note: 'Brunch waffle & eggs platters',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 1800.0,
+        party: 'Wholesale Spice Market',
+        pay: 'UPI',
+        hour: 12,
+        min: 30,
+        note: 'Cardamom, cinnamon & artisan spices',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7100.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 30,
+        note: 'Lunch peak customer billing',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2400.0,
+        party: 'Pastry & Dessert Shelf',
+        pay: 'Cash',
+        hour: 15,
+        min: 45,
+        note: 'Afternoon tea time pastries',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 2000.0,
+        party: staffNames.length > 2 ? staffNames[2] : 'Floor Waiter',
+        pay: 'Cash',
+        hour: 17,
+        min: 30,
+        note: 'Weekly stipend advance',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5800.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 0,
+        note: 'Evening rush snacks & shakes',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5300.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 20,
+        min: 45,
+        note: 'Dinner service counter collection',
+      ),
+    ]);
+
+    // 4 Days Ago (dayOffset: 4) - 8 records
+    generateCluster(4, [
+      (
+        type: 'EXPENSE',
+        cat: 'Milk',
+        amt: 1050.0,
+        party: 'Daily Dairy Supplies',
+        pay: 'Cash',
+        hour: 7,
+        min: 0,
+        note: 'Milk and fresh cream crate',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Vegetables',
+        amt: 1100.0,
+        party: 'Green Valley Veggies',
+        pay: 'UPI',
+        hour: 8,
+        min: 0,
+        note: 'Salad greens & root veggies',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2700.0,
+        party: 'Morning Coffee Walk-ins',
+        pay: 'Cash',
+        hour: 9,
+        min: 15,
+        note: 'Morning espresso rush',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6200.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 0,
+        note: 'Midday dining revenue',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Repairs',
+        amt: 1500.0,
+        party: 'CoolAir Tech Refrigeration',
+        pay: 'Cash',
+        hour: 14,
+        min: 45,
+        note: 'Under-counter chiller gas check',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 3000.0,
+        party: 'Creative Media Labs',
+        pay: 'Bank Transfer',
+        hour: 16,
+        min: 0,
+        note: 'Private studio reservation',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5500.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 18,
+        min: 30,
+        note: 'Evening cafe footfall',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 4600.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 21,
+        min: 0,
+        note: 'Dinner bills settlement',
+      ),
+    ]);
+
+    // 5 Days Ago (dayOffset: 5) - 8 records
+    generateCluster(5, [
+      (
+        type: 'EXPENSE',
+        cat: 'Bread',
+        amt: 750.0,
+        party: 'Baker’s Pride Bakery',
+        pay: 'UPI',
+        hour: 7,
+        min: 30,
+        note: 'Loaves and croissant batches',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 2100.0,
+        party: 'Roasted Bean Co.',
+        pay: 'Bank Transfer',
+        hour: 9,
+        min: 0,
+        note: 'Espresso blend replenishment',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3100.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 10,
+        min: 15,
+        note: 'Breakfast and brunch orders',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6900.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 13,
+        min: 30,
+        note: 'Lunch time register sales',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Disposable',
+        amt: 1600.0,
+        party: 'Prime Packaging Solutions',
+        pay: 'Debit Card',
+        hour: 15,
+        min: 0,
+        note: 'Takeaway cup lids & carry bags',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2900.0,
+        party: 'Beverage Counter Sales',
+        pay: 'UPI',
+        hour: 16,
+        min: 45,
+        note: 'Cold brew and iced tea sales',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6100.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 15,
+        note: 'Evening rush customer collection',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5100.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'UPI',
+        hour: 21,
+        min: 15,
+        note: 'Dinner table register',
+      ),
+    ]);
+
+    // 6 Days Ago (dayOffset: 6) - 8 records
+    generateCluster(6, [
+      (
+        type: 'EXPENSE',
+        cat: 'Milk',
+        amt: 980.0,
+        party: 'Daily Dairy Supplies',
+        pay: 'Cash',
+        hour: 7,
+        min: 15,
+        note: '20L Milk batch',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Vegetables',
+        amt: 1250.0,
+        party: 'Green Valley Veggies',
+        pay: 'UPI',
+        hour: 8,
+        min: 15,
+        note: 'Fresh greens and mushrooms',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2500.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'Cash',
+        hour: 9,
+        min: 30,
+        note: 'Coffee bar collection',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7200.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 0,
+        note: 'Lunch dining orders',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Fuel',
+        amt: 2150.0,
+        party: 'Metro Gas Agency',
+        pay: 'UPI',
+        hour: 14,
+        min: 30,
+        note: 'LPG cylinder delivery',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3200.0,
+        party: 'Pastry & Dessert Shelf',
+        pay: 'UPI',
+        hour: 17,
+        min: 0,
+        note: 'Afternoon treats and cakes',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6400.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 0,
+        note: 'Evening burgers and fries',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 4900.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 21,
+        min: 30,
+        note: 'Dinner bills cash closing',
+      ),
+    ]);
+
+    // 7 Days Ago (1 Week Ago, dayOffset: 7) - 10 records
+    generateCluster(7, [
+      (
+        type: 'EXPENSE',
+        cat: 'Bread',
+        amt: 890.0,
+        party: 'Baker’s Pride Bakery',
+        pay: 'UPI',
+        hour: 7,
+        min: 30,
+        note: 'Bakery fresh morning delivery',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Food',
+        amt: 3100.0,
+        party: 'Fresh Farms Market',
+        pay: 'UPI',
+        hour: 8,
+        min: 30,
+        note: 'Meats, eggs & artisanal cheeses',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3400.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 10,
+        min: 0,
+        note: 'Weekend brunch crowd',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 6000.0,
+        party: 'Horizon Tech Corp',
+        pay: 'Bank Transfer',
+        hour: 11,
+        min: 30,
+        note: 'Terrace co-working event booking',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 8900.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 15,
+        note: 'Weekend peak lunch rush',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 1750.0,
+        party: 'CleanPro Housekeeping',
+        pay: 'Debit Card',
+        hour: 15,
+        min: 0,
+        note: 'Restroom and dining sanitizers',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3800.0,
+        party: 'Coffee Bean Retail Sale',
+        pay: 'UPI',
+        hour: 16,
+        min: 30,
+        note: 'Retail packaged coffee bags',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7800.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 0,
+        note: 'Weekend evening full house crowd',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 9200.0,
+        party: 'Weekend Birthday Catering',
+        pay: 'Bank Transfer',
+        hour: 20,
+        min: 30,
+        note: 'Lounge birthday party package',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 3500.0,
+        party: staffNames.isNotEmpty ? staffNames.first : 'Head Chef',
+        pay: 'Bank Transfer',
+        hour: 22,
+        min: 0,
+        note: 'Weekend rush incentives',
+      ),
+    ]);
+
+    // 10 Days Ago (dayOffset: 10) - 8 records
+    generateCluster(10, [
+      (
+        type: 'EXPENSE',
+        cat: 'Milk',
+        amt: 1000.0,
+        party: 'Daily Dairy Supplies',
+        pay: 'Cash',
+        hour: 7,
+        min: 15,
+        note: 'Dairy milk crate',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2600.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'Cash',
+        hour: 9,
+        min: 0,
+        note: 'Morning hot beverages',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6500.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 0,
+        note: 'Lunch time customers',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 2800.0,
+        party: 'Roasted Bean Co.',
+        pay: 'Bank Transfer',
+        hour: 14,
+        min: 30,
+        note: 'Specialty coffee supply',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2950.0,
+        party: 'Pastry & Dessert Shelf',
+        pay: 'UPI',
+        hour: 16,
+        min: 30,
+        note: 'Tea & pastry orders',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Advertising',
+        amt: 1200.0,
+        party: 'Social Pulse Marketing',
+        pay: 'Credit Card',
+        hour: 18,
+        min: 0,
+        note: 'Online promotional banners',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5600.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 30,
+        note: 'Evening cafe orders',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 4700.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 21,
+        min: 0,
+        note: 'Dinner bills register',
+      ),
+    ]);
+
+    // 14 Days Ago (2 Weeks Ago, dayOffset: 14) - 8 records
+    generateCluster(14, [
+      (
+        type: 'EXPENSE',
+        cat: 'Bread',
+        amt: 840.0,
+        party: 'Baker’s Pride Bakery',
+        pay: 'UPI',
+        hour: 7,
+        min: 30,
+        note: 'Loaves and burger buns',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3200.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 9,
+        min: 45,
+        note: 'Breakfast platters',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Vegetables',
+        amt: 1400.0,
+        party: 'Green Valley Veggies',
+        pay: 'UPI',
+        hour: 11,
+        min: 0,
+        note: 'Fresh veggies restock',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7100.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 13,
+        min: 15,
+        note: 'Lunch dining orders',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Fuel',
+        amt: 2150.0,
+        party: 'Metro Gas Agency',
+        pay: 'UPI',
+        hour: 14,
+        min: 45,
+        note: 'Kitchen gas refill',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 4000.0,
+        party: 'Creative Media Labs',
+        pay: 'Bank Transfer',
+        hour: 16,
+        min: 30,
+        note: 'Creative photoshoot reservation',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6200.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 0,
+        note: 'Evening rush billing',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5400.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 21,
+        min: 15,
+        note: 'Dinner counter collection',
+      ),
+    ]);
+
+    // 21 Days Ago (3 Weeks Ago, dayOffset: 21) - 8 records
+    generateCluster(21, [
+      (
+        type: 'EXPENSE',
+        cat: 'Milk',
+        amt: 1100.0,
+        party: 'Daily Dairy Supplies',
+        pay: 'Cash',
+        hour: 7,
+        min: 0,
+        note: 'Daily dairy supply',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2800.0,
+        party: 'Morning Coffee Walk-ins',
+        pay: 'Cash',
+        hour: 9,
+        min: 15,
+        note: 'Morning cafe walk-ins',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Food',
+        amt: 2500.0,
+        party: 'Fresh Farms Market',
+        pay: 'UPI',
+        hour: 10,
+        min: 45,
+        note: 'Gourmet cheese and butter',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6800.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 30,
+        note: 'Lunch hour crowd',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Disposable',
+        amt: 1900.0,
+        party: 'Prime Packaging Solutions',
+        pay: 'Debit Card',
+        hour: 15,
+        min: 15,
+        note: 'Disposable supplies batch',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3100.0,
+        party: 'Beverage Counter Sales',
+        pay: 'UPI',
+        hour: 17,
+        min: 0,
+        note: 'Cold drinks and shakes',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5900.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 30,
+        note: 'Evening counter sales',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5200.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'Cash',
+        hour: 21,
+        min: 30,
+        note: 'Dinner closing reconciliation',
+      ),
+    ]);
+
+    // 30 Days Ago (1 Month Ago, dayOffset: 30) - 12 records (Major monthly disbursements + daily revenue)
+    generateCluster(30, [
+      (
+        type: 'EXPENSE',
+        cat: 'Rent',
+        amt: 28000.0,
+        party: 'Commercial Property Landlord',
+        pay: 'Bank Transfer',
+        hour: 8,
+        min: 0,
+        note: 'Monthly premises lease payment',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Bill',
+        amt: 4800.0,
+        party: 'City Electricity Board',
+        pay: 'UPI',
+        hour: 8,
+        min: 30,
+        note: 'Monthly electricity commercial utility bill',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 22000.0,
+        party: staffNames.isNotEmpty ? staffNames.first : 'Head Chef',
+        pay: 'Bank Transfer',
+        hour: 9,
+        min: 0,
+        note: 'Monthly staff salary disbursement',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 16000.0,
+        party: staffNames.length > 1 ? staffNames[1] : 'Senior Barista',
+        pay: 'Bank Transfer',
+        hour: 9,
+        min: 30,
+        note: 'Monthly staff salary disbursement',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3500.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 10,
+        min: 30,
+        note: 'Monthly opening breakfast day rush',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 4200.0,
+        party: 'Roasted Bean Co.',
+        pay: 'Bank Transfer',
+        hour: 11,
+        min: 30,
+        note: 'Monthly bulk coffee bean stock shipment',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7800.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 15,
+        note: 'Lunch time dining sales',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 12000.0,
+        party: 'Corporate Event Booking',
+        pay: 'Bank Transfer',
+        hour: 15,
+        min: 0,
+        note: 'Corporate quarterly team celebration catering',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Repairs',
+        amt: 2200.0,
+        party: 'Coozy Equipment Repair',
+        pay: 'Cash',
+        hour: 16,
+        min: 30,
+        note: 'Monthly preventive maintenance of espresso machine',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6500.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 0,
+        note: 'Evening rush beverages & snacks',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 8800.0,
+        party: 'Private Lounge Party',
+        pay: 'UPI',
+        hour: 20,
+        min: 30,
+        note: 'Private dinner party hall booking',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5600.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 21,
+        min: 45,
+        note: 'End of month dinner POS collection',
+      ),
+    ]);
+
+    // 60 Days Ago (2 Months Ago, dayOffset: 60) - 10 records (Monthly Rent + Bills + Active Trading)
+    generateCluster(60, [
+      (
+        type: 'EXPENSE',
+        cat: 'Rent',
+        amt: 28000.0,
+        party: 'Commercial Property Landlord',
+        pay: 'Bank Transfer',
+        hour: 8,
+        min: 0,
+        note: 'Premises monthly lease settlement',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Bill',
+        amt: 4500.0,
+        party: 'City Electricity Board',
+        pay: 'UPI',
+        hour: 8,
+        min: 30,
+        note: 'Power utility invoice',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 20000.0,
+        party: staffNames.isNotEmpty ? staffNames.first : 'Head Chef',
+        pay: 'Bank Transfer',
+        hour: 9,
+        min: 0,
+        note: 'Monthly staff remuneration',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3200.0,
+        party: 'Morning Coffee Walk-ins',
+        pay: 'Cash',
+        hour: 9,
+        min: 45,
+        note: 'Morning beverages and breakfast',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Food',
+        amt: 3400.0,
+        party: 'Fresh Farms Market',
+        pay: 'UPI',
+        hour: 11,
+        min: 0,
+        note: 'Monthly specialty inventory herbs & cheeses',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7200.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 30,
+        note: 'Lunch dining orders',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 5000.0,
+        party: 'Outdoor Festival Pop-up',
+        pay: 'Bank Transfer',
+        hour: 15,
+        min: 30,
+        note: 'Weekend outdoor pop-up kiosk stall setup',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6400.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 0,
+        note: 'Evening rush sales',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 8200.0,
+        party: 'Weekend Birthday Catering',
+        pay: 'Bank Transfer',
+        hour: 20,
+        min: 30,
+        note: 'Celebration dinner package',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 4900.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 21,
+        min: 45,
+        note: 'Closing counter settlement',
+      ),
+    ]);
+
+    // 90 Days Ago (3 Months Ago, dayOffset: 90) - 8 records
+    generateCluster(90, [
+      (
+        type: 'EXPENSE',
+        cat: 'Rent',
+        amt: 28000.0,
+        party: 'Commercial Property Landlord',
+        pay: 'Bank Transfer',
+        hour: 8,
+        min: 0,
+        note: 'Monthly premises lease payment',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 22000.0,
+        party: staffNames.isNotEmpty ? staffNames.first : 'Head Barista',
+        pay: 'Bank Transfer',
+        hour: 9,
+        min: 0,
+        note: 'Staff salary disbursement',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3100.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 10,
+        min: 15,
+        note: 'Breakfast counter orders',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7500.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 0,
+        note: 'Lunch time collection',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 3800.0,
+        party: 'Roasted Bean Co.',
+        pay: 'Bank Transfer',
+        hour: 14,
+        min: 30,
+        note: 'Coffee bean bulk order',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 4500.0,
+        party: 'Creative Media Labs',
+        pay: 'Bank Transfer',
+        hour: 16,
+        min: 30,
+        note: 'Commercial shoot terrace booking',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6700.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 0,
+        note: 'Evening shakes and snacks',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5300.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 21,
+        min: 30,
+        note: 'Dinner closing register',
+      ),
+    ]);
+
+    // 120 Days Ago (4 Months Ago, dayOffset: 120) - 8 records
+    generateCluster(120, [
+      (
+        type: 'EXPENSE',
+        cat: 'Rent',
+        amt: 28000.0,
+        party: 'Commercial Property Landlord',
+        pay: 'Bank Transfer',
+        hour: 8,
+        min: 0,
+        note: 'Premises lease monthly rent',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 2900.0,
+        party: 'Walk-in Cafe Customers',
+        pay: 'Cash',
+        hour: 9,
+        min: 30,
+        note: 'Morning tea & coffee sales',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6900.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 0,
+        note: 'Lunch service orders',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Repairs',
+        amt: 2800.0,
+        party: 'Coozy Equipment Repair',
+        pay: 'Cash',
+        hour: 15,
+        min: 0,
+        note: 'Oven heating element replacement',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3400.0,
+        party: 'Beverage Counter Sales',
+        pay: 'UPI',
+        hour: 17,
+        min: 0,
+        note: 'Beverages & iced drinks',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6100.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 15,
+        note: 'Evening snacks collection',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7900.0,
+        party: 'Private Lounge Party',
+        pay: 'UPI',
+        hour: 20,
+        min: 45,
+        note: 'Celebration dinner party',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 4800.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 22,
+        min: 0,
+        note: 'Closing reconciliation',
+      ),
+    ]);
+
+    // 180 Days Ago (6 Months Ago, dayOffset: 180) - 8 records
+    generateCluster(180, [
+      (
+        type: 'EXPENSE',
+        cat: 'Rent',
+        amt: 28000.0,
+        party: 'Commercial Property Landlord',
+        pay: 'Bank Transfer',
+        hour: 8,
+        min: 0,
+        note: 'Premises monthly rent',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Bill',
+        amt: 4200.0,
+        party: 'City Electricity Board',
+        pay: 'UPI',
+        hour: 8,
+        min: 45,
+        note: 'Commercial electricity bill',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3000.0,
+        party: 'Breakfast Rush POS',
+        pay: 'UPI',
+        hour: 10,
+        min: 0,
+        note: 'Breakfast orders',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7400.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 15,
+        note: 'Lunch time dining',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 4800.0,
+        party: 'Horizon Tech Corp',
+        pay: 'Bank Transfer',
+        hour: 16,
+        min: 0,
+        note: 'Terrace conference meeting setup',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6300.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 0,
+        note: 'Evening customer billing',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 8500.0,
+        party: 'Corporate Event Booking',
+        pay: 'Bank Transfer',
+        hour: 20,
+        min: 30,
+        note: 'Corporate annual meet dinner',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 5100.0,
+        party: 'Dining Hall Register',
+        pay: 'Cash',
+        hour: 21,
+        min: 45,
+        note: 'Dinner register closing',
+      ),
+    ]);
+
+    // 365 Days Ago (1 Year Ago, dayOffset: 365) - 8 records
+    generateCluster(365, [
+      (
+        type: 'EXPENSE',
+        cat: 'Rent',
+        amt: 26000.0,
+        party: 'Commercial Property Landlord',
+        pay: 'Bank Transfer',
+        hour: 8,
+        min: 0,
+        note: 'Premises annual lease milestone payment',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Salary',
+        amt: 18000.0,
+        party: staffNames.isNotEmpty ? staffNames.first : 'Head Barista',
+        pay: 'Bank Transfer',
+        hour: 9,
+        min: 0,
+        note: 'Monthly staff remuneration',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 3200.0,
+        party: 'Morning Coffee Walk-ins',
+        pay: 'Cash',
+        hour: 9,
+        min: 45,
+        note: 'Morning walk-in collection',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 7100.0,
+        party: 'Dining Hall Register',
+        pay: 'UPI',
+        hour: 13,
+        min: 0,
+        note: 'Lunch time service',
+      ),
+      (
+        type: 'EXPENSE',
+        cat: 'Supplies',
+        amt: 3200.0,
+        party: 'Prime Packaging Solutions',
+        pay: 'Debit Card',
+        hour: 15,
+        min: 0,
+        note: 'Annual packaging bulk stock purchase',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Rental',
+        amt: 5000.0,
+        party: 'Creative Media Labs',
+        pay: 'Bank Transfer',
+        hour: 16,
+        min: 30,
+        note: 'Terrace photo studio booking',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 6400.0,
+        party: 'Evening Cafe Rush',
+        pay: 'UPI',
+        hour: 19,
+        min: 15,
+        note: 'Evening rush crowd billing',
+      ),
+      (
+        type: 'INCOME',
+        cat: 'Sale',
+        amt: 8600.0,
+        party: 'Weekend Birthday Catering',
+        pay: 'Bank Transfer',
+        hour: 20,
+        min: 45,
+        note: 'Lounge birthday party catering',
+      ),
+    ]);
+
+    // =========================================================================
+    // 3. DISTRIBUTED HISTORICAL RECORDS (Past 547 days - 250+ records)
+    // =========================================================================
+    for (int i = 0; i < 180; i++) {
+      final cat = expenseCategories.isNotEmpty
+          ? expenseCategories[random.nextInt(expenseCategories.length)]
+          : null;
+      final catName = cat?.name ?? 'Supplies';
+      final pDate = getRandomDate();
+      final payMethod = paymentMethods[random.nextInt(paymentMethods.length)];
+
+      String partyName;
+      double amount;
+      String? notes;
+      String? refType = 'MANUAL';
+
+      if (catName == 'Salary') {
+        partyName = staffNames.isNotEmpty
+            ? staffNames[random.nextInt(staffNames.length)]
+            : 'Staff Member';
+        amount = 12000.0 + random.nextInt(25000);
+        notes = 'Monthly staff salary disbursement';
+        refType = 'SALARY';
+      } else if (catName == 'Rent') {
+        partyName = 'Commercial Property Landlord';
+        amount = 25000.0 + random.nextInt(15000);
+        notes = 'Premises monthly lease payment';
+      } else if (catName == 'Electricity' || catName == 'Bill') {
+        partyName = 'City Electricity Board';
+        amount = 3500.0 + random.nextInt(6000);
+        notes = 'Monthly utility power bill';
+      } else if (catName == 'Vegetables' || catName == 'Food') {
+        partyName = 'Green Valley Veggies';
+        amount = 500.0 + random.nextInt(3500);
+        notes = 'Daily fresh produce & veggies';
+      } else if (catName == 'Milk' || catName == 'Dairy') {
+        partyName = 'Daily Dairy Supplies';
+        amount = 400.0 + random.nextInt(2000);
+        notes = 'Daily cow milk & fresh cream batch';
+      } else if (catName == 'Bread' || catName == 'Bakery') {
+        partyName = 'Baker’s Pride Bakery';
+        amount = 300.0 + random.nextInt(1500);
+        notes = 'Burger buns, sandwich loaves & croissants';
+      } else if (catName == 'Fuel') {
+        partyName = 'Metro Gas Agency';
+        amount = 1200.0 + random.nextInt(2800);
+        notes = 'Commercial LPG kitchen cylinder refill';
+      } else {
+        partyName = expenseParties[random.nextInt(expenseParties.length)];
+        amount = 200.0 + random.nextInt(4000);
+        notes = 'Regular cafe operations & maintenance';
+      }
+
+      addRecord(
+        type: 'EXPENSE',
+        catName: catName,
+        amount: amount,
+        party: partyName,
+        date: pDate,
+        payMethod: payMethod,
+        note: notes,
+        refType: refType,
+      );
+    }
+
+    for (int i = 0; i < 70; i++) {
+      final cat = incomeCategories.isNotEmpty
+          ? incomeCategories[random.nextInt(incomeCategories.length)]
+          : null;
+      final catName = cat?.name ?? 'Sale';
+      final pDate = getRandomDate();
+      final payMethod = paymentMethods[random.nextInt(paymentMethods.length)];
+      final partyName = incomeParties[random.nextInt(incomeParties.length)];
+      final amount = 1500.0 + random.nextInt(15000);
+
+      addRecord(
+        type: 'INCOME',
+        catName: catName,
+        amount: amount,
+        party: partyName,
+        date: pDate,
+        payMethod: payMethod,
+        note: 'Event booking & miscellaneous cafe income',
+        refType: 'MANUAL',
+      );
+    }
+
+    // Insert all records in an optimized batch
+    await db.batch((batch) {
+      for (final companion in companions) {
+        batch.insert(db.expendituresTable, companion);
+      }
+    });
+
+    return companions.length;
+  }
+
   /// Removes all seed records.
   static Future<void> removeFakeData(
     CoozyDatabase db, {
@@ -2642,6 +4819,7 @@ class FakeDataHelper {
   }
 
   static const List<String> deletionOrder = [
+    'expenditures',
     'invoices',
     'orders',
     'reservations',
@@ -2707,7 +4885,11 @@ class FakeDataHelper {
         stepIndex,
         totalSteps,
       );
-      if (key == 'invoices') {
+      if (key == 'expenditures') {
+        await db.customStatement(
+          "DELETE FROM expenditures WHERE hash_id LIKE '$tokenPattern';",
+        );
+      } else if (key == 'invoices') {
         await db.customStatement(
           "DELETE FROM invoice_items WHERE invoice_id IN (SELECT id FROM invoices WHERE hash_id LIKE '$tokenPattern');",
         );
@@ -2929,6 +5111,9 @@ class FakeDataHelper {
     counts['invoices'] = await queryCount(
       "SELECT COUNT(*) as c FROM invoices WHERE hash_id LIKE '$tokenPattern'",
     );
+    counts['expenditures'] = await queryCount(
+      "SELECT COUNT(*) as c FROM expenditures WHERE hash_id LIKE '$tokenPattern'",
+    );
 
     // Composite keys for backward compatibility
     counts['tables_menu'] =
@@ -3024,34 +5209,45 @@ class FakeDataHelper {
                       ? null
                       : () async {
                           setState(() => isLoading = true);
+                          int? generatedCount;
+                          bool wasPresent = isPresent;
                           try {
                             if (isPresent) {
                               await removeDatasetData(database, stageKeys);
-                              if (context.mounted) {
+                            } else {
+                              generatedCount = await generateDatasetData(
+                                database,
+                                stageKeys,
+                              );
+                            }
+                          } finally {
+                            if (dialogContext.mounted) {
+                              Navigator.of(dialogContext).pop();
+                            }
+                          }
+
+                          // Defer snackbar & refresh until after the dialog
+                          // route is fully removed from the Navigator stack.
+                          // Pushing a Flushbar route while the dialog is still
+                          // in the _RouteLifecycle.popping state causes an
+                          // assertion error on Flutter Web.
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            if (context.mounted) {
+                              if (wasPresent) {
                                 shared.SnackBarUtils.showWarning(
                                   context,
                                   message: 'Sample $title data removed.',
                                 );
-                              }
-                            } else {
-                              final count = await generateDatasetData(
-                                database,
-                                stageKeys,
-                              );
-                              if (context.mounted) {
+                              } else {
                                 shared.SnackBarUtils.showSuccess(
                                   context,
                                   message:
-                                      'Generated $count sample $title records!',
+                                      'Generated ${generatedCount ?? 0} sample $title records!',
                                 );
                               }
+                              onRefresh();
                             }
-                            onRefresh();
-                          } finally {
-                            if (dialogContext.mounted) {
-                              Navigator.pop(dialogContext);
-                            }
-                          }
+                          });
                         },
                   icon: Icon(
                     isPresent ? Icons.delete_outline : Icons.add_rounded,

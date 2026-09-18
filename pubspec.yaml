@@ -55,7 +55,7 @@ dependencies:
   csv: ^8.0.0
   flutter_localization: ^0.4.1
 #
-  pin_code_fields: ^9.4.0
+  pin_code_fields: ^10.0.0
   sms_autofill: ^2.5.0
 #
 #  firebase_auth: ^6.5.4
@@ -116,7 +116,7 @@ dependencies:
   scrollable_positioned_list: ^0.3.8
   #
   carousel_slider: ^5.0.0
-  skeletonizer: ^2.0.1
+  skeletonizer: ^3.0.0
   fancy_shimmer_image: ^2.0.3
   flutter_spinkit: ^5.2.1
   #permission_handler: ^11.3.1
@@ -143,10 +143,13 @@ dependencies:
     sdk: flutter
   world_countries: ^4.4.0
   open_filex: ^4.7.0
+  timelines_plus: ^2.0.1
   # easy_localization: ^3.0.8
 dependency_overrides:
   intl: ^0.20.3
   xml: ^7.0.1
+  material_ui: 1.2.0
+  cupertino_ui: 1.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

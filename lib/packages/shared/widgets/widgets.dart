@@ -34,6 +34,9 @@ export '../../shared/widgets/crushed_paper_texture/crushed_paper_texture.dart';
 // date_picker_timeline
 export '../../shared/widgets/date_picker_timeline/date_picker_timeline.dart';
 
+// date_range_filter_dialog
+export '../../shared/widgets/date_range_filter_dialog/date_range_filter_dialog.dart';
+
 // date_time_pickers
 export '../../shared/widgets/date_time_pickers/show_date_picker_sheet.dart';
 

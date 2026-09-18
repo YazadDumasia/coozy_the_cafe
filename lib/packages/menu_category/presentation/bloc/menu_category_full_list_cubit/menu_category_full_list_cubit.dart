@@ -59,18 +59,22 @@ class MenuCategoryFullListCubit extends Cubit<MenuCategoryFullListState> {
           (index) => ExpansibleController(),
         );
 
-        emit(
-          MenuCategoryFullListLoadedState(
-            data: data,
-            expansionTileKeys: expansionTileKeys,
-            expandedTitleControllerList: expandedTitleControllerList,
-          ),
-        );
+        if (!isClosed) {
+          emit(
+            MenuCategoryFullListLoadedState(
+              data: data,
+              expansionTileKeys: expansionTileKeys,
+              expandedTitleControllerList: expandedTitleControllerList,
+            ),
+          );
+        }
       }
       onSuccess?.call();
     } catch (e) {
       onError?.call('An error occurred: $e');
-      emit(MenuCategoryFullListErrorState('An error occurred: $e'));
+      if (!isClosed) {
+        emit(MenuCategoryFullListErrorState('An error occurred: $e'));
+      }
     }
   }
 

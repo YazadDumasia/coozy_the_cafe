@@ -709,3 +709,56 @@ class PaymentMethodsTable extends BaseTable {
   TextColumn get iconFontPackage => text().nullable()();
   BoolColumn get isEnabled => boolean().withDefault(const Constant(true))();
 }
+
+@DataClassName('ExpenditureCategoryTableData')
+@TableIndex(name: 'idx_expenditure_categories_type', columns: {#type})
+@TableIndex(name: 'idx_expenditure_categories_name', columns: {#name})
+class ExpenditureCategoriesTable extends BaseTable {
+  @override
+  String get tableName => 'expenditure_categories';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  TextColumn get name => text()();
+  TextColumn get type => text()(); // 'EXPENSE' or 'INCOME'
+  IntColumn get iconCodePoint => integer().nullable()();
+  TextColumn get iconFontFamily => text().nullable()();
+  TextColumn get colorHex => text().nullable()();
+  BoolColumn get isCustom => boolean().withDefault(const Constant(false))();
+  BoolColumn get isEnabled => boolean().withDefault(const Constant(true))();
+  TextColumn get createdAt =>
+      text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
+}
+
+@DataClassName('ExpenditureTableData')
+@TableIndex(name: 'idx_expenditures_type', columns: {#type})
+@TableIndex(name: 'idx_expenditures_date', columns: {#date})
+@TableIndex(name: 'idx_expenditures_category_id', columns: {#categoryId})
+@TableIndex(name: 'idx_expenditures_is_deleted', columns: {#isDeleted})
+class ExpendituresTable extends BaseTable {
+  @override
+  String get tableName => 'expenditures';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  TextColumn get type => text()(); // 'EXPENSE' or 'INCOME'
+  IntColumn get categoryId => integer().nullable().references(
+    ExpenditureCategoriesTable,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
+  TextColumn get categoryName => text()();
+  RealColumn get amount => real()();
+  TextColumn get partyName => text().nullable()(); // Person or vendor name
+  TextColumn get date => text()(); // ISO8601 date-time string
+  TextColumn get paymentMethod => text().nullable()();
+  TextColumn get notes => text().nullable()();
+  TextColumn get referenceType =>
+      text().nullable()(); // 'MANUAL', 'PURCHASE', 'SALARY', 'ORDER'
+  IntColumn get referenceId => integer().nullable()();
+  BoolColumn get isDeleted => boolean().withDefault(const Constant(false))();
+  TextColumn get createdAt =>
+      text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
+  TextColumn get modifiedAt =>
+      text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
+}

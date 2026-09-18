@@ -18,4 +18,5 @@ export 'domain/repositories/checkout_repository.dart';
 export 'presentation/bloc/checkout_bloc.dart';
 export 'presentation/navigation/checkout_routes.dart';
 export 'presentation/pages/checkout/checkout_screen.dart';
+export 'presentation/pages/checkout/widget/add_payment_method_dialog.dart';
 export 'presentation/utils/responsive_modal.dart';

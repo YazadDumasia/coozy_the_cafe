@@ -22181,6 +22181,1683 @@ class PaymentMethodsTableCompanion
   }
 }
 
+class $ExpenditureCategoriesTableTable extends ExpenditureCategoriesTable
+    with
+        TableInfo<
+          $ExpenditureCategoriesTableTable,
+          ExpenditureCategoryTableData
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExpenditureCategoriesTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _iconCodePointMeta = const VerificationMeta(
+    'iconCodePoint',
+  );
+  @override
+  late final GeneratedColumn<int> iconCodePoint = GeneratedColumn<int>(
+    'icon_code_point',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _iconFontFamilyMeta = const VerificationMeta(
+    'iconFontFamily',
+  );
+  @override
+  late final GeneratedColumn<String> iconFontFamily = GeneratedColumn<String>(
+    'icon_font_family',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _colorHexMeta = const VerificationMeta(
+    'colorHex',
+  );
+  @override
+  late final GeneratedColumn<String> colorHex = GeneratedColumn<String>(
+    'color_hex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isCustomMeta = const VerificationMeta(
+    'isCustom',
+  );
+  @override
+  late final GeneratedColumn<bool> isCustom = GeneratedColumn<bool>(
+    'is_custom',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_custom" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isEnabledMeta = const VerificationMeta(
+    'isEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> isEnabled = GeneratedColumn<bool>(
+    'is_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => DateTime.now().toUtc().toIso8601String(),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    type,
+    iconCodePoint,
+    iconFontFamily,
+    colorHex,
+    isCustom,
+    isEnabled,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'expenditure_categories';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExpenditureCategoryTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('icon_code_point')) {
+      context.handle(
+        _iconCodePointMeta,
+        iconCodePoint.isAcceptableOrUnknown(
+          data['icon_code_point']!,
+          _iconCodePointMeta,
+        ),
+      );
+    }
+    if (data.containsKey('icon_font_family')) {
+      context.handle(
+        _iconFontFamilyMeta,
+        iconFontFamily.isAcceptableOrUnknown(
+          data['icon_font_family']!,
+          _iconFontFamilyMeta,
+        ),
+      );
+    }
+    if (data.containsKey('color_hex')) {
+      context.handle(
+        _colorHexMeta,
+        colorHex.isAcceptableOrUnknown(data['color_hex']!, _colorHexMeta),
+      );
+    }
+    if (data.containsKey('is_custom')) {
+      context.handle(
+        _isCustomMeta,
+        isCustom.isAcceptableOrUnknown(data['is_custom']!, _isCustomMeta),
+      );
+    }
+    if (data.containsKey('is_enabled')) {
+      context.handle(
+        _isEnabledMeta,
+        isEnabled.isAcceptableOrUnknown(data['is_enabled']!, _isEnabledMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExpenditureCategoryTableData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExpenditureCategoryTableData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      iconCodePoint: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}icon_code_point'],
+      ),
+      iconFontFamily: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon_font_family'],
+      ),
+      colorHex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}color_hex'],
+      ),
+      isCustom: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_custom'],
+      )!,
+      isEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_enabled'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ExpenditureCategoriesTableTable createAlias(String alias) {
+    return $ExpenditureCategoriesTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExpenditureCategoryTableData extends DataClass
+    implements Insertable<ExpenditureCategoryTableData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final String name;
+  final String type;
+  final int? iconCodePoint;
+  final String? iconFontFamily;
+  final String? colorHex;
+  final bool isCustom;
+  final bool isEnabled;
+  final String createdAt;
+  const ExpenditureCategoryTableData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.name,
+    required this.type,
+    this.iconCodePoint,
+    this.iconFontFamily,
+    this.colorHex,
+    required this.isCustom,
+    required this.isEnabled,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['name'] = Variable<String>(name);
+    map['type'] = Variable<String>(type);
+    if (!nullToAbsent || iconCodePoint != null) {
+      map['icon_code_point'] = Variable<int>(iconCodePoint);
+    }
+    if (!nullToAbsent || iconFontFamily != null) {
+      map['icon_font_family'] = Variable<String>(iconFontFamily);
+    }
+    if (!nullToAbsent || colorHex != null) {
+      map['color_hex'] = Variable<String>(colorHex);
+    }
+    map['is_custom'] = Variable<bool>(isCustom);
+    map['is_enabled'] = Variable<bool>(isEnabled);
+    map['created_at'] = Variable<String>(createdAt);
+    return map;
+  }
+
+  ExpenditureCategoriesTableCompanion toCompanion(bool nullToAbsent) {
+    return ExpenditureCategoriesTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      name: Value(name),
+      type: Value(type),
+      iconCodePoint: iconCodePoint == null && nullToAbsent
+          ? const Value.absent()
+          : Value(iconCodePoint),
+      iconFontFamily: iconFontFamily == null && nullToAbsent
+          ? const Value.absent()
+          : Value(iconFontFamily),
+      colorHex: colorHex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(colorHex),
+      isCustom: Value(isCustom),
+      isEnabled: Value(isEnabled),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory ExpenditureCategoryTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExpenditureCategoryTableData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      name: serializer.fromJson<String>(json['name']),
+      type: serializer.fromJson<String>(json['type']),
+      iconCodePoint: serializer.fromJson<int?>(json['iconCodePoint']),
+      iconFontFamily: serializer.fromJson<String?>(json['iconFontFamily']),
+      colorHex: serializer.fromJson<String?>(json['colorHex']),
+      isCustom: serializer.fromJson<bool>(json['isCustom']),
+      isEnabled: serializer.fromJson<bool>(json['isEnabled']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'name': serializer.toJson<String>(name),
+      'type': serializer.toJson<String>(type),
+      'iconCodePoint': serializer.toJson<int?>(iconCodePoint),
+      'iconFontFamily': serializer.toJson<String?>(iconFontFamily),
+      'colorHex': serializer.toJson<String?>(colorHex),
+      'isCustom': serializer.toJson<bool>(isCustom),
+      'isEnabled': serializer.toJson<bool>(isEnabled),
+      'createdAt': serializer.toJson<String>(createdAt),
+    };
+  }
+
+  ExpenditureCategoryTableData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    String? name,
+    String? type,
+    Value<int?> iconCodePoint = const Value.absent(),
+    Value<String?> iconFontFamily = const Value.absent(),
+    Value<String?> colorHex = const Value.absent(),
+    bool? isCustom,
+    bool? isEnabled,
+    String? createdAt,
+  }) => ExpenditureCategoryTableData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    name: name ?? this.name,
+    type: type ?? this.type,
+    iconCodePoint: iconCodePoint.present
+        ? iconCodePoint.value
+        : this.iconCodePoint,
+    iconFontFamily: iconFontFamily.present
+        ? iconFontFamily.value
+        : this.iconFontFamily,
+    colorHex: colorHex.present ? colorHex.value : this.colorHex,
+    isCustom: isCustom ?? this.isCustom,
+    isEnabled: isEnabled ?? this.isEnabled,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  ExpenditureCategoryTableData copyWithCompanion(
+    ExpenditureCategoriesTableCompanion data,
+  ) {
+    return ExpenditureCategoryTableData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      name: data.name.present ? data.name.value : this.name,
+      type: data.type.present ? data.type.value : this.type,
+      iconCodePoint: data.iconCodePoint.present
+          ? data.iconCodePoint.value
+          : this.iconCodePoint,
+      iconFontFamily: data.iconFontFamily.present
+          ? data.iconFontFamily.value
+          : this.iconFontFamily,
+      colorHex: data.colorHex.present ? data.colorHex.value : this.colorHex,
+      isCustom: data.isCustom.present ? data.isCustom.value : this.isCustom,
+      isEnabled: data.isEnabled.present ? data.isEnabled.value : this.isEnabled,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpenditureCategoryTableData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('iconCodePoint: $iconCodePoint, ')
+          ..write('iconFontFamily: $iconFontFamily, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('isEnabled: $isEnabled, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    type,
+    iconCodePoint,
+    iconFontFamily,
+    colorHex,
+    isCustom,
+    isEnabled,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExpenditureCategoryTableData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.name == this.name &&
+          other.type == this.type &&
+          other.iconCodePoint == this.iconCodePoint &&
+          other.iconFontFamily == this.iconFontFamily &&
+          other.colorHex == this.colorHex &&
+          other.isCustom == this.isCustom &&
+          other.isEnabled == this.isEnabled &&
+          other.createdAt == this.createdAt);
+}
+
+class ExpenditureCategoriesTableCompanion
+    extends UpdateCompanion<ExpenditureCategoryTableData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<String> name;
+  final Value<String> type;
+  final Value<int?> iconCodePoint;
+  final Value<String?> iconFontFamily;
+  final Value<String?> colorHex;
+  final Value<bool> isCustom;
+  final Value<bool> isEnabled;
+  final Value<String> createdAt;
+  const ExpenditureCategoriesTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.type = const Value.absent(),
+    this.iconCodePoint = const Value.absent(),
+    this.iconFontFamily = const Value.absent(),
+    this.colorHex = const Value.absent(),
+    this.isCustom = const Value.absent(),
+    this.isEnabled = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  ExpenditureCategoriesTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required String name,
+    required String type,
+    this.iconCodePoint = const Value.absent(),
+    this.iconFontFamily = const Value.absent(),
+    this.colorHex = const Value.absent(),
+    this.isCustom = const Value.absent(),
+    this.isEnabled = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  }) : name = Value(name),
+       type = Value(type);
+  static Insertable<ExpenditureCategoryTableData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<String>? name,
+    Expression<String>? type,
+    Expression<int>? iconCodePoint,
+    Expression<String>? iconFontFamily,
+    Expression<String>? colorHex,
+    Expression<bool>? isCustom,
+    Expression<bool>? isEnabled,
+    Expression<String>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (name != null) 'name': name,
+      if (type != null) 'type': type,
+      if (iconCodePoint != null) 'icon_code_point': iconCodePoint,
+      if (iconFontFamily != null) 'icon_font_family': iconFontFamily,
+      if (colorHex != null) 'color_hex': colorHex,
+      if (isCustom != null) 'is_custom': isCustom,
+      if (isEnabled != null) 'is_enabled': isEnabled,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  ExpenditureCategoriesTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<String>? name,
+    Value<String>? type,
+    Value<int?>? iconCodePoint,
+    Value<String?>? iconFontFamily,
+    Value<String?>? colorHex,
+    Value<bool>? isCustom,
+    Value<bool>? isEnabled,
+    Value<String>? createdAt,
+  }) {
+    return ExpenditureCategoriesTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      iconCodePoint: iconCodePoint ?? this.iconCodePoint,
+      iconFontFamily: iconFontFamily ?? this.iconFontFamily,
+      colorHex: colorHex ?? this.colorHex,
+      isCustom: isCustom ?? this.isCustom,
+      isEnabled: isEnabled ?? this.isEnabled,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (iconCodePoint.present) {
+      map['icon_code_point'] = Variable<int>(iconCodePoint.value);
+    }
+    if (iconFontFamily.present) {
+      map['icon_font_family'] = Variable<String>(iconFontFamily.value);
+    }
+    if (colorHex.present) {
+      map['color_hex'] = Variable<String>(colorHex.value);
+    }
+    if (isCustom.present) {
+      map['is_custom'] = Variable<bool>(isCustom.value);
+    }
+    if (isEnabled.present) {
+      map['is_enabled'] = Variable<bool>(isEnabled.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpenditureCategoriesTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('type: $type, ')
+          ..write('iconCodePoint: $iconCodePoint, ')
+          ..write('iconFontFamily: $iconFontFamily, ')
+          ..write('colorHex: $colorHex, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('isEnabled: $isEnabled, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ExpendituresTableTable extends ExpendituresTable
+    with TableInfo<$ExpendituresTableTable, ExpenditureTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ExpendituresTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryIdMeta = const VerificationMeta(
+    'categoryId',
+  );
+  @override
+  late final GeneratedColumn<int> categoryId = GeneratedColumn<int>(
+    'category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES expenditure_categories (id) ON DELETE SET NULL',
+    ),
+  );
+  static const VerificationMeta _categoryNameMeta = const VerificationMeta(
+    'categoryName',
+  );
+  @override
+  late final GeneratedColumn<String> categoryName = GeneratedColumn<String>(
+    'category_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _amountMeta = const VerificationMeta('amount');
+  @override
+  late final GeneratedColumn<double> amount = GeneratedColumn<double>(
+    'amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _partyNameMeta = const VerificationMeta(
+    'partyName',
+  );
+  @override
+  late final GeneratedColumn<String> partyName = GeneratedColumn<String>(
+    'party_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<String> date = GeneratedColumn<String>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _paymentMethodMeta = const VerificationMeta(
+    'paymentMethod',
+  );
+  @override
+  late final GeneratedColumn<String> paymentMethod = GeneratedColumn<String>(
+    'payment_method',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _referenceTypeMeta = const VerificationMeta(
+    'referenceType',
+  );
+  @override
+  late final GeneratedColumn<String> referenceType = GeneratedColumn<String>(
+    'reference_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _referenceIdMeta = const VerificationMeta(
+    'referenceId',
+  );
+  @override
+  late final GeneratedColumn<int> referenceId = GeneratedColumn<int>(
+    'reference_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isDeletedMeta = const VerificationMeta(
+    'isDeleted',
+  );
+  @override
+  late final GeneratedColumn<bool> isDeleted = GeneratedColumn<bool>(
+    'is_deleted',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_deleted" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => DateTime.now().toUtc().toIso8601String(),
+  );
+  static const VerificationMeta _modifiedAtMeta = const VerificationMeta(
+    'modifiedAt',
+  );
+  @override
+  late final GeneratedColumn<String> modifiedAt = GeneratedColumn<String>(
+    'modified_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => DateTime.now().toUtc().toIso8601String(),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    type,
+    categoryId,
+    categoryName,
+    amount,
+    partyName,
+    date,
+    paymentMethod,
+    notes,
+    referenceType,
+    referenceId,
+    isDeleted,
+    createdAt,
+    modifiedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'expenditures';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ExpenditureTableData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('category_id')) {
+      context.handle(
+        _categoryIdMeta,
+        categoryId.isAcceptableOrUnknown(data['category_id']!, _categoryIdMeta),
+      );
+    }
+    if (data.containsKey('category_name')) {
+      context.handle(
+        _categoryNameMeta,
+        categoryName.isAcceptableOrUnknown(
+          data['category_name']!,
+          _categoryNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_categoryNameMeta);
+    }
+    if (data.containsKey('amount')) {
+      context.handle(
+        _amountMeta,
+        amount.isAcceptableOrUnknown(data['amount']!, _amountMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_amountMeta);
+    }
+    if (data.containsKey('party_name')) {
+      context.handle(
+        _partyNameMeta,
+        partyName.isAcceptableOrUnknown(data['party_name']!, _partyNameMeta),
+      );
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('payment_method')) {
+      context.handle(
+        _paymentMethodMeta,
+        paymentMethod.isAcceptableOrUnknown(
+          data['payment_method']!,
+          _paymentMethodMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('reference_type')) {
+      context.handle(
+        _referenceTypeMeta,
+        referenceType.isAcceptableOrUnknown(
+          data['reference_type']!,
+          _referenceTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reference_id')) {
+      context.handle(
+        _referenceIdMeta,
+        referenceId.isAcceptableOrUnknown(
+          data['reference_id']!,
+          _referenceIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_deleted')) {
+      context.handle(
+        _isDeletedMeta,
+        isDeleted.isAcceptableOrUnknown(data['is_deleted']!, _isDeletedMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('modified_at')) {
+      context.handle(
+        _modifiedAtMeta,
+        modifiedAt.isAcceptableOrUnknown(data['modified_at']!, _modifiedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ExpenditureTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ExpenditureTableData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      categoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}category_id'],
+      ),
+      categoryName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category_name'],
+      )!,
+      amount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}amount'],
+      )!,
+      partyName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}party_name'],
+      ),
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}date'],
+      )!,
+      paymentMethod: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payment_method'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      referenceType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reference_type'],
+      ),
+      referenceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}reference_id'],
+      ),
+      isDeleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_deleted'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      modifiedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}modified_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ExpendituresTableTable createAlias(String alias) {
+    return $ExpendituresTableTable(attachedDatabase, alias);
+  }
+}
+
+class ExpenditureTableData extends DataClass
+    implements Insertable<ExpenditureTableData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final String type;
+  final int? categoryId;
+  final String categoryName;
+  final double amount;
+  final String? partyName;
+  final String date;
+  final String? paymentMethod;
+  final String? notes;
+  final String? referenceType;
+  final int? referenceId;
+  final bool isDeleted;
+  final String createdAt;
+  final String modifiedAt;
+  const ExpenditureTableData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.type,
+    this.categoryId,
+    required this.categoryName,
+    required this.amount,
+    this.partyName,
+    required this.date,
+    this.paymentMethod,
+    this.notes,
+    this.referenceType,
+    this.referenceId,
+    required this.isDeleted,
+    required this.createdAt,
+    required this.modifiedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['type'] = Variable<String>(type);
+    if (!nullToAbsent || categoryId != null) {
+      map['category_id'] = Variable<int>(categoryId);
+    }
+    map['category_name'] = Variable<String>(categoryName);
+    map['amount'] = Variable<double>(amount);
+    if (!nullToAbsent || partyName != null) {
+      map['party_name'] = Variable<String>(partyName);
+    }
+    map['date'] = Variable<String>(date);
+    if (!nullToAbsent || paymentMethod != null) {
+      map['payment_method'] = Variable<String>(paymentMethod);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    if (!nullToAbsent || referenceType != null) {
+      map['reference_type'] = Variable<String>(referenceType);
+    }
+    if (!nullToAbsent || referenceId != null) {
+      map['reference_id'] = Variable<int>(referenceId);
+    }
+    map['is_deleted'] = Variable<bool>(isDeleted);
+    map['created_at'] = Variable<String>(createdAt);
+    map['modified_at'] = Variable<String>(modifiedAt);
+    return map;
+  }
+
+  ExpendituresTableCompanion toCompanion(bool nullToAbsent) {
+    return ExpendituresTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      type: Value(type),
+      categoryId: categoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(categoryId),
+      categoryName: Value(categoryName),
+      amount: Value(amount),
+      partyName: partyName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(partyName),
+      date: Value(date),
+      paymentMethod: paymentMethod == null && nullToAbsent
+          ? const Value.absent()
+          : Value(paymentMethod),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      referenceType: referenceType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceType),
+      referenceId: referenceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(referenceId),
+      isDeleted: Value(isDeleted),
+      createdAt: Value(createdAt),
+      modifiedAt: Value(modifiedAt),
+    );
+  }
+
+  factory ExpenditureTableData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ExpenditureTableData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      type: serializer.fromJson<String>(json['type']),
+      categoryId: serializer.fromJson<int?>(json['categoryId']),
+      categoryName: serializer.fromJson<String>(json['categoryName']),
+      amount: serializer.fromJson<double>(json['amount']),
+      partyName: serializer.fromJson<String?>(json['partyName']),
+      date: serializer.fromJson<String>(json['date']),
+      paymentMethod: serializer.fromJson<String?>(json['paymentMethod']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      referenceType: serializer.fromJson<String?>(json['referenceType']),
+      referenceId: serializer.fromJson<int?>(json['referenceId']),
+      isDeleted: serializer.fromJson<bool>(json['isDeleted']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      modifiedAt: serializer.fromJson<String>(json['modifiedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'type': serializer.toJson<String>(type),
+      'categoryId': serializer.toJson<int?>(categoryId),
+      'categoryName': serializer.toJson<String>(categoryName),
+      'amount': serializer.toJson<double>(amount),
+      'partyName': serializer.toJson<String?>(partyName),
+      'date': serializer.toJson<String>(date),
+      'paymentMethod': serializer.toJson<String?>(paymentMethod),
+      'notes': serializer.toJson<String?>(notes),
+      'referenceType': serializer.toJson<String?>(referenceType),
+      'referenceId': serializer.toJson<int?>(referenceId),
+      'isDeleted': serializer.toJson<bool>(isDeleted),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'modifiedAt': serializer.toJson<String>(modifiedAt),
+    };
+  }
+
+  ExpenditureTableData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    String? type,
+    Value<int?> categoryId = const Value.absent(),
+    String? categoryName,
+    double? amount,
+    Value<String?> partyName = const Value.absent(),
+    String? date,
+    Value<String?> paymentMethod = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    Value<String?> referenceType = const Value.absent(),
+    Value<int?> referenceId = const Value.absent(),
+    bool? isDeleted,
+    String? createdAt,
+    String? modifiedAt,
+  }) => ExpenditureTableData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    type: type ?? this.type,
+    categoryId: categoryId.present ? categoryId.value : this.categoryId,
+    categoryName: categoryName ?? this.categoryName,
+    amount: amount ?? this.amount,
+    partyName: partyName.present ? partyName.value : this.partyName,
+    date: date ?? this.date,
+    paymentMethod: paymentMethod.present
+        ? paymentMethod.value
+        : this.paymentMethod,
+    notes: notes.present ? notes.value : this.notes,
+    referenceType: referenceType.present
+        ? referenceType.value
+        : this.referenceType,
+    referenceId: referenceId.present ? referenceId.value : this.referenceId,
+    isDeleted: isDeleted ?? this.isDeleted,
+    createdAt: createdAt ?? this.createdAt,
+    modifiedAt: modifiedAt ?? this.modifiedAt,
+  );
+  ExpenditureTableData copyWithCompanion(ExpendituresTableCompanion data) {
+    return ExpenditureTableData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      type: data.type.present ? data.type.value : this.type,
+      categoryId: data.categoryId.present
+          ? data.categoryId.value
+          : this.categoryId,
+      categoryName: data.categoryName.present
+          ? data.categoryName.value
+          : this.categoryName,
+      amount: data.amount.present ? data.amount.value : this.amount,
+      partyName: data.partyName.present ? data.partyName.value : this.partyName,
+      date: data.date.present ? data.date.value : this.date,
+      paymentMethod: data.paymentMethod.present
+          ? data.paymentMethod.value
+          : this.paymentMethod,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      referenceType: data.referenceType.present
+          ? data.referenceType.value
+          : this.referenceType,
+      referenceId: data.referenceId.present
+          ? data.referenceId.value
+          : this.referenceId,
+      isDeleted: data.isDeleted.present ? data.isDeleted.value : this.isDeleted,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      modifiedAt: data.modifiedAt.present
+          ? data.modifiedAt.value
+          : this.modifiedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpenditureTableData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('type: $type, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('categoryName: $categoryName, ')
+          ..write('amount: $amount, ')
+          ..write('partyName: $partyName, ')
+          ..write('date: $date, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('notes: $notes, ')
+          ..write('referenceType: $referenceType, ')
+          ..write('referenceId: $referenceId, ')
+          ..write('isDeleted: $isDeleted, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('modifiedAt: $modifiedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    type,
+    categoryId,
+    categoryName,
+    amount,
+    partyName,
+    date,
+    paymentMethod,
+    notes,
+    referenceType,
+    referenceId,
+    isDeleted,
+    createdAt,
+    modifiedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ExpenditureTableData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.type == this.type &&
+          other.categoryId == this.categoryId &&
+          other.categoryName == this.categoryName &&
+          other.amount == this.amount &&
+          other.partyName == this.partyName &&
+          other.date == this.date &&
+          other.paymentMethod == this.paymentMethod &&
+          other.notes == this.notes &&
+          other.referenceType == this.referenceType &&
+          other.referenceId == this.referenceId &&
+          other.isDeleted == this.isDeleted &&
+          other.createdAt == this.createdAt &&
+          other.modifiedAt == this.modifiedAt);
+}
+
+class ExpendituresTableCompanion extends UpdateCompanion<ExpenditureTableData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<String> type;
+  final Value<int?> categoryId;
+  final Value<String> categoryName;
+  final Value<double> amount;
+  final Value<String?> partyName;
+  final Value<String> date;
+  final Value<String?> paymentMethod;
+  final Value<String?> notes;
+  final Value<String?> referenceType;
+  final Value<int?> referenceId;
+  final Value<bool> isDeleted;
+  final Value<String> createdAt;
+  final Value<String> modifiedAt;
+  const ExpendituresTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.categoryId = const Value.absent(),
+    this.categoryName = const Value.absent(),
+    this.amount = const Value.absent(),
+    this.partyName = const Value.absent(),
+    this.date = const Value.absent(),
+    this.paymentMethod = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.referenceType = const Value.absent(),
+    this.referenceId = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.modifiedAt = const Value.absent(),
+  });
+  ExpendituresTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required String type,
+    this.categoryId = const Value.absent(),
+    required String categoryName,
+    required double amount,
+    this.partyName = const Value.absent(),
+    required String date,
+    this.paymentMethod = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.referenceType = const Value.absent(),
+    this.referenceId = const Value.absent(),
+    this.isDeleted = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.modifiedAt = const Value.absent(),
+  }) : type = Value(type),
+       categoryName = Value(categoryName),
+       amount = Value(amount),
+       date = Value(date);
+  static Insertable<ExpenditureTableData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<String>? type,
+    Expression<int>? categoryId,
+    Expression<String>? categoryName,
+    Expression<double>? amount,
+    Expression<String>? partyName,
+    Expression<String>? date,
+    Expression<String>? paymentMethod,
+    Expression<String>? notes,
+    Expression<String>? referenceType,
+    Expression<int>? referenceId,
+    Expression<bool>? isDeleted,
+    Expression<String>? createdAt,
+    Expression<String>? modifiedAt,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (type != null) 'type': type,
+      if (categoryId != null) 'category_id': categoryId,
+      if (categoryName != null) 'category_name': categoryName,
+      if (amount != null) 'amount': amount,
+      if (partyName != null) 'party_name': partyName,
+      if (date != null) 'date': date,
+      if (paymentMethod != null) 'payment_method': paymentMethod,
+      if (notes != null) 'notes': notes,
+      if (referenceType != null) 'reference_type': referenceType,
+      if (referenceId != null) 'reference_id': referenceId,
+      if (isDeleted != null) 'is_deleted': isDeleted,
+      if (createdAt != null) 'created_at': createdAt,
+      if (modifiedAt != null) 'modified_at': modifiedAt,
+    });
+  }
+
+  ExpendituresTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<String>? type,
+    Value<int?>? categoryId,
+    Value<String>? categoryName,
+    Value<double>? amount,
+    Value<String?>? partyName,
+    Value<String>? date,
+    Value<String?>? paymentMethod,
+    Value<String?>? notes,
+    Value<String?>? referenceType,
+    Value<int?>? referenceId,
+    Value<bool>? isDeleted,
+    Value<String>? createdAt,
+    Value<String>? modifiedAt,
+  }) {
+    return ExpendituresTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      type: type ?? this.type,
+      categoryId: categoryId ?? this.categoryId,
+      categoryName: categoryName ?? this.categoryName,
+      amount: amount ?? this.amount,
+      partyName: partyName ?? this.partyName,
+      date: date ?? this.date,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      notes: notes ?? this.notes,
+      referenceType: referenceType ?? this.referenceType,
+      referenceId: referenceId ?? this.referenceId,
+      isDeleted: isDeleted ?? this.isDeleted,
+      createdAt: createdAt ?? this.createdAt,
+      modifiedAt: modifiedAt ?? this.modifiedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (categoryId.present) {
+      map['category_id'] = Variable<int>(categoryId.value);
+    }
+    if (categoryName.present) {
+      map['category_name'] = Variable<String>(categoryName.value);
+    }
+    if (amount.present) {
+      map['amount'] = Variable<double>(amount.value);
+    }
+    if (partyName.present) {
+      map['party_name'] = Variable<String>(partyName.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<String>(date.value);
+    }
+    if (paymentMethod.present) {
+      map['payment_method'] = Variable<String>(paymentMethod.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (referenceType.present) {
+      map['reference_type'] = Variable<String>(referenceType.value);
+    }
+    if (referenceId.present) {
+      map['reference_id'] = Variable<int>(referenceId.value);
+    }
+    if (isDeleted.present) {
+      map['is_deleted'] = Variable<bool>(isDeleted.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (modifiedAt.present) {
+      map['modified_at'] = Variable<String>(modifiedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ExpendituresTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('type: $type, ')
+          ..write('categoryId: $categoryId, ')
+          ..write('categoryName: $categoryName, ')
+          ..write('amount: $amount, ')
+          ..write('partyName: $partyName, ')
+          ..write('date: $date, ')
+          ..write('paymentMethod: $paymentMethod, ')
+          ..write('notes: $notes, ')
+          ..write('referenceType: $referenceType, ')
+          ..write('referenceId: $referenceId, ')
+          ..write('isDeleted: $isDeleted, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('modifiedAt: $modifiedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$CoozyDatabase extends GeneratedDatabase {
   _$CoozyDatabase(QueryExecutor e) : super(e);
   $CoozyDatabaseManager get managers => $CoozyDatabaseManager(this);
@@ -22234,6 +23911,10 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
       $ExtraChargesTableTable(this);
   late final $PaymentMethodsTableTable paymentMethodsTable =
       $PaymentMethodsTableTable(this);
+  late final $ExpenditureCategoriesTableTable expenditureCategoriesTable =
+      $ExpenditureCategoriesTableTable(this);
+  late final $ExpendituresTableTable expendituresTable =
+      $ExpendituresTableTable(this);
   late final Index idxTableInfoSortOrder = Index(
     'idx_table_info_sort_order',
     'CREATE INDEX idx_table_info_sort_order ON table_info (sort_order_index)',
@@ -22538,6 +24219,30 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     'idx_payment_methods_name',
     'CREATE INDEX idx_payment_methods_name ON payment_methods (name)',
   );
+  late final Index idxExpenditureCategoriesType = Index(
+    'idx_expenditure_categories_type',
+    'CREATE INDEX idx_expenditure_categories_type ON expenditure_categories (type)',
+  );
+  late final Index idxExpenditureCategoriesName = Index(
+    'idx_expenditure_categories_name',
+    'CREATE INDEX idx_expenditure_categories_name ON expenditure_categories (name)',
+  );
+  late final Index idxExpendituresType = Index(
+    'idx_expenditures_type',
+    'CREATE INDEX idx_expenditures_type ON expenditures (type)',
+  );
+  late final Index idxExpendituresDate = Index(
+    'idx_expenditures_date',
+    'CREATE INDEX idx_expenditures_date ON expenditures (date)',
+  );
+  late final Index idxExpendituresCategoryId = Index(
+    'idx_expenditures_category_id',
+    'CREATE INDEX idx_expenditures_category_id ON expenditures (category_id)',
+  );
+  late final Index idxExpendituresIsDeleted = Index(
+    'idx_expenditures_is_deleted',
+    'CREATE INDEX idx_expenditures_is_deleted ON expenditures (is_deleted)',
+  );
   late final CategoriesDao categoriesDao = CategoriesDao(this as CoozyDatabase);
   late final CustomersDao customersDao = CustomersDao(this as CoozyDatabase);
   late final StaffManagementDao staffManagementDao = StaffManagementDao(
@@ -22556,6 +24261,9 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     this as CoozyDatabase,
   );
   late final UserLoginsDao userLoginsDao = UserLoginsDao(this as CoozyDatabase);
+  late final ExpenditureDao expenditureDao = ExpenditureDao(
+    this as CoozyDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -22590,6 +24298,8 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     discountsTable,
     extraChargesTable,
     paymentMethodsTable,
+    expenditureCategoriesTable,
+    expendituresTable,
     idxTableInfoSortOrder,
     idxCategoriesPosition,
     idxCategoriesName,
@@ -22666,6 +24376,12 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     idxDiscountsName,
     idxExtraChargesName,
     idxPaymentMethodsName,
+    idxExpenditureCategoriesType,
+    idxExpenditureCategoriesName,
+    idxExpendituresType,
+    idxExpendituresDate,
+    idxExpendituresCategoryId,
+    idxExpendituresIsDeleted,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -22773,6 +24489,13 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('role_permissions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'expenditure_categories',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('expenditures', kind: UpdateKind.update)],
     ),
   ]);
 }
@@ -38268,6 +39991,1050 @@ typedef $$PaymentMethodsTableTableProcessedTableManager =
       PaymentMethodTableData,
       PrefetchHooks Function()
     >;
+typedef $$ExpenditureCategoriesTableTableCreateCompanionBuilder =
+    ExpenditureCategoriesTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required String name,
+      required String type,
+      Value<int?> iconCodePoint,
+      Value<String?> iconFontFamily,
+      Value<String?> colorHex,
+      Value<bool> isCustom,
+      Value<bool> isEnabled,
+      Value<String> createdAt,
+    });
+typedef $$ExpenditureCategoriesTableTableUpdateCompanionBuilder =
+    ExpenditureCategoriesTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<String> name,
+      Value<String> type,
+      Value<int?> iconCodePoint,
+      Value<String?> iconFontFamily,
+      Value<String?> colorHex,
+      Value<bool> isCustom,
+      Value<bool> isEnabled,
+      Value<String> createdAt,
+    });
+
+final class $$ExpenditureCategoriesTableTableReferences
+    extends
+        BaseReferences<
+          _$CoozyDatabase,
+          $ExpenditureCategoriesTableTable,
+          ExpenditureCategoryTableData
+        > {
+  $$ExpenditureCategoriesTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static MultiTypedResultKey<
+    $ExpendituresTableTable,
+    List<ExpenditureTableData>
+  >
+  _expendituresTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.expendituresTable,
+        aliasName: 'expenditure_categories__id__expenditures__category_id',
+      );
+
+  $$ExpendituresTableTableProcessedTableManager get expendituresTableRefs {
+    final manager = $$ExpendituresTableTableTableManager(
+      $_db,
+      $_db.expendituresTable,
+    ).filter((f) => f.categoryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _expendituresTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$ExpenditureCategoriesTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $ExpenditureCategoriesTableTable> {
+  $$ExpenditureCategoriesTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get iconCodePoint => $composableBuilder(
+    column: $table.iconCodePoint,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get iconFontFamily => $composableBuilder(
+    column: $table.iconFontFamily,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCustom => $composableBuilder(
+    column: $table.isCustom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> expendituresTableRefs(
+    Expression<bool> Function($$ExpendituresTableTableFilterComposer f) f,
+  ) {
+    final $$ExpendituresTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.expendituresTable,
+      getReferencedColumn: (t) => t.categoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ExpendituresTableTableFilterComposer(
+            $db: $db,
+            $table: $db.expendituresTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$ExpenditureCategoriesTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $ExpenditureCategoriesTableTable> {
+  $$ExpenditureCategoriesTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get iconCodePoint => $composableBuilder(
+    column: $table.iconCodePoint,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get iconFontFamily => $composableBuilder(
+    column: $table.iconFontFamily,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get colorHex => $composableBuilder(
+    column: $table.colorHex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCustom => $composableBuilder(
+    column: $table.isCustom,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isEnabled => $composableBuilder(
+    column: $table.isEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ExpenditureCategoriesTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $ExpenditureCategoriesTableTable> {
+  $$ExpenditureCategoriesTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<int> get iconCodePoint => $composableBuilder(
+    column: $table.iconCodePoint,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get iconFontFamily => $composableBuilder(
+    column: $table.iconFontFamily,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get colorHex =>
+      $composableBuilder(column: $table.colorHex, builder: (column) => column);
+
+  GeneratedColumn<bool> get isCustom =>
+      $composableBuilder(column: $table.isCustom, builder: (column) => column);
+
+  GeneratedColumn<bool> get isEnabled =>
+      $composableBuilder(column: $table.isEnabled, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  Expression<T> expendituresTableRefs<T extends Object>(
+    Expression<T> Function($$ExpendituresTableTableAnnotationComposer a) f,
+  ) {
+    final $$ExpendituresTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.expendituresTable,
+          getReferencedColumn: (t) => t.categoryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ExpendituresTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.expendituresTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+}
+
+class $$ExpenditureCategoriesTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $ExpenditureCategoriesTableTable,
+          ExpenditureCategoryTableData,
+          $$ExpenditureCategoriesTableTableFilterComposer,
+          $$ExpenditureCategoriesTableTableOrderingComposer,
+          $$ExpenditureCategoriesTableTableAnnotationComposer,
+          $$ExpenditureCategoriesTableTableCreateCompanionBuilder,
+          $$ExpenditureCategoriesTableTableUpdateCompanionBuilder,
+          (
+            ExpenditureCategoryTableData,
+            $$ExpenditureCategoriesTableTableReferences,
+          ),
+          ExpenditureCategoryTableData,
+          PrefetchHooks Function({bool expendituresTableRefs})
+        > {
+  $$ExpenditureCategoriesTableTableTableManager(
+    _$CoozyDatabase db,
+    $ExpenditureCategoriesTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExpenditureCategoriesTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$ExpenditureCategoriesTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ExpenditureCategoriesTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<int?> iconCodePoint = const Value.absent(),
+                Value<String?> iconFontFamily = const Value.absent(),
+                Value<String?> colorHex = const Value.absent(),
+                Value<bool> isCustom = const Value.absent(),
+                Value<bool> isEnabled = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+              }) => ExpenditureCategoriesTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                type: type,
+                iconCodePoint: iconCodePoint,
+                iconFontFamily: iconFontFamily,
+                colorHex: colorHex,
+                isCustom: isCustom,
+                isEnabled: isEnabled,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required String name,
+                required String type,
+                Value<int?> iconCodePoint = const Value.absent(),
+                Value<String?> iconFontFamily = const Value.absent(),
+                Value<String?> colorHex = const Value.absent(),
+                Value<bool> isCustom = const Value.absent(),
+                Value<bool> isEnabled = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+              }) => ExpenditureCategoriesTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                type: type,
+                iconCodePoint: iconCodePoint,
+                iconFontFamily: iconFontFamily,
+                colorHex: colorHex,
+                isCustom: isCustom,
+                isEnabled: isEnabled,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $ExpenditureCategoriesTableTable,
+                    ExpenditureCategoryTableData
+                  >(table),
+                  $$ExpenditureCategoriesTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({expendituresTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (expendituresTableRefs) db.expendituresTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (expendituresTableRefs)
+                    await $_getPrefetchedData<
+                      ExpenditureCategoryTableData,
+                      $ExpenditureCategoriesTableTable,
+                      ExpenditureTableData
+                    >(
+                      currentTable: table,
+                      referencedTable:
+                          $$ExpenditureCategoriesTableTableReferences
+                              ._expendituresTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$ExpenditureCategoriesTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).expendituresTableRefs,
+                      referencedItemsForCurrentItem: (item, referencedItems) =>
+                          referencedItems.where((e) => e.categoryId == item.id),
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ExpenditureCategoriesTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $ExpenditureCategoriesTableTable,
+      ExpenditureCategoryTableData,
+      $$ExpenditureCategoriesTableTableFilterComposer,
+      $$ExpenditureCategoriesTableTableOrderingComposer,
+      $$ExpenditureCategoriesTableTableAnnotationComposer,
+      $$ExpenditureCategoriesTableTableCreateCompanionBuilder,
+      $$ExpenditureCategoriesTableTableUpdateCompanionBuilder,
+      (
+        ExpenditureCategoryTableData,
+        $$ExpenditureCategoriesTableTableReferences,
+      ),
+      ExpenditureCategoryTableData,
+      PrefetchHooks Function({bool expendituresTableRefs})
+    >;
+typedef $$ExpendituresTableTableCreateCompanionBuilder =
+    ExpendituresTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required String type,
+      Value<int?> categoryId,
+      required String categoryName,
+      required double amount,
+      Value<String?> partyName,
+      required String date,
+      Value<String?> paymentMethod,
+      Value<String?> notes,
+      Value<String?> referenceType,
+      Value<int?> referenceId,
+      Value<bool> isDeleted,
+      Value<String> createdAt,
+      Value<String> modifiedAt,
+    });
+typedef $$ExpendituresTableTableUpdateCompanionBuilder =
+    ExpendituresTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<String> type,
+      Value<int?> categoryId,
+      Value<String> categoryName,
+      Value<double> amount,
+      Value<String?> partyName,
+      Value<String> date,
+      Value<String?> paymentMethod,
+      Value<String?> notes,
+      Value<String?> referenceType,
+      Value<int?> referenceId,
+      Value<bool> isDeleted,
+      Value<String> createdAt,
+      Value<String> modifiedAt,
+    });
+
+final class $$ExpendituresTableTableReferences
+    extends
+        BaseReferences<
+          _$CoozyDatabase,
+          $ExpendituresTableTable,
+          ExpenditureTableData
+        > {
+  $$ExpendituresTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $ExpenditureCategoriesTableTable _categoryIdTable(
+    _$CoozyDatabase db,
+  ) => db.expenditureCategoriesTable.createAlias(
+    'expenditures__category_id__expenditure_categories__id',
+  );
+
+  $$ExpenditureCategoriesTableTableProcessedTableManager? get categoryId {
+    final $_column = $_itemColumn<int>('category_id');
+    if ($_column == null) return null;
+    final manager = $$ExpenditureCategoriesTableTableTableManager(
+      $_db,
+      $_db.expenditureCategoriesTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_categoryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ExpendituresTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $ExpendituresTableTable> {
+  $$ExpendituresTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get categoryName => $composableBuilder(
+    column: $table.categoryName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get partyName => $composableBuilder(
+    column: $table.partyName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get referenceId => $composableBuilder(
+    column: $table.referenceId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modifiedAt => $composableBuilder(
+    column: $table.modifiedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$ExpenditureCategoriesTableTableFilterComposer get categoryId {
+    final $$ExpenditureCategoriesTableTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.categoryId,
+          referencedTable: $db.expenditureCategoriesTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ExpenditureCategoriesTableTableFilterComposer(
+                $db: $db,
+                $table: $db.expenditureCategoriesTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$ExpendituresTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $ExpendituresTableTable> {
+  $$ExpendituresTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get categoryName => $composableBuilder(
+    column: $table.categoryName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get amount => $composableBuilder(
+    column: $table.amount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get partyName => $composableBuilder(
+    column: $table.partyName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get referenceId => $composableBuilder(
+    column: $table.referenceId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDeleted => $composableBuilder(
+    column: $table.isDeleted,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modifiedAt => $composableBuilder(
+    column: $table.modifiedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$ExpenditureCategoriesTableTableOrderingComposer get categoryId {
+    final $$ExpenditureCategoriesTableTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.categoryId,
+          referencedTable: $db.expenditureCategoriesTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ExpenditureCategoriesTableTableOrderingComposer(
+                $db: $db,
+                $table: $db.expenditureCategoriesTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$ExpendituresTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $ExpendituresTableTable> {
+  $$ExpendituresTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get categoryName => $composableBuilder(
+    column: $table.categoryName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get amount =>
+      $composableBuilder(column: $table.amount, builder: (column) => column);
+
+  GeneratedColumn<String> get partyName =>
+      $composableBuilder(column: $table.partyName, builder: (column) => column);
+
+  GeneratedColumn<String> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<String> get paymentMethod => $composableBuilder(
+    column: $table.paymentMethod,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get referenceType => $composableBuilder(
+    column: $table.referenceType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get referenceId => $composableBuilder(
+    column: $table.referenceId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isDeleted =>
+      $composableBuilder(column: $table.isDeleted, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get modifiedAt => $composableBuilder(
+    column: $table.modifiedAt,
+    builder: (column) => column,
+  );
+
+  $$ExpenditureCategoriesTableTableAnnotationComposer get categoryId {
+    final $$ExpenditureCategoriesTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.categoryId,
+          referencedTable: $db.expenditureCategoriesTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$ExpenditureCategoriesTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.expenditureCategoriesTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$ExpendituresTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $ExpendituresTableTable,
+          ExpenditureTableData,
+          $$ExpendituresTableTableFilterComposer,
+          $$ExpendituresTableTableOrderingComposer,
+          $$ExpendituresTableTableAnnotationComposer,
+          $$ExpendituresTableTableCreateCompanionBuilder,
+          $$ExpendituresTableTableUpdateCompanionBuilder,
+          (ExpenditureTableData, $$ExpendituresTableTableReferences),
+          ExpenditureTableData,
+          PrefetchHooks Function({bool categoryId})
+        > {
+  $$ExpendituresTableTableTableManager(
+    _$CoozyDatabase db,
+    $ExpendituresTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ExpendituresTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ExpendituresTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ExpendituresTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<int?> categoryId = const Value.absent(),
+                Value<String> categoryName = const Value.absent(),
+                Value<double> amount = const Value.absent(),
+                Value<String?> partyName = const Value.absent(),
+                Value<String> date = const Value.absent(),
+                Value<String?> paymentMethod = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> referenceType = const Value.absent(),
+                Value<int?> referenceId = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> modifiedAt = const Value.absent(),
+              }) => ExpendituresTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                type: type,
+                categoryId: categoryId,
+                categoryName: categoryName,
+                amount: amount,
+                partyName: partyName,
+                date: date,
+                paymentMethod: paymentMethod,
+                notes: notes,
+                referenceType: referenceType,
+                referenceId: referenceId,
+                isDeleted: isDeleted,
+                createdAt: createdAt,
+                modifiedAt: modifiedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required String type,
+                Value<int?> categoryId = const Value.absent(),
+                required String categoryName,
+                required double amount,
+                Value<String?> partyName = const Value.absent(),
+                required String date,
+                Value<String?> paymentMethod = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String?> referenceType = const Value.absent(),
+                Value<int?> referenceId = const Value.absent(),
+                Value<bool> isDeleted = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> modifiedAt = const Value.absent(),
+              }) => ExpendituresTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                type: type,
+                categoryId: categoryId,
+                categoryName: categoryName,
+                amount: amount,
+                partyName: partyName,
+                date: date,
+                paymentMethod: paymentMethod,
+                notes: notes,
+                referenceType: referenceType,
+                referenceId: referenceId,
+                isDeleted: isDeleted,
+                createdAt: createdAt,
+                modifiedAt: modifiedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ExpendituresTableTable, ExpenditureTableData>(
+                    table,
+                  ),
+                  $$ExpendituresTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({categoryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (categoryId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.categoryId,
+                                referencedTable:
+                                    $$ExpendituresTableTableReferences
+                                        ._categoryIdTable(db),
+                                referencedColumn:
+                                    $$ExpendituresTableTableReferences
+                                        ._categoryIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$ExpendituresTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $ExpendituresTableTable,
+      ExpenditureTableData,
+      $$ExpendituresTableTableFilterComposer,
+      $$ExpendituresTableTableOrderingComposer,
+      $$ExpendituresTableTableAnnotationComposer,
+      $$ExpendituresTableTableCreateCompanionBuilder,
+      $$ExpendituresTableTableUpdateCompanionBuilder,
+      (ExpenditureTableData, $$ExpendituresTableTableReferences),
+      ExpenditureTableData,
+      PrefetchHooks Function({bool categoryId})
+    >;
 
 class $CoozyDatabaseManager {
   final _$CoozyDatabase _db;
@@ -38340,4 +41107,12 @@ class $CoozyDatabaseManager {
       $$ExtraChargesTableTableTableManager(_db, _db.extraChargesTable);
   $$PaymentMethodsTableTableTableManager get paymentMethodsTable =>
       $$PaymentMethodsTableTableTableManager(_db, _db.paymentMethodsTable);
+  $$ExpenditureCategoriesTableTableTableManager
+  get expenditureCategoriesTable =>
+      $$ExpenditureCategoriesTableTableTableManager(
+        _db,
+        _db.expenditureCategoriesTable,
+      );
+  $$ExpendituresTableTableTableManager get expendituresTable =>
+      $$ExpendituresTableTableTableManager(_db, _db.expendituresTable);
 }

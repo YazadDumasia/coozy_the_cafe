@@ -351,15 +351,23 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                     ),
                     _buildDrawerItem(
                       context,
-                      icon: Icons.blinds_outlined,
+                      icon: Icons.account_balance_wallet_outlined,
                       title:
                           context.tr(
                             shared.LocaleKeys.homeDrawerExpenditureLabel,
                             track: shared.TrackConstants.homePageTrack,
                           ) ??
                           'Expenditure',
-                      isSelected: false,
-                      onTap: () {},
+                      isSelected: _isRouteActive(
+                        currentLocation,
+                        core.AppRoutePath.expenditureListScreenRoute,
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        context.push(
+                          core.AppRoutePath.expenditureListScreenRoute,
+                        );
+                      },
                     ),
 
                     _buildDrawerItem(

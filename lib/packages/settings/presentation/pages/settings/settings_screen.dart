@@ -171,7 +171,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     }
     _completedStageKeysNotifier.value = completed;
-    _statusMessageNotifier.value = completed.isNotEmpty
+    final bool hasActiveFakeData = completed.isNotEmpty;
+    _isFakeDataEnabledNotifier.value = hasActiveFakeData;
+    await prefs.setBool(_prefKeyFakeData, hasActiveFakeData);
+    _statusMessageNotifier.value = hasActiveFakeData
         ? 'Fake data active (${completed.length} table datasets populated)'
         : 'Fake data inactive';
   }
@@ -387,17 +390,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
       if (!mounted) return;
 
-      if (lastStageKey != null) {
-        _completedStageKeysNotifier.value = {
-          ..._completedStageKeysNotifier.value,
-          lastStageKey!,
-        };
-      }
       _activeStageKeyNotifier.value = null;
 
-      await prefs.setBool(_prefKeyFakeData, true);
+      final counts = await FakeDataHelper.getDatasetCounts(database);
+      final completed = <String>{};
+      for (final entry in counts.entries) {
+        if (entry.value > 0) {
+          completed.add(entry.key);
+        }
+      }
+      _completedStageKeysNotifier.value = completed;
+      final bool hasActiveFakeData = completed.isNotEmpty;
+      _isFakeDataEnabledNotifier.value = hasActiveFakeData;
+      await prefs.setBool(_prefKeyFakeData, hasActiveFakeData);
       if (!mounted) return;
-      _isFakeDataEnabledNotifier.value = true;
       _statusMessageNotifier.value =
           'Success! $count fake records added for ${selectedStageKeys.length} selected tables.';
 
@@ -517,6 +523,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
             '100+ Invoices with 5% GST calculation & Payment Transactions',
         icon: Icons.point_of_sale_outlined,
       ),
+      _TableSelectionItem(
+        key: 'expenditures',
+        title: _tr(
+          context,
+          shared.LocaleKeys.settingsExpendituresSetTitle,
+          'Expenditures & Cash Flow Table',
+        ),
+        subtitle: _tr(
+          context,
+          shared.LocaleKeys.settingsExpendituresSetSubtitle,
+          '450+ Cash Flow records (25+ today, dense multi-date history, salaries, lease, supplies)',
+        ),
+        icon: Icons.account_balance_wallet_outlined,
+      ),
     ];
 
     showDialog(
@@ -627,6 +647,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               const Divider(height: 1, indent: 48),
                           itemBuilder: (context, index) {
                             final item = tables[index];
+                            final isCurrentlyPopulated =
+                                _completedStageKeysNotifier.value.contains(
+                                  item.key,
+                                );
+                            final colorScheme = Theme.of(context).colorScheme;
+
                             return SwitchListTile.adaptive(
                               value: item.enabled,
                               activeThumbColor: Colors.amber.shade800,
@@ -642,23 +668,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     : Colors.grey,
                                 size: 22,
                               ),
-                              title: Text(
-                                item.title,
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: item.enabled
-                                      ? Colors.black87
-                                      : Colors.grey.shade600,
-                                ),
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      item.title,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                        color: item.enabled
+                                            ? colorScheme.onSurface
+                                            : colorScheme.onSurface.withValues(
+                                                alpha: 0.5,
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (isCurrentlyPopulated)
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 6),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 6,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.shade50,
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: Colors.green.shade200,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Active',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.green.shade700,
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
                               subtitle: Text(
                                 item.subtitle,
                                 style: TextStyle(
                                   fontSize: 11,
                                   color: item.enabled
-                                      ? Colors.grey.shade700
-                                      : Colors.grey.shade500,
+                                      ? colorScheme.onSurfaceVariant
+                                      : colorScheme.onSurfaceVariant.withValues(
+                                          alpha: 0.6,
+                                        ),
                                 ),
                               ),
                               onChanged: (val) {
@@ -796,10 +855,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
         if (!mounted) return;
 
-        final newCompleted = Set<String>.from(_completedStageKeysNotifier.value)
-          ..addAll(stageKeys);
-        _completedStageKeysNotifier.value = newCompleted;
-        _isFakeDataEnabledNotifier.value = true;
+        final counts = await FakeDataHelper.getDatasetCounts(database);
+        final completed = <String>{};
+        for (final entry in counts.entries) {
+          if (entry.value > 0) {
+            completed.add(entry.key);
+          }
+        }
+        _completedStageKeysNotifier.value = completed;
+        final bool hasActiveFakeData = completed.isNotEmpty;
+        _isFakeDataEnabledNotifier.value = hasActiveFakeData;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool(_prefKeyFakeData, hasActiveFakeData);
         _statusMessageNotifier.value = '$name fake data added successfully!';
 
         core.NotificationApi.showFakeDataCompletedNotification(count: count);
@@ -821,12 +888,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
         await FakeDataHelper.removeDatasetData(database, stageKeys);
         if (!mounted) return;
 
-        final newCompleted = Set<String>.from(_completedStageKeysNotifier.value)
-          ..removeAll(stageKeys);
-        _completedStageKeysNotifier.value = newCompleted;
-        if (newCompleted.isEmpty) {
-          _isFakeDataEnabledNotifier.value = false;
+        final counts = await FakeDataHelper.getDatasetCounts(database);
+        final completed = <String>{};
+        for (final entry in counts.entries) {
+          if (entry.value > 0) {
+            completed.add(entry.key);
+          }
         }
+        _completedStageKeysNotifier.value = completed;
+        final bool hasActiveFakeData = completed.isNotEmpty;
+        _isFakeDataEnabledNotifier.value = hasActiveFakeData;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool(_prefKeyFakeData, hasActiveFakeData);
         _statusMessageNotifier.value = '$name fake data removed.';
 
         core.NotificationApi.showFakeDataRemovedNotification();
@@ -1787,7 +1860,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                             shared
                                                 .LocaleKeys
                                                 .settingsFakeDataModeSubtitle,
-                                            'Generates 1,800+ realistic records spanning 1.5 years back across Customers, Orders, Staff, Inventory, Purchases, & Reservations.',
+                                            'Generates 2,250+ realistic records spanning 1.5 years back across Customers, Orders, Staff, Inventory, Purchases, Reservations, & Expenditures.',
                                           ),
                                           style: const TextStyle(
                                             fontSize: 12,
@@ -1806,18 +1879,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                     )
                                   else
-                                    ValueListenableBuilder<bool>(
-                                      valueListenable:
-                                          _isFakeDataEnabledNotifier,
-                                      builder: (context, isEnabled, child) {
-                                        return Switch.adaptive(
-                                          value: isEnabled,
-                                          activeThumbColor: Colors.amber,
-                                          onChanged: isLoading
+                                    Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        IconButton(
+                                          icon: const Icon(
+                                            Icons.tune_rounded,
+                                            size: 20,
+                                          ),
+                                          tooltip:
+                                              'Select Tables for Fake Data',
+                                          onPressed: isLoading
                                               ? null
-                                              : _onToggleFakeData,
-                                        );
-                                      },
+                                              : () => _showSelectTablesDialog(
+                                                  context,
+                                                ),
+                                        ),
+                                        ValueListenableBuilder<bool>(
+                                          valueListenable:
+                                              _isFakeDataEnabledNotifier,
+                                          builder: (context, isEnabled, child) {
+                                            return Switch.adaptive(
+                                              value: isEnabled,
+                                              activeThumbColor: Colors.amber,
+                                              onChanged: isLoading
+                                                  ? null
+                                                  : _onToggleFakeData,
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
                                 ],
                               ),
@@ -2096,6 +2187,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   title: 'Invoices & Payments Table',
                   subtitle:
                       '100+ Invoices with 5% GST calculation & Payment Transactions',
+                ),
+                _buildDataSetTile(
+                  icon: Icons.account_balance_wallet_outlined,
+                  stageKeys: ['expenditures'],
+                  title: _tr(
+                    context,
+                    shared.LocaleKeys.settingsExpendituresSetTitle,
+                    'Expenditures & Cash Flow Table',
+                  ),
+                  subtitle: _tr(
+                    context,
+                    shared.LocaleKeys.settingsExpendituresSetSubtitle,
+                    '450+ Cash Flow records (25+ today, dense multi-date history, salaries, lease, supplies)',
+                  ),
                 ),
               ],
             ),
@@ -2378,6 +2483,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return 'Generates 150+ Customer Orders with Order Items, status, and order type (Dine-In, Takeaway).';
       case 'invoices':
         return 'Generates 100+ Invoices with 5% GST tax calculation, item breakdowns, and Payment Transactions.';
+      case 'expenditures':
+        return 'Generates 450+ realistic cash flow records with big data for single day (25+ transactions/day) and multi-record date clusters across recent days, weeks, and 1.5 years.';
       default:
         return 'Generates realistic demo records for this database table.';
     }
@@ -2407,7 +2514,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   builder: (context, isLoading, child) {
                     final bool isActive = isSpecificDataset
                         ? completedKeys.contains(stageKeys.first)
-                        : isGlobalEnabled;
+                        : (isGlobalEnabled || completedKeys.isNotEmpty);
 
                     final titleText =
                         selectedTitle ??
@@ -2482,7 +2589,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           children: [
                             Text(
                               selectedSubtitle ??
-                                  'Generates 1,800+ realistic demo records spanning 1.5 years back across all cafe modules.',
+                                  'Generates 2,250+ realistic demo records spanning 1.5 years back across all cafe modules including cash flow & expenditures.',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey.shade700,
@@ -2643,6 +2750,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ),
                       ),
                       actions: [
+                        if (!isSpecificDataset)
+                          OutlinedButton.icon(
+                            style: OutlinedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            onPressed: isLoading
+                                ? null
+                                : () {
+                                    Navigator.pop(dialogContext);
+                                    _showSelectTablesDialog(context);
+                                  },
+                            icon: const Icon(Icons.tune_rounded, size: 16),
+                            label: const Text('Select Tables'),
+                          ),
                         TextButton(
                           onPressed: () => Navigator.pop(dialogContext),
                           child: Text(
@@ -2816,7 +2939,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     builder: (context, isGlobalEnabled, child) {
                       final bool isActive = isSpecificDataset
                           ? completedKeys.contains(stageKeys.first)
-                          : isGlobalEnabled;
+                          : (isGlobalEnabled || completedKeys.isNotEmpty);
 
                       final titleText = isSpecificDataset
                           ? (isActive
@@ -2831,8 +2954,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ? 'Fake records for ${selectedTitle ?? 'dataset'} are active in database.'
                                 : 'Toggle switch ON to generate fake records for ${selectedTitle ?? 'dataset'}.')
                           : (isActive
-                                ? '1,800+ realistic demo records active across all modules.'
-                                : 'Toggle switch ON to generate 1,800+ demo records.');
+                                ? '2,250+ realistic demo records active across all modules.'
+                                : 'Toggle switch ON to generate 2,250+ demo records.');
 
                       return Container(
                         padding: const EdgeInsets.all(14),
@@ -3037,6 +3160,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 icon: Icons.event_seat_outlined,
                 label: '80 Booked Table reservations & 12 Dining tables',
               ),
+              const _DatasetDetailRow(
+                icon: Icons.account_balance_wallet_outlined,
+                label:
+                    '450+ Cash Flow records (income, expenses, salaries, lease, supplies)',
+              ),
               const SizedBox(height: 20),
               Row(
                 children: [
@@ -3071,7 +3199,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               builder: (context, isLoading, child) {
                                 final bool isActive = isSpecificDataset
                                     ? completedKeys.contains(stageKeys.first)
-                                    : isGlobalEnabled;
+                                    : (isGlobalEnabled ||
+                                          completedKeys.isNotEmpty);
 
                                 return ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
@@ -3129,6 +3258,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ],
               ),
+              if (!isSpecificDataset) ...[
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  child: TextButton.icon(
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(sheetContext);
+                      _showSelectTablesDialog(context);
+                    },
+                    icon: const Icon(Icons.tune_rounded, size: 18),
+                    label: const Text(
+                      'Select Specific Tables for Fake Data',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ),
+              ],
             ],
           ),
         );

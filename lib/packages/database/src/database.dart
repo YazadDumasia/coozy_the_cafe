@@ -15,6 +15,7 @@ import 'database_dao/categories_dao.dart';
 import 'database_dao/customers_dao.dart';
 import 'database_dao/staff_management_dao.dart';
 import 'database_dao/inventory_dao.dart';
+import 'database_dao/expenditure_dao.dart';
 import 'database_dao/invoices_dao.dart';
 import 'database_dao/kitchen_orders_dao.dart';
 import 'database_dao/menu_items_dao.dart';
@@ -57,6 +58,8 @@ part 'database.g.dart';
     DiscountsTable,
     ExtraChargesTable,
     PaymentMethodsTable,
+    ExpenditureCategoriesTable,
+    ExpendituresTable,
   ],
   daos: [
     CategoriesDao,
@@ -71,6 +74,7 @@ part 'database.g.dart';
     ReportsDao,
     ReservationsDao,
     UserLoginsDao,
+    ExpenditureDao,
   ],
 )
 class CoozyDatabase extends _$CoozyDatabase {
@@ -120,6 +124,46 @@ class CoozyDatabase extends _$CoozyDatabase {
       await customStatement(
         'CREATE INDEX IF NOT EXISTS idx_stock_adjustment_date ON inventory_stock_adjustments (created_date);',
       );
+      await customStatement('''
+        CREATE TABLE IF NOT EXISTS expenditure_categories (
+          created_by INTEGER,
+          updated_by INTEGER,
+          id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          hash_id TEXT NOT NULL UNIQUE,
+          name TEXT NOT NULL,
+          type TEXT NOT NULL,
+          icon_code_point INTEGER,
+          icon_font_family TEXT,
+          color_hex TEXT,
+          is_custom INTEGER NOT NULL DEFAULT 0,
+          is_enabled INTEGER NOT NULL DEFAULT 1,
+          created_at TEXT NOT NULL
+        );
+      ''');
+      await customStatement('''
+        CREATE TABLE IF NOT EXISTS expenditures (
+          created_by INTEGER,
+          updated_by INTEGER,
+          id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          hash_id TEXT NOT NULL UNIQUE,
+          type TEXT NOT NULL,
+          category_id INTEGER REFERENCES expenditure_categories (id) ON DELETE SET NULL,
+          category_name TEXT NOT NULL,
+          amount REAL NOT NULL,
+          party_name TEXT,
+          date TEXT NOT NULL,
+          payment_method TEXT,
+          notes TEXT,
+          reference_type TEXT,
+          reference_id INTEGER,
+          is_deleted INTEGER NOT NULL DEFAULT 0,
+          created_at TEXT NOT NULL,
+          modified_at TEXT NOT NULL
+        );
+      ''');
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_expenditures_date ON expenditures (date DESC, id DESC);',
+      );
       await batch((batch) {
         for (final p in db_constants.DbConstants.allPermissions) {
           batch.insert(
@@ -132,6 +176,76 @@ class CoozyDatabase extends _$CoozyDatabase {
           );
         }
       });
+      // Seed initial default categories if table is empty
+      final catCount = await select(expenditureCategoriesTable).get();
+      if (catCount.isEmpty) {
+        final defaultExpenses = [
+          'Tax',
+          'Fuel',
+          'Food',
+          'Bill',
+          'Transportation',
+          'Insurance',
+          'Salary',
+          'Rent',
+          'Repairs',
+          'Commissions',
+          'Advertising',
+          'Fee',
+          'Interest',
+          'Loan',
+          'Supplies',
+          'Transfer',
+          'Contract',
+          'Miscellaneous',
+          'Disposable',
+          'Bread',
+          'Vegetables',
+          'Milk',
+          'Cold Drinks',
+          'Sauce',
+        ];
+        final defaultIncomes = [
+          'Profit',
+          'Salary',
+          'Awards',
+          'Rental',
+          'Sale',
+          'Refund',
+          'Lottery',
+          'Dividend',
+          'Investment',
+          'Interest',
+          'Commission',
+          'Fee',
+          'Loan',
+          'Miscellaneous',
+        ];
+        await batch((batch) {
+          for (final exp in defaultExpenses) {
+            batch.insert(
+              expenditureCategoriesTable,
+              ExpenditureCategoriesTableCompanion.insert(
+                name: exp,
+                type: 'EXPENSE',
+                isCustom: const Value(false),
+                isEnabled: const Value(true),
+              ),
+            );
+          }
+          for (final inc in defaultIncomes) {
+            batch.insert(
+              expenditureCategoriesTable,
+              ExpenditureCategoriesTableCompanion.insert(
+                name: inc,
+                type: 'INCOME',
+                isCustom: const Value(false),
+                isEnabled: const Value(true),
+              ),
+            );
+          }
+        });
+      }
     },
     onUpgrade: (m, from, to) async {},
   );

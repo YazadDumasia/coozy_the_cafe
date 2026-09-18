@@ -87,6 +87,7 @@ abstract class LocaleKeys {
   static String commonSave = 'common_save';
   static String commonCancel = 'common_cancel';
   static String commonDone = 'common_done';
+  static String commonAdd = 'common_add';
   static String commonAccept = 'common_accept';
   static String commonReject = 'common_reject';
   static String commonSubmit = 'common_submit';
@@ -94,6 +95,21 @@ abstract class LocaleKeys {
   static String commonClear = 'common_clear';
   static String commonDelete = 'common_delete';
   static String commonSearchHint = 'common_search_hint';
+  static String commonFilterByDate = 'common_filter_by_date';
+  static String commonSelectDateRange = 'common_select_date_range';
+  static String commonFromDate = 'common_from_date';
+  static String commonToDate = 'common_to_date';
+  static String commonStartDate = 'common_start_date';
+  static String commonEndDate = 'common_end_date';
+  static String commonShowReports = 'common_show_reports';
+  static String commonToday = 'common_today';
+  static String commonYesterday = 'common_yesterday';
+  static String commonThisWeek = 'common_this_week';
+  static String commonLastWeek = 'common_last_week';
+  static String commonThisMonth = 'common_this_month';
+  static String commonLastMonth = 'common_last_month';
+  static String commonThisYear = 'common_this_year';
+  static String commonLastYear = 'common_last_year';
   static String commonAlertTitleText = 'common_alert_title_text';
   static String commonActive = 'common_active';
   static String commonInactive = 'common_inactive';
@@ -1122,6 +1138,10 @@ abstract class LocaleKeys {
       'settings_reservations_set_title';
   static const String settingsReservationsSetSubtitle =
       'settings_reservations_set_subtitle';
+  static const String settingsExpendituresSetTitle =
+      'settings_expenditures_set_title';
+  static const String settingsExpendituresSetSubtitle =
+      'settings_expenditures_set_subtitle';
 
   // form labels, hints, error msgs & tooltips
   static const String addressLine1Label = 'address_line_1_label';
@@ -1378,4 +1398,47 @@ abstract class LocaleKeys {
   static const String invoiceTableTotal = 'invoice_table_total';
   static const String invoiceTableUnitsCount = 'invoice_table_units_count';
   static const String invoiceSubtotal = 'invoice_subtotal';
+
+  // expenditure_page
+  static const String expenditureAdd = 'expenditure_add';
+  static const String expenditureAppbarTitle = 'expenditure_appbar_title';
+  static const String expenditureNetCashFlow = 'expenditure_net_cash_flow';
+  static const String expenditureFormulaNote = 'expenditure_formula_note';
+  static const String expenditureIncome = 'expenditure_income';
+  static const String expenditureExpense = 'expenditure_expense';
+  static const String expenditureEmptyTitle = 'expenditure_empty_title';
+  static const String expenditureEmptySubtitle = 'expenditure_empty_subtitle';
+  static const String expenditureFilterTitle = 'expenditure_filter_title';
+  static const String expenditureSelectDateRange =
+      'expenditure_select_date_range';
+  static const String expenditureShowReports = 'expenditure_show_reports';
+  static const String expenditureEndDate = 'expenditure_end_date';
+  static const String expenditureCustom = 'expenditure_custom';
+  static const String expenditureSearchCategory = 'expenditure_search_category';
+  static const String expenditureSelectCategory = 'expenditure_select_category';
+  static const String expenditureNewExpense = 'expenditure_new_expense';
+  static const String expenditureNewIncome = 'expenditure_new_income';
+  static const String expenditureAmountLabel = 'expenditure_amount_label';
+  static const String expenditureAmountHint = 'expenditure_amount_hint';
+  static const String expenditureAmountRequired = 'expenditure_amount_required';
+  static const String expenditureAmountValid = 'expenditure_amount_valid';
+  static const String expenditurePaidTo = 'expenditure_paid_to';
+  static const String expenditureReceivedFrom = 'expenditure_received_from';
+  static const String expenditurePaymentMode = 'expenditure_payment_mode';
+  static const String expenditureNotesLabel = 'expenditure_notes_label';
+  static const String expenditureNotesHint = 'expenditure_notes_hint';
+  static const String expenditureSaveExpense = 'expenditure_save_expense';
+  static const String expenditureSaveIncome = 'expenditure_save_income';
+  static const String expenditureAddCustomCategory =
+      'expenditure_add_custom_category';
+  static const String expenditureCategoryNameLabel =
+      'expenditure_category_name_label';
+  static const String expenditureCategoryNameRequired =
+      'expenditure_category_name_required';
+  static const String expenditureCategoryHintExpense =
+      'expenditure_category_hint_expense';
+  static const String expenditureCategoryHintIncome =
+      'expenditure_category_hint_income';
+  static const String expenditureLoadMore = 'expenditure_load_more';
+  static const String expenditureLoadingEarlier = 'expenditure_loading_earlier';
 }

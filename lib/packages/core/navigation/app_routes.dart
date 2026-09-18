@@ -255,6 +255,8 @@ class AppRouteName {
 
   static const String reservationList = 'reservation-list';
 
+  static const String expenditureList = 'expenditure-list';
+
   static const String settings = 'settings';
   static const String currencyExchange = 'currency-exchange';
   static const String kitchen = 'kitchen';
@@ -283,6 +285,9 @@ class AppRouteName {
         return 'OTP Verification';
       case successfully:
         return 'Success';
+      case expenditureList:
+        return 'Cash Flow';
+
       case businessOnboarding:
         return 'Business Onboarding';
       case inventoryList:
