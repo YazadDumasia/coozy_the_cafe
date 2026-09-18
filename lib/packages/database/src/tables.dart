@@ -153,6 +153,26 @@ class InventoryTable extends BaseTable {
   TextColumn get modifiedDate => text().nullable()();
 }
 
+@DataClassName('InventoryStockAdjustment')
+@TableIndex(name: 'idx_stock_adjustment_inventoryId', columns: {#inventoryId})
+@TableIndex(name: 'idx_stock_adjustment_date', columns: {#createdDate})
+class InventoryStockAdjustmentsTable extends BaseTable {
+  @override
+  String get tableName => 'inventory_stock_adjustments';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  IntColumn get inventoryId =>
+      integer().nullable().references(InventoryTable, #id)();
+  TextColumn get inventoryName => text().nullable()();
+  TextColumn get adjustmentType => text().nullable()(); // 'add' or 'remove'
+  RealColumn get adjustedQty => real().nullable()();
+  RealColumn get previousStock => real().nullable()();
+  RealColumn get newStock => real().nullable()();
+  TextColumn get reason => text().nullable()();
+  TextColumn get createdDate => text().nullable()();
+}
+
 @DataClassName('PurchaseRecord')
 @TableIndex(name: 'idx_purchase_inventoryId', columns: {#inventoryId})
 @TableIndex(name: 'idx_purchase_datetime', columns: {#purchaseDateTime})

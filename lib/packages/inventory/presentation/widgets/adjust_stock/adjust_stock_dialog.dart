@@ -18,11 +18,17 @@ class AdjustStockDialog extends StatefulWidget {
 
 class _AdjustStockDialogState extends State<AdjustStockDialog> {
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _reasonController = TextEditingController();
+  final FocusNode _amountFocusNode = FocusNode();
+  final FocusNode _reasonFocusNode = FocusNode();
   final ValueNotifier<bool> _isIncrementNotifier = ValueNotifier<bool>(true);
 
   @override
   void dispose() {
     _amountController.dispose();
+    _reasonController.dispose();
+    _amountFocusNode.dispose();
+    _reasonFocusNode.dispose();
     _isIncrementNotifier.dispose();
     super.dispose();
   }
@@ -65,7 +71,7 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                     ) ??
                     'Current Stock: ${widget.item.currentStock?.toStringAsFixed(2)} ${widget.item.purchaseUnit}',
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               ListenableBuilder(
                 listenable: Listenable.merge([
                   _isIncrementNotifier,
@@ -126,9 +132,10 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                           },
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       TextField(
                         controller: _amountController,
+                        focusNode: _amountFocusNode,
                         decoration: InputDecoration(
                           labelText:
                               context.tr(
@@ -145,7 +152,30 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
                         ),
                         autofocus: true,
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
+                      TextField(
+                        controller: _reasonController,
+                        focusNode: _reasonFocusNode,
+                        decoration: InputDecoration(
+                          labelText:
+                              context.tr(
+                                shared
+                                    .LocaleKeys
+                                    .inventoryAdjustStockDailogReasonLabel,
+                                track: shared.TrackConstants.inventoryPageTrack,
+                              ) ??
+                              'Reason / Notes (Optional)',
+                          hintText:
+                              context.tr(
+                                shared
+                                    .LocaleKeys
+                                    .inventoryAdjustStockDailogReasonHint,
+                                track: shared.TrackConstants.inventoryPageTrack,
+                              ) ??
+                              'e.g., Recount, Waste, Damaged',
+                        ),
+                      ),
+                      const SizedBox(height: 16),
                       Text(
                         context.tr(
                               shared
@@ -188,27 +218,19 @@ class _AdjustStockDialogState extends State<AdjustStockDialog> {
           ]),
           builder: (context, child) {
             final amount = double.tryParse(_amountController.text) ?? 0;
-            double newStock = widget.item.currentStock ?? 0;
-
-            if (_isIncrementNotifier.value) {
-              newStock += amount;
-            } else {
-              newStock -= amount;
-              if (newStock < 0) newStock = 0;
-            }
 
             return ElevatedButton(
               onPressed: () {
-                if (newStock != widget.item.currentStock) {
-                  final updatedItem = widget.item.copyWith(
-                    currentStock: newStock,
-                    modifiedDate: DateTime.now().toIso8601String(),
-                  );
+                if (amount > 0) {
                   final navigator = Navigator.of(context);
                   final rootContext = context;
+                  final reason = _reasonController.text.trim();
                   context.read<InventoryBloc>().add(
-                    UpdateInventoryItem(
-                      updatedItem,
+                    AdjustInventoryStock(
+                      item: widget.item,
+                      adjustedQty: amount,
+                      isIncrement: _isIncrementNotifier.value,
+                      reason: reason.isNotEmpty ? reason : null,
                       onSuccess: () {
                         if (rootContext.mounted) {
                           shared.DialogUtils.showAutoDismissDialog(

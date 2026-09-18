@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart' as db;
 import '../models/inventory_item_model.dart';
+import '../models/stock_adjustment_model.dart';
 
 abstract class InventoryLocalDataSource {
   Future<List<InventoryItemModel>> getInventoryItems();
@@ -12,6 +13,17 @@ abstract class InventoryLocalDataSource {
   Future<int> insertInventoryItem(InventoryItemModel item);
   Future<bool> updateInventoryItem(InventoryItemModel item);
   Future<bool> deleteInventoryItem(int id);
+  Future<bool> adjustStock({
+    required int inventoryId,
+    required double adjustedQty,
+    required bool isIncrement,
+    String? reason,
+  });
+  Future<List<StockAdjustmentModel>> getStockAdjustments({
+    int? inventoryId,
+    String? fromDate,
+    String? toDate,
+  });
 }
 
 class InventoryLocalDataSourceImpl implements InventoryLocalDataSource {
@@ -63,5 +75,42 @@ class InventoryLocalDataSourceImpl implements InventoryLocalDataSource {
   Future<bool> deleteInventoryItem(int id) async {
     final deletedRows = await _inventoryDao.deleteInventory(id);
     return deletedRows > 0;
+  }
+
+  @override
+  Future<bool> adjustStock({
+    required int inventoryId,
+    required double adjustedQty,
+    required bool isIncrement,
+    String? reason,
+  }) async {
+    return await _inventoryDao.adjustInventoryStock(
+      inventoryId: inventoryId,
+      adjustedQty: adjustedQty,
+      isIncrement: isIncrement,
+      reason: reason,
+    );
+  }
+
+  @override
+  Future<List<StockAdjustmentModel>> getStockAdjustments({
+    int? inventoryId,
+    String? fromDate,
+    String? toDate,
+  }) async {
+    List<db.InventoryStockAdjustment> results;
+    if (inventoryId != null) {
+      results = await _inventoryDao.getStockAdjustmentsByInventoryId(
+        inventoryId,
+      );
+    } else if (fromDate != null && toDate != null) {
+      results = await _inventoryDao.getStockAdjustmentsBetweenDates(
+        fromDateTime: fromDate,
+        toDateTime: toDate,
+      );
+    } else {
+      results = await _inventoryDao.getAllStockAdjustments();
+    }
+    return results.map((e) => StockAdjustmentModel.fromData(e)).toList();
   }
 }

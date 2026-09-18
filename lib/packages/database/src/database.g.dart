@@ -4944,6 +4944,757 @@ class InventoryTableCompanion extends UpdateCompanion<InventoryItem> {
   }
 }
 
+class $InventoryStockAdjustmentsTableTable
+    extends InventoryStockAdjustmentsTable
+    with
+        TableInfo<
+          $InventoryStockAdjustmentsTableTable,
+          InventoryStockAdjustment
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InventoryStockAdjustmentsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _inventoryIdMeta = const VerificationMeta(
+    'inventoryId',
+  );
+  @override
+  late final GeneratedColumn<int> inventoryId = GeneratedColumn<int>(
+    'inventory_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES inventory (id)',
+    ),
+  );
+  static const VerificationMeta _inventoryNameMeta = const VerificationMeta(
+    'inventoryName',
+  );
+  @override
+  late final GeneratedColumn<String> inventoryName = GeneratedColumn<String>(
+    'inventory_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _adjustmentTypeMeta = const VerificationMeta(
+    'adjustmentType',
+  );
+  @override
+  late final GeneratedColumn<String> adjustmentType = GeneratedColumn<String>(
+    'adjustment_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _adjustedQtyMeta = const VerificationMeta(
+    'adjustedQty',
+  );
+  @override
+  late final GeneratedColumn<double> adjustedQty = GeneratedColumn<double>(
+    'adjusted_qty',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _previousStockMeta = const VerificationMeta(
+    'previousStock',
+  );
+  @override
+  late final GeneratedColumn<double> previousStock = GeneratedColumn<double>(
+    'previous_stock',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _newStockMeta = const VerificationMeta(
+    'newStock',
+  );
+  @override
+  late final GeneratedColumn<double> newStock = GeneratedColumn<double>(
+    'new_stock',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reasonMeta = const VerificationMeta('reason');
+  @override
+  late final GeneratedColumn<String> reason = GeneratedColumn<String>(
+    'reason',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdDateMeta = const VerificationMeta(
+    'createdDate',
+  );
+  @override
+  late final GeneratedColumn<String> createdDate = GeneratedColumn<String>(
+    'created_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    inventoryId,
+    inventoryName,
+    adjustmentType,
+    adjustedQty,
+    previousStock,
+    newStock,
+    reason,
+    createdDate,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'inventory_stock_adjustments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<InventoryStockAdjustment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('inventory_id')) {
+      context.handle(
+        _inventoryIdMeta,
+        inventoryId.isAcceptableOrUnknown(
+          data['inventory_id']!,
+          _inventoryIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('inventory_name')) {
+      context.handle(
+        _inventoryNameMeta,
+        inventoryName.isAcceptableOrUnknown(
+          data['inventory_name']!,
+          _inventoryNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('adjustment_type')) {
+      context.handle(
+        _adjustmentTypeMeta,
+        adjustmentType.isAcceptableOrUnknown(
+          data['adjustment_type']!,
+          _adjustmentTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('adjusted_qty')) {
+      context.handle(
+        _adjustedQtyMeta,
+        adjustedQty.isAcceptableOrUnknown(
+          data['adjusted_qty']!,
+          _adjustedQtyMeta,
+        ),
+      );
+    }
+    if (data.containsKey('previous_stock')) {
+      context.handle(
+        _previousStockMeta,
+        previousStock.isAcceptableOrUnknown(
+          data['previous_stock']!,
+          _previousStockMeta,
+        ),
+      );
+    }
+    if (data.containsKey('new_stock')) {
+      context.handle(
+        _newStockMeta,
+        newStock.isAcceptableOrUnknown(data['new_stock']!, _newStockMeta),
+      );
+    }
+    if (data.containsKey('reason')) {
+      context.handle(
+        _reasonMeta,
+        reason.isAcceptableOrUnknown(data['reason']!, _reasonMeta),
+      );
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(
+        _createdDateMeta,
+        createdDate.isAcceptableOrUnknown(
+          data['created_date']!,
+          _createdDateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  InventoryStockAdjustment map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InventoryStockAdjustment(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      inventoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}inventory_id'],
+      ),
+      inventoryName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}inventory_name'],
+      ),
+      adjustmentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}adjustment_type'],
+      ),
+      adjustedQty: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}adjusted_qty'],
+      ),
+      previousStock: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}previous_stock'],
+      ),
+      newStock: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}new_stock'],
+      ),
+      reason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reason'],
+      ),
+      createdDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_date'],
+      ),
+    );
+  }
+
+  @override
+  $InventoryStockAdjustmentsTableTable createAlias(String alias) {
+    return $InventoryStockAdjustmentsTableTable(attachedDatabase, alias);
+  }
+}
+
+class InventoryStockAdjustment extends DataClass
+    implements Insertable<InventoryStockAdjustment> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final int? inventoryId;
+  final String? inventoryName;
+  final String? adjustmentType;
+  final double? adjustedQty;
+  final double? previousStock;
+  final double? newStock;
+  final String? reason;
+  final String? createdDate;
+  const InventoryStockAdjustment({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    this.inventoryId,
+    this.inventoryName,
+    this.adjustmentType,
+    this.adjustedQty,
+    this.previousStock,
+    this.newStock,
+    this.reason,
+    this.createdDate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    if (!nullToAbsent || inventoryId != null) {
+      map['inventory_id'] = Variable<int>(inventoryId);
+    }
+    if (!nullToAbsent || inventoryName != null) {
+      map['inventory_name'] = Variable<String>(inventoryName);
+    }
+    if (!nullToAbsent || adjustmentType != null) {
+      map['adjustment_type'] = Variable<String>(adjustmentType);
+    }
+    if (!nullToAbsent || adjustedQty != null) {
+      map['adjusted_qty'] = Variable<double>(adjustedQty);
+    }
+    if (!nullToAbsent || previousStock != null) {
+      map['previous_stock'] = Variable<double>(previousStock);
+    }
+    if (!nullToAbsent || newStock != null) {
+      map['new_stock'] = Variable<double>(newStock);
+    }
+    if (!nullToAbsent || reason != null) {
+      map['reason'] = Variable<String>(reason);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<String>(createdDate);
+    }
+    return map;
+  }
+
+  InventoryStockAdjustmentsTableCompanion toCompanion(bool nullToAbsent) {
+    return InventoryStockAdjustmentsTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      inventoryId: inventoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(inventoryId),
+      inventoryName: inventoryName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(inventoryName),
+      adjustmentType: adjustmentType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(adjustmentType),
+      adjustedQty: adjustedQty == null && nullToAbsent
+          ? const Value.absent()
+          : Value(adjustedQty),
+      previousStock: previousStock == null && nullToAbsent
+          ? const Value.absent()
+          : Value(previousStock),
+      newStock: newStock == null && nullToAbsent
+          ? const Value.absent()
+          : Value(newStock),
+      reason: reason == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reason),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
+    );
+  }
+
+  factory InventoryStockAdjustment.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InventoryStockAdjustment(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      inventoryId: serializer.fromJson<int?>(json['inventoryId']),
+      inventoryName: serializer.fromJson<String?>(json['inventoryName']),
+      adjustmentType: serializer.fromJson<String?>(json['adjustmentType']),
+      adjustedQty: serializer.fromJson<double?>(json['adjustedQty']),
+      previousStock: serializer.fromJson<double?>(json['previousStock']),
+      newStock: serializer.fromJson<double?>(json['newStock']),
+      reason: serializer.fromJson<String?>(json['reason']),
+      createdDate: serializer.fromJson<String?>(json['createdDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'inventoryId': serializer.toJson<int?>(inventoryId),
+      'inventoryName': serializer.toJson<String?>(inventoryName),
+      'adjustmentType': serializer.toJson<String?>(adjustmentType),
+      'adjustedQty': serializer.toJson<double?>(adjustedQty),
+      'previousStock': serializer.toJson<double?>(previousStock),
+      'newStock': serializer.toJson<double?>(newStock),
+      'reason': serializer.toJson<String?>(reason),
+      'createdDate': serializer.toJson<String?>(createdDate),
+    };
+  }
+
+  InventoryStockAdjustment copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    Value<int?> inventoryId = const Value.absent(),
+    Value<String?> inventoryName = const Value.absent(),
+    Value<String?> adjustmentType = const Value.absent(),
+    Value<double?> adjustedQty = const Value.absent(),
+    Value<double?> previousStock = const Value.absent(),
+    Value<double?> newStock = const Value.absent(),
+    Value<String?> reason = const Value.absent(),
+    Value<String?> createdDate = const Value.absent(),
+  }) => InventoryStockAdjustment(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    inventoryId: inventoryId.present ? inventoryId.value : this.inventoryId,
+    inventoryName: inventoryName.present
+        ? inventoryName.value
+        : this.inventoryName,
+    adjustmentType: adjustmentType.present
+        ? adjustmentType.value
+        : this.adjustmentType,
+    adjustedQty: adjustedQty.present ? adjustedQty.value : this.adjustedQty,
+    previousStock: previousStock.present
+        ? previousStock.value
+        : this.previousStock,
+    newStock: newStock.present ? newStock.value : this.newStock,
+    reason: reason.present ? reason.value : this.reason,
+    createdDate: createdDate.present ? createdDate.value : this.createdDate,
+  );
+  InventoryStockAdjustment copyWithCompanion(
+    InventoryStockAdjustmentsTableCompanion data,
+  ) {
+    return InventoryStockAdjustment(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      inventoryId: data.inventoryId.present
+          ? data.inventoryId.value
+          : this.inventoryId,
+      inventoryName: data.inventoryName.present
+          ? data.inventoryName.value
+          : this.inventoryName,
+      adjustmentType: data.adjustmentType.present
+          ? data.adjustmentType.value
+          : this.adjustmentType,
+      adjustedQty: data.adjustedQty.present
+          ? data.adjustedQty.value
+          : this.adjustedQty,
+      previousStock: data.previousStock.present
+          ? data.previousStock.value
+          : this.previousStock,
+      newStock: data.newStock.present ? data.newStock.value : this.newStock,
+      reason: data.reason.present ? data.reason.value : this.reason,
+      createdDate: data.createdDate.present
+          ? data.createdDate.value
+          : this.createdDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InventoryStockAdjustment(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('inventoryId: $inventoryId, ')
+          ..write('inventoryName: $inventoryName, ')
+          ..write('adjustmentType: $adjustmentType, ')
+          ..write('adjustedQty: $adjustedQty, ')
+          ..write('previousStock: $previousStock, ')
+          ..write('newStock: $newStock, ')
+          ..write('reason: $reason, ')
+          ..write('createdDate: $createdDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    inventoryId,
+    inventoryName,
+    adjustmentType,
+    adjustedQty,
+    previousStock,
+    newStock,
+    reason,
+    createdDate,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InventoryStockAdjustment &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.inventoryId == this.inventoryId &&
+          other.inventoryName == this.inventoryName &&
+          other.adjustmentType == this.adjustmentType &&
+          other.adjustedQty == this.adjustedQty &&
+          other.previousStock == this.previousStock &&
+          other.newStock == this.newStock &&
+          other.reason == this.reason &&
+          other.createdDate == this.createdDate);
+}
+
+class InventoryStockAdjustmentsTableCompanion
+    extends UpdateCompanion<InventoryStockAdjustment> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<int?> inventoryId;
+  final Value<String?> inventoryName;
+  final Value<String?> adjustmentType;
+  final Value<double?> adjustedQty;
+  final Value<double?> previousStock;
+  final Value<double?> newStock;
+  final Value<String?> reason;
+  final Value<String?> createdDate;
+  const InventoryStockAdjustmentsTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.inventoryId = const Value.absent(),
+    this.inventoryName = const Value.absent(),
+    this.adjustmentType = const Value.absent(),
+    this.adjustedQty = const Value.absent(),
+    this.previousStock = const Value.absent(),
+    this.newStock = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.createdDate = const Value.absent(),
+  });
+  InventoryStockAdjustmentsTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.inventoryId = const Value.absent(),
+    this.inventoryName = const Value.absent(),
+    this.adjustmentType = const Value.absent(),
+    this.adjustedQty = const Value.absent(),
+    this.previousStock = const Value.absent(),
+    this.newStock = const Value.absent(),
+    this.reason = const Value.absent(),
+    this.createdDate = const Value.absent(),
+  });
+  static Insertable<InventoryStockAdjustment> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<int>? inventoryId,
+    Expression<String>? inventoryName,
+    Expression<String>? adjustmentType,
+    Expression<double>? adjustedQty,
+    Expression<double>? previousStock,
+    Expression<double>? newStock,
+    Expression<String>? reason,
+    Expression<String>? createdDate,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (inventoryId != null) 'inventory_id': inventoryId,
+      if (inventoryName != null) 'inventory_name': inventoryName,
+      if (adjustmentType != null) 'adjustment_type': adjustmentType,
+      if (adjustedQty != null) 'adjusted_qty': adjustedQty,
+      if (previousStock != null) 'previous_stock': previousStock,
+      if (newStock != null) 'new_stock': newStock,
+      if (reason != null) 'reason': reason,
+      if (createdDate != null) 'created_date': createdDate,
+    });
+  }
+
+  InventoryStockAdjustmentsTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<int?>? inventoryId,
+    Value<String?>? inventoryName,
+    Value<String?>? adjustmentType,
+    Value<double?>? adjustedQty,
+    Value<double?>? previousStock,
+    Value<double?>? newStock,
+    Value<String?>? reason,
+    Value<String?>? createdDate,
+  }) {
+    return InventoryStockAdjustmentsTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      inventoryId: inventoryId ?? this.inventoryId,
+      inventoryName: inventoryName ?? this.inventoryName,
+      adjustmentType: adjustmentType ?? this.adjustmentType,
+      adjustedQty: adjustedQty ?? this.adjustedQty,
+      previousStock: previousStock ?? this.previousStock,
+      newStock: newStock ?? this.newStock,
+      reason: reason ?? this.reason,
+      createdDate: createdDate ?? this.createdDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (inventoryId.present) {
+      map['inventory_id'] = Variable<int>(inventoryId.value);
+    }
+    if (inventoryName.present) {
+      map['inventory_name'] = Variable<String>(inventoryName.value);
+    }
+    if (adjustmentType.present) {
+      map['adjustment_type'] = Variable<String>(adjustmentType.value);
+    }
+    if (adjustedQty.present) {
+      map['adjusted_qty'] = Variable<double>(adjustedQty.value);
+    }
+    if (previousStock.present) {
+      map['previous_stock'] = Variable<double>(previousStock.value);
+    }
+    if (newStock.present) {
+      map['new_stock'] = Variable<double>(newStock.value);
+    }
+    if (reason.present) {
+      map['reason'] = Variable<String>(reason.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<String>(createdDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InventoryStockAdjustmentsTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('inventoryId: $inventoryId, ')
+          ..write('inventoryName: $inventoryName, ')
+          ..write('adjustmentType: $adjustmentType, ')
+          ..write('adjustedQty: $adjustedQty, ')
+          ..write('previousStock: $previousStock, ')
+          ..write('newStock: $newStock, ')
+          ..write('reason: $reason, ')
+          ..write('createdDate: $createdDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $PurchaseTableTable extends PurchaseTable
     with TableInfo<$PurchaseTableTable, PurchaseRecord> {
   @override
@@ -21445,6 +22196,8 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
   late final $MenuItemReviewsTableTable menuItemReviewsTable =
       $MenuItemReviewsTableTable(this);
   late final $InventoryTableTable inventoryTable = $InventoryTableTable(this);
+  late final $InventoryStockAdjustmentsTableTable
+  inventoryStockAdjustmentsTable = $InventoryStockAdjustmentsTableTable(this);
   late final $PurchaseTableTable purchaseTable = $PurchaseTableTable(this);
   late final $CustomersTableTable customersTable = $CustomersTableTable(this);
   late final $ReservationsTableTable reservationsTable =
@@ -21536,6 +22289,14 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
   late final Index idxInventoryName = Index(
     'idx_inventory_name',
     'CREATE INDEX idx_inventory_name ON inventory (name)',
+  );
+  late final Index idxStockAdjustmentInventoryId = Index(
+    'idx_stock_adjustment_inventoryId',
+    'CREATE INDEX idx_stock_adjustment_inventoryId ON inventory_stock_adjustments (inventory_id)',
+  );
+  late final Index idxStockAdjustmentDate = Index(
+    'idx_stock_adjustment_date',
+    'CREATE INDEX idx_stock_adjustment_date ON inventory_stock_adjustments (created_date)',
   );
   late final Index idxPurchaseInventoryId = Index(
     'idx_purchase_inventoryId',
@@ -21807,6 +22568,7 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     menuItemVariationsTable,
     menuItemReviewsTable,
     inventoryTable,
+    inventoryStockAdjustmentsTable,
     purchaseTable,
     customersTable,
     reservationsTable,
@@ -21842,6 +22604,8 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     idxMenuItemReviewsItemId,
     idxMenuItemReviewsCustomerId,
     idxInventoryName,
+    idxStockAdjustmentInventoryId,
+    idxStockAdjustmentDate,
     idxPurchaseInventoryId,
     idxPurchaseDatetime,
     idxCustomersName,
@@ -25066,6 +25830,31 @@ final class $$InventoryTableTableReferences
     super.$_typedResult,
   );
 
+  static MultiTypedResultKey<
+    $InventoryStockAdjustmentsTableTable,
+    List<InventoryStockAdjustment>
+  >
+  _inventoryStockAdjustmentsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.inventoryStockAdjustmentsTable,
+        aliasName: 'inventory__id__inventory_stock_adjustments__inventory_id',
+      );
+
+  $$InventoryStockAdjustmentsTableTableProcessedTableManager
+  get inventoryStockAdjustmentsTableRefs {
+    final manager = $$InventoryStockAdjustmentsTableTableTableManager(
+      $_db,
+      $_db.inventoryStockAdjustmentsTable,
+    ).filter((f) => f.inventoryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _inventoryStockAdjustmentsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
   static MultiTypedResultKey<$PurchaseTableTable, List<PurchaseRecord>>
   _purchaseTableRefsTable(_$CoozyDatabase db) => MultiTypedResultKey.fromTable(
     db.purchaseTable,
@@ -25148,6 +25937,35 @@ class $$InventoryTableTableFilterComposer
     column: $table.modifiedDate,
     builder: (column) => ColumnFilters(column),
   );
+
+  Expression<bool> inventoryStockAdjustmentsTableRefs(
+    Expression<bool> Function(
+      $$InventoryStockAdjustmentsTableTableFilterComposer f,
+    )
+    f,
+  ) {
+    final $$InventoryStockAdjustmentsTableTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.inventoryStockAdjustmentsTable,
+          getReferencedColumn: (t) => t.inventoryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$InventoryStockAdjustmentsTableTableFilterComposer(
+                $db: $db,
+                $table: $db.inventoryStockAdjustmentsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 
   Expression<bool> purchaseTableRefs(
     Expression<bool> Function($$PurchaseTableTableFilterComposer f) f,
@@ -25292,6 +26110,35 @@ class $$InventoryTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  Expression<T> inventoryStockAdjustmentsTableRefs<T extends Object>(
+    Expression<T> Function(
+      $$InventoryStockAdjustmentsTableTableAnnotationComposer a,
+    )
+    f,
+  ) {
+    final $$InventoryStockAdjustmentsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.inventoryStockAdjustmentsTable,
+          getReferencedColumn: (t) => t.inventoryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$InventoryStockAdjustmentsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.inventoryStockAdjustmentsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
   Expression<T> purchaseTableRefs<T extends Object>(
     Expression<T> Function($$PurchaseTableTableAnnotationComposer a) f,
   ) {
@@ -25331,7 +26178,10 @@ class $$InventoryTableTableTableManager
           $$InventoryTableTableUpdateCompanionBuilder,
           (InventoryItem, $$InventoryTableTableReferences),
           InventoryItem,
-          PrefetchHooks Function({bool purchaseTableRefs})
+          PrefetchHooks Function({
+            bool inventoryStockAdjustmentsTableRefs,
+            bool purchaseTableRefs,
+          })
         > {
   $$InventoryTableTableTableManager(
     _$CoozyDatabase db,
@@ -25406,40 +26256,67 @@ class $$InventoryTableTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({purchaseTableRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [
-                if (purchaseTableRefs) db.purchaseTable,
-              ],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (purchaseTableRefs)
-                    await $_getPrefetchedData<
-                      InventoryItem,
-                      $InventoryTableTable,
-                      PurchaseRecord
-                    >(
-                      currentTable: table,
-                      referencedTable: $$InventoryTableTableReferences
-                          ._purchaseTableRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$InventoryTableTableReferences(
-                            db,
-                            table,
-                            p0,
-                          ).purchaseTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.inventoryId == item.id,
-                          ),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({
+                inventoryStockAdjustmentsTableRefs = false,
+                purchaseTableRefs = false,
+              }) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (inventoryStockAdjustmentsTableRefs)
+                      db.inventoryStockAdjustmentsTable,
+                    if (purchaseTableRefs) db.purchaseTable,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (inventoryStockAdjustmentsTableRefs)
+                        await $_getPrefetchedData<
+                          InventoryItem,
+                          $InventoryTableTable,
+                          InventoryStockAdjustment
+                        >(
+                          currentTable: table,
+                          referencedTable: $$InventoryTableTableReferences
+                              ._inventoryStockAdjustmentsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$InventoryTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).inventoryStockAdjustmentsTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.inventoryId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (purchaseTableRefs)
+                        await $_getPrefetchedData<
+                          InventoryItem,
+                          $InventoryTableTable,
+                          PurchaseRecord
+                        >(
+                          currentTable: table,
+                          referencedTable: $$InventoryTableTableReferences
+                              ._purchaseTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$InventoryTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).purchaseTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.inventoryId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -25456,7 +26333,496 @@ typedef $$InventoryTableTableProcessedTableManager =
       $$InventoryTableTableUpdateCompanionBuilder,
       (InventoryItem, $$InventoryTableTableReferences),
       InventoryItem,
-      PrefetchHooks Function({bool purchaseTableRefs})
+      PrefetchHooks Function({
+        bool inventoryStockAdjustmentsTableRefs,
+        bool purchaseTableRefs,
+      })
+    >;
+typedef $$InventoryStockAdjustmentsTableTableCreateCompanionBuilder =
+    InventoryStockAdjustmentsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<int?> inventoryId,
+      Value<String?> inventoryName,
+      Value<String?> adjustmentType,
+      Value<double?> adjustedQty,
+      Value<double?> previousStock,
+      Value<double?> newStock,
+      Value<String?> reason,
+      Value<String?> createdDate,
+    });
+typedef $$InventoryStockAdjustmentsTableTableUpdateCompanionBuilder =
+    InventoryStockAdjustmentsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<int?> inventoryId,
+      Value<String?> inventoryName,
+      Value<String?> adjustmentType,
+      Value<double?> adjustedQty,
+      Value<double?> previousStock,
+      Value<double?> newStock,
+      Value<String?> reason,
+      Value<String?> createdDate,
+    });
+
+final class $$InventoryStockAdjustmentsTableTableReferences
+    extends
+        BaseReferences<
+          _$CoozyDatabase,
+          $InventoryStockAdjustmentsTableTable,
+          InventoryStockAdjustment
+        > {
+  $$InventoryStockAdjustmentsTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $InventoryTableTable _inventoryIdTable(_$CoozyDatabase db) => db
+      .inventoryTable
+      .createAlias('inventory_stock_adjustments__inventory_id__inventory__id');
+
+  $$InventoryTableTableProcessedTableManager? get inventoryId {
+    final $_column = $_itemColumn<int>('inventory_id');
+    if ($_column == null) return null;
+    final manager = $$InventoryTableTableTableManager(
+      $_db,
+      $_db.inventoryTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_inventoryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$InventoryStockAdjustmentsTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $InventoryStockAdjustmentsTableTable> {
+  $$InventoryStockAdjustmentsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get inventoryName => $composableBuilder(
+    column: $table.inventoryName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get adjustmentType => $composableBuilder(
+    column: $table.adjustmentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get adjustedQty => $composableBuilder(
+    column: $table.adjustedQty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get previousStock => $composableBuilder(
+    column: $table.previousStock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get newStock => $composableBuilder(
+    column: $table.newStock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$InventoryTableTableFilterComposer get inventoryId {
+    final $$InventoryTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableFilterComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InventoryStockAdjustmentsTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $InventoryStockAdjustmentsTableTable> {
+  $$InventoryStockAdjustmentsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get inventoryName => $composableBuilder(
+    column: $table.inventoryName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get adjustmentType => $composableBuilder(
+    column: $table.adjustmentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get adjustedQty => $composableBuilder(
+    column: $table.adjustedQty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get previousStock => $composableBuilder(
+    column: $table.previousStock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get newStock => $composableBuilder(
+    column: $table.newStock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reason => $composableBuilder(
+    column: $table.reason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$InventoryTableTableOrderingComposer get inventoryId {
+    final $$InventoryTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InventoryStockAdjustmentsTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $InventoryStockAdjustmentsTableTable> {
+  $$InventoryStockAdjustmentsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get inventoryName => $composableBuilder(
+    column: $table.inventoryName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get adjustmentType => $composableBuilder(
+    column: $table.adjustmentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get adjustedQty => $composableBuilder(
+    column: $table.adjustedQty,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get previousStock => $composableBuilder(
+    column: $table.previousStock,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get newStock =>
+      $composableBuilder(column: $table.newStock, builder: (column) => column);
+
+  GeneratedColumn<String> get reason =>
+      $composableBuilder(column: $table.reason, builder: (column) => column);
+
+  GeneratedColumn<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => column,
+  );
+
+  $$InventoryTableTableAnnotationComposer get inventoryId {
+    final $$InventoryTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InventoryStockAdjustmentsTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $InventoryStockAdjustmentsTableTable,
+          InventoryStockAdjustment,
+          $$InventoryStockAdjustmentsTableTableFilterComposer,
+          $$InventoryStockAdjustmentsTableTableOrderingComposer,
+          $$InventoryStockAdjustmentsTableTableAnnotationComposer,
+          $$InventoryStockAdjustmentsTableTableCreateCompanionBuilder,
+          $$InventoryStockAdjustmentsTableTableUpdateCompanionBuilder,
+          (
+            InventoryStockAdjustment,
+            $$InventoryStockAdjustmentsTableTableReferences,
+          ),
+          InventoryStockAdjustment,
+          PrefetchHooks Function({bool inventoryId})
+        > {
+  $$InventoryStockAdjustmentsTableTableTableManager(
+    _$CoozyDatabase db,
+    $InventoryStockAdjustmentsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$InventoryStockAdjustmentsTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$InventoryStockAdjustmentsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$InventoryStockAdjustmentsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<int?> inventoryId = const Value.absent(),
+                Value<String?> inventoryName = const Value.absent(),
+                Value<String?> adjustmentType = const Value.absent(),
+                Value<double?> adjustedQty = const Value.absent(),
+                Value<double?> previousStock = const Value.absent(),
+                Value<double?> newStock = const Value.absent(),
+                Value<String?> reason = const Value.absent(),
+                Value<String?> createdDate = const Value.absent(),
+              }) => InventoryStockAdjustmentsTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                inventoryId: inventoryId,
+                inventoryName: inventoryName,
+                adjustmentType: adjustmentType,
+                adjustedQty: adjustedQty,
+                previousStock: previousStock,
+                newStock: newStock,
+                reason: reason,
+                createdDate: createdDate,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<int?> inventoryId = const Value.absent(),
+                Value<String?> inventoryName = const Value.absent(),
+                Value<String?> adjustmentType = const Value.absent(),
+                Value<double?> adjustedQty = const Value.absent(),
+                Value<double?> previousStock = const Value.absent(),
+                Value<double?> newStock = const Value.absent(),
+                Value<String?> reason = const Value.absent(),
+                Value<String?> createdDate = const Value.absent(),
+              }) => InventoryStockAdjustmentsTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                inventoryId: inventoryId,
+                inventoryName: inventoryName,
+                adjustmentType: adjustmentType,
+                adjustedQty: adjustedQty,
+                previousStock: previousStock,
+                newStock: newStock,
+                reason: reason,
+                createdDate: createdDate,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $InventoryStockAdjustmentsTableTable,
+                    InventoryStockAdjustment
+                  >(table),
+                  $$InventoryStockAdjustmentsTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({inventoryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (inventoryId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.inventoryId,
+                                referencedTable:
+                                    $$InventoryStockAdjustmentsTableTableReferences
+                                        ._inventoryIdTable(db),
+                                referencedColumn:
+                                    $$InventoryStockAdjustmentsTableTableReferences
+                                        ._inventoryIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$InventoryStockAdjustmentsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $InventoryStockAdjustmentsTableTable,
+      InventoryStockAdjustment,
+      $$InventoryStockAdjustmentsTableTableFilterComposer,
+      $$InventoryStockAdjustmentsTableTableOrderingComposer,
+      $$InventoryStockAdjustmentsTableTableAnnotationComposer,
+      $$InventoryStockAdjustmentsTableTableCreateCompanionBuilder,
+      $$InventoryStockAdjustmentsTableTableUpdateCompanionBuilder,
+      (
+        InventoryStockAdjustment,
+        $$InventoryStockAdjustmentsTableTableReferences,
+      ),
+      InventoryStockAdjustment,
+      PrefetchHooks Function({bool inventoryId})
     >;
 typedef $$PurchaseTableTableCreateCompanionBuilder =
     PurchaseTableCompanion Function({
@@ -36923,6 +38289,12 @@ class $CoozyDatabaseManager {
       $$MenuItemReviewsTableTableTableManager(_db, _db.menuItemReviewsTable);
   $$InventoryTableTableTableManager get inventoryTable =>
       $$InventoryTableTableTableManager(_db, _db.inventoryTable);
+  $$InventoryStockAdjustmentsTableTableTableManager
+  get inventoryStockAdjustmentsTable =>
+      $$InventoryStockAdjustmentsTableTableTableManager(
+        _db,
+        _db.inventoryStockAdjustmentsTable,
+      );
   $$PurchaseTableTableTableManager get purchaseTable =>
       $$PurchaseTableTableTableManager(_db, _db.purchaseTable);
   $$CustomersTableTableTableManager get customersTable =>

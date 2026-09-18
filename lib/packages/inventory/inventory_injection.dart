@@ -24,6 +24,8 @@ void registerInventoryDependencies(GetIt sl) {
   sl.registerLazySingleton(() => AddInventoryItemUseCase(sl()));
   sl.registerLazySingleton(() => UpdateInventoryItemUseCase(sl()));
   sl.registerLazySingleton(() => DeleteInventoryItemUseCase(sl()));
+  sl.registerLazySingleton(() => AdjustInventoryStockUseCase(sl()));
+  sl.registerLazySingleton(() => GetStockAdjustmentsUseCase(sl()));
 
   // Bloc
   sl.registerFactory(
@@ -32,6 +34,7 @@ void registerInventoryDependencies(GetIt sl) {
       addInventoryItemUseCase: sl(),
       updateInventoryItemUseCase: sl(),
       deleteInventoryItemUseCase: sl(),
+      adjustInventoryStockUseCase: sl(),
     ),
   );
 

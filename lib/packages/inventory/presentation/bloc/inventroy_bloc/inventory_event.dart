@@ -41,3 +41,24 @@ class DeleteInventoryItem extends InventoryEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class AdjustInventoryStock extends InventoryEvent {
+  final InventoryItem item;
+  final double adjustedQty;
+  final bool isIncrement;
+  final String? reason;
+  final VoidCallback? onSuccess;
+  final void Function(String)? onError;
+
+  const AdjustInventoryStock({
+    required this.item,
+    required this.adjustedQty,
+    required this.isIncrement,
+    this.reason,
+    this.onSuccess,
+    this.onError,
+  });
+
+  @override
+  List<Object?> get props => [item, adjustedQty, isIncrement, reason];
+}

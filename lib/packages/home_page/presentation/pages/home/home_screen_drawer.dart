@@ -51,12 +51,17 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(color: Colors.blue),
+          DrawerHeader(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+            ),
             child: Center(
               child: Text(
                 shared.AppConfig.appName,
-                style: TextStyle(color: Colors.white, fontSize: 24),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontSize: 24,
+                ),
               ),
             ),
           ),
@@ -114,19 +119,7 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         core.AppRoutePath.tableInfoScreenRoute,
                       ),
                     ),
-                    _buildDrawerItem(
-                      context,
-                      icon: Icons.kitchen_outlined,
-                      title:
-                          context.tr(
-                            shared.LocaleKeys.kitchenDisplaySystem,
-                            track: shared.TrackConstants.homePageTrack,
-                          ) ??
-                          'Kitchen Display System',
 
-                      isSelected: false,
-                      onTap: () {},
-                    ),
                     _buildDrawerItem(
                       context,
                       icon: Icons.category,
@@ -226,6 +219,26 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                     ),
                     _buildDrawerItem(
                       context,
+                      icon: Icons.kitchen_outlined,
+                      title:
+                          context.tr(
+                            shared
+                                .LocaleKeys
+                                .homeDrawerKitchenDisplaySystemLabel,
+                            track: shared.TrackConstants.homePageTrack,
+                          ) ??
+                          context.tr(
+                            shared.LocaleKeys.kitchenDisplaySystem,
+                            track: shared.TrackConstants.orderPageTrack,
+                          ) ??
+                          'Kitchen Display System',
+
+                      isSelected: false,
+                      onTap: () {},
+                    ),
+
+                    _buildDrawerItem(
+                      context,
                       icon: Icons.calendar_today,
                       title:
                           context.tr(
@@ -289,20 +302,34 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                     ),
                     _buildDrawerItem(
                       context,
-                      icon: Icons.menu_book,
+                      icon: Icons.analytics_outlined,
                       title:
                           context.tr(
-                            shared.LocaleKeys.homeDrawerSalesLabel,
+                            shared
+                                .LocaleKeys
+                                .homeDrawerReportsAndAnalyticsLabel,
                             track: shared.TrackConstants.homePageTrack,
                           ) ??
-                          'Sales',
-                      isSelected: _isRouteActive(currentLocation, '/sales'),
-                      onTap: () => HomeScreenDrawerActions.showComingSoon(
-                        context,
-                        'Sales Screen Coming Soon!',
-                      ),
+                          'Reports & Analytics',
+                      isSelected: false,
+                      onTap: () {},
                     ),
 
+                    // _buildDrawerItem(
+                    //   context,
+                    //   icon: Icons.menu_book,
+                    //   title:
+                    //       context.tr(
+                    //         shared.LocaleKeys.homeDrawerSalesLabel,
+                    //         track: shared.TrackConstants.homePageTrack,
+                    //       ) ??
+                    //       'Sales',
+                    //   isSelected: _isRouteActive(currentLocation, '/sales'),
+                    //   onTap: () => HomeScreenDrawerActions.showComingSoon(
+                    //     context,
+                    //     'Sales Screen Coming Soon!',
+                    //   ),
+                    // ),
                     _buildDrawerItem(
                       context,
                       icon: Icons.menu_book,
@@ -321,6 +348,18 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         currentLocation,
                         core.AppRoutePath.recipesListScreenRoute,
                       ),
+                    ),
+                    _buildDrawerItem(
+                      context,
+                      icon: Icons.blinds_outlined,
+                      title:
+                          context.tr(
+                            shared.LocaleKeys.homeDrawerExpenditureLabel,
+                            track: shared.TrackConstants.homePageTrack,
+                          ) ??
+                          'Expenditure',
+                      isSelected: false,
+                      onTap: () {},
                     ),
 
                     _buildDrawerItem(
@@ -402,12 +441,21 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
             ),
           ),
 
-          Divider(color: Colors.grey.shade300, thickness: 1),
+          Divider(
+            color: Theme.of(context).dividerColor,
+            thickness: 1,
+            height: 1,
+          ),
           ValueListenableBuilder<PackageInfo>(
                 valueListenable: _packageInfoNotifier,
                 builder: (context, packageInfo, _) {
                   return Text(
-                    'Version ${packageInfo.version}',
+                    context.tr(
+                          shared.LocaleKeys.homeDrawerVersionLabel,
+                          params: {'version': packageInfo.version},
+                          track: shared.TrackConstants.homePageTrack,
+                        ) ??
+                        'Version ${packageInfo.version}',
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium,
                   );

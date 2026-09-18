@@ -1,4 +1,5 @@
 import '../entities/inventory_item.dart';
+import '../entities/stock_adjustment.dart';
 import '../repositories/inventory_repository.dart';
 
 class GetInventoryItemsUseCase {
@@ -47,5 +48,41 @@ class DeleteInventoryItemUseCase {
 
   Future<bool> call(int id) async {
     return await repository.deleteInventoryItem(id);
+  }
+}
+
+class AdjustInventoryStockUseCase {
+  final InventoryRepository repository;
+  AdjustInventoryStockUseCase(this.repository);
+
+  Future<bool> call({
+    required int inventoryId,
+    required double adjustedQty,
+    required bool isIncrement,
+    String? reason,
+  }) async {
+    return await repository.adjustStock(
+      inventoryId: inventoryId,
+      adjustedQty: adjustedQty,
+      isIncrement: isIncrement,
+      reason: reason,
+    );
+  }
+}
+
+class GetStockAdjustmentsUseCase {
+  final InventoryRepository repository;
+  GetStockAdjustmentsUseCase(this.repository);
+
+  Future<List<StockAdjustment>> call({
+    int? inventoryId,
+    String? fromDate,
+    String? toDate,
+  }) async {
+    return await repository.getStockAdjustments(
+      inventoryId: inventoryId,
+      fromDate: fromDate,
+      toDate: toDate,
+    );
   }
 }

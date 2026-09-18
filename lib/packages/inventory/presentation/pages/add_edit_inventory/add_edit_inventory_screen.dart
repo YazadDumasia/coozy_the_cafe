@@ -207,6 +207,8 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
             TextFormField(
               controller: _currentStockController,
               focusNode: _currentStockFocusNode,
+              enabled: widget.item == null,
+              readOnly: widget.item != null,
               textInputAction: TextInputAction.done,
               onFieldSubmitted: (_) => _currentStockFocusNode.unfocus(),
               decoration: InputDecoration(
@@ -216,9 +218,24 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
                       track: shared.TrackConstants.inventoryPageTrack,
                     ) ??
                     'Current Stock',
+                helperText: widget.item != null
+                    ? (context.tr(
+                            shared
+                                .LocaleKeys
+                                .inventoryAddEditDailogCurrentStockDisabledHint,
+                            track: shared.TrackConstants.inventoryPageTrack,
+                          ) ??
+                          "Stock cannot be edited directly. Use 'Adjust Stock' from the menu.")
+                    : null,
+                helperMaxLines: 2,
               ),
-              keyboardType: TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               validator: (val) {
+                if (widget.item != null) {
+                  return null;
+                }
                 if (val == null || val.isEmpty) {
                   return context.tr(
                         shared.LocaleKeys.commonRequired,
@@ -234,7 +251,9 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
                 }
                 return null;
               },
-              onSaved: (val) => _currentStock = double.parse(val!),
+              onSaved: (val) => _currentStock =
+                  double.tryParse(val ?? '') ??
+                  (widget.item?.currentStock ?? 0.0),
             ).inExpandedRow(),
             const SizedBox(height: 16),
             ValueListenableBuilder<bool>(

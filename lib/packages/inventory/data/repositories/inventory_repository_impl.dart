@@ -1,4 +1,5 @@
 import '../../domain/entities/inventory_item.dart';
+import '../../domain/entities/stock_adjustment.dart';
 import '../../domain/repositories/inventory_repository.dart';
 import '../datasources/inventory_local_data_source.dart';
 import '../models/inventory_item_model.dart';
@@ -48,5 +49,33 @@ class InventoryRepositoryImpl implements InventoryRepository {
   @override
   Future<bool> deleteInventoryItem(int id) async {
     return await localDataSource.deleteInventoryItem(id);
+  }
+
+  @override
+  Future<bool> adjustStock({
+    required int inventoryId,
+    required double adjustedQty,
+    required bool isIncrement,
+    String? reason,
+  }) async {
+    return await localDataSource.adjustStock(
+      inventoryId: inventoryId,
+      adjustedQty: adjustedQty,
+      isIncrement: isIncrement,
+      reason: reason,
+    );
+  }
+
+  @override
+  Future<List<StockAdjustment>> getStockAdjustments({
+    int? inventoryId,
+    String? fromDate,
+    String? toDate,
+  }) async {
+    return await localDataSource.getStockAdjustments(
+      inventoryId: inventoryId,
+      fromDate: fromDate,
+      toDate: toDate,
+    );
   }
 }

@@ -6,6 +6,8 @@ part of 'inventory_dao.dart';
 mixin _$InventoryDaoMixin on DatabaseAccessor<CoozyDatabase> {
   $InventoryTableTable get inventoryTable => attachedDatabase.inventoryTable;
   $PurchaseTableTable get purchaseTable => attachedDatabase.purchaseTable;
+  $InventoryStockAdjustmentsTableTable get inventoryStockAdjustmentsTable =>
+      attachedDatabase.inventoryStockAdjustmentsTable;
   InventoryDaoManager get managers => InventoryDaoManager(this);
 }
 
@@ -19,4 +21,10 @@ class InventoryDaoManager {
       );
   $$PurchaseTableTableTableManager get purchaseTable =>
       $$PurchaseTableTableTableManager(_db.attachedDatabase, _db.purchaseTable);
+  $$InventoryStockAdjustmentsTableTableTableManager
+  get inventoryStockAdjustmentsTable =>
+      $$InventoryStockAdjustmentsTableTableTableManager(
+        _db.attachedDatabase,
+        _db.inventoryStockAdjustmentsTable,
+      );
 }

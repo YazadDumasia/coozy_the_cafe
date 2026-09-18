@@ -801,6 +801,12 @@ abstract class LocaleKeys {
       'inventory_picker_page_current_stock';
   static String inventoryAddEditDailogMustBeGreaterThanorZero =
       'inventory_add_edit_dailog_must_be_greater_than_or_zero';
+  static String inventoryAddEditDailogCurrentStockDisabledHint =
+      'inventory_add_edit_dailog_current_stock_disabled_hint';
+  static String inventoryAdjustStockDailogReasonHint =
+      'inventory_adjust_stock_dailog_reason_hint';
+  static String inventoryAdjustStockDailogReasonLabel =
+      'inventory_adjust_stock_dailog_reason_label';
   // purchase_page
   static String purchasePurchaseAddedSuccessfullyAndStockUp =
       'purchase_purchase_added_successfully_and_stock_up';
@@ -825,6 +831,8 @@ abstract class LocaleKeys {
   static String purchaseEditStock = 'purchase_edit_stock';
   static String purchaseIncrement = 'purchase_increment';
   static String purchaseDecrement = 'purchase_decrement';
+  static String purchaseDecrementExceedsStockError =
+      'purchase_decrement_exceeds_stock_error';
   static String purchaseDate = 'purchase_date';
   static String purchaseRecordAddedSuccessfully =
       'purchase_record_added_successfully';
@@ -872,6 +880,12 @@ abstract class LocaleKeys {
   static String homeDrawerReservationsLabel = 'home_drawer_reservations_label';
   static String homeDrawerOrderListLabel = 'home_drawer_order_list_label';
   static String homeDrawerInvoicesLabel = 'home_drawer_invoices_label';
+  static String homeDrawerKitchenDisplaySystemLabel =
+      'home_drawer_kitchen_display_system_label';
+  static String homeDrawerReportsAndAnalyticsLabel =
+      'home_drawer_reports_and_analytics_label';
+  static String homeDrawerExpenditureLabel = 'home_drawer_expenditure_label';
+  static String homeDrawerVersionLabel = 'home_drawer_version_label';
   static String homeDrawerSalesLabel = 'home_drawer_sales_label';
   static String homeDrawerLicenseLabel = 'home_drawer_license_label';
   static String homePageBackup = 'home_page_backup';

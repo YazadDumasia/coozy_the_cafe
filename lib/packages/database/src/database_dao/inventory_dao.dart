@@ -4,7 +4,9 @@ import '../tables.dart';
 
 part 'inventory_dao.g.dart';
 
-@DriftAccessor(tables: [InventoryTable, PurchaseTable])
+@DriftAccessor(
+  tables: [InventoryTable, PurchaseTable, InventoryStockAdjustmentsTable],
+)
 class InventoryDao extends DatabaseAccessor<CoozyDatabase>
     with _$InventoryDaoMixin {
   InventoryDao(super.db);
@@ -457,5 +459,93 @@ class InventoryDao extends DatabaseAccessor<CoozyDatabase>
       purchaseTable.purchaseDateTime.isBetweenValues(fromDateTime, toDateTime),
     );
     return await query.map((row) => row.read(totalExp)).getSingle() ?? 0.0;
+  }
+
+  // ---- STOCK ADJUSTMENTS ----
+
+  Future<int> insertStockAdjustment(
+    InventoryStockAdjustmentsTableCompanion adjustment,
+  ) async {
+    return await into(inventoryStockAdjustmentsTable).insert(adjustment);
+  }
+
+  Future<bool> adjustInventoryStock({
+    required int inventoryId,
+    required double adjustedQty,
+    required bool isIncrement,
+    String? reason,
+  }) async {
+    return await transaction(() async {
+      final item = await (select(
+        inventoryTable,
+      )..where((t) => t.id.equals(inventoryId))).getSingleOrNull();
+      if (item == null) return false;
+
+      final previousStock = item.currentStock ?? 0.0;
+      double newStock = isIncrement
+          ? (previousStock + adjustedQty)
+          : (previousStock - adjustedQty);
+      if (newStock < 0) newStock = 0;
+
+      final now = DateTime.now().toIso8601String();
+
+      await (update(
+        inventoryTable,
+      )..where((t) => t.id.equals(inventoryId))).write(
+        InventoryTableCompanion(
+          currentStock: Value(newStock),
+          modifiedDate: Value(now),
+        ),
+      );
+
+      await into(inventoryStockAdjustmentsTable).insert(
+        InventoryStockAdjustmentsTableCompanion(
+          inventoryId: Value(inventoryId),
+          inventoryName: Value(item.name),
+          adjustmentType: Value(isIncrement ? 'add' : 'remove'),
+          adjustedQty: Value(adjustedQty),
+          previousStock: Value(previousStock),
+          newStock: Value(newStock),
+          reason: Value(reason),
+          createdDate: Value(now),
+        ),
+      );
+
+      return true;
+    });
+  }
+
+  Future<List<InventoryStockAdjustment>> getAllStockAdjustments() async {
+    final query = select(inventoryStockAdjustmentsTable);
+    return await (query..orderBy([
+          (t) =>
+              OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc),
+        ]))
+        .get();
+  }
+
+  Future<List<InventoryStockAdjustment>> getStockAdjustmentsByInventoryId(
+    int inventoryId,
+  ) async {
+    final query = select(inventoryStockAdjustmentsTable)
+      ..where((t) => t.inventoryId.equals(inventoryId));
+    return await (query..orderBy([
+          (t) =>
+              OrderingTerm(expression: t.createdDate, mode: OrderingMode.desc),
+        ]))
+        .get();
+  }
+
+  Future<List<InventoryStockAdjustment>> getStockAdjustmentsBetweenDates({
+    required String fromDateTime,
+    required String toDateTime,
+  }) async {
+    final query = select(inventoryStockAdjustmentsTable)
+      ..where((t) => t.createdDate.isBetweenValues(fromDateTime, toDateTime));
+    return await (query..orderBy([
+          (t) =>
+              OrderingTerm(expression: t.createdDate, mode: OrderingMode.asc),
+        ]))
+        .get();
   }
 }

@@ -25,6 +25,8 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _qtyController;
   late TextEditingController _priceController;
+  late FocusNode _qtyFocusNode;
+  late FocusNode _priceFocusNode;
   late final ValueNotifier<DateTime> _selectedDateNotifier;
   final ValueNotifier<bool> _isIncrementNotifier = ValueNotifier(true);
 
@@ -45,6 +47,8 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
     _priceController = TextEditingController(
       text: record != null ? record.purchasePrice?.toString() : '',
     );
+    _qtyFocusNode = FocusNode();
+    _priceFocusNode = FocusNode();
 
     _selectedDateNotifier = ValueNotifier(
       record != null && record.purchaseDateTime != null
@@ -57,6 +61,8 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
   void dispose() {
     _qtyController.dispose();
     _priceController.dispose();
+    _qtyFocusNode.dispose();
+    _priceFocusNode.dispose();
     _selectedDateNotifier.dispose();
     _isIncrementNotifier.dispose();
     super.dispose();
@@ -110,8 +116,30 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
 
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
+      final isIncrement = _isIncrementNotifier.value;
+      final finalQty = _calculateFinalQty(_qtyController.text, isIncrement);
+
+      if (!isIncrement && finalQty < 0) {
+        final currentStock = widget.item.currentStock ?? 0.0;
+        final purchaseUnit = widget.item.purchaseUnit ?? 'units';
+        shared.SnackBarUtils.showError(
+          context,
+          message:
+              context.tr(
+                shared.LocaleKeys.purchaseDecrementExceedsStockError,
+                track: shared.TrackConstants.purchasePageTrack,
+                params: {
+                  'currentStock': currentStock.toStringAsFixed(2),
+                  'purchaseUnit': purchaseUnit,
+                },
+              ) ??
+              'Decrement quantity cannot exceed current stock ($currentStock $purchaseUnit). Final stock cannot be negative.',
+        );
+        return;
+      }
+
       final rawQty = double.parse(_qtyController.text);
-      final qty = _isIncrementNotifier.value ? rawQty : -rawQty;
+      final qty = isIncrement ? rawQty : -rawQty;
       final price = double.parse(_priceController.text);
 
       final record = PurchaseRecord(
@@ -133,10 +161,7 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
             widget.existingRecord?.createdDate ??
             DateTime.now().toIso8601String(),
         modifiedDate: DateTime.now().toIso8601String(),
-        currentStock: _calculateFinalQty(
-          _qtyController.text,
-          _isIncrementNotifier.value,
-        ),
+        currentStock: finalQty,
       );
 
       Navigator.pop(context, record);
@@ -214,6 +239,7 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
               SizedBox(height: 16),
               TextFormField(
                 controller: _qtyController,
+                focusNode: _qtyFocusNode,
                 decoration: InputDecoration(
                   labelText:
                       context.tr(
@@ -268,6 +294,7 @@ class _PurchaseFormBottomSheetState extends State<PurchaseFormBottomSheet> {
               SizedBox(height: 16),
               TextFormField(
                 controller: _priceController,
+                focusNode: _priceFocusNode,
                 decoration: InputDecoration(
                   labelText:
                       context.tr(

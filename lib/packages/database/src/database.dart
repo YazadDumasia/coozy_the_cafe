@@ -35,6 +35,7 @@ part 'database.g.dart';
     MenuItemVariationsTable,
     MenuItemReviewsTable,
     InventoryTable,
+    InventoryStockAdjustmentsTable,
     PurchaseTable,
     CustomersTable,
     OrdersTable,
@@ -96,6 +97,28 @@ class CoozyDatabase extends _$CoozyDatabase {
       }
       await customStatement(
         'CREATE INDEX IF NOT EXISTS idx_reservations_pagination ON reservations (reservation_date_time DESC, id DESC);',
+      );
+      await customStatement('''
+        CREATE TABLE IF NOT EXISTS inventory_stock_adjustments (
+          created_by INTEGER,
+          updated_by INTEGER,
+          id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          hash_id TEXT NOT NULL UNIQUE,
+          inventory_id INTEGER REFERENCES inventory (id),
+          inventory_name TEXT,
+          adjustment_type TEXT,
+          adjusted_qty REAL,
+          previous_stock REAL,
+          new_stock REAL,
+          reason TEXT,
+          created_date TEXT
+        );
+      ''');
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_stock_adjustment_inventoryId ON inventory_stock_adjustments (inventory_id);',
+      );
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_stock_adjustment_date ON inventory_stock_adjustments (created_date);',
       );
       await batch((batch) {
         for (final p in db_constants.DbConstants.allPermissions) {
