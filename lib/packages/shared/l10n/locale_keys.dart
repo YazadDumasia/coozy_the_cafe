@@ -1441,4 +1441,95 @@ abstract class LocaleKeys {
       'expenditure_category_hint_income';
   static const String expenditureLoadMore = 'expenditure_load_more';
   static const String expenditureLoadingEarlier = 'expenditure_loading_earlier';
+
+  // reports
+  static const String reportPageReportsAndAnalytics =
+      'report_page_reports_and_analytics';
+  static const String reportPageAvgOrderValue = 'report_page_avg_order_value';
+  static const String reportPageCategoryDailySalesTitle =
+      'report_page_category_daily_sales_title';
+  static const String reportPageCategoryDailySalesSubtitle =
+      'report_page_category_daily_sales_subtitle';
+  static const String reportPageCategoryMonthlySalesTitle =
+      'report_page_category_monthly_sales_title';
+  static const String reportPageCategoryMonthlySalesSubtitle =
+      'report_page_category_monthly_sales_subtitle';
+  static const String reportPageCategoryTopItemsTitle =
+      'report_page_category_top_items_title';
+  static const String reportPageCategoryTopItemsSubtitle =
+      'report_page_category_top_items_subtitle';
+  static const String reportPageCategoryPaymentModesTitle =
+      'report_page_category_payment_modes_title';
+  static const String reportPageCategoryPaymentModesSubtitle =
+      'report_page_category_payment_modes_subtitle';
+  static const String reportPageCategoryDashboardTitle =
+      'report_page_category_dashboard_title';
+  static const String reportPageCategoryDashboardSubtitle =
+      'report_page_category_dashboard_subtitle';
+  static const String reportPageCategoryInventoryStockTitle =
+      'report_page_category_inventory_stock_title';
+  static const String reportPageCategoryInventoryStockSubtitle =
+      'report_page_category_inventory_stock_subtitle';
+  static const String reportPageCategoryPurchasesTitle =
+      'report_page_category_purchases_title';
+  static const String reportPageCategoryPurchasesSubtitle =
+      'report_page_category_purchases_subtitle';
+  static const String reportPageCategoryExpenditureTitle =
+      'report_page_category_expenditure_title';
+  static const String reportPageCategoryExpenditureSubtitle =
+      'report_page_category_expenditure_subtitle';
+  static const String reportPageCategoryMenuItemSalesTitle =
+      'report_page_category_menu_item_sales_title';
+  static const String reportPageCategoryMenuItemSalesSubtitle =
+      'report_page_category_menu_item_sales_subtitle';
+  static const String reportPageChooseReportSubtitle =
+      'report_page_choose_report_subtitle';
+  static const String reportPageColumnAmount = 'report_page_column_amount';
+  static const String reportPageColumnCategory = 'report_page_column_category';
+  static const String reportPageColumnCost = 'report_page_column_cost';
+  static const String reportPageColumnDate = 'report_page_column_date';
+  static const String reportPageColumnInvoices = 'report_page_column_invoices';
+  static const String reportPageColumnItemName = 'report_page_column_item_name';
+  static const String reportPageColumnMargin = 'report_page_column_margin';
+  static const String reportPageColumnMonth = 'report_page_column_month';
+  static const String reportPageColumnNetSales = 'report_page_column_net_sales';
+  static const String reportPageColumnPaymentMethod =
+      'report_page_column_payment_method';
+  static const String reportPageColumnProfit = 'report_page_column_profit';
+  static const String reportPageColumnQuantity = 'report_page_column_quantity';
+  static const String reportPageColumnStock = 'report_page_column_stock';
+  static const String reportPageColumnTax = 'report_page_column_tax';
+  static const String reportPageColumnTotalSales =
+      'report_page_column_total_sales';
+  static const String reportPageColumnTransactions =
+      'report_page_column_transactions';
+  static const String reportPageColumnType = 'report_page_column_type';
+  static const String reportPageColumnUnit = 'report_page_column_unit';
+  static const String reportPageEmptyData = 'report_page_empty_data';
+  static const String reportPageExportAsCsv = 'report_page_export_as_csv';
+  static const String reportPageExportAsExcel = 'report_page_export_as_excel';
+  static const String reportPageExportAsPdf = 'report_page_export_as_pdf';
+  static const String reportPageExportButton = 'report_page_export_button';
+  static const String reportPageExportFailed = 'report_page_export_failed';
+  static const String reportPageExportSuccess = 'report_page_export_success';
+  static const String reportPageGrossSales = 'report_page_gross_sales';
+  static const String reportPageNetTotal = 'report_page_net_total';
+  static const String reportPagePresetCustom = 'report_page_preset_custom';
+  static const String reportPagePresetLast30Days =
+      'report_page_preset_last_30_days';
+  static const String reportPagePresetThisMonth =
+      'report_page_preset_this_month';
+  static const String reportPagePresetThisWeek = 'report_page_preset_this_week';
+  static const String reportPagePresetToday = 'report_page_preset_today';
+  static const String reportPageProfitMargin = 'report_page_profit_margin';
+  static const String reportPageRefreshTooltip = 'report_page_refresh_tooltip';
+  static const String reportPageToggleChart = 'report_page_toggle_chart';
+  static const String reportPageToggleTable = 'report_page_toggle_table';
+  static const String reportPageTotalCost = 'report_page_total_cost';
+  static const String reportPageTotalDiscount = 'report_page_total_discount';
+  static const String reportPageTotalInvoices = 'report_page_total_invoices';
+  static const String reportPageTotalProfit = 'report_page_total_profit';
+  static const String reportPageTotalTax = 'report_page_total_tax';
+  static const String reportPageViewItemSalesAction =
+      'report_page_view_item_sales_action';
 }

@@ -257,6 +257,8 @@ class AppRouteName {
 
   static const String expenditureList = 'expenditure-list';
 
+  static const String reportScreen = 'reports';
+
   static const String settings = 'settings';
   static const String currencyExchange = 'currency-exchange';
   static const String kitchen = 'kitchen';
@@ -287,6 +289,8 @@ class AppRouteName {
         return 'Success';
       case expenditureList:
         return 'Cash Flow';
+      case reportScreen:
+        return 'Reports';
 
       case businessOnboarding:
         return 'Business Onboarding';

@@ -311,8 +311,15 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                             track: shared.TrackConstants.homePageTrack,
                           ) ??
                           'Reports & Analytics',
-                      isSelected: false,
-                      onTap: () {},
+                      isSelected: _isRouteActive(
+                        currentLocation,
+                        core.AppRoutePath.reportScreenRoute,
+                      ),
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.reportScreenRoute,
+                      ),
                     ),
 
                     // _buildDrawerItem(

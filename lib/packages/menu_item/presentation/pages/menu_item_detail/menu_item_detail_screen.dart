@@ -9,6 +9,7 @@ import 'menu_item_detail_actions.dart';
 import 'widget/menu_item_detail_header_card.dart';
 import 'widget/menu_item_detail_metadata_card.dart';
 import 'widget/menu_item_detail_pricing_card.dart';
+import 'widget/menu_item_sales_action_card.dart';
 
 class MenuItemDetailScreen extends StatefulWidget {
   final int itemId;
@@ -164,6 +165,8 @@ class _MenuItemDetailScreenState extends State<MenuItemDetailScreen> {
                 ],
                 const SizedBox(height: 16),
                 MenuItemDetailPricingCard(item: item),
+                const SizedBox(height: 16),
+                MenuItemSalesActionCard(item: item),
                 const SizedBox(height: 24),
               ],
             ),

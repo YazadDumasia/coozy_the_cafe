@@ -2165,6 +2165,9 @@ class FakeDataHelper {
     final unitPrices = <String, double>{'kg': 80.0, 'ltr': 60.0, 'pcs': 12.0};
 
     int inserted = 0;
+    // Map to accumulate stock increments to sync inventory currentStock
+    final stockIncrements = <int, double>{};
+
     for (int p = 0; p < 100; p++) {
       final inv = inventory[random.nextInt(inventory.length)];
       final pDate = getRandomDate();
@@ -2182,12 +2185,30 @@ class FakeDataHelper {
               purchaseUnit: Value(inv.purchaseUnit ?? 'kg'),
               purchaseQty: Value(qty),
               purchaseDateTime: Value(pDate.toIso8601String()),
-              purchasePrice: Value(qty * unitPrice),
+              // purchasePrice represents the unit price per purchase unit.
+              // ReportsDao computes total cost via SUM(p.purchase_qty * p.purchase_price).
+              purchasePrice: Value(unitPrice),
               createdDate: Value(pDate.toIso8601String()),
             ),
           );
       inserted++;
+      stockIncrements[inv.id] = (stockIncrements[inv.id] ?? 0.0) + qty;
     }
+
+    // Sync accumulated stock to inventory records so stock report reflects live purchase activity
+    for (final entry in stockIncrements.entries) {
+      final item = inventory.firstWhere((i) => i.id == entry.key);
+      final newStock = (item.currentStock ?? 0.0) + entry.value;
+      await (db.update(
+        db.inventoryTable,
+      )..where((t) => t.id.equals(entry.key))).write(
+        InventoryTableCompanion(
+          currentStock: Value(newStock),
+          modifiedDate: Value(now.toIso8601String()),
+        ),
+      );
+    }
+
     return inserted;
   }
 
@@ -2408,6 +2429,25 @@ class FakeDataHelper {
       final table = tables[tIndex];
       final nowIso = DateTime.now().toIso8601String();
 
+      // Add 2 to 4 items per active order
+      final itemBatchCount = 2 + random.nextInt(3);
+      final chosenItems = (List.of(
+        menuItems,
+      )..shuffle(random)).take(itemBatchCount).toList();
+
+      double activeSubtotal = 0.0;
+      for (final item in chosenItems) {
+        final sPrice = item.sellingPrice ?? 120.0;
+        activeSubtotal += sPrice;
+      }
+      activeSubtotal = double.parse(activeSubtotal.toStringAsFixed(2));
+      final activeTax = double.parse(
+        (activeSubtotal * 0.05).toStringAsFixed(2),
+      );
+      final activeGrandTotal = double.parse(
+        (activeSubtotal + activeTax).toStringAsFixed(2),
+      );
+
       final orderId = await db
           .into(db.ordersTable)
           .insert(
@@ -2427,19 +2467,18 @@ class FakeDataHelper {
               customerName: Value(cust.name ?? 'Customer'),
               phoneNumber: Value(cust.phoneNumber ?? '+91 0000000000'),
               isoCode: const Value('IN'),
+              subtotalAmount: Value(activeSubtotal),
+              taxAmount: Value(activeTax),
+              grandTotal: Value(activeGrandTotal),
+              placedAt: Value(nowIso),
             ),
           );
       inserted++;
 
-      // Add 2 to 4 items per active order
-      final itemBatchCount = 2 + random.nextInt(3);
-      final chosenItems = (List.of(
-        menuItems,
-      )..shuffle(random)).take(itemBatchCount);
       for (final item in chosenItems) {
         final qty = 1 + random.nextInt(2);
         final sPrice = item.sellingPrice ?? 120.0;
-        final cPrice = sPrice * 0.55;
+        final cPrice = item.costPrice ?? (sPrice * 0.55);
         final itemStatus =
             activeItemStatuses[random.nextInt(activeItemStatuses.length)];
         final remark = random.nextBool()
@@ -2460,6 +2499,7 @@ class FakeDataHelper {
                 isMenuItem: const Value(true),
                 remarks: Value(remark),
                 creationDate: Value(nowIso),
+                placedAt: Value(nowIso),
               ),
             );
         inserted++;
@@ -2473,9 +2513,46 @@ class FakeDataHelper {
       final cust = customers[random.nextInt(customers.length)];
       final table = tables[random.nextInt(tables.length)];
       final oDate = getRandomDate();
+      final oIso = oDate.toIso8601String();
+      final servedIso = oDate
+          .add(const Duration(minutes: 25))
+          .toIso8601String();
       final chosenType = orderTypes[random.nextInt(orderTypes.length)];
       final chosenPayment =
           paymentMethods[random.nextInt(paymentMethods.length)];
+
+      final itemBatchCount = 1 + random.nextInt(3);
+      final chosenItems = (List.of(
+        menuItems,
+      )..shuffle(random)).take(itemBatchCount).toList();
+
+      // Compute order items details beforehand to accurately populate order summary amounts
+      final itemRecords =
+          <({int itemId, int qty, double sPrice, double cPrice})>[];
+      double subtotal = 0.0;
+
+      for (final item in chosenItems) {
+        final qty = 1 + random.nextInt(2);
+        final sPrice = item.sellingPrice ?? 120.0;
+        final cPrice = item.costPrice ?? (sPrice * 0.55);
+        subtotal += (sPrice * qty);
+        itemRecords.add((
+          itemId: item.id,
+          qty: qty,
+          sPrice: sPrice,
+          cPrice: cPrice,
+        ));
+      }
+
+      subtotal = double.parse(subtotal.toStringAsFixed(2));
+      final tax = double.parse((subtotal * 0.05).toStringAsFixed(2));
+      final grandTotal = double.parse((subtotal + tax).toStringAsFixed(2));
+      double cashRec = grandTotal;
+      double changeAmt = 0.0;
+      if (chosenPayment == 'Cash') {
+        cashRec = (grandTotal / 10).ceil() * 10.0;
+        changeAmt = double.parse((cashRec - grandTotal).toStringAsFixed(2));
+      }
 
       final orderId = await db
           .into(db.ordersTable)
@@ -2486,7 +2563,7 @@ class FakeDataHelper {
               tableNameText: Value(
                 table.tableLabel ?? 'Table ${table.tableNo}',
               ),
-              creationDate: Value(oDate.toIso8601String()),
+              creationDate: Value(oIso),
               isCanceled: const Value(false),
               isDeleted: const Value(false),
               status: const Value('completed'),
@@ -2496,32 +2573,42 @@ class FakeDataHelper {
               customerName: Value(cust.name ?? 'Customer'),
               phoneNumber: Value(cust.phoneNumber ?? '+91 9876543210'),
               isoCode: const Value('IN'),
+              subtotalAmount: Value(subtotal),
+              taxAmount: Value(tax),
+              grandTotal: Value(grandTotal),
+              cashReceived: Value(cashRec),
+              changeAmount: Value(changeAmt),
+              placedAt: Value(oIso),
+              preparationStartedAt: Value(
+                oDate.add(const Duration(minutes: 5)).toIso8601String(),
+              ),
+              readyAt: Value(
+                oDate.add(const Duration(minutes: 18)).toIso8601String(),
+              ),
+              servedAt: Value(servedIso),
             ),
           );
       inserted++;
 
-      final itemBatchCount = 1 + random.nextInt(3);
-      final chosenItems = (List.of(
-        menuItems,
-      )..shuffle(random)).take(itemBatchCount);
-      for (final item in chosenItems) {
-        final qty = 1 + random.nextInt(2);
-        final sPrice = item.sellingPrice ?? 120.0;
-        final cPrice = sPrice * 0.55;
-
+      for (final rec in itemRecords) {
         await db
             .into(db.orderItemsTable)
             .insert(
               OrderItemsTableCompanion.insert(
                 orderId: Value(orderId),
-                itemId: Value(item.id),
-                menuItemId: Value(item.id),
-                quantity: Value(qty),
-                sellingPrice: Value(sPrice),
-                costPrice: Value(cPrice),
+                itemId: Value(rec.itemId),
+                menuItemId: Value(rec.itemId),
+                quantity: Value(rec.qty),
+                sellingPrice: Value(rec.sPrice),
+                costPrice: Value(rec.cPrice),
                 status: const Value('served'),
                 isMenuItem: const Value(true),
-                creationDate: Value(oDate.toIso8601String()),
+                creationDate: Value(oIso),
+                placedAt: Value(oIso),
+                readyAt: Value(
+                  oDate.add(const Duration(minutes: 18)).toIso8601String(),
+                ),
+                servedAt: Value(servedIso),
               ),
             );
         inserted++;
@@ -2550,9 +2637,32 @@ class FakeDataHelper {
     }
 
     final paymentMethods = ['UPI', 'Cash', 'Credit Card', 'Debit Card'];
+
+    // Ensure payment modes are present and build name-to-id map
+    var existingPaymentModes = await db.select(db.paymentModesTable).get();
+    if (existingPaymentModes.isEmpty) {
+      await db.batch((batch) {
+        for (final m in paymentMethods) {
+          batch.insert(
+            db.paymentModesTable,
+            PaymentModesTableCompanion.insert(paymentMethodName: m),
+          );
+        }
+      });
+      existingPaymentModes = await db.select(db.paymentModesTable).get();
+    }
+    final paymentModeMap = {
+      for (final pm in existingPaymentModes)
+        pm.paymentMethodName.toLowerCase(): pm.id,
+    };
+
+    // Cache menu items for name lookup
+    final allMenuItems = await db.select(db.menuItemsTable).get();
+    final menuItemMap = {for (final m in allMenuItems) m.id: m};
+
     int inserted = 0;
 
-    for (final order in orders.take(100)) {
+    for (final order in orders.take(120)) {
       final orderItems = await (db.select(
         db.orderItemsTable,
       )..where((t) => t.orderId.equals(order.id))).get();
@@ -2560,23 +2670,31 @@ class FakeDataHelper {
       double subtotal = 0.0;
       final invoiceItemCompanions = <InvoiceItemsTableCompanion>[];
 
+      final orderDateStr = order.creationDate ?? now.toIso8601String();
+
       if (orderItems.isNotEmpty) {
         for (final item in orderItems) {
           final itemTotal = (item.sellingPrice ?? 100.0) * (item.quantity ?? 1);
           subtotal += itemTotal;
-          // Resolve the actual menu item name
-          final menuItem =
-              await (db.select(db.menuItemsTable)..where(
-                    (t) => t.id.equals(item.menuItemId ?? item.itemId ?? 0),
-                  ))
-                  .getSingleOrNull();
+          final resolvedItemId = item.menuItemId ?? item.itemId;
+          final menuItem = resolvedItemId != null
+              ? menuItemMap[resolvedItemId]
+              : null;
+          final itemName = menuItem?.name ?? item.remarks ?? 'Menu Item';
+
           invoiceItemCompanions.add(
             InvoiceItemsTableCompanion.insert(
-              itemName: Value(menuItem?.name ?? 'Menu Item'),
+              orderItemId: Value(item.id),
+              itemId: Value(resolvedItemId),
+              itemName: Value(itemName),
               quantity: Value(item.quantity ?? 1),
               sellingPrice: Value(item.sellingPrice ?? 100.0),
               totalPrice: Value(itemTotal),
-              createdDate: Value(order.creationDate ?? now.toIso8601String()),
+              taxPercentage: const Value(5.0),
+              taxAmount: Value(
+                double.parse((itemTotal * 0.05).toStringAsFixed(2)),
+              ),
+              createdDate: Value(orderDateStr),
             ),
           );
         }
@@ -2588,7 +2706,11 @@ class FakeDataHelper {
             quantity: const Value(2),
             sellingPrice: Value(subtotal / 2),
             totalPrice: Value(subtotal),
-            createdDate: Value(order.creationDate ?? now.toIso8601String()),
+            taxPercentage: const Value(5.0),
+            taxAmount: Value(
+              double.parse((subtotal * 0.05).toStringAsFixed(2)),
+            ),
+            createdDate: Value(orderDateStr),
           ),
         );
       }
@@ -2601,12 +2723,15 @@ class FakeDataHelper {
           order.paymentMethodName ??
           paymentMethods[random.nextInt(paymentMethods.length)];
 
+      final paymentModeId = paymentModeMap[payMethod.toLowerCase()];
+
       // Cash received (round up to nearest 10 for cash payments)
       double cashReceived = total;
+      double changeAmount = 0.0;
       if (payMethod == 'Cash') {
         cashReceived = (total / 10).ceil() * 10.0;
+        changeAmount = double.parse((cashReceived - total).toStringAsFixed(2));
       }
-      // change = cashReceived - total (kept for reference; not stored separately)
 
       final invoiceId = await db
           .into(db.invoicesTable)
@@ -2620,11 +2745,15 @@ class FakeDataHelper {
               taxableAmount: Value(subtotal),
               netPaymentAmount: Value(total),
               recordAmountPaid: Value(cashReceived),
-              createdDate: Value(order.creationDate ?? now.toIso8601String()),
+              cashReceived: Value(cashReceived),
+              changeAmount: Value(changeAmount),
+              paymentModeId: Value(paymentModeId),
+              createdDate: Value(orderDateStr),
               customerId: Value(order.customerId),
               customerName: Value(order.customerName ?? 'Customer'),
               phoneNumber: Value(order.phoneNumber ?? '+91 9876543210'),
               paymentMethodName: Value(payMethod),
+              isDeleted: const Value(false),
             ),
           );
       inserted++;
@@ -2641,13 +2770,14 @@ class FakeDataHelper {
           .insert(
             PaymentTransactionsTableCompanion.insert(
               invoiceId: Value(invoiceId),
+              paymentModeId: Value(paymentModeId),
               amount: Value(total),
               paymentMethodName: Value(payMethod),
               transactionReference: Value(
                 'TXN${const Uuid().v4().substring(0, 8).toUpperCase()}',
               ),
               paymentStatus: const Value('Success'),
-              createdDate: Value(order.creationDate ?? now.toIso8601String()),
+              createdDate: Value(orderDateStr),
             ),
           );
       inserted++;

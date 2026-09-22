@@ -16,6 +16,18 @@ mixin _$ReportsDaoMixin on DatabaseAccessor<CoozyDatabase> {
       attachedDatabase.invoiceItemsTable;
   $PaymentTransactionsTableTable get paymentTransactionsTable =>
       attachedDatabase.paymentTransactionsTable;
+  $MenuItemsTableTable get menuItemsTable => attachedDatabase.menuItemsTable;
+  $MenuItemVariationsTableTable get menuItemVariationsTable =>
+      attachedDatabase.menuItemVariationsTable;
+  $OrderItemsTableTable get orderItemsTable => attachedDatabase.orderItemsTable;
+  $InventoryTableTable get inventoryTable => attachedDatabase.inventoryTable;
+  $InventoryStockAdjustmentsTableTable get inventoryStockAdjustmentsTable =>
+      attachedDatabase.inventoryStockAdjustmentsTable;
+  $PurchaseTableTable get purchaseTable => attachedDatabase.purchaseTable;
+  $ExpenditureCategoriesTableTable get expenditureCategoriesTable =>
+      attachedDatabase.expenditureCategoriesTable;
+  $ExpendituresTableTable get expendituresTable =>
+      attachedDatabase.expendituresTable;
   ReportsDaoManager get managers => ReportsDaoManager(this);
 }
 
@@ -55,5 +67,44 @@ class ReportsDaoManager {
       $$PaymentTransactionsTableTableTableManager(
         _db.attachedDatabase,
         _db.paymentTransactionsTable,
+      );
+  $$MenuItemsTableTableTableManager get menuItemsTable =>
+      $$MenuItemsTableTableTableManager(
+        _db.attachedDatabase,
+        _db.menuItemsTable,
+      );
+  $$MenuItemVariationsTableTableTableManager get menuItemVariationsTable =>
+      $$MenuItemVariationsTableTableTableManager(
+        _db.attachedDatabase,
+        _db.menuItemVariationsTable,
+      );
+  $$OrderItemsTableTableTableManager get orderItemsTable =>
+      $$OrderItemsTableTableTableManager(
+        _db.attachedDatabase,
+        _db.orderItemsTable,
+      );
+  $$InventoryTableTableTableManager get inventoryTable =>
+      $$InventoryTableTableTableManager(
+        _db.attachedDatabase,
+        _db.inventoryTable,
+      );
+  $$InventoryStockAdjustmentsTableTableTableManager
+  get inventoryStockAdjustmentsTable =>
+      $$InventoryStockAdjustmentsTableTableTableManager(
+        _db.attachedDatabase,
+        _db.inventoryStockAdjustmentsTable,
+      );
+  $$PurchaseTableTableTableManager get purchaseTable =>
+      $$PurchaseTableTableTableManager(_db.attachedDatabase, _db.purchaseTable);
+  $$ExpenditureCategoriesTableTableTableManager
+  get expenditureCategoriesTable =>
+      $$ExpenditureCategoriesTableTableTableManager(
+        _db.attachedDatabase,
+        _db.expenditureCategoriesTable,
+      );
+  $$ExpendituresTableTableTableManager get expendituresTable =>
+      $$ExpendituresTableTableTableManager(
+        _db.attachedDatabase,
+        _db.expendituresTable,
       );
 }
