@@ -13,38 +13,21 @@ class ReportsMainPage extends StatelessWidget {
   List<ReportCategory> _buildCategories(BuildContext context) {
     return [
       ReportCategory(
-        id: 'daily_sales',
+        id: 'sales_trends',
         title:
             context.tr(
-              shared.LocaleKeys.reportPageCategoryDailySalesTitle,
+              shared.LocaleKeys.reportPageCategorySalesTrendsTitle,
               track: shared.TrackConstants.reportPageTrack,
             ) ??
-            'Daily Sales',
+            'Sales Trends',
         subtitle:
             context.tr(
-              shared.LocaleKeys.reportPageCategoryDailySalesSubtitle,
+              shared.LocaleKeys.reportPageCategorySalesTrendsSubtitle,
               track: shared.TrackConstants.reportPageTrack,
             ) ??
-            'Track day-by-day revenue and profit trends',
-        type: ReportType.dailySales,
-        icon: Icons.bar_chart_rounded,
-      ),
-      ReportCategory(
-        id: 'monthly_sales',
-        title:
-            context.tr(
-              shared.LocaleKeys.reportPageCategoryMonthlySalesTitle,
-              track: shared.TrackConstants.reportPageTrack,
-            ) ??
-            'Monthly Sales',
-        subtitle:
-            context.tr(
-              shared.LocaleKeys.reportPageCategoryMonthlySalesSubtitle,
-              track: shared.TrackConstants.reportPageTrack,
-            ) ??
-            'Compare performance across months',
-        type: ReportType.monthlySales,
-        icon: Icons.calendar_month_rounded,
+            'Track sales performance by day, week, month, or year',
+        type: ReportType.salesTrends,
+        icon: Icons.trending_up_rounded,
       ),
       ReportCategory(
         id: 'top_items',
@@ -165,6 +148,23 @@ class ReportsMainPage extends StatelessWidget {
         type: ReportType.expenditure,
         icon: Icons.account_balance_wallet_rounded,
       ),
+      ReportCategory(
+        id: 'stock_adjustments',
+        title:
+            context.tr(
+              shared.LocaleKeys.reportPageCategoryStockAdjustmentsTitle,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Stock Adjustments',
+        subtitle:
+            context.tr(
+              shared.LocaleKeys.reportPageCategoryStockAdjustmentsSubtitle,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Manual stock additions, reductions, and reasons',
+        type: ReportType.stockAdjustments,
+        icon: Icons.tune_rounded,
+      ),
     ];
   }
 
@@ -184,116 +184,139 @@ class ReportsMainPage extends StatelessWidget {
               'Reports & Analytics',
         ),
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final isWide = constraints.maxWidth >= 720;
-          final crossAxisCount = constraints.maxWidth >= 1000
-              ? 3
-              : (isWide ? 3 : 2);
+      body: shared.ResponsiveLayout(
+        mobile: _buildScrollView(
+          context: context,
+          theme: theme,
+          scheme: scheme,
+          categories: categories,
+          crossAxisCount: 2,
+          mainAxisExtent: 170,
+        ),
+        tablet: _buildScrollView(
+          context: context,
+          theme: theme,
+          scheme: scheme,
+          categories: categories,
+          crossAxisCount: 3,
+          mainAxisExtent: 150,
+        ),
+        desktop: _buildScrollView(
+          context: context,
+          theme: theme,
+          scheme: scheme,
+          categories: categories,
+          crossAxisCount: 4,
+          mainAxisExtent: 150,
+        ),
+      ),
+    );
+  }
 
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
+  Widget _buildScrollView({
+    required BuildContext context,
+    required ThemeData theme,
+    required ColorScheme scheme,
+    required List<ReportCategory> categories,
+    required int crossAxisCount,
+    required double mainAxisExtent,
+  }) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    scheme.primary.withValues(alpha: 0.12),
+                    scheme.surfaceContainerLow,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: scheme.outlineVariant.withValues(alpha: 0.4),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          scheme.primary.withValues(alpha: 0.12),
-                          scheme.surfaceContainerLow,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: scheme.outlineVariant.withValues(alpha: 0.4),
-                      ),
+                      color: scheme.primary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Row(
+                    child: Icon(
+                      Icons.insights_rounded,
+                      color: scheme.primary,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: scheme.primary.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            Icons.insights_rounded,
-                            color: scheme.primary,
-                            size: 28,
+                        Text(
+                          context.tr(
+                                shared.LocaleKeys.reportPageReportsAndAnalytics,
+                                track: shared.TrackConstants.reportPageTrack,
+                              ) ??
+                              'Reports & Analytics',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: scheme.onSurface,
                           ),
                         ),
-                        const SizedBox(width: 14),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                context.tr(
-                                      shared
-                                          .LocaleKeys
-                                          .reportPageReportsAndAnalytics,
-                                      track:
-                                          shared.TrackConstants.reportPageTrack,
-                                    ) ??
-                                    'Reports & Analytics',
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: scheme.onSurface,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                context.tr(
-                                      shared
-                                          .LocaleKeys
-                                          .reportPageChooseReportSubtitle,
-                                      track:
-                                          shared.TrackConstants.reportPageTrack,
-                                    ) ??
-                                    'Choose a report to view detailed charts, tabular data and export insights',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: scheme.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
+                        const SizedBox(height: 2),
+                        Text(
+                          context.tr(
+                                shared
+                                    .LocaleKeys
+                                    .reportPageChooseReportSubtitle,
+                                track: shared.TrackConstants.reportPageTrack,
+                              ) ??
+                              'Choose a report to view detailed charts, tabular data and export insights',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: scheme.onSurfaceVariant,
                           ),
                         ),
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
-              SliverPadding(
-                padding: const EdgeInsets.all(16),
-                sliver: SliverGrid(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: crossAxisCount,
-                    crossAxisSpacing: 14,
-                    mainAxisSpacing: 14,
-                    childAspectRatio: 0.95,
-                  ),
-                  delegate: SliverChildBuilderDelegate(
-                    addAutomaticKeepAlives: false,
-                    addRepaintBoundaries: true,
-                    (context, index) {
-                      final category = categories[index];
-                      return ReportCategoryCard(
-                        category: category,
-                        onTap: () => _openReport(context, category),
-                      );
-                    },
-                    childCount: categories.length,
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.all(16),
+          sliver: SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: 14,
+              mainAxisSpacing: 14,
+              mainAxisExtent: mainAxisExtent,
+            ),
+            delegate: SliverChildBuilderDelegate(
+              addAutomaticKeepAlives: false,
+              addRepaintBoundaries: true,
+              (context, index) {
+                final category = categories[index];
+                return ReportCategoryCard(
+                  category: category,
+                  onTap: () => _openReport(context, category),
+                );
+              },
+              childCount: categories.length,
+            ),
+          ),
+        ),
+      ],
     );
   }
 

@@ -1474,6 +1474,14 @@ abstract class LocaleKeys {
       'report_page_category_purchases_title';
   static const String reportPageCategoryPurchasesSubtitle =
       'report_page_category_purchases_subtitle';
+  static const String reportPageCategorySalesTrendsTitle =
+      'report_page_category_sales_trends_title';
+  static const String reportPageCategorySalesTrendsSubtitle =
+      'report_page_category_sales_trends_subtitle';
+  static const String reportPageCategoryStockAdjustmentsTitle =
+      'report_page_category_stock_adjustments_title';
+  static const String reportPageCategoryStockAdjustmentsSubtitle =
+      'report_page_category_stock_adjustments_subtitle';
   static const String reportPageCategoryExpenditureTitle =
       'report_page_category_expenditure_title';
   static const String reportPageCategoryExpenditureSubtitle =
@@ -1484,6 +1492,10 @@ abstract class LocaleKeys {
       'report_page_category_menu_item_sales_subtitle';
   static const String reportPageChooseReportSubtitle =
       'report_page_choose_report_subtitle';
+  static const String reportPageColumnAdjustedQty =
+      'report_page_column_adjusted_qty';
+  static const String reportPageColumnAdjustmentType =
+      'report_page_column_adjustment_type';
   static const String reportPageColumnAmount = 'report_page_column_amount';
   static const String reportPageColumnCategory = 'report_page_column_category';
   static const String reportPageColumnCost = 'report_page_column_cost';
@@ -1493,10 +1505,15 @@ abstract class LocaleKeys {
   static const String reportPageColumnMargin = 'report_page_column_margin';
   static const String reportPageColumnMonth = 'report_page_column_month';
   static const String reportPageColumnNetSales = 'report_page_column_net_sales';
+  static const String reportPageColumnNewStock = 'report_page_column_new_stock';
   static const String reportPageColumnPaymentMethod =
       'report_page_column_payment_method';
+  static const String reportPageColumnPeriod = 'report_page_column_period';
+  static const String reportPageColumnPreviousStock =
+      'report_page_column_previous_stock';
   static const String reportPageColumnProfit = 'report_page_column_profit';
   static const String reportPageColumnQuantity = 'report_page_column_quantity';
+  static const String reportPageColumnReason = 'report_page_column_reason';
   static const String reportPageColumnStock = 'report_page_column_stock';
   static const String reportPageColumnTax = 'report_page_column_tax';
   static const String reportPageColumnTotalSales =
@@ -1512,14 +1529,21 @@ abstract class LocaleKeys {
   static const String reportPageExportButton = 'report_page_export_button';
   static const String reportPageExportFailed = 'report_page_export_failed';
   static const String reportPageExportSuccess = 'report_page_export_success';
+  static const String reportPageFormatDaily = 'report_page_format_daily';
+  static const String reportPageFormatMonthly = 'report_page_format_monthly';
+  static const String reportPageFormatWeekly = 'report_page_format_weekly';
+  static const String reportPageFormatYearly = 'report_page_format_yearly';
   static const String reportPageGrossSales = 'report_page_gross_sales';
   static const String reportPageNetTotal = 'report_page_net_total';
   static const String reportPagePresetCustom = 'report_page_preset_custom';
   static const String reportPagePresetLast30Days =
       'report_page_preset_last_30_days';
+  static const String reportPagePresetLast6Months =
+      'report_page_preset_last_6_months';
   static const String reportPagePresetThisMonth =
       'report_page_preset_this_month';
   static const String reportPagePresetThisWeek = 'report_page_preset_this_week';
+  static const String reportPagePresetThisYear = 'report_page_preset_this_year';
   static const String reportPagePresetToday = 'report_page_preset_today';
   static const String reportPageProfitMargin = 'report_page_profit_margin';
   static const String reportPageRefreshTooltip = 'report_page_refresh_tooltip';

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../domain/entities/daily_sales_entry.dart';
 import '../../../domain/entities/monthly_sales_entry.dart';
+import '../../../domain/entities/sales_trend_entry.dart';
 import '../../../domain/entities/top_item_entry.dart';
 import '../../../domain/entities/payment_mode_entry.dart';
 import '../../../domain/entities/sales_dashboard.dart';
@@ -9,6 +10,7 @@ import '../../../domain/entities/inventory_stock_entry.dart';
 import '../../../domain/entities/purchase_summary_entry.dart';
 import '../../../domain/entities/expenditure_summary_entry.dart';
 import '../../../domain/entities/menu_item_sales_entry.dart';
+import '../../../domain/entities/stock_adjustment_entry.dart';
 import '../../../domain/entities/report_category.dart';
 import '../../../domain/usecases/reports_usecases.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
@@ -17,6 +19,7 @@ part 'reports_state.dart';
 
 class ReportsCubit extends Cubit<ReportsState> {
   ReportsCubit({
+    required this.getSalesTrendsReportUseCase,
     required this.getDailySalesSummaryUseCase,
     required this.getMonthlySalesSummaryUseCase,
     required this.getTopSellingItemsUseCase,
@@ -26,8 +29,10 @@ class ReportsCubit extends Cubit<ReportsState> {
     required this.getPurchaseSummaryReportUseCase,
     required this.getExpenditureSummaryReportUseCase,
     required this.getMenuItemSalesReportUseCase,
+    required this.getStockAdjustmentsReportUseCase,
   }) : super(ReportsInitial());
 
+  final GetSalesTrendsReportUseCase getSalesTrendsReportUseCase;
   final GetDailySalesSummaryUseCase getDailySalesSummaryUseCase;
   final GetMonthlySalesSummaryUseCase getMonthlySalesSummaryUseCase;
   final GetTopSellingItemsUseCase getTopSellingItemsUseCase;
@@ -37,22 +42,42 @@ class ReportsCubit extends Cubit<ReportsState> {
   final GetPurchaseSummaryReportUseCase getPurchaseSummaryReportUseCase;
   final GetExpenditureSummaryReportUseCase getExpenditureSummaryReportUseCase;
   final GetMenuItemSalesReportUseCase getMenuItemSalesReportUseCase;
+  final GetStockAdjustmentsReportUseCase getStockAdjustmentsReportUseCase;
 
-  late DateTimeRange _currentRange;
+  DateTimeRange _currentRange = DateTimeRange(
+    start: DateUtil.startOfDay(
+      DateTime.now().subtract(const Duration(days: 29)),
+    ),
+    end: DateUtil.endOfDay(DateTime.now()),
+  );
   String? _currentItemNameFilter;
+  SalesPeriodFormat _currentPeriodFormat = SalesPeriodFormat.daily;
+  ReportType _currentReportType = ReportType.salesTrends;
+
+  SalesPeriodFormat get currentPeriodFormat => _currentPeriodFormat;
+  ReportType get currentReportType => _currentReportType;
 
   void loadReport(
     ReportType type,
     DateTimeRange dateRange, {
     String? itemName,
+    SalesPeriodFormat? periodFormat,
   }) {
+    _currentReportType = type;
     _currentRange = dateRange;
     _currentItemNameFilter = itemName;
+    if (periodFormat != null) {
+      _currentPeriodFormat = periodFormat;
+    }
     switch (type) {
+      case ReportType.salesTrends:
+        _loadSalesTrends();
       case ReportType.dailySales:
-        _loadDailySales();
+        _currentPeriodFormat = SalesPeriodFormat.daily;
+        _loadSalesTrends();
       case ReportType.monthlySales:
-        _loadMonthlySales();
+        _currentPeriodFormat = SalesPeriodFormat.monthly;
+        _loadSalesTrends();
       case ReportType.topSellingItems:
         _loadTopItems();
       case ReportType.paymentModes:
@@ -67,7 +92,14 @@ class ReportsCubit extends Cubit<ReportsState> {
         _loadExpenditure();
       case ReportType.menuItemSales:
         _loadMenuItemSales();
+      case ReportType.stockAdjustments:
+        _loadStockAdjustments();
     }
+  }
+
+  void changeSalesPeriodFormat(SalesPeriodFormat format) {
+    _currentPeriodFormat = format;
+    refresh(_currentReportType);
   }
 
   void refresh(ReportType type) =>
@@ -77,24 +109,15 @@ class ReportsCubit extends Cubit<ReportsState> {
       DateUtil.startOfDay(_currentRange.start).toIso8601String();
   String _endIso() => DateUtil.endOfDay(_currentRange.end).toIso8601String();
 
-  Future<void> _loadDailySales() async {
+  Future<void> _loadSalesTrends() async {
     emit(ReportsLoading());
     try {
-      final entries = await getDailySalesSummaryUseCase(_startIso(), _endIso());
-      emit(ReportsDailySalesLoaded(entries));
-    } catch (e) {
-      emit(ReportsError(e.toString()));
-    }
-  }
-
-  Future<void> _loadMonthlySales() async {
-    emit(ReportsLoading());
-    try {
-      final entries = await getMonthlySalesSummaryUseCase(
+      final entries = await getSalesTrendsReportUseCase(
         _startIso(),
         _endIso(),
+        format: _currentPeriodFormat,
       );
-      emit(ReportsMonthlySalesLoaded(entries));
+      emit(ReportsSalesTrendsLoaded(entries, _currentPeriodFormat));
     } catch (e) {
       emit(ReportsError(e.toString()));
     }
@@ -108,7 +131,7 @@ class ReportsCubit extends Cubit<ReportsState> {
         _endIso(),
         limit: 15,
       );
-      emit(ReportsTopItemsLoaded(items));
+      emit(ReportsTopItemsLoaded(items, _currentPeriodFormat));
     } catch (e) {
       emit(ReportsError(e.toString()));
     }
@@ -118,7 +141,7 @@ class ReportsCubit extends Cubit<ReportsState> {
     emit(ReportsLoading());
     try {
       final entries = await getPaymentModeReportUseCase(_startIso(), _endIso());
-      emit(ReportsPaymentModesLoaded(entries));
+      emit(ReportsPaymentModesLoaded(entries, _currentPeriodFormat));
     } catch (e) {
       emit(ReportsError(e.toString()));
     }
@@ -128,7 +151,7 @@ class ReportsCubit extends Cubit<ReportsState> {
     emit(ReportsLoading());
     try {
       final dashboard = await getSalesDashboardUseCase(_startIso(), _endIso());
-      emit(ReportsDashboardLoaded(dashboard));
+      emit(ReportsDashboardLoaded(dashboard, _currentPeriodFormat));
     } catch (e) {
       emit(ReportsError(e.toString()));
     }
@@ -150,8 +173,9 @@ class ReportsCubit extends Cubit<ReportsState> {
       final entries = await getPurchaseSummaryReportUseCase(
         _startIso(),
         _endIso(),
+        format: _currentPeriodFormat,
       );
-      emit(ReportsPurchasesLoaded(entries));
+      emit(ReportsPurchasesLoaded(entries, _currentPeriodFormat));
     } catch (e) {
       emit(ReportsError(e.toString()));
     }
@@ -163,8 +187,9 @@ class ReportsCubit extends Cubit<ReportsState> {
       final entries = await getExpenditureSummaryReportUseCase(
         _startIso(),
         _endIso(),
+        format: _currentPeriodFormat,
       );
-      emit(ReportsExpenditureLoaded(entries));
+      emit(ReportsExpenditureLoaded(entries, _currentPeriodFormat));
     } catch (e) {
       emit(ReportsError(e.toString()));
     }
@@ -177,8 +202,23 @@ class ReportsCubit extends Cubit<ReportsState> {
         _startIso(),
         _endIso(),
         itemName: _currentItemNameFilter,
+        format: _currentPeriodFormat,
       );
-      emit(ReportsMenuItemSalesLoaded(entries));
+      emit(ReportsMenuItemSalesLoaded(entries, _currentPeriodFormat));
+    } catch (e) {
+      emit(ReportsError(e.toString()));
+    }
+  }
+
+  Future<void> _loadStockAdjustments() async {
+    emit(ReportsLoading());
+    try {
+      final entries = await getStockAdjustmentsReportUseCase(
+        _startIso(),
+        _endIso(),
+        format: _currentPeriodFormat,
+      );
+      emit(ReportsStockAdjustmentsLoaded(entries, _currentPeriodFormat));
     } catch (e) {
       emit(ReportsError(e.toString()));
     }

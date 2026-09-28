@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../../domain/entities/daily_sales_entry.dart';
@@ -13,7 +14,11 @@ class SalesLineChart extends StatelessWidget {
     if (entries.isEmpty) {
       return Center(
         child: Text(
-          'No data for selected range',
+          context.tr(
+                shared.LocaleKeys.reportPageEmptyData,
+                track: shared.TrackConstants.reportPageTrack,
+              ) ??
+              'No data found for the selected range',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: scheme.onSurface.withValues(alpha: 0.5),
           ),
@@ -28,12 +33,22 @@ class SalesLineChart extends StatelessWidget {
       primaryXAxis: CategoryAxis(
         labelStyle: TextStyle(color: scheme.onSurface, fontSize: 10),
         majorGridLines: const MajorGridLines(width: 0),
+        maximumLabelWidth: 120,
       ),
       primaryYAxis: NumericAxis(
+        minimum: 0,
         labelStyle: TextStyle(color: scheme.onSurface, fontSize: 10),
         numberFormat: NumberFormat.compactCurrency(symbol: ''),
       ),
       tooltipBehavior: TooltipBehavior(enable: true),
+      zoomPanBehavior: ZoomPanBehavior(
+        enablePinching: true,
+        enablePanning: true,
+        enableDoubleTapZooming: true,
+        enableMouseWheelZooming: true,
+        enableSelectionZooming: true,
+        zoomMode: ZoomMode.x,
+      ),
       series: <CartesianSeries>[
         SplineAreaSeries<DailySalesEntry, String>(
           name: 'Net Sales',

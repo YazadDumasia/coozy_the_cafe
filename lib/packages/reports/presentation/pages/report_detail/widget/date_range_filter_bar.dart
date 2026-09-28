@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
-enum DateRangePreset { today, thisWeek, thisMonth, last30Days, custom }
+enum DateRangePreset {
+  today,
+  thisWeek,
+  thisMonth,
+  last30Days,
+  last6Months,
+  thisYear,
+  custom,
+}
 
 class DateRangeFilterBar extends StatefulWidget {
   const DateRangeFilterBar({
@@ -53,6 +61,14 @@ class _DateRangeFilterBarState extends State<DateRangeFilterBar> {
       ),
       DateRangePreset.last30Days => DateTimeRange(
         start: DateUtil.startOfDay(now.subtract(const Duration(days: 29))),
+        end: DateUtil.endOfDay(now),
+      ),
+      DateRangePreset.last6Months => DateTimeRange(
+        start: DateTime.utc(now.year, now.month - 5, 1),
+        end: DateUtil.endOfDay(now),
+      ),
+      DateRangePreset.thisYear => DateTimeRange(
+        start: DateTime.utc(now.year, 1, 1),
         end: DateUtil.endOfDay(now),
       ),
       DateRangePreset.custom => DateTimeRange(
@@ -119,6 +135,18 @@ class _DateRangeFilterBarState extends State<DateRangeFilterBar> {
           track: shared.TrackConstants.reportPageTrack,
         ) ??
         'Last 30 Days';
+    final last6MonthsLabel =
+        context.tr(
+          shared.LocaleKeys.reportPagePresetLast6Months,
+          track: shared.TrackConstants.reportPageTrack,
+        ) ??
+        'Last 6 Months';
+    final thisYearLabel =
+        context.tr(
+          shared.LocaleKeys.reportPagePresetThisYear,
+          track: shared.TrackConstants.reportPageTrack,
+        ) ??
+        'This Year';
     final customLabel =
         context.tr(
           shared.LocaleKeys.reportPagePresetCustom,
@@ -158,6 +186,20 @@ class _DateRangeFilterBarState extends State<DateRangeFilterBar> {
               _buildChip(
                 last30DaysLabel,
                 DateRangePreset.last30Days,
+                selectedPreset,
+                scheme,
+              ),
+              const SizedBox(width: 8),
+              _buildChip(
+                last6MonthsLabel,
+                DateRangePreset.last6Months,
+                selectedPreset,
+                scheme,
+              ),
+              const SizedBox(width: 8),
+              _buildChip(
+                thisYearLabel,
+                DateRangePreset.thisYear,
                 selectedPreset,
                 scheme,
               ),

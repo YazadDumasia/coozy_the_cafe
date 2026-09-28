@@ -113,81 +113,100 @@ class DashboardKpiCard extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         // KPI Grid
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          crossAxisSpacing: 12,
-          mainAxisSpacing: 12,
-          childAspectRatio: 1.35,
-          children: [
-            _KpiTile(
-              label:
-                  context.tr(
-                    shared.LocaleKeys.reportPageTotalInvoices,
-                    track: shared.TrackConstants.reportPageTrack,
-                  ) ??
-                  'Total Invoices',
-              value: dashboard.totalInvoices.toString(),
-              icon: Icons.receipt_long_rounded,
-              color: scheme.primary,
-            ),
-            _KpiTile(
-              label:
-                  context.tr(
-                    shared.LocaleKeys.reportPageGrossSales,
-                    track: shared.TrackConstants.reportPageTrack,
-                  ) ??
-                  'Gross Sales',
-              value: _fmt(dashboard.totalSales),
-              icon: Icons.attach_money_rounded,
-              color: Colors.green,
-            ),
-            _KpiTile(
-              label:
-                  context.tr(
-                    shared.LocaleKeys.reportPageAvgOrderValue,
-                    track: shared.TrackConstants.reportPageTrack,
-                  ) ??
-                  'Avg Order Value',
-              value: _fmt(dashboard.averageOrderValue),
-              icon: Icons.bar_chart_rounded,
-              color: Colors.orange,
-            ),
-            _KpiTile(
-              label:
-                  context.tr(
-                    shared.LocaleKeys.reportPageProfitMargin,
-                    track: shared.TrackConstants.reportPageTrack,
-                  ) ??
-                  'Profit Margin',
-              value: profitPercentageStr,
-              icon: Icons.percent_rounded,
-              color: Colors.purple,
-            ),
-            _KpiTile(
-              label:
-                  context.tr(
-                    shared.LocaleKeys.reportPageTotalTax,
-                    track: shared.TrackConstants.reportPageTrack,
-                  ) ??
-                  'Total Tax',
-              value: _fmt(dashboard.totalTax),
-              icon: Icons.account_balance_rounded,
-              color: Colors.blueGrey,
-            ),
-            _KpiTile(
-              label:
-                  context.tr(
-                    shared.LocaleKeys.reportPageTotalDiscount,
-                    track: shared.TrackConstants.reportPageTrack,
-                  ) ??
-                  'Total Discount',
-              value: _fmt(dashboard.totalDiscount),
-              icon: Icons.discount_rounded,
-              color: Colors.deepOrange,
-            ),
-          ],
+        shared.ResponsiveLayout(
+          mobile: _buildKpiGrid(context, scheme, 2, 125),
+          tablet: _buildKpiGrid(context, scheme, 3, 125),
+          desktop: _buildKpiGrid(context, scheme, 6, 125),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildKpiGrid(
+    BuildContext context,
+    ColorScheme scheme,
+    int crossAxisCount,
+    double mainAxisExtent,
+  ) {
+    final profitPercentageStr = dashboard.profitPercentage != null
+        ? '${dashboard.profitPercentage!.toStringAsFixed(1)}%'
+        : '—';
+
+    return GridView(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 12,
+        mainAxisExtent: mainAxisExtent,
+      ),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      children: [
+        _KpiTile(
+          label:
+              context.tr(
+                shared.LocaleKeys.reportPageTotalInvoices,
+                track: shared.TrackConstants.reportPageTrack,
+              ) ??
+              'Total Invoices',
+          value: dashboard.totalInvoices.toString(),
+          icon: Icons.receipt_long_rounded,
+          color: scheme.primary,
+        ),
+        _KpiTile(
+          label:
+              context.tr(
+                shared.LocaleKeys.reportPageGrossSales,
+                track: shared.TrackConstants.reportPageTrack,
+              ) ??
+              'Gross Sales',
+          value: _fmt(dashboard.totalSales),
+          icon: Icons.attach_money_rounded,
+          color: Colors.green,
+        ),
+        _KpiTile(
+          label:
+              context.tr(
+                shared.LocaleKeys.reportPageAvgOrderValue,
+                track: shared.TrackConstants.reportPageTrack,
+              ) ??
+              'Avg Order Value',
+          value: _fmt(dashboard.averageOrderValue),
+          icon: Icons.bar_chart_rounded,
+          color: Colors.orange,
+        ),
+        _KpiTile(
+          label:
+              context.tr(
+                shared.LocaleKeys.reportPageProfitMargin,
+                track: shared.TrackConstants.reportPageTrack,
+              ) ??
+              'Profit Margin',
+          value: profitPercentageStr,
+          icon: Icons.percent_rounded,
+          color: Colors.purple,
+        ),
+        _KpiTile(
+          label:
+              context.tr(
+                shared.LocaleKeys.reportPageTotalTax,
+                track: shared.TrackConstants.reportPageTrack,
+              ) ??
+              'Total Tax',
+          value: _fmt(dashboard.totalTax),
+          icon: Icons.account_balance_rounded,
+          color: Colors.blueGrey,
+        ),
+        _KpiTile(
+          label:
+              context.tr(
+                shared.LocaleKeys.reportPageTotalDiscount,
+                track: shared.TrackConstants.reportPageTrack,
+              ) ??
+              'Total Discount',
+          value: _fmt(dashboard.totalDiscount),
+          icon: Icons.discount_rounded,
+          color: Colors.deepOrange,
         ),
       ],
     );

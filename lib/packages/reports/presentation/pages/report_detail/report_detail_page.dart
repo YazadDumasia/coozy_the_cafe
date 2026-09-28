@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import '../../bloc/reports_cubit/reports_cubit.dart';
 import '../../../domain/entities/report_category.dart';
+import '../../../domain/utils/report_date_utils.dart';
 import '../../services/report_export_service.dart';
 import 'widget/date_range_filter_bar.dart';
 import 'widget/sales_line_chart.dart';
@@ -14,6 +15,9 @@ import 'widget/inventory_stock_bar_chart.dart';
 import 'widget/purchase_summary_bar_chart.dart';
 import 'widget/expenditure_summary_pie_chart.dart';
 import 'widget/menu_item_sales_bar_chart.dart';
+import 'widget/stock_adjustments_bar_chart.dart';
+import 'widget/sales_period_format_selector.dart';
+import 'widget/sales_trends_chart.dart';
 import 'widget/report_data_table.dart';
 
 class ReportDetailPage extends StatefulWidget {
@@ -33,11 +37,12 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
     super.initState();
     _isTableViewNotifier = ValueNotifier<bool>(false);
     if (widget.category.type == ReportType.inventoryStock) {
+      final now = DateTime.now();
+      _range = DateTimeRange(start: now, end: now);
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        final now = DateTime.now();
         context.read<ReportsCubit>().loadReport(
           widget.category.type,
-          DateTimeRange(start: now, end: now),
+          _range!,
           itemName: widget.category.filterItemName,
         );
       });
@@ -72,6 +77,82 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   ) {
     final rangeStr = _formatDateRangeStr();
     final title = widget.category.title;
+
+    if (state is ReportsSalesTrendsLoaded) {
+      final headers = [
+        context.tr(
+              shared.LocaleKeys.reportPageColumnPeriod,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Period',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnInvoices,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Invoices',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnTotalSales,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Gross Sales',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnNetSales,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Net Sales',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnTax,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Tax',
+        context.tr(
+              shared.LocaleKeys.reportPageTotalDiscount,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Discount',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnCost,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Cost',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnProfit,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Profit',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnMargin,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Margin %',
+      ];
+      final rows = state.entries.map((e) {
+        return [
+          ReportDateUtils.formatPeriod(
+            period: e.period,
+            format: state.format,
+            startDate: e.startDate,
+            endDate: e.endDate,
+          ),
+          e.totalInvoices,
+          e.totalSales,
+          e.netTotal,
+          e.totalTax,
+          e.totalDiscount,
+          e.totalCost,
+          e.totalProfit,
+          e.profitPercentage != null
+              ? '${e.profitPercentage!.toStringAsFixed(1)}%'
+              : '—',
+        ];
+      }).toList();
+      return ReportExportRowData(
+        reportTitle: title,
+        dateRangeStr: rangeStr,
+        headers: headers,
+        rows: rows,
+      );
+    }
 
     if (state is ReportsDailySalesLoaded) {
       final headers = [
@@ -268,10 +349,10 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
             ) ??
             'Item Name',
         context.tr(
-              shared.LocaleKeys.reportPageColumnDate,
+              shared.LocaleKeys.reportPageColumnPeriod,
               track: shared.TrackConstants.reportPageTrack,
             ) ??
-            'Date',
+            'Period',
         context.tr(
               shared.LocaleKeys.reportPageColumnQuantity,
               track: shared.TrackConstants.reportPageTrack,
@@ -301,7 +382,12 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
       final rows = state.entries.map((e) {
         return [
           e.itemName,
-          e.saleDate,
+          ReportDateUtils.formatPeriod(
+            period: e.period,
+            format: state.format,
+            startDate: e.startDate,
+            endDate: e.endDate,
+          ),
           e.quantitySold,
           e.totalAmount,
           e.totalCost,
@@ -418,6 +504,11 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
     if (state is ReportsPurchasesLoaded) {
       final headers = [
         context.tr(
+              shared.LocaleKeys.reportPageColumnPeriod,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Period',
+        context.tr(
               shared.LocaleKeys.reportPageColumnItemName,
               track: shared.TrackConstants.reportPageTrack,
             ) ??
@@ -439,7 +530,18 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
             'Total Cost',
       ];
       final rows = state.entries.map((e) {
-        return [e.itemName, e.purchaseUnit, e.totalQty, e.totalCost];
+        return [
+          ReportDateUtils.formatPeriod(
+            period: e.period,
+            format: state.format,
+            startDate: e.startDate,
+            endDate: e.endDate,
+          ),
+          e.itemName,
+          e.purchaseUnit,
+          e.totalQty,
+          e.totalCost,
+        ];
       }).toList();
       return ReportExportRowData(
         reportTitle: title,
@@ -451,6 +553,11 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
 
     if (state is ReportsExpenditureLoaded) {
       final headers = [
+        context.tr(
+              shared.LocaleKeys.reportPageColumnPeriod,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Period',
         context.tr(
               shared.LocaleKeys.reportPageColumnType,
               track: shared.TrackConstants.reportPageTrack,
@@ -473,7 +580,80 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
             'Total Amount',
       ];
       final rows = state.entries.map((e) {
-        return [e.type, e.categoryName, e.transactionCount, e.totalAmount];
+        return [
+          ReportDateUtils.formatPeriod(
+            period: e.period,
+            format: state.format,
+            startDate: e.startDate,
+            endDate: e.endDate,
+          ),
+          e.type,
+          e.categoryName,
+          e.transactionCount,
+          e.totalAmount,
+        ];
+      }).toList();
+      return ReportExportRowData(
+        reportTitle: title,
+        dateRangeStr: rangeStr,
+        headers: headers,
+        rows: rows,
+      );
+    }
+
+    if (state is ReportsStockAdjustmentsLoaded) {
+      final headers = [
+        context.tr(
+              shared.LocaleKeys.reportPageColumnPeriod,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Period',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnItemName,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Item Name',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnAdjustmentType,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Adjustment Type',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnAdjustedQty,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Adjusted Qty',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnPreviousStock,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Previous Stock',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnNewStock,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'New Stock',
+        context.tr(
+              shared.LocaleKeys.reportPageColumnReason,
+              track: shared.TrackConstants.reportPageTrack,
+            ) ??
+            'Reason',
+      ];
+      final rows = state.entries.map((e) {
+        return [
+          ReportDateUtils.formatPeriod(
+            period: e.period,
+            format: state.format,
+            startDate: e.startDate,
+            endDate: e.endDate,
+          ),
+          e.inventoryName,
+          e.adjustmentType.toUpperCase(),
+          e.adjustedQty,
+          e.previousStock,
+          e.newStock,
+          e.reason,
+        ];
       }).toList();
       return ReportExportRowData(
         reportTitle: title,
@@ -660,7 +840,11 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.category.title),
+        title: Text(
+          widget.category.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
         actions: [
           // Table / Chart view toggle
           ValueListenableBuilder<bool>(
@@ -736,9 +920,28 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
       body: Column(
         children: [
           if (isDateFilterable)
-            DateRangeFilterBar(onRangeChanged: _onRangeChanged)
+            DateRangeFilterBar(
+              initialPreset: widget.category.type == ReportType.monthlySales
+                  ? DateRangePreset.last6Months
+                  : DateRangePreset.last30Days,
+              onRangeChanged: _onRangeChanged,
+            )
           else
             const SizedBox.shrink(),
+          if (widget.category.type != ReportType.inventoryStock)
+            BlocBuilder<ReportsCubit, ReportsState>(
+              builder: (context, state) {
+                final format = context.read<ReportsCubit>().currentPeriodFormat;
+                return SalesPeriodFormatSelector(
+                  selectedFormat: format,
+                  onFormatChanged: (newFormat) {
+                    context
+                        .read<ReportsCubit>()
+                        .changeSalesPeriodFormat(newFormat);
+                  },
+                );
+              },
+            ),
           Expanded(
             child: BlocBuilder<ReportsCubit, ReportsState>(
               builder: (context, state) {
@@ -794,20 +997,46 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
     ColorScheme scheme,
   ) {
     return switch (widget.category.type) {
+      ReportType.salesTrends =>
+        state is ReportsSalesTrendsLoaded
+            ? Padding(
+                padding: const EdgeInsets.all(16),
+                child: SalesTrendsChart(
+                  entries: state.entries,
+                  format: state.format,
+                ),
+              )
+            : const _EmptyChart(),
       ReportType.dailySales =>
-        state is ReportsDailySalesLoaded
+        state is ReportsSalesTrendsLoaded
             ? Padding(
                 padding: const EdgeInsets.all(16),
-                child: SalesLineChart(entries: state.entries),
+                child: SalesTrendsChart(
+                  entries: state.entries,
+                  format: state.format,
+                ),
               )
-            : const _EmptyChart(),
+            : (state is ReportsDailySalesLoaded
+                ? Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SalesLineChart(entries: state.entries),
+                  )
+                : const _EmptyChart()),
       ReportType.monthlySales =>
-        state is ReportsMonthlySalesLoaded
+        state is ReportsSalesTrendsLoaded
             ? Padding(
                 padding: const EdgeInsets.all(16),
-                child: MonthlyBarChart(entries: state.entries),
+                child: SalesTrendsChart(
+                  entries: state.entries,
+                  format: state.format,
+                ),
               )
-            : const _EmptyChart(),
+            : (state is ReportsMonthlySalesLoaded
+                ? Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: MonthlyBarChart(entries: state.entries),
+                  )
+                : const _EmptyChart()),
       ReportType.topSellingItems =>
         state is ReportsTopItemsLoaded
             ? Padding(
@@ -819,7 +1048,10 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         state is ReportsMenuItemSalesLoaded
             ? Padding(
                 padding: const EdgeInsets.all(16),
-                child: MenuItemSalesBarChart(entries: state.entries),
+                child: MenuItemSalesBarChart(
+                  entries: state.entries,
+                  format: state.format,
+                ),
               )
             : const _EmptyChart(),
       ReportType.paymentModes =>
@@ -847,7 +1079,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         state is ReportsPurchasesLoaded
             ? Padding(
                 padding: const EdgeInsets.all(16),
-                child: PurchaseSummaryBarChart(entries: state.entries),
+                child: PurchaseSummaryBarChart(
+                  entries: state.entries,
+                ),
               )
             : const _EmptyChart(),
       ReportType.expenditure =>
@@ -855,6 +1089,13 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
             ? Padding(
                 padding: const EdgeInsets.all(16),
                 child: ExpenditureSummaryPieChart(entries: state.entries),
+              )
+            : const _EmptyChart(),
+      ReportType.stockAdjustments =>
+        state is ReportsStockAdjustmentsLoaded
+            ? Padding(
+                padding: const EdgeInsets.all(16),
+                child: StockAdjustmentsBarChart(entries: state.entries),
               )
             : const _EmptyChart(),
     };

@@ -21,6 +21,79 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
   ReportsDao(super.db);
 
   // ─────────────────────────────────────────────────────────────────────────
+  // Sales Trends Report (Daily, Weekly, Monthly, Yearly)
+  // Aggregates invoices with CTE invoice_costs to compute exact costs and profits.
+  // format can be: 'daily', 'weekly', 'monthly', or 'yearly'
+  // ─────────────────────────────────────────────────────────────────────────
+  Future<List<Map<String, dynamic>>> getSalesTrendsReport(
+    String startIso,
+    String endIso, {
+    String format = 'daily',
+  }) async {
+    const sql = '''
+      WITH invoice_costs AS (
+        SELECT
+          ii.invoice_id,
+          COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS cost
+        FROM invoice_items ii
+        LEFT JOIN order_items oi ON oi.id = ii.order_item_id
+        GROUP BY ii.invoice_id
+      )
+      SELECT
+        CASE ?
+          WHEN 'yearly' THEN SUBSTR(i.created_date, 1, 4)
+          WHEN 'monthly' THEN SUBSTR(i.created_date, 1, 7)
+          WHEN 'weekly' THEN STRFTIME('%Y-W%W', i.created_date)
+          ELSE DATE(i.created_date)
+        END AS period,
+        CASE ?
+          WHEN 'weekly' THEN MIN(DATE(i.created_date, '-' || ((CAST(STRFTIME('%w', i.created_date) AS INTEGER) + 6) % 7) || ' days'))
+          ELSE NULL
+        END AS startDate,
+        CASE ?
+          WHEN 'weekly' THEN MAX(DATE(i.created_date, '+' || (6 - ((CAST(STRFTIME('%w', i.created_date) AS INTEGER) + 6) % 7)) || ' days'))
+          ELSE NULL
+        END AS endDate,
+        COUNT(DISTINCT i.id)           AS totalInvoices,
+        COALESCE(SUM(i.total_cost), 0)           AS totalSales,
+        COALESCE(SUM(i.tax_cost), 0)             AS totalTax,
+        COALESCE(SUM(i.discount_amount), 0)      AS totalDiscount,
+        COALESCE(SUM(i.net_payment_amount), 0)   AS netTotal,
+        COALESCE(SUM(ic.cost), 0)                AS totalCost,
+        COALESCE(SUM(i.net_payment_amount), 0)
+          - COALESCE(SUM(ic.cost), 0)            AS totalProfit
+      FROM invoices i
+      LEFT JOIN invoice_costs ic ON ic.invoice_id = i.id
+      WHERE i.created_date >= ?
+        AND i.created_date <= ?
+        AND (i.is_deleted IS NULL OR i.is_deleted = 0)
+      GROUP BY period
+      ORDER BY period DESC
+    ''';
+    final rows = await customSelect(
+      sql,
+      variables: [
+        Variable.withString(format),
+        Variable.withString(format),
+        Variable.withString(format),
+        Variable.withString(startIso),
+        Variable.withString(endIso),
+      ],
+    ).get();
+    return rows.map((r) {
+      final data = Map<String, dynamic>.from(r.data);
+      final netTotal = (data['netTotal'] as num?)?.toDouble() ?? 0.0;
+      final totalCost = (data['totalCost'] as num?)?.toDouble() ?? 0.0;
+      final totalProfit = netTotal - totalCost;
+      data['totalProfit'] = totalProfit;
+      data['profitPercentage'] = totalCost != 0
+          ? (totalProfit / totalCost) * 100
+          : null;
+      return data;
+    }).toList();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
   // Daily Sales Summary
   // Joins invoice_items → order_items to compute dailyCost & dailyProfit.
   // Excludes soft-deleted invoices.
@@ -30,6 +103,14 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     String endIso,
   ) async {
     const sql = '''
+      WITH invoice_costs AS (
+        SELECT
+          ii.invoice_id,
+          COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS cost
+        FROM invoice_items ii
+        LEFT JOIN order_items oi ON oi.id = ii.order_item_id
+        GROUP BY ii.invoice_id
+      )
       SELECT
         DATE(i.created_date) AS saleDate,
         COUNT(DISTINCT i.id)           AS totalInvoices,
@@ -37,12 +118,11 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
         COALESCE(SUM(i.tax_cost), 0)             AS totalTax,
         COALESCE(SUM(i.discount_amount), 0)      AS totalDiscount,
         COALESCE(SUM(i.net_payment_amount), 0)   AS netTotal,
-        COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS dailyCost,
+        COALESCE(SUM(ic.cost), 0)                AS dailyCost,
         COALESCE(SUM(i.net_payment_amount), 0)
-          - COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS dailyProfit
+          - COALESCE(SUM(ic.cost), 0)            AS dailyProfit
       FROM invoices i
-      LEFT JOIN invoice_items ii ON ii.invoice_id = i.id
-      LEFT JOIN order_items oi   ON oi.id = ii.order_item_id
+      LEFT JOIN invoice_costs ic ON ic.invoice_id = i.id
       WHERE i.created_date >= ?
         AND i.created_date <= ?
         AND (i.is_deleted IS NULL OR i.is_deleted = 0)
@@ -75,6 +155,14 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     String endIso,
   ) async {
     const sql = '''
+      WITH invoice_costs AS (
+        SELECT
+          ii.invoice_id,
+          COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS cost
+        FROM invoice_items ii
+        LEFT JOIN order_items oi ON oi.id = ii.order_item_id
+        GROUP BY ii.invoice_id
+      )
       SELECT
         SUBSTR(i.created_date, 1, 7)  AS saleMonth,
         COUNT(DISTINCT i.id)           AS totalInvoices,
@@ -82,12 +170,11 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
         COALESCE(SUM(i.tax_cost), 0)             AS totalTax,
         COALESCE(SUM(i.discount_amount), 0)      AS totalDiscount,
         COALESCE(SUM(i.net_payment_amount), 0)   AS netTotal,
-        COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS monthlyCost,
+        COALESCE(SUM(ic.cost), 0)                AS monthlyCost,
         COALESCE(SUM(i.net_payment_amount), 0)
-          - COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS monthlyProfit
+          - COALESCE(SUM(ic.cost), 0)            AS monthlyProfit
       FROM invoices i
-      LEFT JOIN invoice_items ii ON ii.invoice_id = i.id
-      LEFT JOIN order_items oi   ON oi.id = ii.order_item_id
+      LEFT JOIN invoice_costs ic ON ic.invoice_id = i.id
       WHERE i.created_date >= ?
         AND i.created_date <= ?
         AND (i.is_deleted IS NULL OR i.is_deleted = 0)
@@ -181,6 +268,14 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     String endIso,
   ) async {
     const sql = '''
+      WITH invoice_costs AS (
+        SELECT
+          ii.invoice_id,
+          COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS cost
+        FROM invoice_items ii
+        LEFT JOIN order_items oi ON oi.id = ii.order_item_id
+        GROUP BY ii.invoice_id
+      )
       SELECT
         COUNT(DISTINCT i.id)                       AS totalInvoices,
         COALESCE(SUM(i.total_cost), 0)             AS totalSales,
@@ -188,10 +283,9 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
         COALESCE(SUM(i.discount_amount), 0)        AS totalDiscount,
         COALESCE(SUM(i.net_payment_amount), 0)     AS netTotal,
         COALESCE(AVG(i.net_payment_amount), 0)     AS averageOrderValue,
-        COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS totalCost
+        COALESCE(SUM(ic.cost), 0)                  AS totalCost
       FROM invoices i
-      LEFT JOIN invoice_items ii ON ii.invoice_id = i.id
-      LEFT JOIN order_items oi   ON oi.id = ii.order_item_id
+      LEFT JOIN invoice_costs ic ON ic.invoice_id = i.id
       WHERE i.created_date >= ?
         AND i.created_date <= ?
         AND (i.is_deleted IS NULL OR i.is_deleted = 0)
@@ -219,15 +313,28 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     String startIso,
     String endIso, {
     String? itemName,
+    String format = 'daily',
   }) async {
     final hasItemFilter = itemName != null && itemName.trim().isNotEmpty;
     final itemFilterClause = hasItemFilter ? 'AND ii.item_name = ?' : '';
 
-    final sql =
-        '''
+    final sql = '''
       SELECT
         ii.item_name                                AS itemName,
-        DATE(i.created_date)                        AS saleDate,
+        CASE ?
+          WHEN 'yearly' THEN SUBSTR(i.created_date, 1, 4)
+          WHEN 'monthly' THEN SUBSTR(i.created_date, 1, 7)
+          WHEN 'weekly' THEN STRFTIME('%Y-W%W', i.created_date)
+          ELSE DATE(i.created_date)
+        END                                         AS period,
+        CASE ?
+          WHEN 'weekly' THEN MIN(DATE(i.created_date, '-' || ((CAST(STRFTIME('%w', i.created_date) AS INTEGER) + 6) % 7) || ' days'))
+          ELSE NULL
+        END                                         AS startDate,
+        CASE ?
+          WHEN 'weekly' THEN MAX(DATE(i.created_date, '+' || (6 - ((CAST(STRFTIME('%w', i.created_date) AS INTEGER) + 6) % 7)) || ' days'))
+          ELSE NULL
+        END                                         AS endDate,
         SUM(ii.quantity)                            AS quantitySold,
         COALESCE(SUM(ii.total_price), 0)            AS totalAmount,
         COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS totalCost
@@ -238,11 +345,14 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
         AND i.created_date <= ?
         AND (i.is_deleted IS NULL OR i.is_deleted = 0)
         $itemFilterClause
-      GROUP BY ii.item_name, DATE(i.created_date)
-      ORDER BY saleDate DESC, totalAmount DESC
+      GROUP BY ii.item_name, period
+      ORDER BY period DESC, totalAmount DESC
     ''';
 
     final variables = <Variable>[
+      Variable.withString(format),
+      Variable.withString(format),
+      Variable.withString(format),
       Variable.withString(startIso),
       Variable.withString(endIso),
       if (hasItemFilter) Variable.withString(itemName),
@@ -293,11 +403,11 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
       SELECT
         id,
         name,
-        current_stock AS currentStock,
+        COALESCE(current_stock, 0) AS currentStock,
         purchase_unit AS purchaseUnit,
         is_enabled AS isEnabled
       FROM inventory
-      WHERE is_enabled = 1
+      WHERE is_enabled = 1 OR is_enabled = 1.0 OR is_enabled IS NULL
       ORDER BY current_stock ASC, name ASC
     ''';
     final rows = await customSelect(sql).get();
@@ -310,23 +420,44 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
   // ─────────────────────────────────────────────────────────────────────────
   Future<List<Map<String, dynamic>>> getPurchaseSummaryReport(
     String startIso,
-    String endIso,
-  ) async {
+    String endIso, {
+    String format = 'daily',
+  }) async {
     const sql = '''
       SELECT
         p.name AS itemName,
         p.purchase_unit AS purchaseUnit,
+        CASE ?
+          WHEN 'yearly' THEN SUBSTR(p.purchase_date_time, 1, 4)
+          WHEN 'monthly' THEN SUBSTR(p.purchase_date_time, 1, 7)
+          WHEN 'weekly' THEN STRFTIME('%Y-W%W', p.purchase_date_time)
+          ELSE DATE(p.purchase_date_time)
+        END AS period,
+        CASE ?
+          WHEN 'weekly' THEN MIN(DATE(p.purchase_date_time, '-' || ((CAST(STRFTIME('%w', p.purchase_date_time) AS INTEGER) + 6) % 7) || ' days'))
+          ELSE NULL
+        END AS startDate,
+        CASE ?
+          WHEN 'weekly' THEN MAX(DATE(p.purchase_date_time, '+' || (6 - ((CAST(STRFTIME('%w', p.purchase_date_time) AS INTEGER) + 6) % 7)) || ' days'))
+          ELSE NULL
+        END AS endDate,
         COALESCE(SUM(p.purchase_qty), 0) AS totalQty,
         COALESCE(SUM(p.purchase_qty * p.purchase_price), 0) AS totalCost
       FROM purchase p
       WHERE p.purchase_date_time >= ?
         AND p.purchase_date_time <= ?
-      GROUP BY p.name, p.purchase_unit
-      ORDER BY totalCost DESC
+      GROUP BY p.name, p.purchase_unit, period
+      ORDER BY period DESC, totalCost DESC
     ''';
     final rows = await customSelect(
       sql,
-      variables: [Variable.withString(startIso), Variable.withString(endIso)],
+      variables: [
+        Variable.withString(format),
+        Variable.withString(format),
+        Variable.withString(format),
+        Variable.withString(startIso),
+        Variable.withString(endIso),
+      ],
     ).get();
     return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
   }
@@ -336,24 +467,98 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
   // ─────────────────────────────────────────────────────────────────────────
   Future<List<Map<String, dynamic>>> getExpenditureSummaryReport(
     String startIso,
-    String endIso,
-  ) async {
+    String endIso, {
+    String format = 'daily',
+  }) async {
     const sql = '''
       SELECT
         e.type AS type,
         e.category_name AS categoryName,
+        CASE ?
+          WHEN 'yearly' THEN SUBSTR(e.date, 1, 4)
+          WHEN 'monthly' THEN SUBSTR(e.date, 1, 7)
+          WHEN 'weekly' THEN STRFTIME('%Y-W%W', e.date)
+          ELSE DATE(e.date)
+        END AS period,
+        CASE ?
+          WHEN 'weekly' THEN MIN(DATE(e.date, '-' || ((CAST(STRFTIME('%w', e.date) AS INTEGER) + 6) % 7) || ' days'))
+          ELSE NULL
+        END AS startDate,
+        CASE ?
+          WHEN 'weekly' THEN MAX(DATE(e.date, '+' || (6 - ((CAST(STRFTIME('%w', e.date) AS INTEGER) + 6) % 7)) || ' days'))
+          ELSE NULL
+        END AS endDate,
         COALESCE(SUM(e.amount), 0) AS totalAmount,
         COUNT(e.id) AS transactionCount
       FROM expenditures e
       WHERE e.date >= ?
         AND e.date <= ?
         AND (e.is_deleted IS NULL OR e.is_deleted = 0)
-      GROUP BY e.type, e.category_name
-      ORDER BY totalAmount DESC
+      GROUP BY e.type, e.category_name, period
+      ORDER BY period DESC, totalAmount DESC
     ''';
     final rows = await customSelect(
       sql,
-      variables: [Variable.withString(startIso), Variable.withString(endIso)],
+      variables: [
+        Variable.withString(format),
+        Variable.withString(format),
+        Variable.withString(format),
+        Variable.withString(startIso),
+        Variable.withString(endIso),
+      ],
+    ).get();
+    return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
+  }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Inventory Stock Adjustments Report
+  // Returns stock adjustment logs in the specified date range.
+  // ─────────────────────────────────────────────────────────────────────────
+  Future<List<Map<String, dynamic>>> getStockAdjustmentsReport(
+    String startIso,
+    String endIso, {
+    String format = 'daily',
+  }) async {
+    const sql = '''
+      SELECT
+        id,
+        hash_id AS hashId,
+        inventory_id AS inventoryId,
+        inventory_name AS inventoryName,
+        adjustment_type AS adjustmentType,
+        adjusted_qty AS adjustedQty,
+        previous_stock AS previousStock,
+        new_stock AS newStock,
+        reason,
+        created_date AS createdDate,
+        CASE ?
+          WHEN 'yearly' THEN SUBSTR(created_date, 1, 4)
+          WHEN 'monthly' THEN SUBSTR(created_date, 1, 7)
+          WHEN 'weekly' THEN STRFTIME('%Y-W%W', created_date)
+          ELSE DATE(created_date)
+        END AS period,
+        CASE ?
+          WHEN 'weekly' THEN DATE(created_date, '-' || ((CAST(STRFTIME('%w', created_date) AS INTEGER) + 6) % 7) || ' days')
+          ELSE NULL
+        END AS startDate,
+        CASE ?
+          WHEN 'weekly' THEN DATE(created_date, '+' || (6 - ((CAST(STRFTIME('%w', created_date) AS INTEGER) + 6) % 7)) || ' days')
+          ELSE NULL
+        END AS endDate
+      FROM inventory_stock_adjustments
+      WHERE created_date >= ?
+        AND created_date <= ?
+      ORDER BY created_date DESC, id DESC
+    ''';
+    final rows = await customSelect(
+      sql,
+      variables: [
+        Variable.withString(format),
+        Variable.withString(format),
+        Variable.withString(format),
+        Variable.withString(startIso),
+        Variable.withString(endIso),
+      ],
     ).get();
     return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
   }

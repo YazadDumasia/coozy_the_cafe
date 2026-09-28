@@ -18,6 +18,7 @@ void registerReportsDependencies(GetIt sl) {
   );
 
   // Use Cases
+  sl.registerLazySingleton(() => GetSalesTrendsReportUseCase(sl()));
   sl.registerLazySingleton(() => GetDailySalesSummaryUseCase(sl()));
   sl.registerLazySingleton(() => GetMonthlySalesSummaryUseCase(sl()));
   sl.registerLazySingleton(() => GetTopSellingItemsUseCase(sl()));
@@ -27,10 +28,12 @@ void registerReportsDependencies(GetIt sl) {
   sl.registerLazySingleton(() => GetInventoryStockReportUseCase(sl()));
   sl.registerLazySingleton(() => GetPurchaseSummaryReportUseCase(sl()));
   sl.registerLazySingleton(() => GetExpenditureSummaryReportUseCase(sl()));
+  sl.registerLazySingleton(() => GetStockAdjustmentsReportUseCase(sl()));
 
   // Cubit
   sl.registerFactory(
     () => ReportsCubit(
+      getSalesTrendsReportUseCase: sl(),
       getDailySalesSummaryUseCase: sl(),
       getMonthlySalesSummaryUseCase: sl(),
       getTopSellingItemsUseCase: sl(),
@@ -40,6 +43,7 @@ void registerReportsDependencies(GetIt sl) {
       getPurchaseSummaryReportUseCase: sl(),
       getExpenditureSummaryReportUseCase: sl(),
       getMenuItemSalesReportUseCase: sl(),
+      getStockAdjustmentsReportUseCase: sl(),
     ),
   );
 }

@@ -102,6 +102,7 @@ class ReportCategoryCard extends StatelessWidget {
   }
 
   Color _accentFor(ReportType type) => switch (type) {
+    ReportType.salesTrends => const Color(0xFF6C63FF),
     ReportType.dailySales => const Color(0xFF6C63FF),
     ReportType.monthlySales => const Color(0xFF00BFA5),
     ReportType.topSellingItems => const Color(0xFFFF6B35),
@@ -111,5 +112,6 @@ class ReportCategoryCard extends StatelessWidget {
     ReportType.purchases => const Color(0xFFE64A19),
     ReportType.expenditure => const Color(0xFF43A047),
     ReportType.menuItemSales => const Color(0xFF8E24AA),
+    ReportType.stockAdjustments => const Color(0xFF00897B),
   };
 }

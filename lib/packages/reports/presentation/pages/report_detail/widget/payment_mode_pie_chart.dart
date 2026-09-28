@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../../../domain/entities/payment_mode_entry.dart';
 
@@ -12,7 +13,11 @@ class PaymentModePieChart extends StatelessWidget {
     if (entries.isEmpty) {
       return Center(
         child: Text(
-          'No data for selected range',
+          context.tr(
+                shared.LocaleKeys.reportPageEmptyData,
+                track: shared.TrackConstants.reportPageTrack,
+              ) ??
+              'No data found for the selected range',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             color: scheme.onSurface.withValues(alpha: 0.5),
           ),

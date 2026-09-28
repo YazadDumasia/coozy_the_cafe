@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 enum ReportType {
+  salesTrends,
   dailySales,
   monthlySales,
   topSellingItems,
@@ -10,6 +11,7 @@ enum ReportType {
   purchases,
   expenditure,
   menuItemSales,
+  stockAdjustments,
 }
 
 class ReportCategory {

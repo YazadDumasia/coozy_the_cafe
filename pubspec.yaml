@@ -144,6 +144,10 @@ dependencies:
   world_countries: ^4.4.0
   open_filex: ^4.7.0
   timelines_plus: ^2.0.1
+  # MCP Support for testing
+  marionette_flutter: ^0.6.0
+  marionette_mcp: ^0.6.0
+  marionette_logging: ^0.6.0
   # easy_localization: ^3.0.8
 dependency_overrides:
   intl: ^0.20.3

@@ -2161,52 +2161,284 @@ class FakeDataHelper {
       inventory = await db.select(db.inventoryTable).get();
     }
 
+    final invMap = {for (final i in inventory) i.name: i};
+
     // Realistic price ranges per unit for each inventory item
-    final unitPrices = <String, double>{'kg': 80.0, 'ltr': 60.0, 'pcs': 12.0};
+    final unitPrices = <String, double>{
+      'Whole Milk': 62.0,
+      'Fresh Tomatoes': 40.0,
+      'Paneer': 320.0,
+      'Potato (Fresh)': 25.0,
+      'Pizza Base': 15.0,
+      'Butter (Amul)': 480.0,
+      'Espresso Beans': 850.0,
+      'Refined Flour (Maida)': 45.0,
+      'White Sugar': 42.0,
+      'Cheddar Cheese': 520.0,
+      'Mozzarella Cheese': 490.0,
+      'Refined Cooking Oil': 140.0,
+      'Mixed Spice Blend': 600.0,
+      'Biscoff Spread': 750.0,
+      'Nutella': 680.0,
+      'Caramel Syrup': 380.0,
+      'Ramen Noodles': 35.0,
+      'Maggi Noodles': 14.0,
+      'Vanilla Ice Cream': 220.0,
+      'Black Lentils (Urad)': 130.0,
+    };
 
     int inserted = 0;
-    // Map to accumulate stock increments to sync inventory currentStock
-    final stockIncrements = <int, double>{};
+    final today = DateTime(now.year, now.month, now.day);
 
-    for (int p = 0; p < 100; p++) {
-      final inv = inventory[random.nextInt(inventory.length)];
-      final pDate = getRandomDate();
-      final qty = 10.0 + random.nextInt(40);
-      final basePrice = unitPrices[inv.purchaseUnit] ?? 50.0;
-      final unitPrice = basePrice + random.nextInt(50);
-
-      await db
-          .into(db.purchaseTable)
-          .insert(
-            PurchaseTableCompanion.insert(
-              hashId: Value(_seedId(token)),
-              inventoryId: Value(inv.id),
-              name: Value(inv.name ?? 'Raw Material'),
-              purchaseUnit: Value(inv.purchaseUnit ?? 'kg'),
-              purchaseQty: Value(qty),
-              purchaseDateTime: Value(pDate.toIso8601String()),
-              // purchasePrice represents the unit price per purchase unit.
-              // ReportsDao computes total cost via SUM(p.purchase_qty * p.purchase_price).
-              purchasePrice: Value(unitPrice),
-              createdDate: Value(pDate.toIso8601String()),
-            ),
-          );
+    Future<void> insertPurchase(
+      InventoryItem inv,
+      double qty,
+      double unitPrice,
+      DateTime pDate,
+    ) async {
+      final isoStr = pDate.toIso8601String();
+      await db.into(db.purchaseTable).insert(
+        PurchaseTableCompanion.insert(
+          hashId: Value(_seedId(token)),
+          inventoryId: Value(inv.id),
+          name: Value(inv.name ?? 'Raw Material'),
+          purchaseUnit: Value(inv.purchaseUnit ?? 'kg'),
+          purchaseQty: Value(qty),
+          purchaseDateTime: Value(isoStr),
+          purchasePrice: Value(unitPrice),
+          createdDate: Value(isoStr),
+        ),
+      );
       inserted++;
-      stockIncrements[inv.id] = (stockIncrements[inv.id] ?? 0.0) + qty;
     }
 
-    // Sync accumulated stock to inventory records so stock report reflects live purchase activity
-    for (final entry in stockIncrements.entries) {
-      final item = inventory.firstWhere((i) => i.id == entry.key);
-      final newStock = (item.currentStock ?? 0.0) + entry.value;
+    // 1. TODAY'S PURCHASES (3 fresh daily items)
+    final todayPurchases = [
+      ('Whole Milk', 30.0, 7, 30),
+      ('Fresh Tomatoes', 15.0, 8, 15),
+      ('Paneer', 8.0, 9, 0),
+    ];
+    for (final item in todayPurchases) {
+      final inv = invMap[item.$1] ?? inventory.first;
+      final price = unitPrices[inv.name] ?? 60.0;
+      final pDate = today.add(Duration(hours: item.$3, minutes: item.$4));
+      await insertPurchase(inv, item.$2, price, pDate);
+    }
+
+    // 2. YESTERDAY'S PURCHASES (3 items)
+    final yesterday = today.subtract(const Duration(days: 1));
+    final yestPurchases = [
+      ('Potato (Fresh)', 25.0, 8, 0),
+      ('Pizza Base', 40.0, 10, 30),
+      ('Butter (Amul)', 5.0, 14, 0),
+    ];
+    for (final item in yestPurchases) {
+      final inv = invMap[item.$1] ?? inventory.first;
+      final price = unitPrices[inv.name] ?? 50.0;
+      final pDate = yesterday.add(Duration(hours: item.$3, minutes: item.$4));
+      await insertPurchase(inv, item.$2, price, pDate);
+    }
+
+    // 3. THIS WEEK'S PURCHASES (Days 2 to 7: 2-3 per day)
+    for (int day = 2; day <= 7; day++) {
+      final pDay = today.subtract(Duration(days: day));
+      final count = 2 + random.nextInt(2);
+      for (int i = 0; i < count; i++) {
+        final inv = inventory[random.nextInt(inventory.length)];
+        final qty = 5.0 + random.nextInt(25);
+        final price = unitPrices[inv.name] ?? 70.0;
+        final pDate = pDay.add(
+          Duration(hours: 8 + random.nextInt(10), minutes: random.nextInt(60)),
+        );
+        await insertPurchase(inv, qty, price, pDate);
+      }
+    }
+
+    // 4. PAST 30 DAYS PURCHASES (Days 8 to 30: 1-2 per day)
+    for (int day = 8; day <= 30; day++) {
+      final pDay = today.subtract(Duration(days: day));
+      final count = 1 + (random.nextDouble() > 0.3 ? 1 : 0);
+      for (int i = 0; i < count; i++) {
+        final inv = inventory[random.nextInt(inventory.length)];
+        final qty = 10.0 + random.nextInt(30);
+        final price = unitPrices[inv.name] ?? 60.0;
+        final pDate = pDay.add(
+          Duration(hours: 8 + random.nextInt(10), minutes: random.nextInt(60)),
+        );
+        await insertPurchase(inv, qty, price, pDate);
+      }
+    }
+
+    // 5. HISTORICAL PURCHASES (Months 2 to 12: ~45 records)
+    for (int p = 0; p < 45; p++) {
+      final inv = inventory[random.nextInt(inventory.length)];
+      final daysAgo = 31 + random.nextInt(330);
+      final pDay = today.subtract(Duration(days: daysAgo));
+      final qty = 15.0 + random.nextInt(40);
+      final price = unitPrices[inv.name] ?? 60.0;
+      final pDate = pDay.add(
+        Duration(hours: 8 + random.nextInt(10), minutes: random.nextInt(60)),
+      );
+      await insertPurchase(inv, qty, price, pDate);
+    }
+
+    // Sync inventory currentStock: keep 4 items deliberately low (<= 5)
+    // so the InventoryStockBarChart displays red reorder warning bars!
+    final lowStockTargets = <String, double>{
+      'Nutella': 2.5,
+      'Butter (Amul)': 4.0,
+      'Caramel Syrup': 3.0,
+      'Mozzarella Cheese': 4.5,
+    };
+    final healthyStockTargets = <String, double>{
+      'Whole Milk': 55.0,
+      'Refined Flour (Maida)': 42.0,
+      'White Sugar': 38.0,
+      'Cheddar Cheese': 22.0,
+      'Fresh Tomatoes': 28.0,
+      'Refined Cooking Oil': 35.0,
+      'Mixed Spice Blend': 12.0,
+      'Pizza Base': 75.0,
+      'Biscoff Spread': 14.0,
+      'Potato (Fresh)': 60.0,
+      'Paneer': 26.0,
+      'Ramen Noodles': 85.0,
+      'Maggi Noodles': 140.0,
+      'Vanilla Ice Cream': 18.0,
+      'Black Lentils (Urad)': 32.0,
+      'Espresso Beans': 30.0,
+    };
+
+    for (final inv in inventory) {
+      final targetStock =
+          lowStockTargets[inv.name] ?? healthyStockTargets[inv.name] ?? 25.0;
       await (db.update(
         db.inventoryTable,
-      )..where((t) => t.id.equals(entry.key))).write(
+      )..where((t) => t.id.equals(inv.id))).write(
         InventoryTableCompanion(
-          currentStock: Value(newStock),
+          currentStock: Value(targetStock),
           modifiedDate: Value(now.toIso8601String()),
         ),
       );
+    }
+
+    // Generate sample stock adjustments for recent inventory events across time
+    final adjustmentReasonsAdd = [
+      'Physical audit recount',
+      'Vendor promotional bonus',
+      'Emergency stock transfer',
+    ];
+    final adjustmentReasonsRemove = [
+      'Wastage during prep',
+      'Spoilage / Expiry',
+      'Damaged in transit',
+    ];
+
+    Future<void> insertAdjustment(
+      InventoryItem inv,
+      bool isAdd,
+      double adjQty,
+      String reason,
+      DateTime adjDate,
+    ) async {
+      final prevStock = inv.currentStock ?? 15.0;
+      final newStock =
+          isAdd
+              ? prevStock + adjQty
+              : (prevStock > adjQty ? prevStock - adjQty : 0.0);
+      await db.into(db.inventoryStockAdjustmentsTable).insert(
+        InventoryStockAdjustmentsTableCompanion.insert(
+          hashId: Value(_seedId(token)),
+          inventoryId: Value(inv.id),
+          inventoryName: Value(inv.name ?? 'Item'),
+          adjustmentType: Value(isAdd ? 'add' : 'remove'),
+          adjustedQty: Value(adjQty),
+          previousStock: Value(prevStock),
+          newStock: Value(newStock),
+          reason: Value(reason),
+          createdDate: Value(adjDate.toIso8601String()),
+        ),
+      );
+    }
+
+    // Today adjustments (2)
+    final milk = invMap['Whole Milk'] ?? inventory.first;
+    final sugar = invMap['White Sugar'] ?? inventory.first;
+    await insertAdjustment(
+      milk,
+      false,
+      2.0,
+      'Wastage during prep',
+      today.add(const Duration(hours: 11)),
+    );
+    await insertAdjustment(
+      sugar,
+      true,
+      3.0,
+      'Physical audit recount',
+      today.add(const Duration(hours: 15, minutes: 30)),
+    );
+
+    // Yesterday adjustments (2)
+    final tomatoes = invMap['Fresh Tomatoes'] ?? inventory.first;
+    final syrup = invMap['Caramel Syrup'] ?? inventory.first;
+    await insertAdjustment(
+      tomatoes,
+      false,
+      1.5,
+      'Spoilage / Expiry',
+      yesterday.add(const Duration(hours: 10)),
+    );
+    await insertAdjustment(
+      syrup,
+      true,
+      2.0,
+      'Vendor promotional bonus',
+      yesterday.add(const Duration(hours: 16)),
+    );
+
+    // Days 2 to 7 adjustments (10)
+    for (int day = 2; day <= 7; day++) {
+      final aDay = today.subtract(Duration(days: day));
+      final inv = inventory[random.nextInt(inventory.length)];
+      final isAdd = random.nextBool();
+      final reasons = isAdd ? adjustmentReasonsAdd : adjustmentReasonsRemove;
+      final reason = reasons[random.nextInt(reasons.length)];
+      final qty = 1.0 + random.nextInt(4);
+      final aDate = aDay.add(
+        Duration(hours: 9 + random.nextInt(9), minutes: random.nextInt(60)),
+      );
+      await insertAdjustment(inv, isAdd, qty, reason, aDate);
+    }
+
+    // Days 8 to 30 adjustments (15)
+    for (int a = 0; a < 15; a++) {
+      final daysAgo = 8 + random.nextInt(22);
+      final aDay = today.subtract(Duration(days: daysAgo));
+      final inv = inventory[random.nextInt(inventory.length)];
+      final isAdd = random.nextBool();
+      final reasons = isAdd ? adjustmentReasonsAdd : adjustmentReasonsRemove;
+      final reason = reasons[random.nextInt(reasons.length)];
+      final qty = 1.0 + random.nextInt(5);
+      final aDate = aDay.add(
+        Duration(hours: 9 + random.nextInt(9), minutes: random.nextInt(60)),
+      );
+      await insertAdjustment(inv, isAdd, qty, reason, aDate);
+    }
+
+    // Historical adjustments (15)
+    for (int a = 0; a < 15; a++) {
+      final daysAgo = 31 + random.nextInt(300);
+      final aDay = today.subtract(Duration(days: daysAgo));
+      final inv = inventory[random.nextInt(inventory.length)];
+      final isAdd = random.nextBool();
+      final reasons = isAdd ? adjustmentReasonsAdd : adjustmentReasonsRemove;
+      final reason = reasons[random.nextInt(reasons.length)];
+      final qty = 1.0 + random.nextInt(5);
+      final aDate = aDay.add(
+        Duration(hours: 9 + random.nextInt(9), minutes: random.nextInt(60)),
+      );
+      await insertAdjustment(inv, isAdd, qty, reason, aDate);
     }
 
     return inserted;
@@ -2422,7 +2654,7 @@ class FakeDataHelper {
 
     final activeItemStatuses = ['preparing', 'pending', 'ready', 'served'];
 
-    // 1. Create 3 Active Dine-In Orders for 3 distinct tables
+    // 1. Create 3 Active Dine-In Orders for 3 distinct tables (for live table/order screen)
     final activeTablesCount = min(3, tables.length);
     for (int tIndex = 0; tIndex < activeTablesCount; tIndex++) {
       final cust = customers[random.nextInt(customers.length)];
@@ -2468,6 +2700,7 @@ class FakeDataHelper {
               phoneNumber: Value(cust.phoneNumber ?? '+91 0000000000'),
               isoCode: const Value('IN'),
               subtotalAmount: Value(activeSubtotal),
+              discountAmount: const Value(0.0),
               taxAmount: Value(activeTax),
               grandTotal: Value(activeGrandTotal),
               placedAt: Value(nowIso),
@@ -2478,7 +2711,7 @@ class FakeDataHelper {
       for (final item in chosenItems) {
         final qty = 1 + random.nextInt(2);
         final sPrice = item.sellingPrice ?? 120.0;
-        final cPrice = item.costPrice ?? (sPrice * 0.55);
+        final cPrice = item.costPrice ?? (sPrice * 0.52);
         final itemStatus =
             activeItemStatuses[random.nextInt(activeItemStatuses.length)];
         final remark = random.nextBool()
@@ -2506,35 +2739,129 @@ class FakeDataHelper {
       }
     }
 
-    // 2. Generate 147 Historical Completed Orders
-    final orderTypes = ['Dine-In', 'Takeaway', 'Delivery'];
-    final paymentMethods = ['Cash', 'UPI', 'Credit Card', 'Debit Card'];
-    for (int o = 0; o < 147; o++) {
+    // 2. Generate Multi-Tiered Historical Completed Orders
+    // High-selling popular menu items favored to create an authentic Pareto leaderboard
+    final bestsellerKeywords = [
+      'cappuccino',
+      'latte',
+      'cold brew',
+      'espresso',
+      'burger',
+      'fries',
+      'sandwich',
+      'pizza',
+      'cheesecake',
+      'chocolate',
+      'garlic bread',
+      'frappe',
+      'shake',
+      'noodles',
+    ];
+    final bestsellerItems = menuItems.where((m) {
+      final name = m.name.toLowerCase();
+      return bestsellerKeywords.any((k) => name.contains(k));
+    }).toList();
+
+    final today = DateTime(now.year, now.month, now.day);
+    final List<DateTime> orderTimestamps = [];
+
+    // Horizon A: TODAY (16 completed orders from morning to night)
+    final todaySlots = [
+      (8, 15), (8, 45), (9, 20), (10, 5), (11, 15), (12, 10),
+      (12, 45), (13, 30), (14, 15), (15, 30), (16, 20), (17, 10),
+      (18, 0), (19, 15), (20, 30), (21, 15),
+    ];
+    for (final s in todaySlots) {
+      orderTimestamps.add(today.add(Duration(hours: s.$1, minutes: s.$2)));
+    }
+
+    // Horizon B: YESTERDAY (15 completed orders)
+    final yesterday = today.subtract(const Duration(days: 1));
+    final yestSlots = [
+      (8, 30), (9, 15), (10, 0), (11, 20), (12, 15), (13, 0),
+      (13, 45), (14, 30), (16, 0), (16, 45), (17, 30), (18, 30),
+      (19, 30), (20, 45), (21, 30),
+    ];
+    for (final s in yestSlots) {
+      orderTimestamps.add(yesterday.add(Duration(hours: s.$1, minutes: s.$2)));
+    }
+
+    // Horizon C: THIS WEEK (Days 2 to 7: 12-16 orders/day with weekend boost)
+    for (int day = 2; day <= 7; day++) {
+      final baseDate = today.subtract(Duration(days: day));
+      final isWeekend = baseDate.weekday == DateTime.saturday ||
+          baseDate.weekday == DateTime.sunday;
+      final dayCount = isWeekend ? 16 : 12;
+      for (int i = 0; i < dayCount; i++) {
+        final hour = 8 + (i * 13 ~/ dayCount);
+        final minute = (i * 23 + random.nextInt(15)) % 60;
+        orderTimestamps.add(baseDate.add(Duration(hours: hour, minutes: minute)));
+      }
+    }
+
+    // Horizon D: LAST 30 DAYS (Days 8 to 30: 8-12 orders/day)
+    for (int day = 8; day <= 30; day++) {
+      final baseDate = today.subtract(Duration(days: day));
+      final isWeekend = baseDate.weekday == DateTime.saturday ||
+          baseDate.weekday == DateTime.sunday;
+      final dayCount = isWeekend ? 12 : 8;
+      for (int i = 0; i < dayCount; i++) {
+        final hour = 8 + (i * 13 ~/ dayCount);
+        final minute = (i * 17 + random.nextInt(20)) % 60;
+        orderTimestamps.add(baseDate.add(Duration(hours: hour, minutes: minute)));
+      }
+    }
+
+    // Horizon E: HISTORICAL (Months 2 to 12: 15 orders/month across 11 months)
+    for (int m = 2; m <= 12; m++) {
+      for (int i = 0; i < 15; i++) {
+        final daysAgo = 30 * (m - 1) + 1 + (i * 28 ~/ 15);
+        final baseDate = today.subtract(Duration(days: daysAgo));
+        final hour = 9 + random.nextInt(12);
+        final minute = random.nextInt(60);
+        orderTimestamps.add(baseDate.add(Duration(hours: hour, minutes: minute)));
+      }
+    }
+
+    for (final oDate in orderTimestamps) {
       final cust = customers[random.nextInt(customers.length)];
       final table = tables[random.nextInt(tables.length)];
-      final oDate = getRandomDate();
       final oIso = oDate.toIso8601String();
       final servedIso = oDate
           .add(const Duration(minutes: 25))
           .toIso8601String();
-      final chosenType = orderTypes[random.nextInt(orderTypes.length)];
-      final chosenPayment =
-          paymentMethods[random.nextInt(paymentMethods.length)];
 
+      // Weighted payment distribution: UPI 48%, Cash 26%, Credit Card 16%, Debit Card 10%
+      final pRoll = random.nextDouble();
+      final chosenPayment = pRoll < 0.48
+          ? 'UPI'
+          : (pRoll < 0.74 ? 'Cash' : (pRoll < 0.90 ? 'Credit Card' : 'Debit Card'));
+
+      // Weighted order type: Dine-In 60%, Takeaway 30%, Delivery 10%
+      final tRoll = random.nextDouble();
+      final chosenType = tRoll < 0.60
+          ? 'Dine-In'
+          : (tRoll < 0.90 ? 'Takeaway' : 'Delivery');
+
+      // Select 1 to 3 items per order favoring bestsellers
       final itemBatchCount = 1 + random.nextInt(3);
-      final chosenItems = (List.of(
-        menuItems,
-      )..shuffle(random)).take(itemBatchCount).toList();
+      final chosenItems = <MenuItem>[];
+      for (int b = 0; b < itemBatchCount; b++) {
+        if (bestsellerItems.isNotEmpty && random.nextDouble() < 0.65) {
+          chosenItems.add(bestsellerItems[random.nextInt(bestsellerItems.length)]);
+        } else {
+          chosenItems.add(menuItems[random.nextInt(menuItems.length)]);
+        }
+      }
 
-      // Compute order items details beforehand to accurately populate order summary amounts
       final itemRecords =
           <({int itemId, int qty, double sPrice, double cPrice})>[];
       double subtotal = 0.0;
 
       for (final item in chosenItems) {
-        final qty = 1 + random.nextInt(2);
+        final qty = 1 + (random.nextDouble() > 0.75 ? 1 : 0);
         final sPrice = item.sellingPrice ?? 120.0;
-        final cPrice = item.costPrice ?? (sPrice * 0.55);
+        final cPrice = item.costPrice ?? (sPrice * 0.52);
         subtotal += (sPrice * qty);
         itemRecords.add((
           itemId: item.id,
@@ -2545,8 +2872,19 @@ class FakeDataHelper {
       }
 
       subtotal = double.parse(subtotal.toStringAsFixed(2));
-      final tax = double.parse((subtotal * 0.05).toStringAsFixed(2));
-      final grandTotal = double.parse((subtotal + tax).toStringAsFixed(2));
+
+      // Realistic promotional discounts on ~20% of orders
+      double discount = 0.0;
+      if (random.nextDouble() < 0.15) {
+        discount = double.parse((subtotal * 0.10).toStringAsFixed(2));
+      } else if (subtotal >= 300.0 && random.nextDouble() < 0.10) {
+        discount = 50.0;
+      }
+
+      final taxable = double.parse((subtotal - discount).toStringAsFixed(2));
+      final tax = double.parse((taxable * 0.05).toStringAsFixed(2));
+      final grandTotal = double.parse((taxable + tax).toStringAsFixed(2));
+
       double cashRec = grandTotal;
       double changeAmt = 0.0;
       if (chosenPayment == 'Cash') {
@@ -2574,6 +2912,7 @@ class FakeDataHelper {
               phoneNumber: Value(cust.phoneNumber ?? '+91 9876543210'),
               isoCode: const Value('IN'),
               subtotalAmount: Value(subtotal),
+              discountAmount: Value(discount),
               taxAmount: Value(tax),
               grandTotal: Value(grandTotal),
               cashReceived: Value(cashRec),
@@ -2662,20 +3001,22 @@ class FakeDataHelper {
 
     int inserted = 0;
 
-    for (final order in orders.take(120)) {
+    for (final order in orders) {
       final orderItems = await (db.select(
         db.orderItemsTable,
       )..where((t) => t.orderId.equals(order.id))).get();
 
-      double subtotal = 0.0;
-      final invoiceItemCompanions = <InvoiceItemsTableCompanion>[];
+      double subtotal = order.subtotalAmount ?? 0.0;
+      final discount = order.discountAmount ?? 0.0;
+      final tax = order.taxAmount ?? 0.0;
+      final total = order.grandTotal ?? ((subtotal - discount) + tax);
 
       final orderDateStr = order.creationDate ?? now.toIso8601String();
+      final invoiceItemCompanions = <InvoiceItemsTableCompanion>[];
 
       if (orderItems.isNotEmpty) {
         for (final item in orderItems) {
           final itemTotal = (item.sellingPrice ?? 100.0) * (item.quantity ?? 1);
-          subtotal += itemTotal;
           final resolvedItemId = item.menuItemId ?? item.itemId;
           final menuItem = resolvedItemId != null
               ? menuItemMap[resolvedItemId]
@@ -2715,23 +3056,14 @@ class FakeDataHelper {
         );
       }
 
-      // Round to 2 decimal places
-      subtotal = double.parse(subtotal.toStringAsFixed(2));
-      final tax = double.parse((subtotal * 0.05).toStringAsFixed(2));
-      final total = double.parse((subtotal + tax).toStringAsFixed(2));
       final payMethod =
           order.paymentMethodName ??
           paymentMethods[random.nextInt(paymentMethods.length)];
 
       final paymentModeId = paymentModeMap[payMethod.toLowerCase()];
 
-      // Cash received (round up to nearest 10 for cash payments)
-      double cashReceived = total;
-      double changeAmount = 0.0;
-      if (payMethod == 'Cash') {
-        cashReceived = (total / 10).ceil() * 10.0;
-        changeAmount = double.parse((cashReceived - total).toStringAsFixed(2));
-      }
+      double cashReceived = order.cashReceived ?? total;
+      double changeAmount = order.changeAmount ?? 0.0;
 
       final invoiceId = await db
           .into(db.invoicesTable)
@@ -2740,9 +3072,11 @@ class FakeDataHelper {
               orderId: Value(order.id),
               hashId: Value(_seedId(token)),
               taxPercentage: const Value(5.0),
+              discountAmount: Value(discount),
+              discountType: Value(discount > 0 ? (discount == 50.0 ? 0 : 1) : 0),
               totalCost: Value(subtotal),
               taxCost: Value(tax),
-              taxableAmount: Value(subtotal),
+              taxableAmount: Value(subtotal - discount),
               netPaymentAmount: Value(total),
               recordAmountPaid: Value(cashReceived),
               cashReceived: Value(cashReceived),
@@ -5051,6 +5385,9 @@ class FakeDataHelper {
         );
       } else if (key == 'purchases') {
         await db.customStatement(
+          "DELETE FROM inventory_stock_adjustments WHERE hash_id LIKE '$tokenPattern';",
+        );
+        await db.customStatement(
           "DELETE FROM purchase WHERE hash_id LIKE '$tokenPattern';",
         );
       } else if (key == 'recipes') {
@@ -5070,6 +5407,9 @@ class FakeDataHelper {
           );
         }
       } else if (key == 'inventory') {
+        await db.customStatement(
+          "DELETE FROM inventory_stock_adjustments WHERE hash_id LIKE '$tokenPattern' OR inventory_id IN (SELECT id FROM inventory WHERE hash_id LIKE '$tokenPattern');",
+        );
         await db.customStatement(
           "DELETE FROM purchase WHERE inventory_id IN (SELECT id FROM inventory WHERE hash_id LIKE '$tokenPattern');",
         );
