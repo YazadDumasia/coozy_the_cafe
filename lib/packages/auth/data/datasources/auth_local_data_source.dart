@@ -1,4 +1,5 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import '../services/security_storage_service.dart';
 
 abstract class AuthLocalDataSource {
   Future<void> saveLoginState(bool isLoggedIn);
@@ -9,9 +10,30 @@ abstract class AuthLocalDataSource {
   Future<void> saveSuperUserFlag(bool isSuperUser);
   bool getSuperUserFlag();
   Future<void> clear();
+
+  Future<bool> verifyPassword(String candidatePassword);
+  Future<void> savePassword(String newPassword);
+  Future<String> getStoredEmail();
 }
 
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
+  final SecurityStorageService _securityStorageService;
+
+  AuthLocalDataSourceImpl({SecurityStorageService? securityStorageService})
+      : _securityStorageService =
+            securityStorageService ?? SecurityStorageService();
+
+  @override
+  Future<bool> verifyPassword(String candidatePassword) =>
+      _securityStorageService.verifyPassword(candidatePassword);
+
+  @override
+  Future<void> savePassword(String newPassword) =>
+      _securityStorageService.savePassword(newPassword);
+
+  @override
+  Future<String> getStoredEmail() =>
+      _securityStorageService.getStoredEmail();
   @override
   Future<void> saveLoginState(bool isLoggedIn) async {
     await shared.LocalManager.instance.setBoolValue(

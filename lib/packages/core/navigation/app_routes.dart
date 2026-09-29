@@ -10,6 +10,9 @@ class AppRoutePath {
   static const String loginRoute = '/login';
   static const String registrationRoute = '/register';
   static const String loginViaPhoneNumberRoute = '/login_via_phone';
+  static const String forgotPasswordRoute = '/forgot-password';
+  static const String resetPasswordRoute = '/reset-password';
+  static const String changePasswordRoute = '/change-password';
   static const String otpScreenRoute = '/otp';
   static const String otpVerificationRoute = '/otp-verification';
   static const String successfullyScreenRoute = '/successfully';
@@ -204,6 +207,9 @@ class AppRouteName {
   static const String login = 'login';
   static const String registration = 'registration';
   static const String loginViaPhone = 'login-via-phone';
+  static const String forgotPassword = 'forgot-password';
+  static const String resetPassword = 'reset-password';
+  static const String changePassword = 'change-password';
   static const String otp = 'otp';
   static const String otpVerification = 'otp-verification';
   static const String successfully = 'successfully';
@@ -282,6 +288,12 @@ class AppRouteName {
         return 'Registration';
       case loginViaPhone:
         return 'Login via Phone';
+      case forgotPassword:
+        return 'Forgot Password';
+      case resetPassword:
+        return 'Reset Password';
+      case changePassword:
+        return 'Change Password';
       case otp:
       case otpVerification:
         return 'OTP Verification';

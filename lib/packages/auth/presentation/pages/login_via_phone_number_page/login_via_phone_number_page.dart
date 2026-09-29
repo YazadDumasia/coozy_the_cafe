@@ -731,17 +731,28 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                             track: TrackConstants.signUpTrack,
                           ) ??
                           'Please enter your phone number.';
-                    } else {
-                      try {
-                        phoneNumber.isValidNumber();
-                        return null;
-                      } catch (_) {
-                        return context.tr(
-                              LocaleKeys.commonPhoneNumberValidatorErrorMsg,
-                              track: TrackConstants.signUpTrack,
-                            ) ??
-                            'Please enter a valid phone number.';
-                      }
+                    }
+                    // Ensure actual digit count is sufficient (min 6 digits)
+                    final digitsOnly = phoneNumber.number.replaceAll(
+                      RegExp(r'\D'),
+                      '',
+                    );
+                    if (digitsOnly.length < 6) {
+                      return context.tr(
+                            LocaleKeys.commonPhoneNumberValidatorErrorMsg,
+                            track: TrackConstants.signUpTrack,
+                          ) ??
+                          'Please enter a valid phone number.';
+                    }
+                    try {
+                      phoneNumber.isValidNumber();
+                      return null;
+                    } catch (_) {
+                      return context.tr(
+                            LocaleKeys.commonPhoneNumberValidatorErrorMsg,
+                            track: TrackConstants.signUpTrack,
+                          ) ??
+                          'Please enter a valid phone number.';
                     }
                   },
                   onChanged: (number) {
@@ -777,7 +788,7 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
 
   @override
   void dispose() {
-    controller!.dispose();
+    controller = null;
     _phoneNumberController?.dispose();
     _phoneNumberFocusNode?.dispose();
     _scrollController?.dispose();
@@ -818,27 +829,6 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
       final String smsMessage = 'Your code is $otpCode.';
       core.PlatformUtils.debugLog(LoginViaPhoneNumberPage, smsMessage);
 
-      if (mounted) {
-        DialogUtils.showAutoDismissDialog(
-          showDuration: const Duration(seconds: 5),
-          context: context,
-          title:
-              context.tr(
-                LocaleKeys.commonInfo,
-                track: TrackConstants.commonTrack,
-              ) ??
-              'Info',
-          descriptions:
-              context.tr(
-                LocaleKeys.webOtpMsg,
-                params: {'otpCode': otpCode},
-                track: TrackConstants.commonTrack,
-              ) ??
-              'Web OTP: $otpCode',
-          titleIcon: const Icon(Icons.info, color: Colors.blue, size: 50),
-        );
-      }
-
       await sendOtp(
         phoneNumber: phoneNumber,
         smsMessage: smsMessage,
@@ -873,24 +863,33 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
     // );
     // core.PlatformUtils.debugLog(LoginViaPhoneNumberPage, 'arguments:$arg');
 
-    final callback = await context.push<dynamic>(
+    _safeResetController();
+
+    await context.push<dynamic>(
       AppRoutePath.otpVerificationRoute,
       extra: {
         'phoneNumber':
             "${(_loginWithPhoneCubit!.phoneNumberIosCodeController.valueOrNull?.phoneCode ?? '')}${(_loginWithPhoneCubit!.phoneNumberController.valueOrNull ?? '')}",
         'otpNumber': otpCode,
         'appSignature': appSignatureId ?? '',
+        'isLoginScreen': true,
+        'isForgetPassword': false,
       },
     );
 
-    if (callback == null || callback == true) {
-      _phoneNumberController!.text = '';
-      isButtonclick = false;
-      controller!.reset();
-    } else {
-      _phoneNumberController!.text = '';
-      isButtonclick = false;
-      controller!.reset();
+    if (!mounted) return;
+    _phoneNumberController?.text = '';
+    isButtonclick = false;
+    _safeResetController();
+  }
+
+  void _safeResetController() {
+    try {
+      if (mounted && controller != null && !controller!.isDismissed) {
+        controller?.reset();
+      }
+    } catch (_) {
+      // Ignore if controller or ticker was already disposed by parent/child rebuild
     }
   }
 
@@ -909,7 +908,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
     } else {
       // controller?.error();
       Future.delayed(const Duration(seconds: 2), () {
-        controller?.reset();
+        if (mounted) {
+          _safeResetController();
+        }
       });
     }
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:coozy_the_cafe/packages/core/navigation/app_routes.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/login_page/widget/sign_in_button_widget.dart';
@@ -105,25 +107,34 @@ class LoginFormCardWidget extends StatelessWidget {
                           ),
                         ],
                       ),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.end,
-                      //   crossAxisAlignment: CrossAxisAlignment.end,
-                      //   children: <Widget>[
-                      //     TextButton(
-                      //       onPressed: () {},
-                      //       child: Text(
-                      //       context.tr(
-                      //             shared.LocaleKeys.loginForgetPassword,
-                      //             track: shared
-                      //                 .TrackConstants
-                      //                 .loginPageTrack,
-                      //           ) ??
-                      //           "Forget password?",
-                      //         textAlign: TextAlign.end,
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              context.push(AppRoutePath.forgotPasswordRoute);
+                            },
+                            child: Text(
+                              context.tr(
+                                    shared.LocaleKeys.loginForgetPassword,
+                                    track:
+                                        shared
+                                            .TrackConstants
+                                            .loginPageTrack,
+                                  ) ??
+                                  'Forget password?',
+                              textAlign: TextAlign.end,
+                              style: Theme.of(context).textTheme.bodySmall
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
                       SignInButtonWidget(
                         formKey: formKey,
                         callLoginApi: callLoginApi,

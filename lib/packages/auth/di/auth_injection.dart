@@ -4,6 +4,7 @@ import '../../core/coozy_core.dart' as core;
 import '../../database/coozy_database.dart' as db;
 import '../data/datasources/auth_local_data_source.dart';
 import '../data/datasources/ip_location_remote_data_source.dart';
+import '../data/services/security_storage_service.dart';
 import '../data/repositories/auth_repository_impl.dart';
 import '../data/repositories/ip_location_repository_impl.dart';
 import '../domain/repositories/auth_repository.dart';
@@ -16,9 +17,15 @@ import '../domain/usecases/get_current_user_ip_info_usecase.dart';
 import '../domain/usecases/check_auth_status_usecase.dart';
 import '../domain/usecases/get_country_code_usecase.dart';
 import '../domain/usecases/register_superuser_usecase.dart';
+import '../domain/usecases/send_password_reset_email_usecase.dart';
+import '../domain/usecases/reset_password_usecase.dart';
+import '../domain/usecases/change_password_usecase.dart';
 import '../presentation/pages/login_page/cubit/login_screen_cubit.dart';
 import '../presentation/pages/login_via_phone_number_page/cubit/login_with_phone_cubit.dart';
 import '../presentation/pages/sign_up_page/cubit/sign_up_cubit.dart';
+import '../presentation/pages/forgot_password_page/cubit/forgot_password_cubit.dart';
+import '../presentation/pages/reset_password_page/cubit/reset_password_cubit.dart';
+import '../presentation/pages/change_password_page/cubit/change_password_cubit.dart';
 
 void registerAuthDependencies(GetIt sl) {
   // HTTP Client
@@ -40,10 +47,17 @@ void registerAuthDependencies(GetIt sl) {
       () => sl<db.CoozyDatabase>().userLoginsDao,
     );
   }
+  // Security Storage Service (AES + SHA-256 + FlutterSecureStorage)
+  if (!sl.isRegistered<SecurityStorageService>()) {
+    sl.registerLazySingleton<SecurityStorageService>(
+      () => SecurityStorageService(),
+    );
+  }
+
   // Data Sources
   if (!sl.isRegistered<AuthLocalDataSource>()) {
     sl.registerLazySingleton<AuthLocalDataSource>(
-      () => AuthLocalDataSourceImpl(),
+      () => AuthLocalDataSourceImpl(securityStorageService: sl()),
     );
   }
   if (!sl.isRegistered<IpLocationRemoteDataSource>()) {
@@ -109,6 +123,21 @@ void registerAuthDependencies(GetIt sl) {
       () => RegisterSuperUserUseCase(sl()),
     );
   }
+  if (!sl.isRegistered<SendPasswordResetEmailUseCase>()) {
+    sl.registerLazySingleton<SendPasswordResetEmailUseCase>(
+      () => SendPasswordResetEmailUseCase(sl()),
+    );
+  }
+  if (!sl.isRegistered<ResetPasswordUseCase>()) {
+    sl.registerLazySingleton<ResetPasswordUseCase>(
+      () => ResetPasswordUseCase(sl()),
+    );
+  }
+  if (!sl.isRegistered<ChangePasswordUseCase>()) {
+    sl.registerLazySingleton<ChangePasswordUseCase>(
+      () => ChangePasswordUseCase(sl()),
+    );
+  }
   // Cubits
   if (!sl.isRegistered<LoginScreenCubit>()) {
     sl.registerFactory(
@@ -134,6 +163,24 @@ void registerAuthDependencies(GetIt sl) {
   if (!sl.isRegistered<LoginWithPhoneCubit>()) {
     sl.registerFactory<LoginWithPhoneCubit>(
       () => LoginWithPhoneCubit(ipLocationRepository: sl()),
+    );
+  }
+
+  if (!sl.isRegistered<ForgotPasswordCubit>()) {
+    sl.registerFactory<ForgotPasswordCubit>(
+      () => ForgotPasswordCubit(sendPasswordResetEmailUseCase: sl()),
+    );
+  }
+
+  if (!sl.isRegistered<ResetPasswordCubit>()) {
+    sl.registerFactory<ResetPasswordCubit>(
+      () => ResetPasswordCubit(resetPasswordUseCase: sl()),
+    );
+  }
+
+  if (!sl.isRegistered<ChangePasswordCubit>()) {
+    sl.registerFactory<ChangePasswordCubit>(
+      () => ChangePasswordCubit(changePasswordUseCase: sl()),
     );
   }
 }

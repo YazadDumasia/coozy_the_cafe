@@ -17,11 +17,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<User?> login({required String email, required String password}) async {
-    // Hardcoded credentials for development
-    const String hardcodedEmail = 'admin@coozy.com';
-    const String hardcodedPassword = 'admin123';
+    final storedEmail = await localDataSource.getStoredEmail();
+    final isPasswordValid = await localDataSource.verifyPassword(password);
 
-    if (email != hardcodedEmail || password != hardcodedPassword) {
+    if (email.trim().toLowerCase() != storedEmail.trim().toLowerCase() ||
+        !isPasswordValid) {
       return null;
     }
 
@@ -138,5 +138,54 @@ class AuthRepositoryImpl implements AuthRepository {
     await localDataSource.saveSuperUserFlag(true);
 
     return userId;
+  }
+
+  @override
+  Future<bool> sendPasswordResetEmail({
+    required String email,
+    String? temporaryPassword,
+  }) async {
+    // In a production backend environment, an email service (SMTP/SES/SendGrid)
+    // sends the generated random temporary password to the user's email.
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+    if (temporaryPassword != null && temporaryPassword.isNotEmpty) {
+      await localDataSource.savePassword(temporaryPassword);
+    }
+    final user = await userLoginsDao.getUserByUsernameOrEmail(email);
+    if (user != null && temporaryPassword != null && temporaryPassword.isNotEmpty) {
+      // Store temporary password hash in DB if user exists
+      await userLoginsDao.updatePassword(user.id, temporaryPassword);
+    }
+    return true;
+  }
+
+  @override
+  Future<bool> resetPassword({
+    required String email,
+    required String temporaryPassword,
+    required String newPassword,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+    await localDataSource.savePassword(newPassword);
+    final user = await userLoginsDao.getUserByUsernameOrEmail(email);
+    if (user != null) {
+      return userLoginsDao.updatePassword(user.id, newPassword);
+    }
+    return true;
+  }
+
+  @override
+  Future<bool> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 800));
+    final isOldPasswordValid =
+        await localDataSource.verifyPassword(oldPassword);
+    if (!isOldPasswordValid) {
+      return false;
+    }
+    await localDataSource.savePassword(newPassword);
+    return true;
   }
 }

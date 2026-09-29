@@ -168,6 +168,8 @@ abstract class LocaleKeys {
       'common_dob_field_validator_error_msg';
   static String commonComfirmPasswordHint = 'common_comfirm_password_hint';
   static String commonComfirmPasswordLabel = 'common_comfirm_password_label';
+  static String commonConfirmPasswordHint = 'common_comfirm_password_hint';
+  static String commonConfirmPasswordLabel = 'common_comfirm_password_label';
   static String commonGenderLabel = 'common_gender_label';
   static String commonGenderFemaleLabel = 'common_gender_female_label';
   static String commonGenderMaleLabel = 'common_gender_male_label';
@@ -1097,6 +1099,10 @@ abstract class LocaleKeys {
       'settings_auto_print_kitchen_slip_enabled';
   static const String settingsAutoPrintKitchenSlipDisabled =
       'settings_auto_print_kitchen_slip_disabled';
+  static const String settingsChangePasswordLabel =
+      'settings_change_password_label';
+  static const String settingsChangePasswordSubtitle =
+      'settings_change_password_subtitle';
   static const String settingsPreviewThermalSlipBtn =
       'settings_preview_thermal_slip_btn';
   static const String settingsDarkThemeLabel = 'settings_dark_theme_label';
@@ -1142,6 +1148,7 @@ abstract class LocaleKeys {
       'settings_expenditures_set_title';
   static const String settingsExpendituresSetSubtitle =
       'settings_expenditures_set_subtitle';
+  static const String settingsSecuritySection = 'settings_security_section';
 
   // form labels, hints, error msgs & tooltips
   static const String addressLine1Label = 'address_line_1_label';
@@ -1556,4 +1563,89 @@ abstract class LocaleKeys {
   static const String reportPageTotalTax = 'report_page_total_tax';
   static const String reportPageViewItemSalesAction =
       'report_page_view_item_sales_action';
+
+  // forgot_password_page
+  static const String forgotPasswordBackToLogin =
+      'forgot_password_back_to_login';
+  static const String forgotPasswordEmailHint = 'forgot_password_email_hint';
+  static const String forgotPasswordEmailLabel = 'forgot_password_email_label';
+  static const String forgotPasswordEmailSentMsg =
+      'forgot_password_email_sent_msg';
+  static const String forgotPasswordEmailValidatorEmpty =
+      'forgot_password_email_validator_empty';
+  static const String forgotPasswordEmailValidatorInvalid =
+      'forgot_password_email_validator_invalid';
+  static const String forgotPasswordResetPasswordNow =
+      'forgot_password_reset_password_now';
+  static const String forgotPasswordSendBtn = 'forgot_password_send_btn';
+  static const String forgotPasswordSendingBtn = 'forgot_password_sending_btn';
+  static const String forgotPasswordSubtitle = 'forgot_password_subtitle';
+  static const String forgotPasswordTempPasswordLabel =
+      'forgot_password_temp_password_label';
+  static const String forgotPasswordTempPasswordSentMsg =
+      'forgot_password_temp_password_sent_msg';
+  static const String forgotPasswordTempPasswordUseHint =
+      'forgot_password_temp_password_use_hint';
+  static const String forgotPasswordTitle = 'forgot_password_title';
+
+  // reset_password_page
+  static const String resetPasswordBackToLogin = 'reset_password_back_to_login';
+  static const String resetPasswordBtn = 'reset_password_btn';
+  static const String resetPasswordConfirmPasswordHint =
+      'reset_password_confirm_password_hint';
+  static const String resetPasswordConfirmPasswordLabel =
+      'reset_password_confirm_password_label';
+  static const String resetPasswordConfirmPasswordMatchError =
+      'reset_password_confirm_password_match_error';
+  static const String resetPasswordGenerateBtn = 'reset_password_generate_btn';
+  static const String resetPasswordGeneratedTooltip =
+      'reset_password_generated_tooltip';
+  static const String resetPasswordMailPasswordHint =
+      'reset_password_mail_password_hint';
+  static const String resetPasswordMailPasswordLabel =
+      'reset_password_mail_password_label';
+  static const String resetPasswordMailPasswordRequired =
+      'reset_password_mail_password_required';
+  static const String resetPasswordNewPasswordHint =
+      'reset_password_new_password_hint';
+  static const String resetPasswordNewPasswordLabel =
+      'reset_password_new_password_label';
+  static const String resetPasswordResettingBtn =
+      'reset_password_resetting_btn';
+  static const String resetPasswordSubtitle = 'reset_password_subtitle';
+  static const String resetPasswordSuccessMsg = 'reset_password_success_msg';
+  static const String resetPasswordTitle = 'reset_password_title';
+
+  // change_password_page
+  static const String changePasswordBackBtn = 'change_password_back_btn';
+  static const String changePasswordBtn = 'change_password_btn';
+  static const String changePasswordConfirmNewPasswordHint =
+      'change_password_confirm_new_password_hint';
+  static const String changePasswordConfirmNewPasswordLabel =
+      'change_password_confirm_new_password_label';
+  static const String changePasswordConfirmPasswordMatchError =
+      'change_password_confirm_password_match_error';
+  static const String changePasswordCurrentPasswordEmptyError =
+      'change_password_current_password_empty_error';
+  static const String changePasswordCurrentPasswordHint =
+      'change_password_current_password_hint';
+  static const String changePasswordCurrentPasswordLabel =
+      'change_password_current_password_label';
+  static const String changePasswordGenerateBtn =
+      'change_password_generate_btn';
+  static const String changePasswordGeneratedTooltip =
+      'change_password_generated_tooltip';
+  static const String changePasswordIncorrectCurrentPassword =
+      'change_password_incorrect_current_password';
+  static const String changePasswordNewPasswordHint =
+      'change_password_new_password_hint';
+  static const String changePasswordNewPasswordLabel =
+      'change_password_new_password_label';
+  static const String changePasswordNewPasswordSameError =
+      'change_password_new_password_same_error';
+  static const String changePasswordSubtitle = 'change_password_subtitle';
+  static const String changePasswordSuccessMsg = 'change_password_success_msg';
+  static const String changePasswordTitle = 'change_password_title';
+  static const String changePasswordUpdatingBtn =
+      'change_password_updating_btn';
 }

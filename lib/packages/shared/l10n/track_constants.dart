@@ -34,4 +34,7 @@ class TrackConstants {
   static const String checkoutPageTrack = 'checkout_page';
   static const String orderManagementPageTrack = 'order_management';
   static const String expenditurePageTrack = 'expenditure_page';
+  static const String forgotPasswordPageTrack = 'forgot_password_page';
+  static const String resetPasswordPageTrack = 'reset_password_page';
+  static const String changePasswordPageTrack = 'change_password_page';
 }

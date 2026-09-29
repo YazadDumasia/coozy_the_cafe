@@ -1786,6 +1786,74 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                 const SizedBox(height: 20),
 
+                // Account & Security Section
+                Text(
+                  _tr(
+                    context,
+                    shared.LocaleKeys.settingsSecuritySection,
+                    'Account & Security',
+                  ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Change Password Navigation Card
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.lock_reset_rounded,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                    title: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsChangePasswordLabel,
+                        'Change Password',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsChangePasswordSubtitle,
+                        'Update your account security password',
+                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                    ),
+                    onTap: () {
+                      context.push(core.AppRoutePath.changePasswordRoute);
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
                 // Demo & Testing Section
                 Text(
                   _tr(
