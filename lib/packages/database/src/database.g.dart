@@ -25735,19 +25735,15 @@ class $$SubcategoriesTableTableTableManager
                     >
                   >(state) {
                     if (categoryId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.categoryId,
-                                referencedTable:
-                                    $$SubcategoriesTableTableReferences
-                                        ._categoryIdTable(db),
-                                referencedColumn:
-                                    $$SubcategoriesTableTableReferences
-                                        ._categoryIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.categoryId,
+                        referencedTable: $$SubcategoriesTableTableReferences
+                            ._categoryIdTable(db),
+                        referencedColumn: $$SubcategoriesTableTableReferences
+                            ._categoryIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -27168,19 +27164,17 @@ class $$MenuItemVariationsTableTableTableManager
                         >
                       >(state) {
                         if (menuItemId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.menuItemId,
-                                    referencedTable:
-                                        $$MenuItemVariationsTableTableReferences
-                                            ._menuItemIdTable(db),
-                                    referencedColumn:
-                                        $$MenuItemVariationsTableTableReferences
-                                            ._menuItemIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.menuItemId,
+                            referencedTable:
+                                $$MenuItemVariationsTableTableReferences
+                                    ._menuItemIdTable(db),
+                            referencedColumn:
+                                $$MenuItemVariationsTableTableReferences
+                                    ._menuItemIdTable(db)
+                                    .id,
+                          ) as T;
                         }
 
                         return state;
@@ -28504,19 +28498,17 @@ class $$InventoryStockAdjustmentsTableTableTableManager
                     >
                   >(state) {
                     if (inventoryId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.inventoryId,
-                                referencedTable:
-                                    $$InventoryStockAdjustmentsTableTableReferences
-                                        ._inventoryIdTable(db),
-                                referencedColumn:
-                                    $$InventoryStockAdjustmentsTableTableReferences
-                                        ._inventoryIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.inventoryId,
+                        referencedTable:
+                            $$InventoryStockAdjustmentsTableTableReferences
+                                ._inventoryIdTable(db),
+                        referencedColumn:
+                            $$InventoryStockAdjustmentsTableTableReferences
+                                ._inventoryIdTable(db)
+                                .id,
+                      ) as T;
                     }
 
                     return state;
@@ -28972,17 +28964,15 @@ class $$PurchaseTableTableTableManager
                     >
                   >(state) {
                     if (inventoryId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.inventoryId,
-                                referencedTable: $$PurchaseTableTableReferences
-                                    ._inventoryIdTable(db),
-                                referencedColumn: $$PurchaseTableTableReferences
-                                    ._inventoryIdTable(db)
-                                    .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.inventoryId,
+                        referencedTable: $$PurchaseTableTableReferences
+                            ._inventoryIdTable(db),
+                        referencedColumn: $$PurchaseTableTableReferences
+                            ._inventoryIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -30246,34 +30236,26 @@ class $$ReservationsTableTableTableManager
                         >
                       >(state) {
                         if (customerId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.customerId,
-                                    referencedTable:
-                                        $$ReservationsTableTableReferences
-                                            ._customerIdTable(db),
-                                    referencedColumn:
-                                        $$ReservationsTableTableReferences
-                                            ._customerIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.customerId,
+                            referencedTable: $$ReservationsTableTableReferences
+                                ._customerIdTable(db),
+                            referencedColumn: $$ReservationsTableTableReferences
+                                ._customerIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (tableId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.tableId,
-                                    referencedTable:
-                                        $$ReservationsTableTableReferences
-                                            ._tableIdTable(db),
-                                    referencedColumn:
-                                        $$ReservationsTableTableReferences
-                                            ._tableIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.tableId,
+                            referencedTable: $$ReservationsTableTableReferences
+                                ._tableIdTable(db),
+                            referencedColumn: $$ReservationsTableTableReferences
+                                ._tableIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -31429,49 +31411,37 @@ class $$OrdersTableTableTableManager
                         >
                       >(state) {
                         if (tableInfoId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.tableInfoId,
-                                    referencedTable:
-                                        $$OrdersTableTableReferences
-                                            ._tableInfoIdTable(db),
-                                    referencedColumn:
-                                        $$OrdersTableTableReferences
-                                            ._tableInfoIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.tableInfoId,
+                            referencedTable: $$OrdersTableTableReferences
+                                ._tableInfoIdTable(db),
+                            referencedColumn: $$OrdersTableTableReferences
+                                ._tableInfoIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (customerId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.customerId,
-                                    referencedTable:
-                                        $$OrdersTableTableReferences
-                                            ._customerIdTable(db),
-                                    referencedColumn:
-                                        $$OrdersTableTableReferences
-                                            ._customerIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.customerId,
+                            referencedTable: $$OrdersTableTableReferences
+                                ._customerIdTable(db),
+                            referencedColumn: $$OrdersTableTableReferences
+                                ._customerIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (reservationId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.reservationId,
-                                    referencedTable:
-                                        $$OrdersTableTableReferences
-                                            ._reservationIdTable(db),
-                                    referencedColumn:
-                                        $$OrdersTableTableReferences
-                                            ._reservationIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.reservationId,
+                            referencedTable: $$OrdersTableTableReferences
+                                ._reservationIdTable(db),
+                            referencedColumn: $$OrdersTableTableReferences
+                                ._reservationIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -32338,64 +32308,48 @@ class $$OrderItemsTableTableTableManager
                         >
                       >(state) {
                         if (orderId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.orderId,
-                                    referencedTable:
-                                        $$OrderItemsTableTableReferences
-                                            ._orderIdTable(db),
-                                    referencedColumn:
-                                        $$OrderItemsTableTableReferences
-                                            ._orderIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.orderId,
+                            referencedTable: $$OrderItemsTableTableReferences
+                                ._orderIdTable(db),
+                            referencedColumn: $$OrderItemsTableTableReferences
+                                ._orderIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (itemId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.itemId,
-                                    referencedTable:
-                                        $$OrderItemsTableTableReferences
-                                            ._itemIdTable(db),
-                                    referencedColumn:
-                                        $$OrderItemsTableTableReferences
-                                            ._itemIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.itemId,
+                            referencedTable: $$OrderItemsTableTableReferences
+                                ._itemIdTable(db),
+                            referencedColumn: $$OrderItemsTableTableReferences
+                                ._itemIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (menuItemId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.menuItemId,
-                                    referencedTable:
-                                        $$OrderItemsTableTableReferences
-                                            ._menuItemIdTable(db),
-                                    referencedColumn:
-                                        $$OrderItemsTableTableReferences
-                                            ._menuItemIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.menuItemId,
+                            referencedTable: $$OrderItemsTableTableReferences
+                                ._menuItemIdTable(db),
+                            referencedColumn: $$OrderItemsTableTableReferences
+                                ._menuItemIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (selectedVariationId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.selectedVariationId,
-                                    referencedTable:
-                                        $$OrderItemsTableTableReferences
-                                            ._selectedVariationIdTable(db),
-                                    referencedColumn:
-                                        $$OrderItemsTableTableReferences
-                                            ._selectedVariationIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.selectedVariationId,
+                            referencedTable: $$OrderItemsTableTableReferences
+                                ._selectedVariationIdTable(db),
+                            referencedColumn: $$OrderItemsTableTableReferences
+                                ._selectedVariationIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -33854,49 +33808,37 @@ class $$InvoicesTableTableTableManager
                         >
                       >(state) {
                         if (orderId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.orderId,
-                                    referencedTable:
-                                        $$InvoicesTableTableReferences
-                                            ._orderIdTable(db),
-                                    referencedColumn:
-                                        $$InvoicesTableTableReferences
-                                            ._orderIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.orderId,
+                            referencedTable: $$InvoicesTableTableReferences
+                                ._orderIdTable(db),
+                            referencedColumn: $$InvoicesTableTableReferences
+                                ._orderIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (customerId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.customerId,
-                                    referencedTable:
-                                        $$InvoicesTableTableReferences
-                                            ._customerIdTable(db),
-                                    referencedColumn:
-                                        $$InvoicesTableTableReferences
-                                            ._customerIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.customerId,
+                            referencedTable: $$InvoicesTableTableReferences
+                                ._customerIdTable(db),
+                            referencedColumn: $$InvoicesTableTableReferences
+                                ._customerIdTable(db)
+                                .id,
+                          ) as T;
                         }
                         if (paymentModeId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.paymentModeId,
-                                    referencedTable:
-                                        $$InvoicesTableTableReferences
-                                            ._paymentModeIdTable(db),
-                                    referencedColumn:
-                                        $$InvoicesTableTableReferences
-                                            ._paymentModeIdTable(db)
-                                            .id,
-                                  )
-                                  as T;
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.paymentModeId,
+                            referencedTable: $$InvoicesTableTableReferences
+                                ._paymentModeIdTable(db),
+                            referencedColumn: $$InvoicesTableTableReferences
+                                ._paymentModeIdTable(db)
+                                .id,
+                          ) as T;
                         }
 
                         return state;
@@ -34439,19 +34381,15 @@ class $$InvoiceItemsTableTableTableManager
                     >
                   >(state) {
                     if (invoiceId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.invoiceId,
-                                referencedTable:
-                                    $$InvoiceItemsTableTableReferences
-                                        ._invoiceIdTable(db),
-                                referencedColumn:
-                                    $$InvoiceItemsTableTableReferences
-                                        ._invoiceIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.invoiceId,
+                        referencedTable: $$InvoiceItemsTableTableReferences
+                            ._invoiceIdTable(db),
+                        referencedColumn: $$InvoiceItemsTableTableReferences
+                            ._invoiceIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -34954,34 +34892,30 @@ class $$PaymentTransactionsTableTableTableManager
                     >
                   >(state) {
                     if (invoiceId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.invoiceId,
-                                referencedTable:
-                                    $$PaymentTransactionsTableTableReferences
-                                        ._invoiceIdTable(db),
-                                referencedColumn:
-                                    $$PaymentTransactionsTableTableReferences
-                                        ._invoiceIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.invoiceId,
+                        referencedTable:
+                            $$PaymentTransactionsTableTableReferences
+                                ._invoiceIdTable(db),
+                        referencedColumn:
+                            $$PaymentTransactionsTableTableReferences
+                                ._invoiceIdTable(db)
+                                .id,
+                      ) as T;
                     }
                     if (paymentModeId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.paymentModeId,
-                                referencedTable:
-                                    $$PaymentTransactionsTableTableReferences
-                                        ._paymentModeIdTable(db),
-                                referencedColumn:
-                                    $$PaymentTransactionsTableTableReferences
-                                        ._paymentModeIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.paymentModeId,
+                        referencedTable:
+                            $$PaymentTransactionsTableTableReferences
+                                ._paymentModeIdTable(db),
+                        referencedColumn:
+                            $$PaymentTransactionsTableTableReferences
+                                ._paymentModeIdTable(db)
+                                .id,
+                      ) as T;
                     }
 
                     return state;
@@ -36773,19 +36707,15 @@ class $$AttendanceTableTableTableManager
                     >
                   >(state) {
                     if (employeeId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.employeeId,
-                                referencedTable:
-                                    $$AttendanceTableTableReferences
-                                        ._employeeIdTable(db),
-                                referencedColumn:
-                                    $$AttendanceTableTableReferences
-                                        ._employeeIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.employeeId,
+                        referencedTable: $$AttendanceTableTableReferences
+                            ._employeeIdTable(db),
+                        referencedColumn: $$AttendanceTableTableReferences
+                            ._employeeIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -37248,17 +37178,15 @@ class $$LeavesTableTableTableManager
                     >
                   >(state) {
                     if (employeeId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.employeeId,
-                                referencedTable: $$LeavesTableTableReferences
-                                    ._employeeIdTable(db),
-                                referencedColumn: $$LeavesTableTableReferences
-                                    ._employeeIdTable(db)
-                                    .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.employeeId,
+                        referencedTable: $$LeavesTableTableReferences
+                            ._employeeIdTable(db),
+                        referencedColumn: $$LeavesTableTableReferences
+                            ._employeeIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -37286,22 +37214,20 @@ typedef $$LeavesTableTableProcessedTableManager =
       LeaveRecord,
       PrefetchHooks Function({bool employeeId})
     >;
-typedef $$RolesTableTableCreateCompanionBuilder =
-    RolesTableCompanion Function({
-      Value<int> id,
-      required String name,
-      Value<String?> description,
-      Value<String> createdAt,
-      Value<String> updatedAt,
-    });
-typedef $$RolesTableTableUpdateCompanionBuilder =
-    RolesTableCompanion Function({
-      Value<int> id,
-      Value<String> name,
-      Value<String?> description,
-      Value<String> createdAt,
-      Value<String> updatedAt,
-    });
+typedef $$RolesTableTableCreateCompanionBuilder = RolesTableCompanion Function({
+  Value<int> id,
+  required String name,
+  Value<String?> description,
+  Value<String> createdAt,
+  Value<String> updatedAt,
+});
+typedef $$RolesTableTableUpdateCompanionBuilder = RolesTableCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String?> description,
+  Value<String> createdAt,
+  Value<String> updatedAt,
+});
 
 final class $$RolesTableTableReferences
     extends BaseReferences<_$CoozyDatabase, $RolesTableTable, UserRole> {
@@ -38149,19 +38075,15 @@ class $$UserLoginsTableTableTableManager
                     >
                   >(state) {
                     if (roleId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.roleId,
-                                referencedTable:
-                                    $$UserLoginsTableTableReferences
-                                        ._roleIdTable(db),
-                                referencedColumn:
-                                    $$UserLoginsTableTableReferences
-                                        ._roleIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.roleId,
+                        referencedTable: $$UserLoginsTableTableReferences
+                            ._roleIdTable(db),
+                        referencedColumn: $$UserLoginsTableTableReferences
+                            ._roleIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -38834,34 +38756,26 @@ class $$RolePermissionsTableTableTableManager
                     >
                   >(state) {
                     if (roleId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.roleId,
-                                referencedTable:
-                                    $$RolePermissionsTableTableReferences
-                                        ._roleIdTable(db),
-                                referencedColumn:
-                                    $$RolePermissionsTableTableReferences
-                                        ._roleIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.roleId,
+                        referencedTable: $$RolePermissionsTableTableReferences
+                            ._roleIdTable(db),
+                        referencedColumn: $$RolePermissionsTableTableReferences
+                            ._roleIdTable(db)
+                            .id,
+                      ) as T;
                     }
                     if (permissionId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.permissionId,
-                                referencedTable:
-                                    $$RolePermissionsTableTableReferences
-                                        ._permissionIdTable(db),
-                                referencedColumn:
-                                    $$RolePermissionsTableTableReferences
-                                        ._permissionIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.permissionId,
+                        referencedTable: $$RolePermissionsTableTableReferences
+                            ._permissionIdTable(db),
+                        referencedColumn: $$RolePermissionsTableTableReferences
+                            ._permissionIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;
@@ -38889,26 +38803,24 @@ typedef $$RolePermissionsTableTableProcessedTableManager =
       RolePermission,
       PrefetchHooks Function({bool roleId, bool permissionId})
     >;
-typedef $$TaxesTableTableCreateCompanionBuilder =
-    TaxesTableCompanion Function({
-      Value<int?> createdBy,
-      Value<int?> updatedBy,
-      Value<int> id,
-      Value<String> hashId,
-      required String name,
-      required double ratePercent,
-      Value<bool> isDefaultAdd,
-    });
-typedef $$TaxesTableTableUpdateCompanionBuilder =
-    TaxesTableCompanion Function({
-      Value<int?> createdBy,
-      Value<int?> updatedBy,
-      Value<int> id,
-      Value<String> hashId,
-      Value<String> name,
-      Value<double> ratePercent,
-      Value<bool> isDefaultAdd,
-    });
+typedef $$TaxesTableTableCreateCompanionBuilder = TaxesTableCompanion Function({
+  Value<int?> createdBy,
+  Value<int?> updatedBy,
+  Value<int> id,
+  Value<String> hashId,
+  required String name,
+  required double ratePercent,
+  Value<bool> isDefaultAdd,
+});
+typedef $$TaxesTableTableUpdateCompanionBuilder = TaxesTableCompanion Function({
+  Value<int?> createdBy,
+  Value<int?> updatedBy,
+  Value<int> id,
+  Value<String> hashId,
+  Value<String> name,
+  Value<double> ratePercent,
+  Value<bool> isDefaultAdd,
+});
 
 class $$TaxesTableTableFilterComposer
     extends Composer<_$CoozyDatabase, $TaxesTableTable> {
@@ -40995,19 +40907,15 @@ class $$ExpendituresTableTableTableManager
                     >
                   >(state) {
                     if (categoryId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.categoryId,
-                                referencedTable:
-                                    $$ExpendituresTableTableReferences
-                                        ._categoryIdTable(db),
-                                referencedColumn:
-                                    $$ExpendituresTableTableReferences
-                                        ._categoryIdTable(db)
-                                        .id,
-                              )
-                              as T;
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.categoryId,
+                        referencedTable: $$ExpendituresTableTableReferences
+                            ._categoryIdTable(db),
+                        referencedColumn: $$ExpendituresTableTableReferences
+                            ._categoryIdTable(db)
+                            .id,
+                      ) as T;
                     }
 
                     return state;

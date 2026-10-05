@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'models/time_slot.dart';
 
 class TimeWidget extends StatelessWidget {

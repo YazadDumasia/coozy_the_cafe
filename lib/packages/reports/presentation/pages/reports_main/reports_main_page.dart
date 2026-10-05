@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../bloc/reports_cubit/reports_cubit.dart';
 import '../../../domain/entities/report_category.dart';
 import '../report_detail/report_detail_page.dart';

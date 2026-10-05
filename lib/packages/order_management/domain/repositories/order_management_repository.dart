@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:coozy_the_cafe/packages/core/error/failures.dart';
+
 import '../entities/order_management_entity.dart';
 
 class PaginatedOrdersResult {

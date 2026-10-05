@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../../domain/entities/stock_adjustment_entry.dart';
 
 class StockAdjustmentsBarChart extends StatelessWidget {
@@ -13,9 +14,8 @@ class StockAdjustmentsBarChart extends StatelessWidget {
       return Center(
         child: Text(
           'No stock adjustments found for the selected range',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: scheme.onSurface.withValues(alpha: 0.5),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }
@@ -39,8 +39,10 @@ class StockAdjustmentsBarChart extends StatelessWidget {
 
     // Sort by largest net volume of adjustments and take top 15
     final display = itemMap.values.toList()
-      ..sort((a, b) =>
-          (b.addedQty + b.removedQty).compareTo(a.addedQty + a.removedQty));
+      ..sort(
+        (a, b) =>
+            (b.addedQty + b.removedQty).compareTo(a.addedQty + a.removedQty),
+      );
     final chartData = display.take(15).toList();
 
     return SfCartesianChart(
@@ -91,8 +93,8 @@ class StockAdjustmentsBarChart extends StatelessWidget {
           yValueMapper: (_AggregatedAdjustment a, _) => a.addedQty,
           dataLabelMapper: (_AggregatedAdjustment a, _) => a.addedQty > 0
               ? (a.addedQty == a.addedQty.toInt()
-                  ? '${a.addedQty.toInt()}'
-                  : '${a.addedQty}')
+                    ? '${a.addedQty.toInt()}'
+                    : '${a.addedQty}')
               : '',
           color: Colors.green,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(5)),
@@ -113,8 +115,8 @@ class StockAdjustmentsBarChart extends StatelessWidget {
           yValueMapper: (_AggregatedAdjustment a, _) => a.removedQty,
           dataLabelMapper: (_AggregatedAdjustment a, _) => a.removedQty > 0
               ? (a.removedQty == a.removedQty.toInt()
-                  ? '${a.removedQty.toInt()}'
-                  : '${a.removedQty}')
+                    ? '${a.removedQty.toInt()}'
+                    : '${a.removedQty}')
               : '',
           color: Colors.orange,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(5)),

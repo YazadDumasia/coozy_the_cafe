@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../bloc/attendance/attendance_bloc.dart';
 import '../../bloc/attendance/attendance_event_state.dart';
 import '../../../domain/entities/staff_entities.dart';
@@ -199,9 +200,9 @@ class _AttendanceSubScreenState extends State<AttendanceSubScreen>
                 daysCount: daysInMonth,
                 initialSelectedDate: _selectedDateNotifier.value,
                 selectionColor: Theme.of(context).colorScheme.primaryContainer,
-                selectedTextColor: Theme.of(
-                  context,
-                ).colorScheme.onPrimaryContainer,
+                selectedTextColor: Theme.of(context)
+                    .colorScheme
+                    .onPrimaryContainer,
                 deactivatedColor: Theme.of(context).colorScheme.outline,
                 monthTextStyle: Theme.of(context).textTheme.labelSmall!
                     .copyWith(

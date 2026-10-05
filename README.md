@@ -55,7 +55,7 @@ Coming soon.
 | Charts & Sliders | syncfusion_flutter_charts, syncfusion_flutter_sliders |
 | Animations | lottie, animations, animated_text_kit |
 | Imaging & Camera | camera, image_picker, image_cropper, mobile_scanner |
-| PDF & Export | pdf, printing, pdfrx, syncfusion_flutter_xlsio |
+| PDF & Export | syncfusion_flutter_pdf, syncfusion_flutter_pdfviewer, printing, syncfusion_flutter_xlsio |
 | Notifications | flutter_local_notifications, flutter_timezone |
 | Geolocation | geolocator, geocoding |
 | Networking | http, internet_connection_checker_plus |

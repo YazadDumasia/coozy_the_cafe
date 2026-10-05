@@ -65,13 +65,14 @@ class SalesTrendEntry {
 
   /// Resolves the starting and ending date for a weekly period.
   (DateTime, DateTime)? get weekRange => ReportDateUtils.resolveWeekRange(
-        startDate: startDate,
-        endDate: endDate,
-        period: period,
-      );
+    startDate: startDate,
+    endDate: endDate,
+    period: period,
+  );
 
   /// Human-readable period string for tabular view and export reports.
-  String formattedPeriod(SalesPeriodFormat format) => ReportDateUtils.formatPeriod(
+  String formattedPeriod(SalesPeriodFormat format) =>
+      ReportDateUtils.formatPeriod(
         period: period,
         format: format,
         startDate: startDate,
@@ -79,7 +80,8 @@ class SalesTrendEntry {
       );
 
   /// Short period label for chart axis and tooltips.
-  String chartLabel(SalesPeriodFormat format) => ReportDateUtils.formatChartLabel(
+  String chartLabel(SalesPeriodFormat format) =>
+      ReportDateUtils.formatChartLabel(
         period: period,
         format: format,
         startDate: startDate,

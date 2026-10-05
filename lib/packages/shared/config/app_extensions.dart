@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+
 import 'app_localization.dart';
 import 'app_theme_extension.dart';
 
@@ -172,9 +173,8 @@ extension ResponsiveContext on BuildContext {
 
   /// Translates the given [key] using the AppLocalizations.
   String? tr(String key, {Map<String, String>? params, String? track}) {
-    return AppLocalizations.of(
-      this,
-    )?.translate(key, params: params, track: track);
+    return AppLocalizations.of(this)
+        ?.translate(key, params: params, track: track);
   }
 }
 
@@ -185,9 +185,8 @@ extension StringLocalizationExt on String {
     Map<String, String>? params,
     String? track,
   }) {
-    return AppLocalizations.of(
-          context,
-        )?.translate(this, params: params, track: track) ??
+    return AppLocalizations.of(context)
+            ?.translate(this, params: params, track: track) ??
         this;
   }
 }

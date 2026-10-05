@@ -122,9 +122,9 @@ class _MenuSubCategoryExpansionChildListViewWidgetState
                                                   .menuCategoryPageTrack,
                                             ) ??
                                             'Enable Status:',
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyMedium,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
                                         children: <InlineSpan>[
                                           TextSpan(text: ' '),
                                           TextSpan(

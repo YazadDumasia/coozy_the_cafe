@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+
 import '../database.dart';
 import '../tables.dart';
 
@@ -101,9 +102,8 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
           : null;
 
       if (customer != null) {
-        customerId = await into(
-          customersTable,
-        ).insert(customer, mode: InsertMode.replace);
+        customerId = await into(customersTable)
+            .insert(customer, mode: InsertMode.replace);
       }
 
       var finalOrder = customerId != null
@@ -114,9 +114,8 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
         finalOrder = finalOrder.copyWith(placedAt: Value(nowIso));
       }
 
-      final orderId = await into(
-        ordersTable,
-      ).insert(finalOrder, mode: InsertMode.replace);
+      final orderId = await into(ordersTable)
+          .insert(finalOrder, mode: InsertMode.replace);
 
       for (final item in orderItems) {
         var finalItem = item.copyWith(orderId: Value(orderId));
@@ -144,9 +143,8 @@ class OrdersDao extends DatabaseAccessor<CoozyDatabase> with _$OrdersDaoMixin {
           orderItemsTable,
         )..where((t) => t.orderId.equals(orderId))).go();
         for (final item in orderItems) {
-          await into(
-            orderItemsTable,
-          ).insert(item.copyWith(orderId: Value(orderId)));
+          await into(orderItemsTable)
+              .insert(item.copyWith(orderId: Value(orderId)));
         }
       }
     });

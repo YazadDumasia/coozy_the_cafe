@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+
 import 'data/datasources/invoice_management_remote_datasource.dart';
 import 'data/repositories/invoice_management_repository_impl.dart';
 import 'domain/repositories/invoice_management_repository.dart';

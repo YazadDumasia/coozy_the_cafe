@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart' as shared_prefs;
+
 import '../../waiter_order_placement/domain/entities/order_cart_item.dart'
     as cart;
 import '../../core/coozy_core.dart' as core;

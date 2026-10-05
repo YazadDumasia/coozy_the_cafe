@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../data/datasources/currency_exchange_api_service.dart';
 
 part 'currency_exchange_state.dart';

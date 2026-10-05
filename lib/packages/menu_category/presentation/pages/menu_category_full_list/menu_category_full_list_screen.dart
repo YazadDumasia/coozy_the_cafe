@@ -5,6 +5,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart' as slided;
+
 import 'menu_category_full_list_screen_actions.dart';
 import '../../widgets/menu_category_full_list/menu_category_list_item.dart';
 
@@ -138,9 +139,8 @@ class _MenuCategoryFullListScreenState
                     return shared.ErrorPage(
                       key: UniqueKey(),
                       onPressedRetryButton: () async =>
-                          BlocProvider.of<MenuCategoryFullListCubit>(
-                            context,
-                          ).loadData(),
+                          BlocProvider.of<MenuCategoryFullListCubit>(context)
+                              .loadData(),
                     );
                   }
                 },
@@ -261,9 +261,9 @@ class _MenuCategoryFullListScreenState
                                                 .menuCategoryPageTrack,
                                           ) ??
                                           'No suggestions',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleSmall,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleSmall,
                                     ),
                                   ),
                                 ],

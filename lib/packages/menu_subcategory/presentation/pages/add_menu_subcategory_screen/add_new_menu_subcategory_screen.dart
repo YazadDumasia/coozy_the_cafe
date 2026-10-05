@@ -5,6 +5,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_category/domain/entities/menu_category.dart';
 import 'package:coozy_the_cafe/packages/menu_category/domain/usecases/menu_category_usecases.dart';
 import 'package:coozy_the_cafe/packages/menu_category/presentation/pages/add_menu_category_screen/dynamic_text_form_field_for_sub_category_widget.dart';
+
 import '../../bloc/add_menu_subcategory_cubit/add_new_menu_subcategory_cubit.dart';
 import 'add_new_menu_subcategory_screen_actions.dart';
 
@@ -175,17 +176,17 @@ class _AddNewMenuSubcategoryScreenState
                                         children: [
                                           Icon(
                                             Icons.add,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                           ),
                                           SizedBox(width: 8),
                                           Text(
                                             'Add New Category',
                                             style: TextStyle(
-                                              color: Theme.of(
-                                                context,
-                                              ).colorScheme.primary,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),

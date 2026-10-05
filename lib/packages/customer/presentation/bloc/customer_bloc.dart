@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/entities/customer_entity.dart';
 import '../../domain/usecases/customer_usecases.dart';
 import '../../../shared/coozy_shared.dart' as shared;

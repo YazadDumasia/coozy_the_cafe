@@ -85,9 +85,8 @@ class _SuccessfullyScreenState extends State<SuccessfullyScreen>
                         track: TrackConstants.successfullyScreenTrack,
                       ) ??
                       'Successfully Verified!',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: Theme.of(context).textTheme.headlineSmall
+                      ?.copyWith(fontWeight: FontWeight.bold),
                 ),
               ],
             ),

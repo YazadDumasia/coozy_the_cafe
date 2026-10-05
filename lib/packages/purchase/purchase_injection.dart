@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+
 import 'data/datasources/purchase_local_data_source.dart';
 import 'data/repositories/purchase_repository_impl.dart';
 import 'domain/repositories/purchase_repository.dart';

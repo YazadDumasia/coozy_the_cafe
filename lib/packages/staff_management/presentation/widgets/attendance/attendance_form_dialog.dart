@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:coozy_the_cafe/packages/shared/config/app_extensions.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../bloc/employee/employee_bloc.dart';
 import '../../bloc/employee/employee_event_state.dart';
 import '../../../domain/entities/staff_entities.dart';
@@ -362,9 +363,9 @@ class _AttendanceFormDialogState extends State<AttendanceFormDialog> {
                                               ? ' - ${employee.position}'
                                               : '\nPosition: ${employee.position}',
                                           style: TextStyle(
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.onSurfaceVariant,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurfaceVariant,
                                             fontSize: 12,
                                           ),
                                         ),
@@ -502,9 +503,9 @@ class _AttendanceFormDialogState extends State<AttendanceFormDialog> {
                                     ),
                                     TextSpan(
                                       text: totalWorkingTime,
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
                                     ),
                                   ],
                                 ),
@@ -544,9 +545,9 @@ class _AttendanceFormDialogState extends State<AttendanceFormDialog> {
                                     ),
                                     TextSpan(
                                       text: 'N/A',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.bodyMedium,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
                                     ),
                                   ],
                                 ),

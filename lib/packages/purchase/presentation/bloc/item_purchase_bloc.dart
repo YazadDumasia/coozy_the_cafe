@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/entities/purchase_record.dart';
 import '../../domain/usecases/purchase_usecases.dart';
 import '../../../inventory/domain/entities/inventory_item.dart';

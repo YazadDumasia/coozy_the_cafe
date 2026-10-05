@@ -21,7 +21,7 @@ class TextFormEmailFieldWidget extends StatefulWidget {
 
 class _TextFormEmailFieldWidgetState extends State<TextFormEmailFieldWidget> {
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return StreamBuilder(
       stream: context.watch<LoginScreenCubit>().userNameStream,
       builder: (context, snapshot) {
@@ -105,9 +105,8 @@ class _TextFormEmailFieldWidgetState extends State<TextFormEmailFieldWidget> {
             }
           },
           onFieldSubmitted: (value) {
-            FocusScope.of(
-              context,
-            ).requestFocus(widget.nextFocusNode ?? FocusNode());
+            FocusScope.of(context)
+                .requestFocus(widget.nextFocusNode ?? FocusNode());
           },
         ).inExpandedRow();
       },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:translator/translator.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import 'dart:ui' as ui;
 
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
@@ -9,6 +10,7 @@ import 'package:coozy_the_cafe/packages/recipes/data/models/translator_language_
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/recipes/presentation/widgets/recipes_info/recipe_ingredients_section.dart';
 import 'package:coozy_the_cafe/packages/recipes/presentation/widgets/recipes_info/recipe_instructions_section.dart';
+
 import 'recipes_info_screen_actions.dart';
 
 class RecipesInfoStateHolder extends ChangeNotifier {
@@ -217,9 +219,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                   ),
                                   TextSpan(
                                     text: recipe.recipeOriginalName ?? '',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleLarge,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge,
                                   ),
                                 ],
                               ),
@@ -264,9 +266,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                   ),
                                   TextSpan(
                                     text: recipe.translatedRecipeName ?? '',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.titleMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleMedium,
                                   ),
                                 ],
                               ),
@@ -292,9 +294,10 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.color,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
                                 ),
                                 children: <InlineSpan>[
                                   TextSpan(
@@ -312,9 +315,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                               .recipesTrack,
                                         ) ??
                                         'Servings: ${recipe.recipeServings ?? 0}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ],
                               ),
@@ -340,9 +343,10 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.color,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
                                 ),
                                 children: <InlineSpan>[
                                   TextSpan(
@@ -360,9 +364,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                               .recipesTrack,
                                         ) ??
                                         'Total cooking time: ${recipe.recipeTotalTimeInMins ?? 0} mins',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ],
                               ),
@@ -388,9 +392,10 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.color,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
                                 ),
                                 children: <InlineSpan>[
                                   TextSpan(
@@ -408,9 +413,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                               .recipesTrack,
                                         ) ??
                                         'Cooking time: ${recipe.recipeCookingTimeInMins ?? 0} mins',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ],
                               ),
@@ -436,9 +441,10 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.color,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
                                 ),
                                 children: <InlineSpan>[
                                   TextSpan(
@@ -456,9 +462,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                               .recipesTrack,
                                         ) ??
                                         'Preparation time: ${recipe.recipePreparationTimeInMins ?? 0} mins',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ],
                               ),
@@ -484,9 +490,10 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.color,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
                                 ),
                                 children: <InlineSpan>[
                                   TextSpan(
@@ -504,9 +511,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                               .recipesTrack,
                                         ) ??
                                         'Cuisine: ${recipe.recipeCuisine ?? ''}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ],
                               ),
@@ -532,9 +539,10 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.color,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
                                 ),
                                 children: <InlineSpan>[
                                   TextSpan(
@@ -551,9 +559,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                               .recipesTrack,
                                         ) ??
                                         'Course: ${recipe.recipeCourse ?? ''}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ],
                               ),
@@ -579,9 +587,10 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                             child: RichText(
                               text: TextSpan(
                                 style: TextStyle(
-                                  color: Theme.of(
-                                    context,
-                                  ).textTheme.bodyMedium?.color,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color,
                                 ),
                                 children: <InlineSpan>[
                                   TextSpan(
@@ -598,9 +607,9 @@ class _RecipesInfoScreenState extends State<RecipesInfoScreen> {
                                               .recipesTrack,
                                         ) ??
                                         'Diet: ${recipe.recipeDiet ?? ''}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ],
                               ),

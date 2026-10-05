@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
+
 import '../../pages/recipes_bookmark_list/recipes_bookmark_list_screen_actions.dart';
+
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class RecipeBookmarkListItem extends StatelessWidget {
@@ -139,9 +141,9 @@ class RecipeBookmarkListItem extends StatelessWidget {
                                       const SizedBox(width: 5),
                                       Text(
                                         "${model.recipeTotalTimeInMins ?? "0"} mins",
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyLarge,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
                                       ),
                                     ],
                                   ),
@@ -158,9 +160,9 @@ class RecipeBookmarkListItem extends StatelessWidget {
                                       const SizedBox(width: 5),
                                       Text(
                                         "${model.recipeCookingTimeInMins ?? "0"} mins",
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyLarge,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
                                       ),
                                     ],
                                   ),
@@ -177,9 +179,9 @@ class RecipeBookmarkListItem extends StatelessWidget {
                                       const SizedBox(width: 5),
                                       Text(
                                         "${model.recipePreparationTimeInMins ?? "0"} mins",
-                                        style: Theme.of(
-                                          context,
-                                        ).textTheme.bodyLarge,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge,
                                       ),
                                     ],
                                   ),

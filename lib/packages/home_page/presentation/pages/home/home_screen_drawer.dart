@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../../core/coozy_core.dart' as core;
 
 import '../../../../shared/coozy_shared.dart' as shared;
+
 import 'package:package_info_plus/package_info_plus.dart';
+
 import 'home_screen_drawer_actions.dart';
 
 class HomeScreenDrawer extends StatefulWidget {

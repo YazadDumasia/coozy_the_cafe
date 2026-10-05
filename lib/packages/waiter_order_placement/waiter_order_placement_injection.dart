@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:get_it/get_it.dart';
+
 import 'data/datasources/waiter_order_placement_local_datasource.dart';
 import 'data/repositories/waiter_order_placement_repository_impl.dart';
 import 'domain/repositories/waiter_order_placement_repository.dart';

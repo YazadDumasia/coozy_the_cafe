@@ -870,6 +870,8 @@
     "settings_dark_theme_enabled": "Dark theme enabled",
     "settings_dark_theme_label": "Dark Theme",
     "settings_demo_testing_section": "Demo & Testing",
+    "settings_enable_qr_scanner_order_placement_label": "Direct Table QR Scanner for Orders",
+    "settings_enable_qr_scanner_order_placement_subtitle": "Enable quick table QR scan to place orders directly (ideal for deaf or non-verbal staff)",
     "settings_expenditures_set_subtitle": "450+ Cash Flow records (income, expenses, salaries, lease, supplies)",
     "settings_expenditures_set_title": "Expenditures & Cash Flow",
     "settings_fake_data_active": "Fake data active (${years} years history, ${count}+ records)",

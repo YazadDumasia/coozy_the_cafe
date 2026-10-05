@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../bloc/employee/employee_bloc.dart';
 import '../../bloc/employee/employee_event_state.dart';
 import '../../../domain/entities/staff_entities.dart';
@@ -320,9 +321,9 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                                     padding: const EdgeInsets.symmetric(
                                       horizontal: 16.0,
                                     ),
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.surfaceContainerHighest,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .surfaceContainerHighest,
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                       tag,
@@ -331,9 +332,9 @@ class _EmployeeSubScreenState extends State<EmployeeSubScreen>
                                           .titleSmall
                                           ?.copyWith(
                                             fontWeight: FontWeight.bold,
-                                            color: Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                           ),
                                     ),
                                   );

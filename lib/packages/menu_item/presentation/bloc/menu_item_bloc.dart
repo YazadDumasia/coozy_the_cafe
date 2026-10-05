@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/entities/menu_item.dart';
 import '../../domain/usecases/menu_item_usecases.dart';
 import '../../../shared/l10n/locale_keys.dart';

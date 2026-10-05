@@ -2,6 +2,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/inventory/presentation/bloc/inventroy_bloc/inventory_bloc.dart';
+
 import 'inventory_list_screen_actions.dart';
 import '../../widgets/inventory_list/inventory_empty_view.dart';
 import '../../widgets/inventory_list/inventory_list_item.dart';
@@ -243,18 +244,18 @@ class _InventoryListScreenState extends State<InventoryListScreen> {
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16.0,
                                 ),
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.surfaceContainerHighest,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .surfaceContainerHighest,
                                 alignment: Alignment.centerLeft,
                                 child: Text(
                                   tag,
                                   style: Theme.of(context).textTheme.titleSmall
                                       ?.copyWith(
                                         fontWeight: FontWeight.bold,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.primary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
                                       ),
                                 ),
                               );

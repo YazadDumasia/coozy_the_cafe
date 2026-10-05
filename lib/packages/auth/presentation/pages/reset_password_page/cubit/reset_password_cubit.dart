@@ -9,7 +9,7 @@ class ResetPasswordCubit extends Cubit<ResetPasswordState> {
   final ResetPasswordUseCase resetPasswordUseCase;
 
   ResetPasswordCubit({required this.resetPasswordUseCase})
-      : super(ResetPasswordInitial());
+    : super(ResetPasswordInitial());
 
   Future<void> submitResetPassword({
     required String email,

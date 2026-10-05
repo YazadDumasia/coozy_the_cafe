@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$/.." vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../../developmentSDK/flutter_linux_3.44.8-stable/flutter" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../../../../433b35c1-e7d9-4038-a2cd-48076d4b9dd7/developmentSDK/flutter_linux_3.44.8-stable/flutter" vcs="Git" />
   </component>
 </project>

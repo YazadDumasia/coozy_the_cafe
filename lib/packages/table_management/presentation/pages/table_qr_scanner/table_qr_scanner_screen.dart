@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
+import 'package:coozy_the_cafe/packages/table_management/domain/usecases/get_tables_usecase.dart';
 import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/repositories/waiter_order_placement_repository.dart';
 
 class TableQrScannerScreen extends StatefulWidget {
@@ -97,13 +99,11 @@ class _TableQrScannerScreenState extends State<TableQrScannerScreen> {
           });
           _scannerController.start();
         },
-        (activeOrders) {
+        (activeOrders) async {
           final matchingOrder = activeOrders.cast<dynamic>().firstWhere(
             (o) => o.tableId == tableId,
             orElse: () => null,
           );
-
-          final tableNameDisplay = 'TABLE $tableId';
 
           if (matchingOrder != null) {
             // Case 1: Order already placed -> Show menu item picker for existing order
@@ -116,7 +116,26 @@ class _TableQrScannerScreenState extends State<TableQrScannerScreen> {
               },
             );
           } else {
-            // Case 2: Table not occupied -> Create new order for that table on scan
+            // Case 2: Table not occupied -> Try resolving table name from tables repository
+            String tableNameDisplay = 'TABLE $tableId';
+            try {
+              if (sl.isRegistered<GetTablesUseCase>()) {
+                final allTables = await sl<GetTablesUseCase>()();
+                final found = allTables.cast<TableInfo?>().firstWhere(
+                  (t) => t?.id == tableId,
+                  orElse: () => null,
+                );
+                if (found != null) {
+                  tableNameDisplay = found.tableNo?.isNotEmpty == true
+                      ? found.tableNo!
+                      : (found.tableLabel?.isNotEmpty == true
+                            ? found.tableLabel!
+                            : 'TABLE $tableId');
+                }
+              }
+            } catch (_) {}
+
+            if (!mounted) return;
             context.pushReplacementNamed(
               'menu-item-picker',
               extra: {

@@ -33,4 +33,3 @@ abstract class AuthRepository {
     required String newPassword,
   });
 }
-

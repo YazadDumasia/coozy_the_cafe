@@ -23,7 +23,7 @@ mixin FilterStyleMixin<T extends StatelessWidget> {
   Color getDividerColor(BuildContext context) =>
       Theme.of(context).colorScheme.secondaryContainer;
 
-  TextStyle? getTitleTheme1(BuildContext context) => Theme.of(
-    context,
-  ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w500);
+  TextStyle? getTitleTheme1(BuildContext context) =>
+      Theme.of(context).textTheme.titleMedium
+          ?.copyWith(fontWeight: FontWeight.w500);
 }

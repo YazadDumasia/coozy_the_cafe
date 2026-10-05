@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../core/navigation/app_routes.dart';
 import '../bloc/inventroy_bloc/inventory_bloc.dart';
 import '../pages/inventory_list/inventory_list_screen.dart';

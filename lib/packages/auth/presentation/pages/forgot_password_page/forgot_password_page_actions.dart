@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/core/navigation/app_routes.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import 'cubit/forgot_password_cubit.dart';
 
 class ForgotPasswordPageActions {
@@ -34,10 +35,7 @@ class ForgotPasswordPageActions {
     final encodedEmail = Uri.encodeComponent(email);
     context.push(
       '${AppRoutePath.resetPasswordRoute}?email=$encodedEmail',
-      extra: {
-        'email': email,
-        'token': temporaryPassword ?? '',
-      },
+      extra: {'email': email, 'token': temporaryPassword ?? ''},
     );
   }
 
@@ -242,4 +240,3 @@ class ForgotPasswordPageActions {
     );
   }
 }
-

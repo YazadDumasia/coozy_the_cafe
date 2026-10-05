@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart' as faf;
 import 'package:coozy_the_cafe/packages/auth/presentation/widgets/confirm_password_field/confirm_password_field.dart';
 import 'package:coozy_the_cafe/packages/auth/presentation/widgets/password_with_generator_field/password_with_generator_field.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../cubit/reset_password_cubit.dart';
 import '../reset_password_page_actions.dart';
 
@@ -33,7 +34,9 @@ class ResetPasswordCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final ValueNotifier<bool> isMailPasswordObscured = ValueNotifier<bool>(true);
+    final ValueNotifier<bool> isMailPasswordObscured = ValueNotifier<bool>(
+      true,
+    );
 
     return Center(
       child: ConstrainedBox(
@@ -46,10 +49,9 @@ class ResetPasswordCardWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color:
-                    isDark
-                        ? Colors.black.withAlpha(90)
-                        : Colors.black.withAlpha(18),
+                color: isDark
+                    ? Colors.black.withAlpha(90)
+                    : Colors.black.withAlpha(18),
                 blurRadius: 28,
                 offset: const Offset(0, 10),
               ),
@@ -171,13 +173,10 @@ class ResetPasswordCardWidget extends StatelessWidget {
                           isDense: true,
                           hintText:
                               context.tr(
-                                shared
-                                    .LocaleKeys
-                                    .resetPasswordMailPasswordHint,
-                                track:
-                                    shared
-                                        .TrackConstants
-                                        .resetPasswordPageTrack,
+                                shared.LocaleKeys.resetPasswordMailPasswordHint,
+                                track: shared
+                                    .TrackConstants
+                                    .resetPasswordPageTrack,
                               ) ??
                               'Enter Mail Password',
                           prefixIcon: Icon(
@@ -185,8 +184,9 @@ class ResetPasswordCardWidget extends StatelessWidget {
                             color: theme.colorScheme.primary,
                           ),
                           suffixIcon: IconButton(
-                            tooltip:
-                                obscured ? 'Show password' : 'Hide password',
+                            tooltip: obscured
+                                ? 'Show password'
+                                : 'Hide password',
                             onPressed: () {
                               isMailPasswordObscured.value = !obscured;
                             },
@@ -236,10 +236,9 @@ class ResetPasswordCardWidget extends StatelessWidget {
                                   shared
                                       .LocaleKeys
                                       .resetPasswordMailPasswordRequired,
-                                  track:
-                                      shared
-                                          .TrackConstants
-                                          .resetPasswordPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .resetPasswordPageTrack,
                                 ) ??
                                 'Please enter the password provided via email.';
                           }
@@ -303,80 +302,76 @@ class ResetPasswordCardWidget extends StatelessWidget {
                     return SizedBox(
                       height: 52,
                       child: ElevatedButton(
-                        onPressed:
-                            isLoading
-                                ? null
-                                : () =>
-                                    ResetPasswordPageActions.onSubmitResetPressed(
-                                      context: context,
-                                      formKey: formKey,
-                                      email: email,
-                                      mailPasswordController:
-                                          mailPasswordController,
-                                      newPasswordController:
-                                          newPasswordController,
-                                      confirmPasswordController:
-                                          confirmPasswordController,
-                                    ),
+                        onPressed: isLoading
+                            ? null
+                            : () =>
+                                  ResetPasswordPageActions.onSubmitResetPressed(
+                                    context: context,
+                                    formKey: formKey,
+                                    email: email,
+                                    mailPasswordController:
+                                        mailPasswordController,
+                                    newPasswordController:
+                                        newPasswordController,
+                                    confirmPasswordController:
+                                        confirmPasswordController,
+                                  ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color(0xFFFF5C28), // Orange pill accent
+                          backgroundColor: const Color(
+                            0xFFFF5C28,
+                          ), // Orange pill accent
                           foregroundColor: Colors.white,
                           elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child:
-                            isLoading
-                                ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
+                        child: isLoading
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      context.tr(
-                                            shared
-                                                .LocaleKeys
-                                                .resetPasswordResettingBtn,
-                                            track:
-                                                shared
-                                                    .TrackConstants
-                                                    .resetPasswordPageTrack,
-                                          ) ??
-                                          'Resetting...',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                : Text(
-                                  context.tr(
-                                        shared.LocaleKeys.resetPasswordBtn,
-                                        track:
-                                            shared
-                                                .TrackConstants
-                                                .resetPasswordPageTrack,
-                                      ) ??
-                                      'Reset Password',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.2,
                                   ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    context.tr(
+                                          shared
+                                              .LocaleKeys
+                                              .resetPasswordResettingBtn,
+                                          track: shared
+                                              .TrackConstants
+                                              .resetPasswordPageTrack,
+                                        ) ??
+                                        'Resetting...',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Text(
+                                context.tr(
+                                      shared.LocaleKeys.resetPasswordBtn,
+                                      track: shared
+                                          .TrackConstants
+                                          .resetPasswordPageTrack,
+                                    ) ??
+                                    'Reset Password',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.2,
                                 ),
+                              ),
                       ),
                     );
                   },
@@ -386,10 +381,8 @@ class ResetPasswordCardWidget extends StatelessWidget {
                 // < Back to Login Button
                 Center(
                   child: TextButton.icon(
-                    onPressed:
-                        () => ResetPasswordPageActions.onBackToLoginPressed(
-                          context,
-                        ),
+                    onPressed: () =>
+                        ResetPasswordPageActions.onBackToLoginPressed(context),
                     icon: const Icon(Icons.chevron_left_rounded, size: 22),
                     label: Text(
                       context.tr(
@@ -402,8 +395,9 @@ class ResetPasswordCardWidget extends StatelessWidget {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      foregroundColor:
-                          isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                      foregroundColor: isDark
+                          ? Colors.grey.shade300
+                          : Colors.grey.shade800,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 10,

@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../shared/coozy_shared.dart' as shared;
 import '../../bloc/customer_bloc.dart';
 import 'customer_list_screen_actions.dart';
@@ -218,9 +220,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                                 child: Center(
                                   child: CupertinoActivityIndicator(
                                     animating: true,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
                                     radius: 15,
                                   ),
                                 ),
@@ -236,9 +238,9 @@ class _CustomerListScreenState extends State<CustomerListScreen> {
                           width: double.infinity,
                           margin: EdgeInsets.only(top: index == 0 ? 0 : 10),
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.surfaceContainerHighest,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
                           alignment: Alignment.centerLeft,
                           child: Text(
                             tag,

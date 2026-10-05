@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'package:drift/drift.dart';
+
 import '../database.dart';
 import '../tables.dart';
 
@@ -40,14 +42,12 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
     return transaction(() async {
       final invoiceId = await into(invoicesTable).insert(invoice);
       for (final item in items) {
-        await into(
-          invoiceItemsTable,
-        ).insert(item.copyWith(invoiceId: Value(invoiceId)));
+        await into(invoiceItemsTable)
+            .insert(item.copyWith(invoiceId: Value(invoiceId)));
       }
       for (final payment in payments) {
-        await into(
-          paymentTransactionsTable,
-        ).insert(payment.copyWith(invoiceId: Value(invoiceId)));
+        await into(paymentTransactionsTable)
+            .insert(payment.copyWith(invoiceId: Value(invoiceId)));
       }
       return invoiceId;
     });
@@ -254,9 +254,8 @@ class InvoicesDao extends DatabaseAccessor<CoozyDatabase>
           invoiceItemsTable,
         )..where((t) => t.invoiceId.equals(id))).go();
         for (final item in items) {
-          await into(
-            invoiceItemsTable,
-          ).insert(item.copyWith(invoiceId: Value(id)));
+          await into(invoiceItemsTable)
+              .insert(item.copyWith(invoiceId: Value(id)));
         }
       }
 

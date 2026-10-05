@@ -1,6 +1,7 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/entities/menu_catalog_data.dart';
 import '../../domain/entities/order_cart_item.dart';
 import '../../domain/usecases/get_active_menu_catalog_usecase.dart';

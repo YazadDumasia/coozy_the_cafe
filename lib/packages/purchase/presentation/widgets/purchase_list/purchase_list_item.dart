@@ -3,6 +3,7 @@ import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
 import 'package:coozy_the_cafe/packages/purchase/domain/entities/purchase_record.dart';
+
 import '../../pages/purchase_list/purchase_list_screen_actions.dart';
 
 class PurchaseListItem extends StatelessWidget {
@@ -24,9 +25,8 @@ class PurchaseListItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: Theme.of(
-            context,
-          ).colorScheme.primary.withValues(alpha: 0.2),
+          backgroundColor: Theme.of(context).colorScheme.primary
+              .withValues(alpha: 0.2),
           child: Icon(
             qty > 0
                 ? Icons.arrow_circle_up_outlined

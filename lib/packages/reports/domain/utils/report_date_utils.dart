@@ -1,4 +1,5 @@
 import 'package:intl/intl.dart';
+
 import '../entities/sales_trend_entry.dart';
 
 /// Centralized utility for parsing and formatting report periods (daily, weekly, monthly, yearly).
@@ -158,18 +159,29 @@ class ReportDateUtils {
   }
 
   static const Map<String, int> _monthMap = {
-    'jan': 1, 'january': 1,
-    'feb': 2, 'february': 2,
-    'mar': 3, 'march': 3,
-    'apr': 4, 'april': 4,
+    'jan': 1,
+    'january': 1,
+    'feb': 2,
+    'february': 2,
+    'mar': 3,
+    'march': 3,
+    'apr': 4,
+    'april': 4,
     'may': 5,
-    'jun': 6, 'june': 6,
-    'jul': 7, 'july': 7,
-    'aug': 8, 'august': 8,
-    'sep': 9, 'september': 9,
-    'oct': 10, 'october': 10,
-    'nov': 11, 'november': 11,
-    'dec': 12, 'december': 12,
+    'jun': 6,
+    'june': 6,
+    'jul': 7,
+    'july': 7,
+    'aug': 8,
+    'august': 8,
+    'sep': 9,
+    'september': 9,
+    'oct': 10,
+    'october': 10,
+    'nov': 11,
+    'november': 11,
+    'dec': 12,
+    'december': 12,
   };
 
   /// Parses diverse period and date strings into a comparable [DateTime].
@@ -190,9 +202,8 @@ class ReportDateUtils {
     if (direct != null) return direct;
 
     // 2. 'dd MMM yyyy' or 'd MMM yyyy' (e.g. '02 Sep 2026', '2 Sep 2026')
-    final dayMonthYearMatch = RegExp(
-      r'^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$',
-    ).firstMatch(str);
+    final dayMonthYearMatch = RegExp(r'^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$')
+        .firstMatch(str);
     if (dayMonthYearMatch != null) {
       final day = int.tryParse(dayMonthYearMatch.group(1)!);
       final mKey = dayMonthYearMatch.group(2)!.toLowerCase();
@@ -204,9 +215,7 @@ class ReportDateUtils {
     }
 
     // 3. 'MMMM yyyy' or 'MMM yyyy' (e.g. 'September 2026', 'Sep 2026')
-    final monthYearMatch = RegExp(
-      r'^([A-Za-z]+)\s+(\d{4})$',
-    ).firstMatch(str);
+    final monthYearMatch = RegExp(r'^([A-Za-z]+)\s+(\d{4})$').firstMatch(str);
     if (monthYearMatch != null) {
       final mKey = monthYearMatch.group(1)!.toLowerCase();
       final year = int.tryParse(monthYearMatch.group(2)!);
@@ -252,7 +261,8 @@ class ReportDateUtils {
     }
 
     // 7. Slash/dash date: 'dd/MM/yyyy' or 'dd-MM-yyyy'
-    final slashMatch = RegExp(r'^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$').firstMatch(str);
+    final slashMatch = RegExp(r'^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$')
+        .firstMatch(str);
     if (slashMatch != null) {
       final p1 = int.tryParse(slashMatch.group(1)!);
       final p2 = int.tryParse(slashMatch.group(2)!);

@@ -2,6 +2,7 @@ import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
+
 import '../../models/discount_model/discount_model.dart';
 import '../../utils/components/responsive_modal.dart';
 import 'add_discount_dialog.dart';

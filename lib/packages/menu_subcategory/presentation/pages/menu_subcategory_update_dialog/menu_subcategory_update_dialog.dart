@@ -1,6 +1,7 @@
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
+
 import 'menu_subcategory_update_dialog_actions.dart';
 
 class MenuSubcategoryUpdateDialog extends StatefulWidget {
@@ -141,9 +142,9 @@ class _MenuSubcategoryUpdateDialogState
                         textStyle: Theme.of(context).textTheme.bodyMedium,
                         renderBorder: true,
                         borderColor: Theme.of(context).colorScheme.primary,
-                        selectedBorderColor: Theme.of(
-                          context,
-                        ).colorScheme.primary,
+                        selectedBorderColor: Theme.of(context)
+                            .colorScheme
+                            .primary,
                         borderWidth: 1,
                         constraints: const BoxConstraints(
                           minHeight: 30,

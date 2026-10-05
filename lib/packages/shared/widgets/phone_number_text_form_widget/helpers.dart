@@ -22,9 +22,8 @@ extension CountryExtensions on List<Country> {
     return where(
       (country) => isNumeric(search) || search.startsWith('+')
           ? country.phoneCode.contains(search)
-          : removeDiacritics(
-              country.name.replaceAll('+', '').toLowerCase(),
-            ).contains(search),
+          : removeDiacritics(country.name.replaceAll('+', '').toLowerCase())
+                .contains(search),
     ).toList();
   }
 }

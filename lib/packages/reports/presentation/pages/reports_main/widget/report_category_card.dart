@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../domain/entities/report_category.dart';
 
 class ReportCategoryCard extends StatelessWidget {

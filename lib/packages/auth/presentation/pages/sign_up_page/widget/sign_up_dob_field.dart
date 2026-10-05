@@ -1,6 +1,7 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../cubit/sign_up_cubit.dart';
 
 class SignUpDobField extends StatelessWidget {

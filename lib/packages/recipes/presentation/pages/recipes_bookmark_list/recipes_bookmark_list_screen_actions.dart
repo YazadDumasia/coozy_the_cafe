@@ -25,8 +25,7 @@ class RecipesBookmarkListScreenActions {
     Recipe model,
   ) async {
     final toggled = model.copyWith(isBookmark: !(model.isBookmark ?? false));
-    await BlocProvider.of<RecipesBookmarkListCubit>(
-      context,
-    ).updateRecipe(toggled);
+    await BlocProvider.of<RecipesBookmarkListCubit>(context)
+        .updateRecipe(toggled);
   }
 }

@@ -3,16 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/sign_up_page/widget/sign_up_carousel_widget.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart' as asts;
+
 import 'cubit/reset_password_cubit.dart';
 import 'reset_password_page_actions.dart';
 import 'widget/reset_password_card_widget.dart';
 
 class ResetPasswordPage extends StatefulWidget {
-  const ResetPasswordPage({
-    super.key,
-    this.email = '',
-    this.token = '',
-  });
+  const ResetPasswordPage({super.key, this.email = '', this.token = ''});
 
   final String email;
   final String token;

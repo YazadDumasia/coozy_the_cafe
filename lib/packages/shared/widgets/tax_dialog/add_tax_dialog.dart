@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
+
 import '../../models/tax_model/tax_model.dart';
 
 class AddTaxDialog extends StatefulWidget {

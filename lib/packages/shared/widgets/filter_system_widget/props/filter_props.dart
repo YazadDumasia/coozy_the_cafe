@@ -1,5 +1,6 @@
 import 'applied_filter_model.dart';
 import 'filter_list_model.dart';
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 

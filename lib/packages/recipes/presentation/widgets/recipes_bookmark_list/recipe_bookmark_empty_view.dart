@@ -36,9 +36,8 @@ class RecipeBookmarkEmptyView extends StatelessWidget {
                       ) ??
                       'No data founded',
                   textAlign: TextAlign.center,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                  style: Theme.of(context).textTheme.titleLarge
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),
             ],
@@ -64,9 +63,8 @@ class RecipeBookmarkEmptyView extends StatelessWidget {
                       ) ??
                       'Please try to add some new bookmarks from recipes list.',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(context).textTheme.titleMedium
+                      ?.copyWith(fontWeight: FontWeight.w600),
                 ),
               ),
             ],

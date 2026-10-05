@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
+
 import '../../domain/entities/cash_flow_summary_entity.dart';
 import '../../domain/entities/expenditure_entity.dart';
 import '../../domain/usecases/get_cash_flow_summary_usecase.dart';

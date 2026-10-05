@@ -118,17 +118,15 @@ class LoginFormCardWidget extends StatelessWidget {
                             child: Text(
                               context.tr(
                                     shared.LocaleKeys.loginForgetPassword,
-                                    track:
-                                        shared
-                                            .TrackConstants
-                                            .loginPageTrack,
+                                    track: shared.TrackConstants.loginPageTrack,
                                   ) ??
                                   'Forget password?',
                               textAlign: TextAlign.end,
                               style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
                                     fontWeight: FontWeight.w600,
                                   ),
                             ),

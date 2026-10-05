@@ -1109,6 +1109,10 @@ abstract class LocaleKeys {
   static const String settingsDarkThemeEnabled = 'settings_dark_theme_enabled';
   static const String settingsDarkThemeDisabled =
       'settings_dark_theme_disabled';
+  static const String settingsEnableQrScannerOrderPlacementLabel =
+      'settings_enable_qr_scanner_order_placement_label';
+  static const String settingsEnableQrScannerOrderPlacementSubtitle =
+      'settings_enable_qr_scanner_order_placement_subtitle';
   static const String settingsLanguageSection = 'settings_language_section';
   static const String settingsAppLanguageLabel = 'settings_app_language_label';
   static const String settingsDemoTestingSection =

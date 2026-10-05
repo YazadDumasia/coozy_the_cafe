@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/staff_entities.dart';
 
 class EmployeeFormDialog extends StatefulWidget {
@@ -627,9 +628,8 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                           ),
                                           onPressed: () {
                                             _joiningDateController.text =
-                                                DateFormat(
-                                                  'dd-MM-yyyy',
-                                                ).format(tempPickedDate);
+                                                DateFormat('dd-MM-yyyy')
+                                                    .format(tempPickedDate);
                                             Navigator.pop(ctx);
                                           },
                                         ),
@@ -643,9 +643,9 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                     Expanded(
                                       child: CupertinoDatePicker(
                                         mode: CupertinoDatePickerMode.date,
-                                        backgroundColor: Theme.of(
-                                          ctx,
-                                        ).colorScheme.surface,
+                                        backgroundColor: Theme.of(ctx)
+                                            .colorScheme
+                                            .surface,
                                         dateOrder: DatePickerDateOrder.dmy,
                                         initialDateTime: initialDate,
                                         onDateTimeChanged: (DateTime newDate) {
@@ -733,9 +733,8 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                           ),
                                           onPressed: () {
                                             _leavingDateController.text =
-                                                DateFormat(
-                                                  'dd-MM-yyyy',
-                                                ).format(tempPickedDate);
+                                                DateFormat('dd-MM-yyyy')
+                                                    .format(tempPickedDate);
                                             Navigator.pop(ctx);
                                           },
                                         ),
@@ -749,9 +748,9 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                     Expanded(
                                       child: CupertinoDatePicker(
                                         mode: CupertinoDatePickerMode.date,
-                                        backgroundColor: Theme.of(
-                                          ctx,
-                                        ).colorScheme.surface,
+                                        backgroundColor: Theme.of(ctx)
+                                            .colorScheme
+                                            .surface,
                                         dateOrder: DatePickerDateOrder.dmy,
                                         initialDateTime: initialDate,
                                         onDateTimeChanged: (DateTime newDate) {
@@ -872,9 +871,9 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                     Expanded(
                                       child: CupertinoDatePicker(
                                         mode: CupertinoDatePickerMode.time,
-                                        backgroundColor: Theme.of(
-                                          ctx,
-                                        ).colorScheme.surface,
+                                        backgroundColor: Theme.of(ctx)
+                                            .colorScheme
+                                            .surface,
                                         initialDateTime: initialDateTime,
                                         onDateTimeChanged:
                                             (DateTime newDateTime) {
@@ -995,9 +994,9 @@ class _EmployeeFormDialogState extends State<EmployeeFormDialog> {
                                     Expanded(
                                       child: CupertinoDatePicker(
                                         mode: CupertinoDatePickerMode.time,
-                                        backgroundColor: Theme.of(
-                                          ctx,
-                                        ).colorScheme.surface,
+                                        backgroundColor: Theme.of(ctx)
+                                            .colorScheme
+                                            .surface,
                                         initialDateTime: initialDateTime,
                                         onDateTimeChanged:
                                             (DateTime newDateTime) {

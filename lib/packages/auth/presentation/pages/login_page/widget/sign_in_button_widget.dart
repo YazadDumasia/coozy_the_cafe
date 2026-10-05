@@ -19,10 +19,10 @@ class SignInButtonWidget extends StatefulWidget {
 
 class _SignInButtonWidgetState extends State<SignInButtonWidget> {
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return StreamBuilder(
       stream: context.watch<LoginScreenCubit>().buttonLoadingStream,
-      builder: (final context, final snapshot) {
+      builder: (context, snapshot) {
         return Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,

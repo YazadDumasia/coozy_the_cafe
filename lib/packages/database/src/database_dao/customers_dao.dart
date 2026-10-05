@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+
 import '../database.dart';
 import '../tables.dart';
 
@@ -11,9 +12,8 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
 
   /// Create a new customer
   Future<int> createCustomer(CustomersTableCompanion customer) async {
-    return await into(
-      customersTable,
-    ).insert(customer, mode: InsertMode.replace);
+    return await into(customersTable)
+        .insert(customer, mode: InsertMode.replace);
   }
 
   /// Get a single customer by ID

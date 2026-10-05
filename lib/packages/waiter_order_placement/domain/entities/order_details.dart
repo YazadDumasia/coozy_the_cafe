@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import 'order_cart_item.dart';
 
 class OrderDetails extends Equatable {

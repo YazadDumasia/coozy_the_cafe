@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart';
 import 'package:flutter/cupertino.dart';
@@ -641,9 +642,9 @@ class DialogUtils {
                                           Theme.of(context).brightness ==
                                               Brightness.light
                                           ? Colors.white
-                                          : Theme.of(
-                                              context,
-                                            ).colorScheme.primary,
+                                          : Theme.of(context)
+                                                .colorScheme
+                                                .primary,
                                       fontWeight: FontWeight.w700,
                                     ),
                               ),
@@ -687,9 +688,9 @@ class DialogUtils {
                                       color:
                                           Theme.of(context).brightness ==
                                               Brightness.light
-                                          ? Theme.of(
-                                              context,
-                                            ).colorScheme.primary
+                                          ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
                                           : Colors.white,
                                       fontWeight: FontWeight.w700,
                                     ),
@@ -706,9 +707,9 @@ class DialogUtils {
                   top: 2,
                   child: CircleAvatar(
                     radius: 45,
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(45),
                       child:
@@ -822,9 +823,9 @@ class DialogUtils {
                   top: 2,
                   child: CircleAvatar(
                     radius: 45,
-                    backgroundColor: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer,
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .primaryContainer,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(45),
                       child:

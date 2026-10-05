@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../bloc/reports_cubit/reports_cubit.dart';
 import '../../../domain/entities/report_category.dart';
 import '../../../domain/utils/report_date_utils.dart';
@@ -708,9 +709,8 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                           track: shared.TrackConstants.reportPageTrack,
                         ) ??
                         'Export Report',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: Theme.of(context).textTheme.titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -935,9 +935,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                 return SalesPeriodFormatSelector(
                   selectedFormat: format,
                   onFormatChanged: (newFormat) {
-                    context
-                        .read<ReportsCubit>()
-                        .changeSalesPeriodFormat(newFormat);
+                    context.read<ReportsCubit>().changeSalesPeriodFormat(
+                      newFormat,
+                    );
                   },
                 );
               },
@@ -1017,11 +1017,11 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                 ),
               )
             : (state is ReportsDailySalesLoaded
-                ? Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: SalesLineChart(entries: state.entries),
-                  )
-                : const _EmptyChart()),
+                  ? Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SalesLineChart(entries: state.entries),
+                    )
+                  : const _EmptyChart()),
       ReportType.monthlySales =>
         state is ReportsSalesTrendsLoaded
             ? Padding(
@@ -1032,11 +1032,11 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                 ),
               )
             : (state is ReportsMonthlySalesLoaded
-                ? Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: MonthlyBarChart(entries: state.entries),
-                  )
-                : const _EmptyChart()),
+                  ? Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: MonthlyBarChart(entries: state.entries),
+                    )
+                  : const _EmptyChart()),
       ReportType.topSellingItems =>
         state is ReportsTopItemsLoaded
             ? Padding(
@@ -1079,9 +1079,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
         state is ReportsPurchasesLoaded
             ? Padding(
                 padding: const EdgeInsets.all(16),
-                child: PurchaseSummaryBarChart(
-                  entries: state.entries,
-                ),
+                child: PurchaseSummaryBarChart(entries: state.entries),
               )
             : const _EmptyChart(),
       ReportType.expenditure =>

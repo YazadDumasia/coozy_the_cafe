@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/table_entity.dart';
 import '../../bloc/table_picker_bloc.dart';
 import '../../widgets/table_picker/table_card_widget.dart';
+
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class TablePickerScreen extends StatelessWidget {

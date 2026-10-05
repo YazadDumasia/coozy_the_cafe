@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart' as faf;
 import 'package:coozy_the_cafe/packages/auth/presentation/widgets/confirm_password_field/confirm_password_field.dart';
 import 'package:coozy_the_cafe/packages/auth/presentation/widgets/password_with_generator_field/password_with_generator_field.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../change_password_page_actions.dart';
 import '../cubit/change_password_cubit.dart';
 
@@ -59,10 +60,9 @@ class _ChangePasswordCardWidgetState extends State<ChangePasswordCardWidget> {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color:
-                    isDark
-                        ? Colors.black.withAlpha(90)
-                        : Colors.black.withAlpha(18),
+                color: isDark
+                    ? Colors.black.withAlpha(90)
+                    : Colors.black.withAlpha(18),
                 blurRadius: 28,
                 offset: const Offset(0, 10),
               ),
@@ -139,9 +139,8 @@ class _ChangePasswordCardWidgetState extends State<ChangePasswordCardWidget> {
                         textInputAction: TextInputAction.next,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         onFieldSubmitted: (_) {
-                          FocusScope.of(
-                            context,
-                          ).requestFocus(widget.newPasswordFocusNode);
+                          FocusScope.of(context)
+                              .requestFocus(widget.newPasswordFocusNode);
                         },
                         validator: (value) {
                           if (value == null || value.trim().isEmpty) {
@@ -149,10 +148,9 @@ class _ChangePasswordCardWidgetState extends State<ChangePasswordCardWidget> {
                                   shared
                                       .LocaleKeys
                                       .changePasswordCurrentPasswordEmptyError,
-                                  track:
-                                      shared
-                                          .TrackConstants
-                                          .changePasswordPageTrack,
+                                  track: shared
+                                      .TrackConstants
+                                      .changePasswordPageTrack,
                                 ) ??
                                 'Please enter your current password.';
                           }
@@ -165,10 +163,9 @@ class _ChangePasswordCardWidgetState extends State<ChangePasswordCardWidget> {
                                 shared
                                     .LocaleKeys
                                     .changePasswordCurrentPasswordLabel,
-                                track:
-                                    shared
-                                        .TrackConstants
-                                        .changePasswordPageTrack,
+                                track: shared
+                                    .TrackConstants
+                                    .changePasswordPageTrack,
                               ) ??
                               'Current Password',
                           hintText:
@@ -176,10 +173,9 @@ class _ChangePasswordCardWidgetState extends State<ChangePasswordCardWidget> {
                                 shared
                                     .LocaleKeys
                                     .changePasswordCurrentPasswordHint,
-                                track:
-                                    shared
-                                        .TrackConstants
-                                        .changePasswordPageTrack,
+                                track: shared
+                                    .TrackConstants
+                                    .changePasswordPageTrack,
                               ) ??
                               'Enter current password',
                           isDense: true,
@@ -188,10 +184,9 @@ class _ChangePasswordCardWidgetState extends State<ChangePasswordCardWidget> {
                             color: theme.colorScheme.primary,
                           ),
                           suffixIcon: IconButton(
-                            tooltip:
-                                isCurrentObscure
-                                    ? 'Show password'
-                                    : 'Hide password',
+                            tooltip: isCurrentObscure
+                                ? 'Show password'
+                                : 'Hide password',
                             onPressed: () {
                               _isCurrentObscureNotifier.value =
                                   !isCurrentObscure;
@@ -294,79 +289,75 @@ class _ChangePasswordCardWidgetState extends State<ChangePasswordCardWidget> {
                     return SizedBox(
                       height: 52,
                       child: ElevatedButton(
-                        onPressed:
-                            isLoading
-                                ? null
-                                : () =>
-                                    ChangePasswordPageActions.onSubmitChangePressed(
-                                      context: context,
-                                      formKey: widget.formKey,
-                                      currentPasswordController:
-                                          widget.currentPasswordController,
-                                      newPasswordController:
-                                          widget.newPasswordController,
-                                      confirmPasswordController:
-                                          widget.confirmPasswordController,
-                                    ),
+                        onPressed: isLoading
+                            ? null
+                            : () =>
+                                  ChangePasswordPageActions.onSubmitChangePressed(
+                                    context: context,
+                                    formKey: widget.formKey,
+                                    currentPasswordController:
+                                        widget.currentPasswordController,
+                                    newPasswordController:
+                                        widget.newPasswordController,
+                                    confirmPasswordController:
+                                        widget.confirmPasswordController,
+                                  ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color(0xFFFF5C28), // Orange pill accent
+                          backgroundColor: const Color(
+                            0xFFFF5C28,
+                          ), // Orange pill accent
                           foregroundColor: Colors.white,
                           elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child:
-                            isLoading
-                                ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
+                        child: isLoading
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      context.tr(
-                                            shared
-                                                .LocaleKeys
-                                                .changePasswordUpdatingBtn,
-                                            track:
-                                                shared
-                                                    .TrackConstants
-                                                    .changePasswordPageTrack,
-                                          ) ??
-                                          'Updating...',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                : Text(
-                                  context.tr(
-                                        shared.LocaleKeys.changePasswordBtn,
-                                        track:
-                                            shared
-                                                .TrackConstants
-                                                .changePasswordPageTrack,
-                                      ) ??
-                                      'Update Password',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.2,
                                   ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    context.tr(
+                                          shared
+                                              .LocaleKeys
+                                              .changePasswordUpdatingBtn,
+                                          track: shared
+                                              .TrackConstants
+                                              .changePasswordPageTrack,
+                                        ) ??
+                                        'Updating...',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Text(
+                                context.tr(
+                                      shared.LocaleKeys.changePasswordBtn,
+                                      track: shared
+                                          .TrackConstants
+                                          .changePasswordPageTrack,
+                                    ) ??
+                                    'Update Password',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.2,
                                 ),
+                              ),
                       ),
                     );
                   },
@@ -376,20 +367,20 @@ class _ChangePasswordCardWidgetState extends State<ChangePasswordCardWidget> {
                 // Cancel Button
                 Center(
                   child: TextButton(
-                    onPressed:
-                        () => ChangePasswordPageActions.onBackPressed(context),
+                    onPressed: () =>
+                        ChangePasswordPageActions.onBackPressed(context),
                     child: Text(
                       context.tr(
                             shared.LocaleKeys.changePasswordBackBtn,
-                            track: shared.TrackConstants.changePasswordPageTrack,
+                            track:
+                                shared.TrackConstants.changePasswordPageTrack,
                           ) ??
                           'Cancel',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color:
-                            isDark
-                                ? Colors.grey.shade400
-                                : Colors.grey.shade700,
+                        color: isDark
+                            ? Colors.grey.shade400
+                            : Colors.grey.shade700,
                       ),
                     ),
                   ),

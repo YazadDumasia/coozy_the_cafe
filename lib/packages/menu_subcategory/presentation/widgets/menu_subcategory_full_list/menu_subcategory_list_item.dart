@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
+
 import '../../pages/menu_subcategory_full_list/menu_subcategory_full_list_screen_actions.dart';
 
 class MenuSubcategoryListItem extends StatelessWidget {

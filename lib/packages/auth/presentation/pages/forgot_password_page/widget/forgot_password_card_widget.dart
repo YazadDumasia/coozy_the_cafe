@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/auth/presentation/widgets/signpost_illustration_widget/signpost_illustration_widget.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../cubit/forgot_password_cubit.dart';
 import '../forgot_password_page_actions.dart';
 
@@ -33,10 +34,9 @@ class ForgotPasswordCardWidget extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             boxShadow: [
               BoxShadow(
-                color:
-                    isDark
-                        ? Colors.black.withAlpha(90)
-                        : Colors.black.withAlpha(18),
+                color: isDark
+                    ? Colors.black.withAlpha(90)
+                    : Colors.black.withAlpha(18),
                 blurRadius: 28,
                 offset: const Offset(0, 10),
               ),
@@ -148,36 +148,36 @@ class ForgotPasswordCardWidget extends StatelessWidget {
                         ) ??
                         'e.g. username@kinety.com',
                     hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          isDark ? Colors.grey.shade500 : Colors.grey.shade400,
+                      color: isDark
+                          ? Colors.grey.shade500
+                          : Colors.grey.shade400,
                     ),
                     prefixIcon: Icon(
                       Icons.mail_outline_rounded,
-                      color:
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                      color: isDark
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
                     ),
                     filled: true,
-                    fillColor:
-                        isDark
-                            ? theme.colorScheme.surfaceContainerHighest
-                                .withAlpha(80)
-                            : Colors.grey.shade50,
+                    fillColor: isDark
+                        ? theme.colorScheme.surfaceContainerHighest.withAlpha(
+                            80,
+                          )
+                        : Colors.grey.shade50,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(
-                        color:
-                            isDark
-                                ? Colors.grey.shade700
-                                : Colors.grey.shade300,
+                        color: isDark
+                            ? Colors.grey.shade700
+                            : Colors.grey.shade300,
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide(
-                        color:
-                            isDark
-                                ? Colors.grey.shade700
-                                : Colors.grey.shade300,
+                        color: isDark
+                            ? Colors.grey.shade700
+                            : Colors.grey.shade300,
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
@@ -209,74 +209,70 @@ class ForgotPasswordCardWidget extends StatelessWidget {
                     return SizedBox(
                       height: 52,
                       child: ElevatedButton(
-                        onPressed:
-                            isLoading
-                                ? null
-                                : () =>
-                                    ForgotPasswordPageActions.onSendEmailPressed(
-                                      context: context,
-                                      formKey: formKey,
-                                      emailController: emailController,
-                                    ),
+                        onPressed: isLoading
+                            ? null
+                            : () =>
+                                  ForgotPasswordPageActions.onSendEmailPressed(
+                                    context: context,
+                                    formKey: formKey,
+                                    emailController: emailController,
+                                  ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor:
-                              const Color(0xFFFF5C28), // Orange pill accent
+                          backgroundColor: const Color(
+                            0xFFFF5C28,
+                          ), // Orange pill accent
                           foregroundColor: Colors.white,
                           elevation: 2,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
                         ),
-                        child:
-                            isLoading
-                                ? Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2.2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
+                        child: isLoading
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Text(
-                                      context.tr(
-                                            shared
-                                                .LocaleKeys
-                                                .forgotPasswordSendingBtn,
-                                            track:
-                                                shared
-                                                    .TrackConstants
-                                                    .forgotPasswordPageTrack,
-                                          ) ??
-                                          'Sending...',
-                                      style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
-                                )
-                                : Text(
-                                  context.tr(
-                                        shared.LocaleKeys.forgotPasswordSendBtn,
-                                        track:
-                                            shared
-                                                .TrackConstants
-                                                .forgotPasswordPageTrack,
-                                      ) ??
-                                      'Send Email',
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    letterSpacing: 0.2,
                                   ),
+                                  const SizedBox(width: 12),
+                                  Text(
+                                    context.tr(
+                                          shared
+                                              .LocaleKeys
+                                              .forgotPasswordSendingBtn,
+                                          track: shared
+                                              .TrackConstants
+                                              .forgotPasswordPageTrack,
+                                        ) ??
+                                        'Sending...',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : Text(
+                                context.tr(
+                                      shared.LocaleKeys.forgotPasswordSendBtn,
+                                      track: shared
+                                          .TrackConstants
+                                          .forgotPasswordPageTrack,
+                                    ) ??
+                                    'Send Email',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.2,
                                 ),
+                              ),
                       ),
                     );
                   },
@@ -286,10 +282,8 @@ class ForgotPasswordCardWidget extends StatelessWidget {
                 // < Back to Login Button
                 Center(
                   child: TextButton.icon(
-                    onPressed:
-                        () => ForgotPasswordPageActions.onBackToLoginPressed(
-                          context,
-                        ),
+                    onPressed: () =>
+                        ForgotPasswordPageActions.onBackToLoginPressed(context),
                     icon: const Icon(Icons.chevron_left_rounded, size: 22),
                     label: Text(
                       context.tr(
@@ -303,8 +297,9 @@ class ForgotPasswordCardWidget extends StatelessWidget {
                       ),
                     ),
                     style: TextButton.styleFrom(
-                      foregroundColor:
-                          isDark ? Colors.grey.shade300 : Colors.grey.shade800,
+                      foregroundColor: isDark
+                          ? Colors.grey.shade300
+                          : Colors.grey.shade800,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
                         vertical: 10,

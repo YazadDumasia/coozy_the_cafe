@@ -48,36 +48,71 @@ class WaiterOrderPlacementView extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
                   onTap: () async {
-                    await context.push(AppRoutePath.tablePickerScreenRoute);
+                    final bool
+                    isQrDirectScan = shared.LocalManager.instance.getBoolValue(
+                      key: shared.PreferencesKeys.enableQrScannerOrderPlacement,
+                    );
+
+                    if (isQrDirectScan) {
+                      await context.push('/table-qr-scanner');
+                    } else {
+                      await context.push(AppRoutePath.tablePickerScreenRoute);
+                    }
+
                     if (context.mounted) {
                       context.read<ActiveTableOrdersBloc>().add(
                         const LoadActiveTableOrdersEvent(),
                       );
                     }
                   },
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        CupertinoIcons.add_circled_solid,
-                        size: 30,
-                        color: Colors.green,
-                      ),
-                      Text(
-                        context.tr(
-                              shared.LocaleKeys.addNewOrderBtnText,
-                              track: shared.TrackConstants.tablePageTrack,
-                            ) ??
-                            'Add New Order',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ).inExpandedRow().paddingSymmetric(vertical: 10),
-                    ],
-                  ).paddingSymmetric(horizontal: 10, vertical: 40),
+                  child: Builder(
+                    builder: (context) {
+                      final bool isQrDirectScan = shared.LocalManager.instance
+                          .getBoolValue(
+                            key: shared
+                                .PreferencesKeys
+                                .enableQrScannerOrderPlacement,
+                          );
+
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            isQrDirectScan
+                                ? Icons.qr_code_scanner_rounded
+                                : CupertinoIcons.add_circled_solid,
+                            size: 34,
+                            color: Colors.green,
+                          ),
+                          Text(
+                            isQrDirectScan
+                                ? (context.tr(
+                                        shared
+                                            .LocaleKeys
+                                            .scanQrCodeToPlaceOrder,
+                                        track: shared
+                                            .TrackConstants
+                                            .tablePageTrack,
+                                      ) ??
+                                      'Scan QR code to place order')
+                                : (context.tr(
+                                        shared.LocaleKeys.addNewOrderBtnText,
+                                        track: shared
+                                            .TrackConstants
+                                            .tablePageTrack,
+                                      ) ??
+                                      'Add New Order'),
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ).inExpandedRow().paddingSymmetric(vertical: 10),
+                        ],
+                      ).paddingSymmetric(horizontal: 10, vertical: 40);
+                    },
+                  ),
                 ),
               ),
             ).inExpandedRow(),

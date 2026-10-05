@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
+
 import '../../../../domain/entities/invoice_management_entity.dart';
 
 class InvoiceCardWidget extends StatelessWidget {

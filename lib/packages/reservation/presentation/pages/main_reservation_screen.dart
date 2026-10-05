@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../bloc/current_reservation_cubit.dart';
 import '../bloc/upcoming_reservation_bloc.dart';
 import '../bloc/reservation_action_cubit.dart';
@@ -215,9 +216,9 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primaryContainer,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -225,9 +226,9 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onPrimaryContainer,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer,
                                       ),
                                     ),
                                   ),
@@ -273,9 +274,9 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                                       vertical: 2,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primaryContainer,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -283,9 +284,9 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                                       style: TextStyle(
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.onPrimaryContainer,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onPrimaryContainer,
                                       ),
                                     ),
                                   ),
@@ -313,9 +314,8 @@ class _MainReservationScreenState extends State<MainReservationScreen>
                       horizontal: 16,
                       vertical: 8,
                     ),
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.primaryContainer.withValues(alpha: 0.3),
+                    color: Theme.of(context).colorScheme.primaryContainer
+                        .withValues(alpha: 0.3),
                     child: Row(
                       children: [
                         Icon(

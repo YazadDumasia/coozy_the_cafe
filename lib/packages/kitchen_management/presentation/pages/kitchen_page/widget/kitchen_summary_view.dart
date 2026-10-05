@@ -2,6 +2,7 @@ import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 import '../../../../domain/entities/kitchen_aggregated_item_entity.dart';
 
 class KitchenSummaryView extends StatelessWidget {

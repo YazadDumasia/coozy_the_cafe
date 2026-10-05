@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:get_it/get_it.dart';
+
 import 'data/repositories/checkout_repository_impl.dart';
 import 'domain/repositories/checkout_repository.dart';
 import 'domain/usecases/checkout_calculator.dart';

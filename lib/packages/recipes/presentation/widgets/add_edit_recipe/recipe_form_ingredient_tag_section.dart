@@ -30,9 +30,8 @@ class RecipeFormIngredientTagSection extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           'Clean ingredient names used to power the ingredient filter.',
-          style: Theme.of(
-            context,
-          ).textTheme.bodySmall?.copyWith(color: colorScheme.onSurfaceVariant),
+          style: Theme.of(context).textTheme.bodySmall
+              ?.copyWith(color: colorScheme.onSurfaceVariant),
         ),
         const SizedBox(height: 8),
         // Existing tags as chips

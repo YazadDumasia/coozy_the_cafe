@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:coozy_the_cafe/packages/database/src/database.dart';
 import 'package:coozy_the_cafe/packages/database/src/database_dao/customers_dao.dart';
+
 import '../../domain/entities/customer_entity.dart';
 import '../../domain/repositories/customer_repository.dart';
 

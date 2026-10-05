@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
 import 'package:coozy_the_cafe/packages/recipes/presentation/bloc/recipes_full_list_cubit.dart';
+
 import '../../pages/recipes_list/recipes_list_screen_actions.dart';
+
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 class RecipeListItem extends StatelessWidget {
@@ -82,9 +84,9 @@ class RecipeListItem extends StatelessWidget {
                                 Expanded(
                                   child: Text(
                                     model.recipeOriginalName ?? '',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ),
                               ],
@@ -117,9 +119,9 @@ class RecipeListItem extends StatelessWidget {
                                               .recipesTrack,
                                         ) ??
                                         'Servings: ${model.recipeServings ?? 0}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ),
                               ),
@@ -155,9 +157,9 @@ class RecipeListItem extends StatelessWidget {
                                         const SizedBox(width: 5),
                                         Text(
                                           '${model.recipeTotalTimeInMins ?? '0'} mins',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyLarge,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge,
                                         ),
                                       ],
                                     ),
@@ -175,9 +177,9 @@ class RecipeListItem extends StatelessWidget {
                                         const SizedBox(width: 5),
                                         Text(
                                           '${model.recipeCookingTimeInMins ?? '0'} mins',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyLarge,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge,
                                         ),
                                       ],
                                     ),
@@ -195,9 +197,9 @@ class RecipeListItem extends StatelessWidget {
                                         const SizedBox(width: 5),
                                         Text(
                                           '${model.recipePreparationTimeInMins ?? '0'} mins',
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.bodyLarge,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge,
                                         ),
                                       ],
                                     ),
@@ -231,9 +233,9 @@ class RecipeListItem extends StatelessWidget {
                                               .recipesTrack,
                                         ) ??
                                         'Cuisine: ${model.recipeCuisine ?? ''}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ),
                               ),
@@ -263,9 +265,9 @@ class RecipeListItem extends StatelessWidget {
                                               .recipesTrack,
                                         ) ??
                                         'Course: ${model.recipeCourse ?? ''}',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ),
                               ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../dynamic_height_grid_view/dynamic_height_grid_view.dart';
 import 'controllers/time_line_picker_controller.dart';
 import 'extra/color.dart';
@@ -7,14 +8,13 @@ import 'models/time_line_picker_enums.dart';
 import 'models/time_slot.dart';
 import 'widgets/time_slot_item.dart';
 
-typedef TimeSlotBuilder =
-    Widget Function(
-      BuildContext context,
-      TimeSlot slot,
-      bool isSelected,
-      bool isDisabled,
-      VoidCallback onTap,
-    );
+typedef TimeSlotBuilder = Widget Function(
+  BuildContext context,
+  TimeSlot slot,
+  bool isSelected,
+  bool isDisabled,
+  VoidCallback onTap,
+);
 
 class TimePickerAxis {
   static const TimelineLayoutMode horizontal = TimelineLayoutMode.horizontal;

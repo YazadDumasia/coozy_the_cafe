@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/expenditure_entity.dart';
 import '../../../domain/entities/expenditure_category_entity.dart';
 import '../../../domain/usecases/get_expenditure_categories_usecase.dart';

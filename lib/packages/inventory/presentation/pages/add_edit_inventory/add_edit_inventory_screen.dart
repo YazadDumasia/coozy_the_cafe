@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
+
 import 'add_edit_inventory_screen_actions.dart';
 
 class AddEditInventoryScreen extends StatefulWidget {

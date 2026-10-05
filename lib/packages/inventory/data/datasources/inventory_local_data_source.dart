@@ -1,4 +1,5 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart' as db;
+
 import '../models/inventory_item_model.dart';
 import '../models/stock_adjustment_model.dart';
 

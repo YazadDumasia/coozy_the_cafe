@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/menu_subcategory/domain/entities/menu_subcategory.dart';
+
 import '../../pages/menu_subcategory_full_list/menu_subcategory_full_list_screen_actions.dart';
 
 class MenuSubcategoryGridCard extends StatelessWidget {
@@ -61,9 +62,8 @@ class MenuSubcategoryGridCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 4),
             // Status row with Switch

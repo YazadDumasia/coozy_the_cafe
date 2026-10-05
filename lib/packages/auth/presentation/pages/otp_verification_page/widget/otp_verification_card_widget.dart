@@ -167,9 +167,8 @@ class OtpVerificationCardWidget extends StatelessWidget {
                           vertical: 7,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(
-                            0xFFFF5C28,
-                          ).withAlpha(isDark ? 35 : 18),
+                          color: const Color(0xFFFF5C28)
+                              .withAlpha(isDark ? 35 : 18),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
                             color: const Color(0xFFFF5C28).withAlpha(70),

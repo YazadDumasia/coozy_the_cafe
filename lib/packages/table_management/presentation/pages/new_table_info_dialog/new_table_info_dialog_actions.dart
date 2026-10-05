@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../domain/entities/table_info.dart';
 
 class NewTableInfoDialogActions {

@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
+
 import '../../../../domain/entities/tax.dart';
 
 class AddTaxDialog extends StatefulWidget {
@@ -84,9 +85,8 @@ class _AddTaxDialogState extends State<AddTaxDialog> {
                     track: shared.TrackConstants.checkoutPageTrack,
                   ) ??
                   'Add Tax Value',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextFormField(

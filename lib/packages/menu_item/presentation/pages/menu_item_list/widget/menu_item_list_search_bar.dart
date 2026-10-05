@@ -21,17 +21,15 @@ class MenuItemListSearchBar extends StatelessWidget {
         controller: controller,
         elevation: WidgetStateProperty.all(0),
         backgroundColor: WidgetStateProperty.all(
-          Theme.of(
-            context,
-          ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.35),
+          Theme.of(context).colorScheme.surfaceContainerHighest
+              .withValues(alpha: 0.35),
         ),
         shape: WidgetStateProperty.all(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
             side: BorderSide(
-              color: Theme.of(
-                context,
-              ).colorScheme.outlineVariant.withValues(alpha: 0.5),
+              color: Theme.of(context).colorScheme.outlineVariant
+                  .withValues(alpha: 0.5),
             ),
           ),
         ),
@@ -48,9 +46,8 @@ class MenuItemListSearchBar extends StatelessWidget {
         hintStyle: WidgetStateProperty.all(
           TextStyle(
             fontSize: 14,
-            color: Theme.of(
-              context,
-            ).colorScheme.onSurfaceVariant.withValues(alpha: 0.7),
+            color: Theme.of(context).colorScheme.onSurfaceVariant
+                .withValues(alpha: 0.7),
           ),
         ),
         onChanged: onChanged,

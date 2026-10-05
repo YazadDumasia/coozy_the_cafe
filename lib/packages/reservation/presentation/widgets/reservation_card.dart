@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../domain/entities/reservation_entity.dart';
 
 class ReservationCard extends StatelessWidget {
@@ -117,9 +118,8 @@ class ReservationCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       reservation.customerName ?? 'Guest',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -241,9 +241,8 @@ class ReservationCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         'Pre-ordered (${reservation.preOrderedItems.fold(0, (sum, i) => sum + i.quantity)} items - ${reservation.preOrderedItems.fold(0.0, (sum, i) => sum + (i.price * i.quantity)).toStringAsFixed(2)}): ${reservation.preOrderedItems.map((e) => '${e.itemName} x${e.quantity}').join(', ')}',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          fontStyle: FontStyle.italic,
-                        ),
+                        style: Theme.of(context).textTheme.bodySmall
+                            ?.copyWith(fontStyle: FontStyle.italic),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -328,9 +327,8 @@ class ReservationCard extends StatelessWidget {
         children: [
           Text(
             '$labelText: ',
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(fontWeight: FontWeight.w600),
           ),
           Chip(
             avatar: const Icon(Icons.table_restaurant, size: 14),
@@ -356,9 +354,8 @@ class ReservationCard extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               '$labelText:',
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.bodySmall
+                  ?.copyWith(fontWeight: FontWeight.w600),
             ),
           ],
         ),

@@ -2,6 +2,7 @@ import 'package:coozy_the_cafe/packages/waiter_order_placement/waiter_order_plac
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../bloc/checkout_bloc.dart';
 import 'widget/checkout_barcode_scanner_dialog.dart';
 

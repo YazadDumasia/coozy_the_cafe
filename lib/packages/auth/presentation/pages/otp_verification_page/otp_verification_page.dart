@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sms_autofill/sms_autofill.dart' hide Orientation;
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
@@ -7,6 +8,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart'
     hide AnimationType;
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart' as asts;
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/sign_up_page/widget/sign_up_carousel_widget.dart';
+
 import 'otp_verification_page_actions.dart';
 import 'widget/otp_verification_card_widget.dart';
 
@@ -87,7 +89,10 @@ class OtpVerificationPageState extends State<OtpVerificationPage>
       try {
         SmsAutoFill().unregisterListener();
       } catch (e) {
-        core.PlatformUtils.debugLog(OtpVerificationPage, 'unregisterListener:Error:$e');
+        core.PlatformUtils.debugLog(
+          OtpVerificationPage,
+          'unregisterListener:Error:$e',
+        );
       }
     }
     super.dispose();
@@ -206,8 +211,10 @@ class OtpVerificationPageState extends State<OtpVerificationPage>
       pinFocusNode: _pinFocusNode,
       phoneNumber: widget.phoneNumber,
       currentOtpNumber: _currentOtpNumber,
-      countdownAnimation:
-          StepTween(begin: kStartValue, end: 0).animate(_countdownController!),
+      countdownAnimation: StepTween(
+        begin: kStartValue,
+        end: 0,
+      ).animate(_countdownController!),
       onChanged: (value) => currentText = value,
       onVerify: onClickVerify,
       onResend: callApiForSendOtp,

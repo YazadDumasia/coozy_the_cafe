@@ -1,6 +1,7 @@
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
+
 import '../../models/extra_charge_model/extra_charge_model.dart';
 
 class AddOtherChargeDialog extends StatefulWidget {

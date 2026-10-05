@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
 import 'package:coozy_the_cafe/packages/recipes/presentation/bloc/recipes_full_list_cubit.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import 'recipes_list_screen_actions.dart';
+
 import 'package:coozy_the_cafe/packages/recipes/presentation/widgets/recipes_list/recipe_empty_view.dart';
 import 'package:coozy_the_cafe/packages/recipes/presentation/widgets/recipes_list/recipe_list_item.dart';
 import 'package:coozy_the_cafe/packages/recipes/presentation/widgets/recipes_list/recipe_search_filter_header.dart';
@@ -131,18 +133,18 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                                 const SizedBox(height: 16),
                                 Text(
                                   '${(progress * 100).toInt()}%',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium,
                                 ),
                                 if (displayMessage != null &&
                                     displayMessage.isNotEmpty) ...[
                                   const SizedBox(height: 8),
                                   Text(
                                     displayMessage,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.bodyMedium,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium,
                                   ),
                                 ],
                               ],
@@ -243,13 +245,14 @@ class _RecipesListScreenState extends State<RecipesListScreen> {
                                   : shared.ResponsiveLayout.isTablet(context)
                                   ? 5
                                   : 3,
-                              numberButtonSelectedColor: Theme.of(
-                                context,
-                              ).colorScheme.primary,
+                              numberButtonSelectedColor: Theme.of(context)
+                                  .colorScheme
+                                  .primary,
                               numberTextSelectedColor: Colors.white,
-                              numberTextUnselectedColor: Theme.of(
-                                context,
-                              ).textTheme.bodyMedium!.color!,
+                              numberTextUnselectedColor: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .color!,
                               onPageChanged: (nextPage) =>
                                   RecipesListScreenActions.onPageChanged(
                                     context,

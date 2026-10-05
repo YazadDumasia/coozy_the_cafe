@@ -28,6 +28,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final ValueNotifier<bool> _enableDetailedItemRemarksNotifier = ValueNotifier(
     true,
   );
+  final ValueNotifier<bool> _enableQrScannerOrderPlacementNotifier =
+      ValueNotifier(false);
   final ValueNotifier<String> _selectedCurrencySymbolNotifier = ValueNotifier(
     '₹',
   );
@@ -81,6 +83,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _showScrollToTopNotifier.dispose();
     _isFakeDataEnabledNotifier.dispose();
     _autoPrintKitchenSlipNotifier.dispose();
+    _enableDetailedItemRemarksNotifier.dispose();
+    _enableQrScannerOrderPlacementNotifier.dispose();
     _selectedCurrencySymbolNotifier.dispose();
     _selectedSecondaryCurrencySymbolNotifier.dispose();
     _enableSecondaryCurrencyNotifier.dispose();
@@ -101,6 +105,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _autoPrintKitchenSlipNotifier.value =
         prefs.getBool(shared.PreferencesKeys.autoPrintKitchenOrderSlip.name) ??
         false;
+    _enableDetailedItemRemarksNotifier.value =
+        prefs.getBool(shared.PreferencesKeys.enableDetailedItemRemarks.name) ??
+        true;
+    _enableQrScannerOrderPlacementNotifier.value = shared.LocalManager.instance
+        .getBoolValue(
+          key: shared.PreferencesKeys.enableQrScannerOrderPlacement,
+        );
 
     // Load saved currency preferences
     final savedPrimarySymbol = prefs.getString(
@@ -1263,6 +1274,83 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         ),
                         const Divider(height: 24),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: theme.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.qr_code_scanner_rounded,
+                                color: theme.primaryColor,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsEnableQrScannerOrderPlacementLabel,
+                                      'Direct Table QR Scanner for Orders',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsEnableQrScannerOrderPlacementSubtitle,
+                                      'Enable quick table QR scan to place orders directly (ideal for deaf or non-verbal staff)',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ValueListenableBuilder<bool>(
+                              valueListenable:
+                                  _enableQrScannerOrderPlacementNotifier,
+                              builder: (context, enabled, child) {
+                                return Switch.adaptive(
+                                  value: enabled,
+                                  activeThumbColor: theme.primaryColor,
+                                  onChanged: (value) async {
+                                    _enableQrScannerOrderPlacementNotifier
+                                            .value =
+                                        value;
+                                    await shared.LocalManager.instance
+                                        .setBoolValue(
+                                          key: shared
+                                              .PreferencesKeys
+                                              .enableQrScannerOrderPlacement,
+                                          value: value,
+                                        );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 24),
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton.icon(
@@ -2189,8 +2277,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.category_outlined,
                   stageKeys: ['categories'],
                   title: 'Menu Categories Table',
-                  subtitle:
-                      '7 Main Menu Categories (Beverages, Main Course, Desserts, etc.)',
+                  subtitle: '7 Main Menu Categories (Beverages, Main Course, Desserts, etc.)',
                 ),
                 _buildDataSetTile(
                   icon: Icons.folder_open_outlined,
@@ -2202,15 +2289,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.restaurant_menu_outlined,
                   stageKeys: ['menu_items'],
                   title: 'Menu Items & Variations Table',
-                  subtitle:
-                      '28 Menu Items with Portion Variations & Customer Reviews',
+                  subtitle: '28 Menu Items with Portion Variations & Customer Reviews',
                 ),
                 _buildDataSetTile(
                   icon: Icons.menu_book_outlined,
                   stageKeys: ['recipes'],
                   title: 'Recipes Table',
-                  subtitle:
-                      '8 Gourmet Cafe Recipes with prep time, ingredients & instructions',
+                  subtitle: '8 Gourmet Cafe Recipes with prep time, ingredients & instructions',
                 ),
                 _buildDataSetTile(
                   icon: Icons.inventory_2_outlined,
@@ -2253,8 +2338,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   icon: Icons.point_of_sale_outlined,
                   stageKeys: ['invoices'],
                   title: 'Invoices & Payments Table',
-                  subtitle:
-                      '100+ Invoices with 5% GST calculation & Payment Transactions',
+                  subtitle: '100+ Invoices with 5% GST calculation & Payment Transactions',
                 ),
                 _buildDataSetTile(
                   icon: Icons.account_balance_wallet_outlined,
@@ -2402,9 +2486,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   child: Theme(
-                    data: Theme.of(
-                      context,
-                    ).copyWith(dividerColor: Colors.transparent),
+                    data: Theme.of(context)
+                        .copyWith(dividerColor: Colors.transparent),
                     child: ExpansionTile(
                       leading: Icon(
                         icon,
@@ -2656,8 +2739,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              selectedSubtitle ??
-                                  'Generates 2,250+ realistic demo records spanning 1.5 years back across all cafe modules including cash flow & expenditures.',
+                              selectedSubtitle ?? 'Generates 2,250+ realistic demo records spanning 1.5 years back across all cafe modules including cash flow & expenditures.',
                               style: TextStyle(
                                 fontSize: 13,
                                 color: Colors.grey.shade700,
@@ -3230,8 +3312,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               const _DatasetDetailRow(
                 icon: Icons.account_balance_wallet_outlined,
-                label:
-                    '450+ Cash Flow records (income, expenses, salaries, lease, supplies)',
+                label: '450+ Cash Flow records (income, expenses, salaries, lease, supplies)',
               ),
               const SizedBox(height: 20),
               Row(

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
@@ -7,6 +8,7 @@ import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:permission_handler/permission_handler.dart'
     as permission_handler;
 import 'package:synchronized/synchronized.dart' as sync;
+
 import 'constants/db_constants.dart' as db_constants;
 
 import 'tables.dart';

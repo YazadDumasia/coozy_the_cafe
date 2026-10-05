@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../../../domain/entities/staff_entities.dart';
 
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
@@ -127,9 +128,8 @@ class EmployeeCard extends StatelessWidget {
                     ),
                     title: Text(
                       name,
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge
+                          ?.copyWith(fontWeight: FontWeight.w700),
                     ),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

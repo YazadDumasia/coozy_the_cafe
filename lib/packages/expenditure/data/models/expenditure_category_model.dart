@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:coozy_the_cafe/packages/database/src/database.dart';
+
 import '../../domain/entities/expenditure_category_entity.dart';
 
 class ExpenditureCategoryModel extends ExpenditureCategoryEntity {

@@ -84,27 +84,24 @@ void main() {
     );
   });
 
-  test(
-    'reorderTables places item at last position when dragged from index 1 to 11',
-    () async {
-      // Load initial tables into state
-      await tableCubit.loadTables();
+  test('reorderTables places item at last position when dragged from index 1 to 11', () async {
+    // Load initial tables into state
+    await tableCubit.loadTables();
 
-      expect(tableCubit.state, isA<TableLoaded>());
-      final loadedStateBefore = tableCubit.state as TableLoaded;
-      expect(loadedStateBefore.tables.length, 12);
-      expect(loadedStateBefore.tables[1].id, 2);
+    expect(tableCubit.state, isA<TableLoaded>());
+    final loadedStateBefore = tableCubit.state as TableLoaded;
+    expect(loadedStateBefore.tables.length, 12);
+    expect(loadedStateBefore.tables[1].id, 2);
 
-      // Reorder second item (index 1) to very last position (index 11)
-      await tableCubit.reorderTables(1, 11);
+    // Reorder second item (index 1) to very last position (index 11)
+    await tableCubit.reorderTables(1, 11);
 
-      expect(tableCubit.state, isA<TableLoaded>());
-      final loadedStateAfter = tableCubit.state as TableLoaded;
+    expect(tableCubit.state, isA<TableLoaded>());
+    final loadedStateAfter = tableCubit.state as TableLoaded;
 
-      // The item with id 2 (originally at index 1) should now be at index 11 (last position)
-      expect(loadedStateAfter.tables.last.id, 2);
-      expect(loadedStateAfter.tables[11].id, 2);
-      expect(loadedStateAfter.tables[10].id, 12);
-    },
-  );
+    // The item with id 2 (originally at index 1) should now be at index 11 (last position)
+    expect(loadedStateAfter.tables.last.id, 2);
+    expect(loadedStateAfter.tables[11].id, 2);
+    expect(loadedStateAfter.tables[10].id, 12);
+  });
 }

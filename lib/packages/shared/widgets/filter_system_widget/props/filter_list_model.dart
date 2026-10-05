@@ -1,5 +1,6 @@
 import 'filter_item_model.dart';
 import 'filter_props.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';

@@ -101,23 +101,20 @@ class _RequirementRowItem extends StatelessWidget {
           height: 18,
           decoration: BoxDecoration(
             color: isMet ? Colors.green.shade600 : Colors.transparent,
-            border:
-                isMet
-                    ? Border.all(color: Colors.transparent)
-                    : Border.all(
-                      color:
-                          theme.brightness == Brightness.dark
-                              ? Colors.grey.shade600
-                              : Colors.grey.shade400,
-                      width: 1.5,
-                    ),
+            border: isMet
+                ? Border.all(color: Colors.transparent)
+                : Border.all(
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.grey.shade600
+                        : Colors.grey.shade400,
+                    width: 1.5,
+                  ),
             shape: BoxShape.circle,
           ),
           child: Center(
-            child:
-                isMet
-                    ? const Icon(Icons.check, color: Colors.white, size: 13)
-                    : const SizedBox.shrink(),
+            child: isMet
+                ? const Icon(Icons.check, color: Colors.white, size: 13)
+                : const SizedBox.shrink(),
           ),
         ),
         const SizedBox(width: 10),
@@ -125,10 +122,9 @@ class _RequirementRowItem extends StatelessWidget {
           child: Text(
             label,
             style: theme.textTheme.bodySmall?.copyWith(
-              color:
-                  isMet
-                      ? Colors.green.shade700
-                      : theme.textTheme.bodySmall?.color?.withAlpha(180),
+              color: isMet
+                  ? Colors.green.shade700
+                  : theme.textTheme.bodySmall?.color?.withAlpha(180),
               fontWeight: isMet ? FontWeight.w500 : FontWeight.normal,
             ),
           ),

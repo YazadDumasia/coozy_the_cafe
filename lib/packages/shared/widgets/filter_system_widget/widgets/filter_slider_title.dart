@@ -1,6 +1,8 @@
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
+
 import '../props/filter_item_model.dart';
 import '../props/filter_props.dart';
+
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';

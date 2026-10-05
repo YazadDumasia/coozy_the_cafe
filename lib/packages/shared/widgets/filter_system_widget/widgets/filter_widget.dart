@@ -20,6 +20,7 @@ import 'filter_range_slider_vertical_title.dart';
 import 'filter_slider_title.dart';
 import 'filter_slider_vertical_title.dart';
 import 'show_date_picker_sheet.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -236,9 +237,8 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                                       return Material(
                                         type: MaterialType.transparency,
                                         child: InkWell(
-                                          splashColor: Theme.of(
-                                            context,
-                                          ).splashColor,
+                                          splashColor: Theme.of(context)
+                                              .splashColor,
                                           onTap: () {
                                             _clearSearch();
                                             _filterCubit.onFilterTitleTap(
@@ -292,9 +292,8 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                                                                 .activeFilterIndex)
                                                         ? themeProps
                                                                   .activeFilterTextColor ??
-                                                              getTheme(
-                                                                context,
-                                                              ).primaryColor
+                                                              getTheme(context)
+                                                                  .primaryColor
                                                         : themeProps
                                                               .inActiveFilterTextColor,
                                                   ),
@@ -513,9 +512,8 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                         fillColor:
                             themeProps?.searchBarViewProps?.fillColor
                                 ?.withValues(alpha: 0.8) ??
-                            Theme.of(
-                              context,
-                            ).primaryColor.withValues(alpha: 0.1),
+                            Theme.of(context).primaryColor
+                                .withValues(alpha: 0.1),
                         filled: themeProps?.searchBarViewProps?.filled ?? true,
                         border:
                             themeProps?.searchBarViewProps?.inputBorder ??
@@ -712,9 +710,8 @@ class _FilterState extends State<Filter> with FilterStyleMixin {
                         fillColor:
                             themeProps?.searchBarViewProps?.fillColor
                                 ?.withValues(alpha: 0.8) ??
-                            Theme.of(
-                              context,
-                            ).primaryColor.withValues(alpha: 0.1),
+                            Theme.of(context).primaryColor
+                                .withValues(alpha: 0.1),
                         filled: themeProps?.searchBarViewProps?.filled ?? true,
                         border:
                             themeProps?.searchBarViewProps?.inputBorder ??

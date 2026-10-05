@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
+
 import '../../domain/entities/menu_category.dart';
+
 import 'package:coozy_the_cafe/packages/database/src/database.dart';
 
 class MenuCategoryModel extends MenuCategory {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart'
     hide UpperCaseTextFormatter;
+
 import '../../../../shared/coozy_shared.dart' as shared;
 import '../../../domain/entities/table_info.dart';
 import 'new_table_info_dialog_actions.dart';
@@ -194,9 +195,8 @@ class NewTableInfoDialogState extends State<NewTableInfoDialog> {
                     keyboardType: TextInputType.text,
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (String value) {
-                      FocusScope.of(
-                        context,
-                      ).requestFocus(_nosOfChairsFocusNode);
+                      FocusScope.of(context)
+                          .requestFocus(_nosOfChairsFocusNode);
                     },
                   ),
                 ),

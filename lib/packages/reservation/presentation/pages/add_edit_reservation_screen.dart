@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_info.dart';
+
 import '../../domain/entities/reservation_entity.dart';
 import '../bloc/reservation_action_cubit.dart';
 import '../widgets/table_picker_view.dart';
@@ -310,9 +311,8 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                 color: Theme.of(context).scaffoldBackgroundColor,
                 boxShadow: [
                   BoxShadow(
-                    color: Theme.of(
-                      context,
-                    ).shadowColor.withValues(alpha: 0.05),
+                    color: Theme.of(context).shadowColor
+                        .withValues(alpha: 0.05),
                     blurRadius: 6,
                     offset: const Offset(0, -2),
                   ),
@@ -527,9 +527,8 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
               child: Text(
                 context.tr(shared.LocaleKeys.selectTableLabel, track: track) ??
                     'Select Table Arrangement(s)',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -574,9 +573,8 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                       track: track,
                     ) ??
                     'Pre-order Menu Items',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.titleMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -731,9 +729,9 @@ class _AddEditReservationScreenState extends State<AddEditReservationScreen> {
                 dense: true,
                 leading: CircleAvatar(
                   radius: 14,
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .primaryContainer,
                   child: Icon(
                     Icons.person,
                     size: 16,

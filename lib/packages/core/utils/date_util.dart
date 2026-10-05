@@ -180,14 +180,13 @@ class DateUtil {
   }
 
   static String? simpleStringFormatChanger({
-    final String? inputDate,
-    final String? dateFormat,
+    String? inputDate,
+    String? dateFormat,
   }) {
     if (inputDate == null || dateFormat == null) return null;
     try {
-      return DateFormat(
-        dateFormat,
-      ).format(DateFormat(dateFormat).parse(inputDate));
+      return DateFormat(dateFormat)
+          .format(DateFormat(dateFormat).parse(inputDate));
     } catch (e) {
       return null;
     }

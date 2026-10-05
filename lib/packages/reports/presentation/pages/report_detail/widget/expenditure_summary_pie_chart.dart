@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../../domain/entities/expenditure_summary_entry.dart';
 
 class ExpenditureSummaryPieChart extends StatelessWidget {
@@ -13,9 +14,8 @@ class ExpenditureSummaryPieChart extends StatelessWidget {
       return Center(
         child: Text(
           'No expenditure records found for selected range',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: scheme.onSurface.withValues(alpha: 0.5),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }
@@ -27,8 +27,7 @@ class ExpenditureSummaryPieChart extends StatelessWidget {
     }
     final aggregated = categoryTotals.entries.map((entry) {
       return _AggregatedExpenditure(name: entry.key, amount: entry.value);
-    }).toList()
-      ..sort((a, b) => b.amount.compareTo(a.amount));
+    }).toList()..sort((a, b) => b.amount.compareTo(a.amount));
 
     final total = aggregated.fold<double>(0, (s, e) => s + e.amount);
     return SfCircularChart(

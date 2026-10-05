@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+
 import '../database.dart';
 import '../tables.dart';
 
@@ -24,9 +25,8 @@ class CategoriesDao extends DatabaseAccessor<CoozyDatabase>
       // Check if category exists
       final model = await getCategoryBasedOnName(name: category.name.value);
       if (model == null) {
-        return await into(
-          categoriesTable,
-        ).insert(newCategory, mode: InsertMode.replace);
+        return await into(categoriesTable)
+            .insert(newCategory, mode: InsertMode.replace);
       }
       return null;
     });
@@ -121,9 +121,8 @@ class CategoriesDao extends DatabaseAccessor<CoozyDatabase>
         position: Value(maxPosition + 1),
       );
 
-      return into(
-        subcategoriesTable,
-      ).insert(newSubcategory, mode: InsertMode.replace);
+      return into(subcategoriesTable)
+          .insert(newSubcategory, mode: InsertMode.replace);
     });
   }
 
@@ -178,7 +177,7 @@ class CategoriesDao extends DatabaseAccessor<CoozyDatabase>
     if (categoryId == null) return null;
 
     try {
-      return transaction(() async {
+      return await transaction(() async {
         final rows = await (delete(
           subcategoriesTable,
         )..where((t) => t.categoryId.equals(categoryId))).go();

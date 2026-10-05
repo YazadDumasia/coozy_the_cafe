@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+
 import '../../../domain/entities/staff_entities.dart';
 
 sealed class LeaveEvent extends Equatable {

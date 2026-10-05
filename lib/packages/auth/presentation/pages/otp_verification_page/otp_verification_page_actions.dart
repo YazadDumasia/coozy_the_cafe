@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;

@@ -43,9 +43,8 @@ class TablePickerView extends StatefulWidget {
                             track: shared.TrackConstants.reservationPageTrack,
                           ) ??
                           'Search & Select Tables',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close),

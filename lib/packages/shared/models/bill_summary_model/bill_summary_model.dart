@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import '../discount_model/discount_model.dart';
 import '../extra_charge_model/extra_charge_model.dart';
 import '../tax_model/tax_model.dart';

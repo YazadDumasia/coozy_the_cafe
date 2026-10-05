@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../core/navigation/app_routes.dart';
 import '../pages/login_page/cubit/login_screen_cubit.dart';
 import '../pages/login_page/login_page.dart';
@@ -98,10 +99,7 @@ class AuthRoutes {
             '';
         return BlocProvider<ResetPasswordCubit>(
           create: (context) => GetIt.instance<ResetPasswordCubit>(),
-          child: ResetPasswordPage(
-            email: email,
-            token: token,
-          ),
+          child: ResetPasswordPage(email: email, token: token),
         );
       },
     ),

@@ -1,15 +1,14 @@
 import 'dart:typed_data';
+
+import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
-import 'package:pdfrx/pdfrx.dart';
+import 'package:lottie/lottie.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/repositories/waiter_order_placement_repository.dart';
-import '../../../domain/services/menu_item_barcode_pdf_generator.dart';
 
-/// Monotonically increasing counter used to generate unique source-name keys
-/// for [PdfDocumentRefData], ensuring each dialog instance gets its own
-/// isolated document (no sharing via the [PdfDocumentRef._listenables] cache).
-int _docRefCounter = 0;
+import '../../../domain/services/menu_item_barcode_pdf_generator.dart';
 
 class MenuItemBarcodeDialog extends StatefulWidget {
   final MenuItemBarcodeInfo? singleBarcodeInfo;
@@ -32,6 +31,7 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
   bool _isSaving = false;
   bool _isSharing = false;
   int _selectedColumns = 3;
+  String? _errorMessage;
 
   /// Set to true in dispose() so in-flight async work aborts cleanly.
   bool _cancelled = false;
@@ -39,17 +39,6 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
   /// Incremented each time a new generation starts; guards against stale
   /// results from a previous run being applied after the column count changes.
   int _generationId = 0;
-
-  // ---------------------------------------------------------------------------
-  // PDF engine resource ownership
-  // ---------------------------------------------------------------------------
-
-  /// Each completed generation gets a unique [sourceName] so pdfrx never
-  /// shares/caches this document with another dialog or generation.
-  /// The unique key ensures [PdfDocumentRef._listenables] treats each
-  /// generation as a distinct document — so autoDispose removes it from the
-  /// cache when the [PdfViewer] widget is unmounted (i.e. dialog dismissed).
-  String? _pdfSourceName;
 
   @override
   void initState() {
@@ -113,14 +102,9 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
       // Final guard: do not update state if dismissed after rendering finished.
       if (_cancelled || _generationId != myGeneration || !mounted) return;
 
-      // Assign a unique source name so pdfrx doesn't share/cache this document
-      // with any other PdfViewer instance. With autoDispose:true (default),
-      // the engine worker is released when PdfViewer leaves the tree.
-      final uniqueSourceName = 'barcode_pdf_${++_docRefCounter}';
-
       setState(() {
         _pdfBytes = bytes;
-        _pdfSourceName = uniqueSourceName;
+        _errorMessage = null;
         _isLoading = false;
       });
     } catch (e, stack) {
@@ -129,7 +113,10 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
         'Error generating Barcode PDF: $e\n$stack',
       );
       if (!_cancelled && _generationId == myGeneration && mounted) {
-        setState(() => _isLoading = false);
+        setState(() {
+          _errorMessage = e.toString();
+          _isLoading = false;
+        });
       }
     }
   }
@@ -153,8 +140,10 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Container(
-        width: 800,
-        constraints: const BoxConstraints(maxHeight: 750),
+        width: MediaQuery.of(context).size.width * 0.8,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.80,
+        ),
         padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -197,9 +186,8 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                color: Theme.of(context).colorScheme.surfaceContainerHighest
+                    .withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
@@ -208,9 +196,8 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                     flex: 0,
                     child: Text(
                       'Columns:',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
@@ -242,7 +229,6 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                           setState(() {
                             _selectedColumns = newSelection.first;
                             _pdfBytes = null;
-                            _pdfSourceName = null;
                             _isLoading = true;
                           });
                           _loadBarcodePdf();
@@ -259,10 +245,37 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
             ),
             const Divider(height: 20),
 
-            // PDF Viewer Container using pdfrx
+            // PDF Viewer Container using Syncfusion SfPdfViewer
             Expanded(
               child: _isLoading
-                  ? const Center(child: CircularProgressIndicator())
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Lottie.asset(
+                            Theme.of(context).brightness == Brightness.dark
+                                ? Assets.lottie.qrcodeDark
+                                : Assets.lottie.qrcodeLight,
+                            width: 160,
+                            height: 160,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            context.tr(
+                                  shared.LocaleKeys.commonPleaseWait,
+                                  track: shared.TrackConstants.commonTrack,
+                                ) ??
+                                'Please wait...',
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
+                                ),
+                          ),
+                        ],
+                      ),
+                    )
                   : _pdfBytes != null
                   ? ClipRRect(
                       borderRadius: BorderRadius.circular(12),
@@ -273,19 +286,59 @@ class _MenuItemBarcodeDialogState extends State<MenuItemBarcodeDialog> {
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: PdfViewer.data(
+                        child: SfPdfViewer.memory(
                           _pdfBytes!,
-                          sourceName: _pdfSourceName!,
+                          canShowScrollHead: false,
+                          canShowScrollStatus: false,
                         ),
                       ),
                     )
                   : Center(
-                      child: Text(
-                        context.tr(
-                              shared.LocaleKeys.commonErrorMsg,
-                              track: shared.TrackConstants.commonTrack,
-                            ) ??
-                            'Failed to render Menu Barcode PDF preview',
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.error_outline_rounded,
+                              size: 48,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              context.tr(
+                                    shared.LocaleKeys.commonErrorMsg,
+                                    track: shared.TrackConstants.commonTrack,
+                                  ) ??
+                                  'Failed to render Menu Barcode PDF preview',
+                              style: Theme.of(context).textTheme.titleSmall,
+                              textAlign: TextAlign.center,
+                            ),
+                            if (_errorMessage != null) ...[
+                              const SizedBox(height: 8),
+                              Text(
+                                _errorMessage!,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .error,
+                                    ),
+                                textAlign: TextAlign.center,
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: () {
+                                _loadBarcodePdf();
+                              },
+                              icon: const Icon(Icons.refresh_rounded),
+                              label: const Text('Retry'),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
             ),

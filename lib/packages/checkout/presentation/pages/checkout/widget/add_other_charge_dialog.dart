@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
+
 import '../../../../domain/entities/extra_charge.dart';
 
 class AddOtherChargeDialog extends StatefulWidget {
@@ -89,9 +90,8 @@ class _AddOtherChargeDialogState extends State<AddOtherChargeDialog> {
                     track: shared.TrackConstants.checkoutPageTrack,
                   ) ??
                   'Add Other Fee',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextFormField(

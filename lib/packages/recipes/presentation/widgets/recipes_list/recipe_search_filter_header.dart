@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../pages/recipes_list/recipes_list_screen_actions.dart';
 
 class RecipeSearchFilterHeader extends StatelessWidget {

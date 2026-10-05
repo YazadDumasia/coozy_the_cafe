@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart' as db;
 import 'package:coozy_the_cafe/packages/purchase/domain/entities/purchase_summary.dart';
+
 import '../models/purchase_record_model.dart';
 
 abstract class PurchaseLocalDataSource {

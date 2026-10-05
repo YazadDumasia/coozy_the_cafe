@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'app_routes.dart';
 
 extension NavigationExtensions on BuildContext {

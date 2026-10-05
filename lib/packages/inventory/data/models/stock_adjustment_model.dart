@@ -1,4 +1,5 @@
 import '../../domain/entities/stock_adjustment.dart';
+
 import 'package:coozy_the_cafe/packages/database/src/database.dart' as db;
 
 class StockAdjustmentModel extends StockAdjustment {

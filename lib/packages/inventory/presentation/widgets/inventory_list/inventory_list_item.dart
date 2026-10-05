@@ -1,6 +1,7 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
+
 import '../../pages/inventory_list/inventory_list_screen_actions.dart';
 
 class InventoryListItem extends StatelessWidget {

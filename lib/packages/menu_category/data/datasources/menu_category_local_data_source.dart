@@ -1,4 +1,5 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+
 import '../models/menu_category_model.dart';
 
 abstract class MenuCategoryLocalDataSource {

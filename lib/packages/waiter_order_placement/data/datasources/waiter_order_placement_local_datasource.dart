@@ -1,6 +1,7 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/kitchen_management/services/order_print_background_service.dart';
 import 'package:drift/drift.dart';
+
 import '../../domain/entities/menu_catalog_data.dart';
 import '../../domain/entities/order_cart_item.dart';
 
@@ -317,9 +318,8 @@ class WaiterOrderPlacementLocalDataSourceImpl
         }
       }
 
-      final creationTime = DateTime.tryParse(
-        order.creationDate ?? '',
-      )?.toLocal();
+      final creationTime = DateTime.tryParse(order.creationDate ?? '')
+          ?.toLocal();
       final tableNameDisplay = order.tableNameText?.isNotEmpty == true
           ? order.tableNameText!
           : (tableInfo?.tableNo != null

@@ -4,6 +4,7 @@ import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../domain/entities/customer_entity.dart';
 import '../../bloc/customer_bloc.dart';
 

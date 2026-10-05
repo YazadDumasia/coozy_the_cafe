@@ -23,7 +23,7 @@ class TextFormPasswordFieldWidget extends StatefulWidget {
 class _TextFormPasswordFieldWidgetState
     extends State<TextFormPasswordFieldWidget> {
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return StreamBuilder<bool>(
       stream: context.read<LoginScreenCubit>().passwordObscureTextStream,
       builder: (context, obscureSnapshot) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:timelines_plus/timelines_plus.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../../domain/entities/expenditure_entity.dart';
 
 class CashFlowTimelineItem extends StatelessWidget {

@@ -55,10 +55,10 @@ class StockAdjustmentEntry {
   bool get isAddition => adjustmentType.toLowerCase() == 'add';
 
   (DateTime, DateTime)? get weekRange => ReportDateUtils.resolveWeekRange(
-        startDate: startDate,
-        endDate: endDate,
-        period: period.isNotEmpty ? period : createdDate,
-      );
+    startDate: startDate,
+    endDate: endDate,
+    period: period.isNotEmpty ? period : createdDate,
+  );
 
   String formattedPeriod(SalesPeriodFormat format) =>
       ReportDateUtils.formatPeriod(

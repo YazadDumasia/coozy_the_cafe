@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter/material.dart';
+
 import '../../../../domain/entities/cart_item.dart';
 
 class CartItemTile extends StatelessWidget {

@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../bloc/invoice_management_bloc.dart';
 import '../../../domain/entities/invoice_management_entity.dart';
 import '../../../domain/services/invoice_pdf_generator.dart';
@@ -22,30 +24,29 @@ class InvoiceDetailScreenActions {
     int invoiceId, {
     bool fromCheckout = false,
   }) async {
-    final bool?
-    isConfirmed = await shared.DialogUtils.showConfirmationDialog<bool>(
-      context: context,
-      title:
-          context.tr(
-            shared.LocaleKeys.commonDelete,
-            track: shared.TrackConstants.commonTrack,
-          ) ??
-          'Delete Receipt',
-      content:
-          'Are you sure you want to delete this receipt? This will soft delete the invoice and its linked order.',
-      cancelText:
-          context.tr(
-            shared.LocaleKeys.commonCancel,
-            track: shared.TrackConstants.commonTrack,
-          ) ??
-          'Cancel',
-      confirmText:
-          context.tr(
-            shared.LocaleKeys.commonDelete,
-            track: shared.TrackConstants.commonTrack,
-          ) ??
-          'Delete',
-    );
+    final bool? isConfirmed =
+        await shared.DialogUtils.showConfirmationDialog<bool>(
+          context: context,
+          title:
+              context.tr(
+                shared.LocaleKeys.commonDelete,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Delete Receipt',
+          content: 'Are you sure you want to delete this receipt? This will soft delete the invoice and its linked order.',
+          cancelText:
+              context.tr(
+                shared.LocaleKeys.commonCancel,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Cancel',
+          confirmText:
+              context.tr(
+                shared.LocaleKeys.commonDelete,
+                track: shared.TrackConstants.commonTrack,
+              ) ??
+              'Delete',
+        );
 
     if (isConfirmed == true && context.mounted) {
       context.read<InvoiceManagementBloc>().add(DeleteInvoiceEvent(invoiceId));
@@ -229,7 +230,7 @@ class InvoiceDetailScreenActions {
       }
     }
 
-    // Fallback or Web: display in-app preview dialog using pdfrx
+    // Fallback or Web: display in-app preview dialog using SfPdfViewer
     if (context.mounted) {
       await showDialog(
         context: context,

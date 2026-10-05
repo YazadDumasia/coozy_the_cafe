@@ -64,191 +64,176 @@ void main() {
       },
     );
 
-    test(
-      'ReportsDao daily and monthly sales summaries compute positive cost and profit',
-      () async {
-        await FakeDataHelper.generateDatasetData(db, [
-          'customers',
-          'table_info',
-          'categories',
-          'subcategories',
-          'menu_items',
-          'orders',
-          'invoices',
-        ]);
+    test('ReportsDao daily and monthly sales summaries compute positive cost and profit', () async {
+      await FakeDataHelper.generateDatasetData(db, [
+        'customers',
+        'table_info',
+        'categories',
+        'subcategories',
+        'menu_items',
+        'orders',
+        'invoices',
+      ]);
 
-        final now = DateTime.now();
-        final startIso = now
-            .subtract(const Duration(days: 700))
-            .toIso8601String();
-        final endIso = now.add(const Duration(days: 10)).toIso8601String();
+      final now = DateTime.now();
+      final startIso = now
+          .subtract(const Duration(days: 700))
+          .toIso8601String();
+      final endIso = now.add(const Duration(days: 10)).toIso8601String();
 
-        final dailySales = await reportsDao.getDailySalesSummary(
-          startIso,
-          endIso,
-        );
-        expect(dailySales, isNotEmpty);
+      final dailySales = await reportsDao.getDailySalesSummary(
+        startIso,
+        endIso,
+      );
+      expect(dailySales, isNotEmpty);
 
-        // Cost and profit should be non-zero because orderItemId and oi.cost_price are properly linked
-        final rowWithCost = dailySales.firstWhere(
-          (r) => (r['dailyCost'] as num) > 0,
-        );
-        expect((rowWithCost['dailyCost'] as num).toDouble(), greaterThan(0.0));
-        expect(
-          (rowWithCost['dailyProfit'] as num).toDouble(),
-          greaterThan(0.0),
-        );
-        expect((rowWithCost['netTotal'] as num).toDouble(), greaterThan(0.0));
+      // Cost and profit should be non-zero because orderItemId and oi.cost_price are properly linked
+      final rowWithCost = dailySales.firstWhere(
+        (r) => (r['dailyCost'] as num) > 0,
+      );
+      expect((rowWithCost['dailyCost'] as num).toDouble(), greaterThan(0.0));
+      expect((rowWithCost['dailyProfit'] as num).toDouble(), greaterThan(0.0));
+      expect((rowWithCost['netTotal'] as num).toDouble(), greaterThan(0.0));
 
-        final monthlySales = await reportsDao.getMonthlySalesSummary(
-          startIso,
-          endIso,
-        );
-        expect(monthlySales, isNotEmpty);
-        final monthRow = monthlySales.firstWhere(
-          (r) => (r['monthlyCost'] as num) > 0,
-        );
-        expect((monthRow['monthlyCost'] as num).toDouble(), greaterThan(0.0));
-        expect((monthRow['monthlyProfit'] as num).toDouble(), greaterThan(0.0));
-      },
-    );
+      final monthlySales = await reportsDao.getMonthlySalesSummary(
+        startIso,
+        endIso,
+      );
+      expect(monthlySales, isNotEmpty);
+      final monthRow = monthlySales.firstWhere(
+        (r) => (r['monthlyCost'] as num) > 0,
+      );
+      expect((monthRow['monthlyCost'] as num).toDouble(), greaterThan(0.0));
+      expect((monthRow['monthlyProfit'] as num).toDouble(), greaterThan(0.0));
+    });
 
-    test(
-      'ReportsDao top selling items and sales dashboard KPI aggregate accurately',
-      () async {
-        await FakeDataHelper.generateDatasetData(db, [
-          'customers',
-          'table_info',
-          'categories',
-          'subcategories',
-          'menu_items',
-          'orders',
-          'invoices',
-        ]);
+    test('ReportsDao top selling items and sales dashboard KPI aggregate accurately', () async {
+      await FakeDataHelper.generateDatasetData(db, [
+        'customers',
+        'table_info',
+        'categories',
+        'subcategories',
+        'menu_items',
+        'orders',
+        'invoices',
+      ]);
 
-        final now = DateTime.now();
-        final startIso = now
-            .subtract(const Duration(days: 700))
-            .toIso8601String();
-        final endIso = now.add(const Duration(days: 10)).toIso8601String();
+      final now = DateTime.now();
+      final startIso = now
+          .subtract(const Duration(days: 700))
+          .toIso8601String();
+      final endIso = now.add(const Duration(days: 10)).toIso8601String();
 
-        final topSelling = await reportsDao.getTopSellingItems(
-          startIso,
-          endIso,
-          limit: 5,
-        );
-        expect(topSelling, isNotEmpty);
-        expect(topSelling.first['itemName'], isNotNull);
-        expect(
-          (topSelling.first['totalQuantity'] as num).toInt(),
-          greaterThan(0),
-        );
-        expect(
-          (topSelling.first['totalCost'] as num).toDouble(),
-          greaterThan(0.0),
-        );
+      final topSelling = await reportsDao.getTopSellingItems(
+        startIso,
+        endIso,
+        limit: 5,
+      );
+      expect(topSelling, isNotEmpty);
+      expect(topSelling.first['itemName'], isNotNull);
+      expect(
+        (topSelling.first['totalQuantity'] as num).toInt(),
+        greaterThan(0),
+      );
+      expect(
+        (topSelling.first['totalCost'] as num).toDouble(),
+        greaterThan(0.0),
+      );
 
-        final dashboard = await reportsDao.getSalesDashboard(startIso, endIso);
-        expect(dashboard['totalInvoices'], greaterThan(0));
-        expect((dashboard['totalCost'] as num).toDouble(), greaterThan(0.0));
-        expect((dashboard['totalProfit'] as num).toDouble(), greaterThan(0.0));
-      },
-    );
+      final dashboard = await reportsDao.getSalesDashboard(startIso, endIso);
+      expect(dashboard['totalInvoices'], greaterThan(0));
+      expect((dashboard['totalCost'] as num).toDouble(), greaterThan(0.0));
+      expect((dashboard['totalProfit'] as num).toDouble(), greaterThan(0.0));
+    });
 
-    test(
-      'ReportsDao payment modes, inventory stock, and purchases report correctly',
-      () async {
-        await FakeDataHelper.generateDatasetData(db, [
-          'inventory',
-          'purchases',
-          'customers',
-          'table_info',
-          'categories',
-          'subcategories',
-          'menu_items',
-          'orders',
-          'invoices',
-        ]);
+    test('ReportsDao payment modes, inventory stock, and purchases report correctly', () async {
+      await FakeDataHelper.generateDatasetData(db, [
+        'inventory',
+        'purchases',
+        'customers',
+        'table_info',
+        'categories',
+        'subcategories',
+        'menu_items',
+        'orders',
+        'invoices',
+      ]);
 
-        final now = DateTime.now();
-        final startIso = now
-            .subtract(const Duration(days: 700))
-            .toIso8601String();
-        final endIso = now.add(const Duration(days: 10)).toIso8601String();
+      final now = DateTime.now();
+      final startIso = now
+          .subtract(const Duration(days: 700))
+          .toIso8601String();
+      final endIso = now.add(const Duration(days: 10)).toIso8601String();
 
-        // Payment modes
-        final paymentReport = await reportsDao.getPaymentModeReport(
-          startIso,
-          endIso,
-        );
-        expect(paymentReport, isNotEmpty);
-        expect(paymentReport.first['paymentMethodName'], isNotNull);
-        expect(
-          (paymentReport.first['totalAmount'] as num).toDouble(),
-          greaterThan(0.0),
-        );
+      // Payment modes
+      final paymentReport = await reportsDao.getPaymentModeReport(
+        startIso,
+        endIso,
+      );
+      expect(paymentReport, isNotEmpty);
+      expect(paymentReport.first['paymentMethodName'], isNotNull);
+      expect(
+        (paymentReport.first['totalAmount'] as num).toDouble(),
+        greaterThan(0.0),
+      );
 
-        // Inventory stock
-        final stockReport = await reportsDao.getInventoryStockReport();
-        expect(stockReport, isNotEmpty);
-        expect(
-          (stockReport.first['currentStock'] as num).toDouble(),
-          greaterThan(0.0),
-        );
+      // Inventory stock
+      final stockReport = await reportsDao.getInventoryStockReport();
+      expect(stockReport, isNotEmpty);
+      expect(
+        (stockReport.first['currentStock'] as num).toDouble(),
+        greaterThan(0.0),
+      );
 
-        // Purchase summary
-        final purchaseReport = await reportsDao.getPurchaseSummaryReport(
-          startIso,
-          endIso,
-        );
-        expect(purchaseReport, isNotEmpty);
-        expect(
-          (purchaseReport.first['totalCost'] as num).toDouble(),
-          greaterThan(0.0),
-        );
-        expect(
-          (purchaseReport.first['totalQty'] as num).toDouble(),
-          greaterThan(0.0),
-        );
-      },
-    );
+      // Purchase summary
+      final purchaseReport = await reportsDao.getPurchaseSummaryReport(
+        startIso,
+        endIso,
+      );
+      expect(purchaseReport, isNotEmpty);
+      expect(
+        (purchaseReport.first['totalCost'] as num).toDouble(),
+        greaterThan(0.0),
+      );
+      expect(
+        (purchaseReport.first['totalQty'] as num).toDouble(),
+        greaterThan(0.0),
+      );
+    });
 
-    test(
-      'removeDatasetData cleanly removes generated sample data without deleting pre-existing records',
-      () async {
-        // 1. Insert a pre-existing custom customer and table
-        await db
-            .into(db.customersTable)
-            .insert(
-              CustomersTableCompanion.insert(
-                hashId: const Value('custom-user-customer-123'),
-                name: const Value('Existing User'),
-                phoneNumber: const Value('+91 9999999999'),
-              ),
-            );
+    test('removeDatasetData cleanly removes generated sample data without deleting pre-existing records', () async {
+      // 1. Insert a pre-existing custom customer and table
+      await db
+          .into(db.customersTable)
+          .insert(
+            CustomersTableCompanion.insert(
+              hashId: const Value('custom-user-customer-123'),
+              name: const Value('Existing User'),
+              phoneNumber: const Value('+91 9999999999'),
+            ),
+          );
 
-        // 2. Generate fake dataset
-        await FakeDataHelper.generateDatasetData(db, [
-          'customers',
-          'orders',
-          'invoices',
-        ]);
+      // 2. Generate fake dataset
+      await FakeDataHelper.generateDatasetData(db, [
+        'customers',
+        'orders',
+        'invoices',
+      ]);
 
-        var allCustomers = await db.select(db.customersTable).get();
-        expect(allCustomers.length, greaterThan(1));
+      var allCustomers = await db.select(db.customersTable).get();
+      expect(allCustomers.length, greaterThan(1));
 
-        // 3. Remove fake dataset
-        await FakeDataHelper.removeDatasetData(db, [
-          'invoices',
-          'orders',
-          'customers',
-        ]);
+      // 3. Remove fake dataset
+      await FakeDataHelper.removeDatasetData(db, [
+        'invoices',
+        'orders',
+        'customers',
+      ]);
 
-        allCustomers = await db.select(db.customersTable).get();
-        // Only the pre-existing customer remains
-        expect(allCustomers.length, equals(1));
-        expect(allCustomers.first.name, equals('Existing User'));
-      },
-    );
+      allCustomers = await db.select(db.customersTable).get();
+      // Only the pre-existing customer remains
+      expect(allCustomers.length, equals(1));
+      expect(allCustomers.first.name, equals('Existing User'));
+    });
   });
 }

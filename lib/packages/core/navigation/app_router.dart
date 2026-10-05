@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../auth/presentation/navigation/auth_routes.dart';
 import '../../home_page/presentation/navigation/home_routes.dart';
 import '../../shared/coozy_shared.dart' as shared;

@@ -1,7 +1,9 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+
 import '../../domain/entities/cart_item.dart';
 import '../../domain/entities/checkout_summary.dart';
 import '../../domain/entities/customer_details.dart';
@@ -11,6 +13,7 @@ import '../../domain/entities/payment_method.dart';
 import '../../domain/entities/tax.dart';
 import '../../domain/usecases/checkout_calculator.dart';
 import '../../domain/usecases/get_order_checkout_data.dart';
+
 import 'package:drift/drift.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';

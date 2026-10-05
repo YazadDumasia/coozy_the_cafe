@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+
 import '../database.dart';
 import '../tables.dart';
 
@@ -14,9 +15,8 @@ class StaffManagementDao extends DatabaseAccessor<CoozyDatabase>
   /// Create a new employee
   Future<int> addEmployee(EmployeesTableCompanion employee) async {
     return await transaction(() async {
-      return await into(
-        employeesTable,
-      ).insert(employee, mode: InsertMode.replace);
+      return await into(employeesTable)
+          .insert(employee, mode: InsertMode.replace);
     });
   }
 
@@ -31,8 +31,7 @@ class StaffManagementDao extends DatabaseAccessor<CoozyDatabase>
   /// Soft delete an employee by marking `isDeleted` and update the modification date
   Future<int> deleteSoftEmployee(int id) async {
     return await transaction(() async {
-      final currentDate = DateTime.now()
-          .toIso8601String(); // DateUtil.dateToString if we want, but Iso is fine for drift
+      final currentDate = DateTime.now().toIso8601String(); // DateUtil.dateToString if we want, but Iso is fine for drift
       final rowsAffected =
           await (update(employeesTable)..where((t) => t.id.equals(id))).write(
             EmployeesTableCompanion(
@@ -103,9 +102,8 @@ class StaffManagementDao extends DatabaseAccessor<CoozyDatabase>
   /// Insert a new attendance record
   Future<int> addAttendance(AttendanceTableCompanion attendance) async {
     return await transaction(() async {
-      return await into(
-        attendanceTable,
-      ).insert(attendance, mode: InsertMode.replace);
+      return await into(attendanceTable)
+          .insert(attendance, mode: InsertMode.replace);
     });
   }
 

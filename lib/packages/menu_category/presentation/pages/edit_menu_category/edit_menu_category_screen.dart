@@ -1,6 +1,7 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'edit_menu_category_screen_actions.dart';
 
 import 'package:coozy_the_cafe/packages/menu_category/presentation/bloc/edit_menu_category_bloc/edit_menu_category_bloc.dart';
@@ -27,16 +28,14 @@ class _EditMenuCategoryScreenState extends State<EditMenuCategoryScreen> {
     menuCategoryNameController = TextEditingController(text: '');
     menuCategoryNameFocusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<EditMenuCategoryBloc>(
-        context,
-      ).add(LoadEditMenuCategoryDataEvent(category: widget.category));
+      BlocProvider.of<EditMenuCategoryBloc>(context)
+          .add(LoadEditMenuCategoryDataEvent(category: widget.category));
     });
   }
 
   Future<void> reload() async {
-    BlocProvider.of<EditMenuCategoryBloc>(
-      context,
-    ).add(LoadEditMenuCategoryDataEvent(category: widget.category));
+    BlocProvider.of<EditMenuCategoryBloc>(context)
+        .add(LoadEditMenuCategoryDataEvent(category: widget.category));
   }
 
   @override

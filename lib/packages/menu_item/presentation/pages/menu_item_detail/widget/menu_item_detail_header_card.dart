@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_item/domain/entities/menu_item.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import 'menu_item_food_type_badge.dart';
 
 class MenuItemDetailHeaderCard extends StatelessWidget {

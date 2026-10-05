@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/database/src/database.dart';
+
 import 'data/datasources/reports_local_data_source.dart';
 import 'data/repositories/reports_repository_impl.dart';
 import 'domain/repositories/reports_repository.dart';

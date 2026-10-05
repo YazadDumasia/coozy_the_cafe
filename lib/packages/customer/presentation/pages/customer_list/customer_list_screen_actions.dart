@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
+
 import '../../../../shared/gen/assets.gen.dart';
 import '../../../../shared/coozy_shared.dart' as shared;
 import '../../../domain/entities/customer_entity.dart';

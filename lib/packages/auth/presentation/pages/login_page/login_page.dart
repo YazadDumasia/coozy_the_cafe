@@ -1,14 +1,17 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as share;
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart'
     as assets_gen;
+
 import 'cubit/login_screen_cubit.dart';
 import 'widget/login_desktop_layout_widget.dart';
 import 'widget/login_mobile_layout_widget.dart';
 import 'widget/login_tablet_layout_widget.dart';
 import 'login_page_actions.dart';
+
 // import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginPage extends StatefulWidget {

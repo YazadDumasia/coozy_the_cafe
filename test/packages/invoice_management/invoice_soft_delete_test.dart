@@ -106,46 +106,43 @@ void main() {
     },
   );
 
-  test(
-    'Permanently delete order completely removes record and order items from table',
-    () async {
-      // 1. Create an order
-      final orderId = await ordersDao.createNewOrder(
-        order: OrdersTableCompanion(
-          hashId: const Value('order-perm-test-1'),
-          tableNameText: const Value('Table 4'),
-          status: const Value('placed'),
-          creationDate: Value(DateTime.now().toUtc().toIso8601String()),
+  test('Permanently delete order completely removes record and order items from table', () async {
+    // 1. Create an order
+    final orderId = await ordersDao.createNewOrder(
+      order: OrdersTableCompanion(
+        hashId: const Value('order-perm-test-1'),
+        tableNameText: const Value('Table 4'),
+        status: const Value('placed'),
+        creationDate: Value(DateTime.now().toUtc().toIso8601String()),
+      ),
+      orderItems: [
+        const OrderItemsTableCompanion(
+          quantity: Value(1),
+          sellingPrice: Value(120.0),
+          status: Value('placed'),
         ),
-        orderItems: [
-          const OrderItemsTableCompanion(
-            quantity: Value(1),
-            sellingPrice: Value(120.0),
-            status: Value('placed'),
-          ),
-        ],
-      );
+      ],
+    );
 
-      // Verify order exists
-      final createdOrder = await ordersDao.getOrderInfo(orderId);
-      expect(createdOrder, isNotNull);
-      expect(createdOrder!.items.length, 1);
+    // Verify order exists
+    final createdOrder = await ordersDao.getOrderInfo(orderId);
+    expect(createdOrder, isNotNull);
+    expect(createdOrder!.items.length, 1);
 
-      // 2. Permanently delete order
-      final deleteResult = await ordersDao.permanentlyDeleteOrder(orderId);
-      expect(deleteResult, 1);
+    // 2. Permanently delete order
+    final deleteResult = await ordersDao.permanentlyDeleteOrder(orderId);
+    expect(deleteResult, 1);
 
-      // 3. Verify order is completely deleted from database
-      final deletedOrder = await ordersDao.getOrderInfo(orderId);
-      expect(deletedOrder, isNull);
+    // 3. Verify order is completely deleted from database
+    final deletedOrder = await ordersDao.getOrderInfo(orderId);
+    expect(deletedOrder, isNull);
 
-      // Verify order items are also completely deleted
-      final remainingItems = await (db.select(
-        db.orderItemsTable,
-      )..where((t) => t.orderId.equals(orderId))).get();
-      expect(remainingItems.isEmpty, true);
-    },
-  );
+    // Verify order items are also completely deleted
+    final remainingItems = await (db.select(
+      db.orderItemsTable,
+    )..where((t) => t.orderId.equals(orderId))).get();
+    expect(remainingItems.isEmpty, true);
+  });
 
   test('Updating invoice also updates linked order record in database', () async {
     // 1. Create order

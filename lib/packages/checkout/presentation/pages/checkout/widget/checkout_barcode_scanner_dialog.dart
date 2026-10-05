@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+
 import '../../../bloc/checkout_bloc.dart';
 import '../../../../domain/entities/cart_item.dart';
 

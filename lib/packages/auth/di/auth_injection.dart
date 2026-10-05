@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+
 import '../../core/coozy_core.dart' as core;
 import '../../database/coozy_database.dart' as db;
 import '../data/datasources/auth_local_data_source.dart';

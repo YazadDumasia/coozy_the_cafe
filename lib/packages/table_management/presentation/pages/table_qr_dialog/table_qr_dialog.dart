@@ -1,10 +1,12 @@
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:pdfrx/pdfrx.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/table_info.dart';
 import '../../../domain/services/table_qr_pdf_generator.dart';
 
@@ -35,15 +37,6 @@ class _TableQrDialogState extends State<TableQrDialog> {
   /// Incremented each time a new generation starts; guards against stale
   /// results from a previous run being applied after the column count changes.
   int _generationId = 0;
-
-  /// Counter used to produce unique source names for each rendered PDF.
-  static int _docRefCounter = 0;
-
-  /// Each completed generation gets a unique [sourceName] so pdfrx never
-  /// shares/caches this document with another dialog or generation.
-  /// The unique key ensures autoDispose removes it from the cache when
-  /// [PdfViewer] is unmounted.
-  String? _pdfSourceName;
 
   @override
   void initState() {
@@ -85,11 +78,8 @@ class _TableQrDialogState extends State<TableQrDialog> {
       // Final guard: do not update state if dismissed after rendering finished or superseded
       if (_cancelled || _generationId != myGeneration || !mounted) return;
 
-      final uniqueSourceName = 'table_qr_pdf_${++_docRefCounter}';
-
       setState(() {
         _pdfBytes = bytes;
-        _pdfSourceName = uniqueSourceName;
         _isLoading = false;
       });
     } catch (e, stack) {
@@ -136,8 +126,10 @@ class _TableQrDialogState extends State<TableQrDialog> {
       backgroundColor: Theme.of(context).colorScheme.surface,
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Container(
-        width: 780,
-        constraints: const BoxConstraints(maxHeight: 740),
+        width: MediaQuery.of(context).size.width * 0.8,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.80,
+        ),
         padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -151,23 +143,17 @@ class _TableQrDialogState extends State<TableQrDialog> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(6),
-                      child: SizedBox(
-                        width: 32,
-                        height: 32,
-                        child: Lottie.asset(
-                          Theme.of(context).brightness == Brightness.dark
-                              ? Assets.lottie.qrcodeDark
-                              : Assets.lottie.qrcodeLight,
-                          fit: BoxFit.contain,
-                        ),
+                      child: Icon(
+                        Icons.qr_code_rounded,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 24,
                       ),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       titleText,
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                   ],
                 ),
@@ -187,18 +173,16 @@ class _TableQrDialogState extends State<TableQrDialog> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.5),
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest
+                      .withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Row(
                   children: [
                     Text(
                       'Grid Columns Layout: ',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(width: 12),
                     SegmentedButton<int>(
@@ -226,7 +210,6 @@ class _TableQrDialogState extends State<TableQrDialog> {
                           setState(() {
                             _selectedColumns = newSelection.first;
                             _pdfBytes = null;
-                            _pdfSourceName = null;
                             _isLoading = true;
                           });
                           _loadPdf();
@@ -244,7 +227,7 @@ class _TableQrDialogState extends State<TableQrDialog> {
             ],
             const Divider(height: 12),
 
-            // PDF Viewer Container using pdfrx
+            // PDF Viewer Container using SfPdfViewer
             Expanded(
               child: _isLoading
                   ? Center(
@@ -267,9 +250,9 @@ class _TableQrDialogState extends State<TableQrDialog> {
                                 'Please wait...',
                             style: Theme.of(context).textTheme.bodyMedium
                                 ?.copyWith(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onSurfaceVariant,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant,
                                 ),
                           ),
                         ],
@@ -285,9 +268,17 @@ class _TableQrDialogState extends State<TableQrDialog> {
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: PdfViewer.data(
+                        child: SfPdfViewer.memory(
                           _pdfBytes!,
-                          sourceName: _pdfSourceName!,
+                          canShowScrollHead: false,
+                          canShowScrollStatus: false,
+                          onDocumentLoadFailed:
+                              (PdfDocumentLoadFailedDetails details) {
+                                core.PlatformUtils.debugLog(
+                                  TableQrDialog,
+                                  'SfPdfViewer load failed: ${details.error} - ${details.description}',
+                                );
+                              },
                         ),
                       ),
                     )

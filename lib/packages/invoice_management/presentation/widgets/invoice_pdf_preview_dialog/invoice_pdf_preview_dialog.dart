@@ -1,10 +1,12 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdfrx/pdfrx.dart';
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/invoice_management_entity.dart';
 import '../../../domain/services/invoice_pdf_generator.dart';
 
@@ -30,13 +32,10 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
   bool _isTemporaryCache = false;
   bool _isLoading = true;
   String? _errorMessage;
-  static int _docCounter = 0;
-  late final String _sourceName;
 
   @override
   void initState() {
     super.initState();
-    _sourceName = 'invoice_pdf_preview_${++_docCounter}';
     _loadPdf();
   }
 
@@ -320,14 +319,19 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
                   : _cachedFilePath != null
                   ? Container(
                       color: colorScheme.surface,
-                      child: PdfViewer.file(_cachedFilePath!),
+                      child: SfPdfViewer.file(
+                        File(_cachedFilePath!),
+                        canShowScrollHead: false,
+                        canShowScrollStatus: false,
+                      ),
                     )
                   : _pdfBytes != null
                   ? Container(
                       color: colorScheme.surface,
-                      child: PdfViewer.data(
+                      child: SfPdfViewer.memory(
                         _pdfBytes!,
-                        sourceName: _sourceName,
+                        canShowScrollHead: false,
+                        canShowScrollStatus: false,
                       ),
                     )
                   : const SizedBox.shrink(),

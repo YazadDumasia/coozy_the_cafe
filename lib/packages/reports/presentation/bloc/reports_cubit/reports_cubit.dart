@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../domain/entities/daily_sales_entry.dart';
 import '../../../domain/entities/monthly_sales_entry.dart';
 import '../../../domain/entities/sales_trend_entry.dart';
@@ -13,6 +14,7 @@ import '../../../domain/entities/menu_item_sales_entry.dart';
 import '../../../domain/entities/stock_adjustment_entry.dart';
 import '../../../domain/entities/report_category.dart';
 import '../../../domain/usecases/reports_usecases.dart';
+
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 
 part 'reports_state.dart';

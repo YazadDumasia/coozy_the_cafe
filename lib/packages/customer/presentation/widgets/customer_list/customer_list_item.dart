@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/customer_entity.dart';
 import '../../pages/customer_list/customer_list_screen_actions.dart';
 

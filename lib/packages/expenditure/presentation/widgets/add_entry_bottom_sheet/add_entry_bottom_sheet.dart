@@ -4,6 +4,7 @@ import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/invoice_management/domain/usecases/get_payment_modes_usecase.dart';
 import 'package:coozy_the_cafe/packages/checkout/checkout.dart';
+
 import '../../../domain/entities/expenditure_entity.dart';
 
 class AddEntryBottomSheet extends StatefulWidget {
@@ -333,9 +334,9 @@ class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
                                   ),
                               autofocus: true,
                               textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (_) => FocusScope.of(
-                                context,
-                              ).requestFocus(_partyFocusNode),
+                              onFieldSubmitted: (_) =>
+                                  FocusScope.of(context)
+                                      .requestFocus(_partyFocusNode),
                               decoration: InputDecoration(
                                 labelText: '$amountLabel ($symbol)',
                                 hintText:
@@ -401,9 +402,9 @@ class _AddEntryBottomSheetState extends State<AddEntryBottomSheet> {
                           controller: _partyController,
                           focusNode: _partyFocusNode,
                           textInputAction: TextInputAction.next,
-                          onFieldSubmitted: (_) => FocusScope.of(
-                            context,
-                          ).requestFocus(_notesFocusNode),
+                          onFieldSubmitted: (_) =>
+                              FocusScope.of(context)
+                                  .requestFocus(_notesFocusNode),
                           decoration: InputDecoration(
                             labelText: isExpense
                                 ? (context.tr(

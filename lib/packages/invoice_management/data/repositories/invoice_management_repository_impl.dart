@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+
 import '../../domain/entities/invoice_management_entity.dart';
 import '../../domain/repositories/invoice_management_repository.dart';
 import '../datasources/invoice_management_remote_datasource.dart';
@@ -108,7 +109,7 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
           UnexpectedFailure(message: 'No invoice found for this order'),
         );
       }
-      return getInvoiceDetails(invoiceRow.id);
+      return await getInvoiceDetails(invoiceRow.id);
     } catch (e) {
       return Left(DatabaseFailure(message: e.toString()));
     }
@@ -125,7 +126,7 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
           UnexpectedFailure(message: 'No invoice found for this hash ID'),
         );
       }
-      return getInvoiceDetails(invoiceRow.id);
+      return await getInvoiceDetails(invoiceRow.id);
     } catch (e) {
       return Left(DatabaseFailure(message: e.toString()));
     }
@@ -144,7 +145,7 @@ class InvoiceManagementRepositoryImpl implements InvoiceManagementRepository {
           UnexpectedFailure(message: 'No invoice found for this order'),
         );
       }
-      return getInvoiceDetails(invoiceRow.id);
+      return await getInvoiceDetails(invoiceRow.id);
     } catch (e) {
       return Left(DatabaseFailure(message: e.toString()));
     }

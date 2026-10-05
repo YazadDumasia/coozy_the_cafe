@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/sign_up_page/widget/sign_up_carousel_widget.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart' as asts;
+
 import 'cubit/forgot_password_cubit.dart';
 import 'forgot_password_page_actions.dart';
 import 'widget/forgot_password_card_widget.dart';
@@ -70,7 +71,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 ForgotPasswordPageActions.showSuccessSentDialog(
                   context: context,
                   email: state.email,
-                  temporaryPassword: kDebugMode ? state.temporaryPassword : null,
+                  temporaryPassword: kDebugMode
+                      ? state.temporaryPassword
+                      : null,
                   otpCode: state.otpCode,
                 );
               } else if (state is ForgotPasswordFailure) {

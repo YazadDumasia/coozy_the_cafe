@@ -4,6 +4,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../bloc/checkout_bloc.dart';
 import '../../../../domain/entities/customer_details.dart';
 import '../../../utils/responsive_modal.dart';
@@ -193,9 +194,9 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                 dense: true,
                 leading: CircleAvatar(
                   radius: 14,
-                  backgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.primaryContainer,
+                  backgroundColor: Theme.of(context)
+                      .colorScheme
+                      .primaryContainer,
                   child: Icon(
                     Icons.person,
                     size: 16,

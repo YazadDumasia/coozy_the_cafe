@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+
 import 'menu_item_variation.dart';
 
 class MenuItem extends Equatable {

@@ -13,8 +13,8 @@ class MenuItemSalesEntry {
     this.totalCost = 0.0,
     this.totalProfit = 0.0,
     this.profitPercentage,
-  })  : period = period ?? saleDate ?? '',
-        saleDate = saleDate ?? period ?? '';
+  }) : period = period ?? saleDate ?? '',
+       saleDate = saleDate ?? period ?? '';
 
   factory MenuItemSalesEntry.fromMap(Map<String, dynamic> map) {
     final rawPeriod = (map['period'] ?? map['saleDate']) as String? ?? '';
@@ -44,10 +44,10 @@ class MenuItemSalesEntry {
   final double? profitPercentage;
 
   (DateTime, DateTime)? get weekRange => ReportDateUtils.resolveWeekRange(
-        startDate: startDate,
-        endDate: endDate,
-        period: period,
-      );
+    startDate: startDate,
+    endDate: endDate,
+    period: period,
+  );
 
   String formattedPeriod(SalesPeriodFormat format) =>
       ReportDateUtils.formatPeriod(

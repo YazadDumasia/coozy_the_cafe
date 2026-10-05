@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../../domain/entities/sales_trend_entry.dart';
 
 class SalesPeriodFormatSelector extends StatelessWidget {
@@ -44,7 +45,11 @@ class SalesPeriodFormatSelector extends StatelessWidget {
     final formats = [
       (SalesPeriodFormat.daily, dailyLabel, Icons.view_day_rounded),
       (SalesPeriodFormat.weekly, weeklyLabel, Icons.view_week_rounded),
-      (SalesPeriodFormat.monthly, monthlyLabel, Icons.calendar_view_month_rounded),
+      (
+        SalesPeriodFormat.monthly,
+        monthlyLabel,
+        Icons.calendar_view_month_rounded,
+      ),
       (SalesPeriodFormat.yearly, yearlyLabel, Icons.calendar_today_rounded),
     ];
 
@@ -54,9 +59,7 @@ class SalesPeriodFormatSelector extends StatelessWidget {
       decoration: BoxDecoration(
         color: scheme.surfaceContainerHighest.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.5),
-        ),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.5)),
       ),
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -77,9 +80,7 @@ class SalesPeriodFormatSelector extends StatelessWidget {
                     curve: Curves.easeInOut,
                     padding: const EdgeInsets.symmetric(vertical: 8),
                     decoration: BoxDecoration(
-                      color: isSelected
-                          ? scheme.primary
-                          : Colors.transparent,
+                      color: isSelected ? scheme.primary : Colors.transparent,
                       borderRadius: BorderRadius.circular(9),
                       boxShadow: isSelected
                           ? [
@@ -110,14 +111,15 @@ class SalesPeriodFormatSelector extends StatelessWidget {
                             label,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                              color: isSelected
-                                  ? scheme.onPrimary
-                                  : scheme.onSurfaceVariant,
-                              fontWeight: isSelected
-                                  ? FontWeight.bold
-                                  : FontWeight.w500,
-                            ),
+                            style: Theme.of(context).textTheme.labelMedium
+                                ?.copyWith(
+                                  color: isSelected
+                                      ? scheme.onPrimary
+                                      : scheme.onSurfaceVariant,
+                                  fontWeight: isSelected
+                                      ? FontWeight.bold
+                                      : FontWeight.w500,
+                                ),
                           ),
                         ),
                       ],

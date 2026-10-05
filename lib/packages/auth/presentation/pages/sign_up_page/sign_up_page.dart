@@ -1,10 +1,13 @@
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart' as asts;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'cubit/sign_up_cubit.dart';
 import 'widget/sign_up_carousel_widget.dart';
 import 'widget/sign_up_form_widget.dart';
+
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import 'sign_up_page_actions.dart';
 
 class SignUpPage extends StatefulWidget {

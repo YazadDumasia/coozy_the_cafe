@@ -17,4 +17,5 @@ enum PreferencesKeys {
   appCurrencySymbol,
   appSecondaryCurrencySymbol,
   enableSecondaryCurrency,
+  enableQrScannerOrderPlacement,
 }

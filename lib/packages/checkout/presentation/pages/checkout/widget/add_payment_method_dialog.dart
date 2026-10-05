@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../domain/entities/payment_method.dart';
 
 class AddPaymentMethodDialog extends StatefulWidget {
@@ -67,9 +68,8 @@ class _AddPaymentMethodDialogState extends State<AddPaymentMethodDialog> {
           children: [
             Text(
               'Add Custom Payment Mode',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleLarge
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -88,9 +88,8 @@ class _AddPaymentMethodDialogState extends State<AddPaymentMethodDialog> {
             const SizedBox(height: 16),
             Text(
               'Select Icon',
-              style: Theme.of(
-                context,
-              ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.titleSmall
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Wrap(

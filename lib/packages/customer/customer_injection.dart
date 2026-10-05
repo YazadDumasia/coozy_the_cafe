@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+
 import 'domain/repositories/customer_repository.dart';
 import 'data/repositories/customer_repository_impl.dart';
 import 'domain/usecases/customer_usecases.dart';

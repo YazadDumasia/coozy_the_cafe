@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/sign_up_page/widget/sign_up_carousel_widget.dart';
 import 'package:coozy_the_cafe/packages/core/navigation/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
+
 import 'dart:math' as math;
+
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,6 +17,7 @@ import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart'
     as assets_gen;
 
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart';
+
 import 'cubit/login_with_phone_cubit.dart';
 
 class LoginViaPhoneNumberPage extends StatefulWidget {
@@ -157,9 +161,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                           end: 20,
                           child: CircleAvatar(
                             radius: 55.0,
-                            backgroundColor: Theme.of(
-                              context,
-                            ).colorScheme.secondaryContainer,
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
                           ),
                         ),
                         PositionedDirectional(
@@ -168,9 +172,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                           end: 0,
                           child: CircleAvatar(
                             radius: 33.0,
-                            backgroundColor: Theme.of(
-                              context,
-                            ).colorScheme.secondaryContainer,
+                            backgroundColor: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
                           ),
                         ),
                         Card(
@@ -184,9 +188,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                             ),
                             side: BorderSide(
                               width: 5,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.secondaryContainer,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .secondaryContainer,
                             ),
                           ),
                           child: Container(
@@ -219,9 +223,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                               'OTP Verification',
                                           softWrap: true,
                                           overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(
-                                            context,
-                                          ).textTheme.headlineSmall!,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headlineSmall!,
                                         ),
                                       ),
                                     ],
@@ -251,9 +255,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                                 'We will send you a One Time Password on your phone number.',
                                             softWrap: true,
                                             maxLines: 5,
-                                            style: Theme.of(
-                                              context,
-                                            ).textTheme.titleSmall,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .titleSmall,
                                           ),
                                         ),
                                       ),
@@ -306,9 +310,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                     child: Center(
                                       child: Icon(
                                         Icons.navigate_next_rounded,
-                                        color: Theme.of(
-                                          context,
-                                        ).colorScheme.secondary,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
                                         size: 40,
                                       ),
                                     ),
@@ -399,9 +403,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                               end: 20,
                               child: CircleAvatar(
                                 radius: 55.0,
-                                backgroundColor: Theme.of(
-                                  context,
-                                ).colorScheme.secondaryContainer,
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
                               ),
                             ),
                             PositionedDirectional(
@@ -410,9 +414,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                               end: 0,
                               child: CircleAvatar(
                                 radius: 33.0,
-                                backgroundColor: Theme.of(
-                                  context,
-                                ).colorScheme.secondaryContainer,
+                                backgroundColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
                               ),
                             ),
                             Card(
@@ -429,9 +433,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                 ),
                                 side: BorderSide(
                                   width: 5,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondaryContainer,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
                                 ),
                               ),
                               child: Container(
@@ -469,9 +473,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                                   'OTP Verification',
                                               softWrap: true,
                                               overflow: TextOverflow.ellipsis,
-                                              style: Theme.of(
-                                                context,
-                                              ).textTheme.headlineSmall!,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineSmall!,
                                             ),
                                           ),
                                         ],
@@ -503,9 +507,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                                     'We will send you a One Time Password on your phone number.',
                                                 softWrap: true,
                                                 maxLines: 5,
-                                                style: Theme.of(
-                                                  context,
-                                                ).textTheme.titleSmall,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .titleSmall,
                                               ),
                                             ),
                                           ),
@@ -608,9 +612,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                   child: Icon(
                                     CustomIcon.password,
                                     size: 65,
-                                    color: Theme.of(
-                                      context,
-                                    ).colorScheme.primary,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
                                   ),
                                 ),
                               ),

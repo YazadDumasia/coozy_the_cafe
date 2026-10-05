@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 import 'package:coozy_the_cafe/packages/database/src/database.dart';
+
 import '../../domain/entities/expenditure_entity.dart';
 
 class ExpenditureModel extends ExpenditureEntity {

@@ -1,7 +1,9 @@
 import 'dart:math';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/entities/table_info.dart';
 import '../../domain/usecases/add_table_usecase.dart';
 import '../../domain/usecases/delete_table_usecase.dart';

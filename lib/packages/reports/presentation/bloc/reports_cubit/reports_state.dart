@@ -29,13 +29,19 @@ final class ReportsTopItemsLoaded extends ReportsState {
 }
 
 final class ReportsPaymentModesLoaded extends ReportsState {
-  ReportsPaymentModesLoaded(this.entries, [this.format = SalesPeriodFormat.daily]);
+  ReportsPaymentModesLoaded(
+    this.entries, [
+    this.format = SalesPeriodFormat.daily,
+  ]);
   final List<PaymentModeEntry> entries;
   final SalesPeriodFormat format;
 }
 
 final class ReportsDashboardLoaded extends ReportsState {
-  ReportsDashboardLoaded(this.dashboard, [this.format = SalesPeriodFormat.daily]);
+  ReportsDashboardLoaded(
+    this.dashboard, [
+    this.format = SalesPeriodFormat.daily,
+  ]);
   final SalesDashboard dashboard;
   final SalesPeriodFormat format;
 }
@@ -52,19 +58,28 @@ final class ReportsPurchasesLoaded extends ReportsState {
 }
 
 final class ReportsExpenditureLoaded extends ReportsState {
-  ReportsExpenditureLoaded(this.entries, [this.format = SalesPeriodFormat.daily]);
+  ReportsExpenditureLoaded(
+    this.entries, [
+    this.format = SalesPeriodFormat.daily,
+  ]);
   final List<ExpenditureSummaryEntry> entries;
   final SalesPeriodFormat format;
 }
 
 final class ReportsMenuItemSalesLoaded extends ReportsState {
-  ReportsMenuItemSalesLoaded(this.entries, [this.format = SalesPeriodFormat.daily]);
+  ReportsMenuItemSalesLoaded(
+    this.entries, [
+    this.format = SalesPeriodFormat.daily,
+  ]);
   final List<MenuItemSalesEntry> entries;
   final SalesPeriodFormat format;
 }
 
 final class ReportsStockAdjustmentsLoaded extends ReportsState {
-  ReportsStockAdjustmentsLoaded(this.entries, [this.format = SalesPeriodFormat.daily]);
+  ReportsStockAdjustmentsLoaded(
+    this.entries, [
+    this.format = SalesPeriodFormat.daily,
+  ]);
   final List<StockAdjustmentEntry> entries;
   final SalesPeriodFormat format;
 }

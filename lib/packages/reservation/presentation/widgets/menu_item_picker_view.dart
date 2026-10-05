@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../domain/entities/reservation_entity.dart';
 
 class MenuItemPickerView extends StatefulWidget {
@@ -43,9 +44,8 @@ class MenuItemPickerView extends StatefulWidget {
                             track: shared.TrackConstants.reservationPageTrack,
                           ) ??
                           'Search & Pre-order Menu Items',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: Theme.of(context).textTheme.titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close),
@@ -362,9 +362,8 @@ class _MenuItemPickerViewState extends State<MenuItemPickerView> {
                   children: [
                     Text(
                       'Total Items: ${widget.selectedItems.fold(0, (sum, i) => sum + i.quantity)}',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     Text(
                       'Pre-order Total: ${widget.selectedItems.fold(0.0, (sum, i) => sum + (i.price * i.quantity)).toStringAsFixed(2)}',

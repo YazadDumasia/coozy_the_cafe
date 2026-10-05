@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/staff_entities.dart';
 import '../../../domain/usecases/staff_usecases.dart';
 import 'employee_event_state.dart';

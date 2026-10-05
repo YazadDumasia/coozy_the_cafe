@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
 import 'package:coozy_the_cafe/packages/recipes/domain/repositories/recipes_repository.dart';
+
 import '../datasources/recipes_local_data_source.dart';
 import '../models/recipe_model.dart';
 

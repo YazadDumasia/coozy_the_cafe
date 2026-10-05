@@ -1,8 +1,11 @@
 import 'package:coozy_the_cafe/packages/shared/config/app_extensions.dart';
 import 'package:coozy_the_cafe/packages/shared/l10n/locale_keys.dart';
+
 import 'dart:async';
+
 import 'helpers.dart';
 import '../widgets.dart';
+
 import 'package:flutter/cupertino.dart' as cupertino;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';

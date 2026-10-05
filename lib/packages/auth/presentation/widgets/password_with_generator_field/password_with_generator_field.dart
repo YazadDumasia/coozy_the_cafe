@@ -74,10 +74,10 @@ class _PasswordWithGeneratorFieldState
             Expanded(
               child: Text(
                 context.tr(
-                  shared.LocaleKeys.resetPasswordGeneratedTooltip,
-                  track: shared.TrackConstants.resetPasswordPageTrack,
-                ) ??
-                'Generated strong password & copied to clipboard!',
+                      shared.LocaleKeys.resetPasswordGeneratedTooltip,
+                      track: shared.TrackConstants.resetPasswordPageTrack,
+                    ) ??
+                    'Generated strong password & copied to clipboard!',
               ),
             ),
           ],
@@ -123,8 +123,7 @@ class _PasswordWithGeneratorFieldState
             final hasUpper = _validationService.hasUpperCase(text);
             final hasNum = _validationService.hasNumeric(text);
             final hasSpec = _validationService.hasSpecialChar(text);
-            final allMet =
-                hasMin && hasLower && hasUpper && hasNum && hasSpec;
+            final allMet = hasMin && hasLower && hasUpper && hasNum && hasSpec;
 
             return Column(
               mainAxisSize: MainAxisSize.min,
@@ -173,15 +172,14 @@ class _PasswordWithGeneratorFieldState
                                 const SizedBox(width: 5),
                                 Text(
                                   context.tr(
-                                    shared
-                                        .LocaleKeys
-                                        .resetPasswordGenerateBtn,
-                                    track:
                                         shared
+                                            .LocaleKeys
+                                            .resetPasswordGenerateBtn,
+                                        track: shared
                                             .TrackConstants
                                             .resetPasswordPageTrack,
-                                  ) ??
-                                  'Generate Strong Password',
+                                      ) ??
+                                      'Generate Strong Password',
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: theme.colorScheme.primary,
                                     fontWeight: FontWeight.w600,
@@ -203,15 +201,13 @@ class _PasswordWithGeneratorFieldState
                     focusNode: widget.focusNode,
                     keyboardType: TextInputType.text,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
-                    textInputAction:
-                        widget.nextFocusNode != null
-                            ? TextInputAction.next
-                            : TextInputAction.done,
+                    textInputAction: widget.nextFocusNode != null
+                        ? TextInputAction.next
+                        : TextInputAction.done,
                     onFieldSubmitted: (value) {
                       if (widget.nextFocusNode != null) {
-                        FocusScope.of(
-                          context,
-                        ).requestFocus(widget.nextFocusNode);
+                        FocusScope.of(context)
+                            .requestFocus(widget.nextFocusNode);
                       } else {
                         FocusScope.of(context).unfocus();
                       }
@@ -247,8 +243,9 @@ class _PasswordWithGeneratorFieldState
                     decoration: InputDecoration(
                       contentPadding: const EdgeInsets.all(18),
                       hintText: effectiveHint,
-                      labelText:
-                          widget.showGeneratorButton ? null : effectiveLabel,
+                      labelText: widget.showGeneratorButton
+                          ? null
+                          : effectiveLabel,
                       isDense: true,
                       prefixIcon: Icon(
                         Icons.lock_outline_rounded,
@@ -286,9 +283,7 @@ class _PasswordWithGeneratorFieldState
                         borderRadius: BorderRadius.circular(10),
                       ),
                       errorBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: theme.colorScheme.error,
-                        ),
+                        borderSide: BorderSide(color: theme.colorScheme.error),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       focusedErrorBorder: OutlineInputBorder(

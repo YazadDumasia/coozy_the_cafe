@@ -1,11 +1,14 @@
 import 'package:coozy_the_cafe/packages/waiter_order_placement/presentation/navigation/waiter_order_placement_routes.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../../core/navigation/app_routes.dart';
 import '../pages/table_picker/table_picker_screen.dart';
 import '../pages/table_qr_scanner/table_qr_scanner_screen.dart';
 import '../pages/table_screen/table_screen.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+
 import '../cubit/table_cubit.dart';
 
 class TableRoutes {

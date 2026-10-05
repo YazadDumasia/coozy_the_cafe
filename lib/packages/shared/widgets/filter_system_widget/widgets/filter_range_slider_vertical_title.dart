@@ -1,5 +1,6 @@
 import '../props/filter_item_model.dart';
 import '../props/filter_props.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/theme.dart';

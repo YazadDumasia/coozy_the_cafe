@@ -1,6 +1,7 @@
 import 'package:device_info_plus/device_info_plus.dart' as device_info;
 import 'package:package_info_plus/package_info_plus.dart' as pack_info;
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
+
 import '../../../core/coozy_core.dart' as core;
 import '../../coozy_shared.dart' as shared;
 

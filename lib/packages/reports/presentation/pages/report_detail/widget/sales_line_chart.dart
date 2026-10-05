@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../../domain/entities/daily_sales_entry.dart';
 
 class SalesLineChart extends StatelessWidget {
@@ -19,9 +20,8 @@ class SalesLineChart extends StatelessWidget {
                 track: shared.TrackConstants.reportPageTrack,
               ) ??
               'No data found for the selected range',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: scheme.onSurface.withValues(alpha: 0.5),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }

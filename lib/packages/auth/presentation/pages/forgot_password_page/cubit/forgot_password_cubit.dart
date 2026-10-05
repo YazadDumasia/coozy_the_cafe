@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,7 +12,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
   final SendPasswordResetEmailUseCase sendPasswordResetEmailUseCase;
 
   ForgotPasswordCubit({required this.sendPasswordResetEmailUseCase})
-      : super(ForgotPasswordInitial());
+    : super(ForgotPasswordInitial());
 
   Future<void> sendResetEmail(String email) async {
     emit(ForgotPasswordLoading());
@@ -22,8 +23,7 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
       final tempPassword = PasswordGenerator.generate(length: 12);
 
       // Generate a 4-digit OTP (for OTP Verification page)
-      final otpCode =
-          (math.Random.secure().nextInt(9000) + 1000).toString();
+      final otpCode = (math.Random.secure().nextInt(9000) + 1000).toString();
 
       if (kDebugMode) {
         debugPrint(
@@ -40,11 +40,13 @@ class ForgotPasswordCubit extends Cubit<ForgotPasswordState> {
         temporaryPassword: tempPassword,
       );
       if (success) {
-        emit(ForgotPasswordEmailSentSuccess(
-          email: trimmedEmail,
-          temporaryPassword: tempPassword,
-          otpCode: otpCode,
-        ));
+        emit(
+          ForgotPasswordEmailSentSuccess(
+            email: trimmedEmail,
+            temporaryPassword: tempPassword,
+            otpCode: otpCode,
+          ),
+        );
       } else {
         emit(
           const ForgotPasswordFailure(

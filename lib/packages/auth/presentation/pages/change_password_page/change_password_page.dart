@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/sign_up_page/widget/sign_up_carousel_widget.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart' as asts;
+
 import 'change_password_page_actions.dart';
 import 'cubit/change_password_cubit.dart';
 import 'widget/change_password_card_widget.dart';

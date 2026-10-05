@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../bloc/checkout_bloc.dart';
 
 Future<T?> showResponsiveModal<T>({
@@ -39,9 +40,8 @@ Future<T?> showResponsiveModal<T>({
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(
-                    sheetContext,
-                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.4),
+                  color: Theme.of(sheetContext).colorScheme.onSurfaceVariant
+                      .withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),

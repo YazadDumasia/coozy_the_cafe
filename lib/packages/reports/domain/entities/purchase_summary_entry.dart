@@ -33,10 +33,10 @@ class PurchaseSummaryEntry {
   final double totalCost;
 
   (DateTime, DateTime)? get weekRange => ReportDateUtils.resolveWeekRange(
-        startDate: startDate,
-        endDate: endDate,
-        period: period,
-      );
+    startDate: startDate,
+    endDate: endDate,
+    period: period,
+  );
 
   String formattedPeriod(SalesPeriodFormat format) =>
       ReportDateUtils.formatPeriod(

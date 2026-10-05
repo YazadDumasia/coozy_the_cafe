@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../../domain/utils/report_date_utils.dart';
 
 class ReportDataTable extends StatefulWidget {
-  const ReportDataTable({
-    super.key,
-    required this.headers,
-    required this.rows,
-  });
+  const ReportDataTable({super.key, required this.headers, required this.rows});
 
   final List<String> headers;
   final List<List<dynamic>> rows;
@@ -52,8 +49,11 @@ class _ReportDataTableState extends State<ReportDataTable> {
         if (val is num) return true;
         // Do not treat date or period strings as numeric columns
         if (ReportDateUtils.parsePeriodDate(val) != null) return false;
-        final cleanStr =
-            val.toString().replaceAll('%', '').replaceAll(',', '').trim();
+        final cleanStr = val
+            .toString()
+            .replaceAll('%', '')
+            .replaceAll(',', '')
+            .trim();
         if (double.tryParse(cleanStr) != null) return true;
       }
     }
@@ -158,9 +158,7 @@ class _ReportDataTableState extends State<ReportDataTable> {
                       width: 280,
                       child: _buildSearchBox(context, theme, scheme),
                     )
-                  : Expanded(
-                      child: _buildSearchBox(context, theme, scheme),
-                    ),
+                  : Expanded(child: _buildSearchBox(context, theme, scheme)),
               if (isWide) const Spacer() else const SizedBox(width: 8),
               // Active Sort Chip (shown only when a column is sorted)
               ValueListenableBuilder<int?>(
@@ -302,19 +300,16 @@ class _ReportDataTableState extends State<ReportDataTable> {
       decoration: BoxDecoration(
         color: scheme.surfaceContainerHighest.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: scheme.outlineVariant.withValues(alpha: 0.5),
-        ),
+        border: Border.all(color: scheme.outlineVariant.withValues(alpha: 0.5)),
       ),
       child: TextField(
         controller: _searchController,
         focusNode: _searchFocusNode,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: scheme.onSurface,
-        ),
+        style: theme.textTheme.bodyMedium?.copyWith(color: scheme.onSurface),
         decoration: InputDecoration(
           isDense: true,
-          hintText: context.tr(
+          hintText:
+              context.tr(
                 shared.LocaleKeys.commonSearchHint,
                 track: shared.TrackConstants.commonTrack,
               ) ??
@@ -381,11 +376,7 @@ class _ReportDataTableState extends State<ReportDataTable> {
             return ValueListenableBuilder<bool>(
               valueListenable: _sortAscendingNotifier,
               builder: (context, ascending, _) {
-                final processedRows = _processRows(
-                  query,
-                  sortIndex,
-                  ascending,
-                );
+                final processedRows = _processRows(query, sortIndex, ascending);
 
                 return Column(
                   children: [
@@ -412,7 +403,8 @@ class _ReportDataTableState extends State<ReportDataTable> {
                                   const SizedBox(height: 12),
                                   Text(
                                     context.tr(
-                                          shared.LocaleKeys
+                                          shared
+                                              .LocaleKeys
                                               .commonNoSearchResultFoundMsg,
                                           track:
                                               shared.TrackConstants.commonTrack,
@@ -481,10 +473,9 @@ class _ReportDataTableState extends State<ReportDataTable> {
                                             sortAscending: ascending,
                                             headingRowColor:
                                                 WidgetStateProperty.all(
-                                              scheme
-                                                  .surfaceContainerHighest
-                                                  .withValues(alpha: 0.6),
-                                            ),
+                                                  scheme.surfaceContainerHighest
+                                                      .withValues(alpha: 0.6),
+                                                ),
                                             headingTextStyle: theme
                                                 .textTheme
                                                 .titleSmall
@@ -503,61 +494,56 @@ class _ReportDataTableState extends State<ReportDataTable> {
                                             columns: widget.headers
                                                 .asMap()
                                                 .entries
-                                                .map(
-                                                  (entry) {
-                                                    final index = entry.key;
-                                                    final header = entry.value;
-                                                    final isSorted =
-                                                        sortIndex == index;
-                                                    final isNumeric =
-                                                        _isColumnNumeric(index);
+                                                .map((entry) {
+                                                  final index = entry.key;
+                                                  final header = entry.value;
+                                                  final isSorted =
+                                                      sortIndex == index;
+                                                  final isNumeric =
+                                                      _isColumnNumeric(index);
 
-                                                    return DataColumn(
-                                                      numeric: isNumeric,
-                                                      tooltip:
-                                                          'Sort by $header',
-                                                      label: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Text(
-                                                            header,
-                                                            style:
-                                                                const TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
+                                                  return DataColumn(
+                                                    numeric: isNumeric,
+                                                    tooltip: 'Sort by $header',
+                                                    label: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                          header,
+                                                          style:
+                                                              const TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                        ),
+                                                        const SizedBox(
+                                                          width: 4,
+                                                        ),
+                                                        if (!isSorted)
+                                                          Icon(
+                                                            Icons
+                                                                .unfold_more_rounded,
+                                                            size: 16,
+                                                            color: scheme
+                                                                .onSurface
+                                                                .withValues(
+                                                                  alpha: 0.35,
+                                                                ),
                                                           ),
-                                                          const SizedBox(
-                                                            width: 4,
-                                                          ),
-                                                          if (!isSorted)
-                                                            Icon(
-                                                              Icons
-                                                                  .unfold_more_rounded,
-                                                              size: 16,
-                                                              color: scheme
-                                                                  .onSurface
-                                                                  .withValues(
-                                                                    alpha: 0.35,
-                                                                  ),
-                                                            ),
-                                                        ],
-                                                      ),
-                                                      onSort: (
-                                                        columnIndex,
-                                                        asc,
-                                                      ) {
-                                                        _sortColumnIndexNotifier
-                                                                .value =
-                                                            columnIndex;
-                                                        _sortAscendingNotifier
-                                                                .value = asc;
-                                                      },
-                                                    );
-                                                  },
-                                                )
+                                                      ],
+                                                    ),
+                                                    onSort: (columnIndex, asc) {
+                                                      _sortColumnIndexNotifier
+                                                              .value =
+                                                          columnIndex;
+                                                      _sortAscendingNotifier
+                                                              .value =
+                                                          asc;
+                                                    },
+                                                  );
+                                                })
                                                 .toList(),
                                             rows: processedRows.map((row) {
                                               return DataRow(
@@ -566,11 +552,11 @@ class _ReportDataTableState extends State<ReportDataTable> {
                                                       (cell) => DataCell(
                                                         Text(
                                                           cell is double
-                                                              ? cell
-                                                                  .toStringAsFixed(
-                                                                      2)
+                                                              ? cell.toStringAsFixed(
+                                                                  2,
+                                                                )
                                                               : (cell?.toString() ??
-                                                                  '—'),
+                                                                    '—'),
                                                         ),
                                                       ),
                                                     )

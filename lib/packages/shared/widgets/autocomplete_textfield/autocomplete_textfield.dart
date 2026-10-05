@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-typedef AutoCompleteOverlayItemBuilder<T> =
-    Widget Function(BuildContext context, T suggestion);
+typedef AutoCompleteOverlayItemBuilder<T> = Widget Function(
+  BuildContext context,
+  T suggestion,
+);
 
 typedef Filter<T> = bool Function(T suggestion, String query);
 
@@ -283,9 +285,7 @@ class AutoCompleteTextFieldState<T> extends State<AutoCompleteTextField<T>> {
   }
 
   void removeSuggestion(T suggestion) {
-    suggestions.contains(suggestion)
-        ? suggestions.remove(suggestion)
-        : throw 'List does not contain suggestion and therefore cannot be removed';
+    suggestions.contains(suggestion) ? suggestions.remove(suggestion) : throw 'List does not contain suggestion and therefore cannot be removed';
     updateOverlay(currentText);
   }
 

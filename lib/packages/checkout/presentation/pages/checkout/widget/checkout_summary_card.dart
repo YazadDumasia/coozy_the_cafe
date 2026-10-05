@@ -2,6 +2,7 @@ import 'package:coozy_the_cafe/packages/checkout/checkout.dart' as checkout;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../bloc/checkout_bloc.dart';
 
 class CheckoutSummaryCard extends StatelessWidget {

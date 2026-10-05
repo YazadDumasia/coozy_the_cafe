@@ -16,9 +16,8 @@ class RecipesListScreenActions {
         )
         .then((_) {
           if (context.mounted) {
-            BlocProvider.of<RecipesFullListCubit>(
-              context,
-            ).reloadWithCurrentState(context);
+            BlocProvider.of<RecipesFullListCubit>(context)
+                .reloadWithCurrentState(context);
           }
         });
   }
@@ -28,9 +27,8 @@ class RecipesListScreenActions {
       '${AppRoutePath.recipesListScreenRoute}/${AppRoutePath.recipesAddOrEditScreenRoute}',
     );
     if (result == true && context.mounted) {
-      BlocProvider.of<RecipesFullListCubit>(
-        context,
-      ).reloadWithCurrentState(context);
+      BlocProvider.of<RecipesFullListCubit>(context)
+          .reloadWithCurrentState(context);
     }
   }
 
@@ -56,9 +54,8 @@ class RecipesListScreenActions {
       extra: {'model': model, 'index': index},
     );
     if (context.mounted) {
-      BlocProvider.of<RecipesFullListCubit>(
-        context,
-      ).reloadWithCurrentState(context);
+      BlocProvider.of<RecipesFullListCubit>(context)
+          .reloadWithCurrentState(context);
     }
   }
 
@@ -71,9 +68,8 @@ class RecipesListScreenActions {
       extra: model,
     );
     if (result == true && context.mounted) {
-      BlocProvider.of<RecipesFullListCubit>(
-        context,
-      ).reloadWithCurrentState(context);
+      BlocProvider.of<RecipesFullListCubit>(context)
+          .reloadWithCurrentState(context);
     }
   }
 
@@ -82,9 +78,8 @@ class RecipesListScreenActions {
     Recipe model,
     int index,
   ) {
-    BlocProvider.of<RecipesFullListCubit>(
-      context,
-    ).updateBookmark(model: model, context: context, currentIndex: index);
+    BlocProvider.of<RecipesFullListCubit>(context)
+        .updateBookmark(model: model, context: context, currentIndex: index);
   }
 
   static void onPageChanged(BuildContext context, int nextPage) {
@@ -92,9 +87,8 @@ class RecipesListScreenActions {
   }
 
   static void onItemsPerPageChanged(BuildContext context, int? itemsPerPage) {
-    BlocProvider.of<RecipesFullListCubit>(
-      context,
-    ).updatePageItems(itemsPerPage: itemsPerPage ?? 10);
+    BlocProvider.of<RecipesFullListCubit>(context)
+        .updatePageItems(itemsPerPage: itemsPerPage ?? 10);
   }
 
   static void onRetryPressed(BuildContext context) {

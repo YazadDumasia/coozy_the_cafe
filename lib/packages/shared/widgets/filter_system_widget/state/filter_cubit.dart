@@ -2,6 +2,7 @@ import '../props/applied_filter_model.dart';
 import '../props/filter_item_model.dart';
 import '../props/filter_list_model.dart';
 import '../props/filter_props.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;

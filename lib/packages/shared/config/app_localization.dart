@@ -1,5 +1,7 @@
 import 'dart:convert';
+
 import 'language_preferences.dart' as prefs;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -49,11 +51,7 @@ class AppLocalizations {
     return true;
   }
 
-  String? translate(
-    String key, {
-    Map<String, String>? params,
-    final String? track,
-  }) {
+  String? translate(String key, {Map<String, String>? params, String? track}) {
     if (_localizedStrings == null) {
       core.PlatformUtils.debugLog(
         AppLocalizations,

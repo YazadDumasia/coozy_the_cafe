@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart' hide TableInfo;
+
 import '../../domain/entities/table_info.dart';
+
 import 'package:coozy_the_cafe/packages/database/src/database.dart';
 
 class TableInfoModel extends TableInfo {

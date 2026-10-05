@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:drift/drift.dart' hide Column;
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +9,15 @@ import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../database.dart';
 
-typedef FakeDataProgressCallback =
-    void Function(
-      String stageKey,
-      String stageDescription,
-      int currentStep,
-      int totalSteps,
-    );
+typedef FakeDataProgressCallback = void Function(
+  String stageKey,
+  String stageDescription,
+  int currentStep,
+  int totalSteps,
+);
 
 /// Key used to persist the seed-data session token in SharedPreferences.
 const _kSeedTokenKey = 'coozy_seed_data_token';
@@ -1015,8 +1016,7 @@ class FakeDataHelper {
       'sell': 99.0,
       'cost': 52.0,
       'dur': 15,
-      'desc':
-          'Classic veg burger paired with crispy salted fries – our most loved value combo.',
+      'desc': 'Classic veg burger paired with crispy salted fries – our most loved value combo.',
     },
     {
       'cat': 'Combos & Specials',
@@ -1072,8 +1072,7 @@ class FakeDataHelper {
       'sell': 250.0,
       'cost': 130.0,
       'dur': 25,
-      'desc':
-          'A crowd-pleasing trio: classic pizza, fruity shake and a grilled paneer wrap.',
+      'desc': 'A crowd-pleasing trio: classic pizza, fruity shake and a grilled paneer wrap.',
     },
     {
       'cat': 'Combos & Specials',
@@ -1084,8 +1083,7 @@ class FakeDataHelper {
       'sell': 300.0,
       'cost': 156.0,
       'dur': 25,
-      'desc':
-          'Indo-Chinese schezwan rice paired with our signature tandoori paneer pizza.',
+      'desc': 'Indo-Chinese schezwan rice paired with our signature tandoori paneer pizza.',
     },
     {
       'cat': 'Combos & Specials',
@@ -1096,8 +1094,7 @@ class FakeDataHelper {
       'sell': 300.0,
       'cost': 156.0,
       'dur': 25,
-      'desc':
-          'Herb-infused Italian rice served alongside a loaded farmhouse pizza.',
+      'desc': 'Herb-infused Italian rice served alongside a loaded farmhouse pizza.',
     },
 
     // --- Coffee ---
@@ -1210,8 +1207,7 @@ class FakeDataHelper {
       'sell': 220.0,
       'cost': 95.0,
       'dur': 5,
-      'desc':
-          'Double espresso poured over a chilled can of Redbull – the ultimate energy boost.',
+      'desc': 'Double espresso poured over a chilled can of Redbull – the ultimate energy boost.',
     },
 
     // --- Tea & Cold Beverages ---
@@ -1395,8 +1391,7 @@ class FakeDataHelper {
       'sell': 120.0,
       'cost': 52.0,
       'dur': 8,
-      'desc':
-          'Hot chocolate swirled with Biscoff spread and crunchy cookie pieces.',
+      'desc': 'Hot chocolate swirled with Biscoff spread and crunchy cookie pieces.',
     },
 
     // --- Burgers & Sandwiches ---
@@ -1625,8 +1620,7 @@ class FakeDataHelper {
       'sell': 200.0,
       'cost': 87.0,
       'dur': 22,
-      'desc':
-          'Pizza topped with tandoori spiced paneer tikka and mint chutney drizzle.',
+      'desc': 'Pizza topped with tandoori spiced paneer tikka and mint chutney drizzle.',
     },
     {
       'cat': 'Pizza & Pasta',
@@ -1844,8 +1838,7 @@ class FakeDataHelper {
       'sell': 100.0,
       'cost': 43.0,
       'dur': 12,
-      'desc':
-          'Savoury oats cooked with masala spices and topped with melted cheese.',
+      'desc': 'Savoury oats cooked with masala spices and topped with melted cheese.',
     },
   ];
 
@@ -1989,8 +1982,7 @@ class FakeDataHelper {
       {
         'original': 'Tandoori Paneer Pizza',
         'translated': 'Tandoori Paneer Pizza',
-        'ingredients':
-            'Pizza dough, paneer, tandoori marinade, mozzarella, capsicum, onion',
+        'ingredients': 'Pizza dough, paneer, tandoori marinade, mozzarella, capsicum, onion',
         'translated_ingredients':
             'Pizza Dough, Paneer, Tandoori Spices, Mozzarella',
         'cuisine': 'Fusion',
@@ -2015,8 +2007,7 @@ class FakeDataHelper {
       {
         'original': 'Spicy Ramen with Cheese',
         'translated': 'Spicy Ramen with Cheese',
-        'ingredients':
-            'Ramen noodles, gochujang paste, vegetable broth, cheese, spring onion',
+        'ingredients': 'Ramen noodles, gochujang paste, vegetable broth, cheese, spring onion',
         'translated_ingredients': 'Ramen, Gochujang, Vegetable Broth, Cheese',
         'cuisine': 'Korean-Fusion',
         'diet': 'Vegetarian',
@@ -2197,18 +2188,20 @@ class FakeDataHelper {
       DateTime pDate,
     ) async {
       final isoStr = pDate.toIso8601String();
-      await db.into(db.purchaseTable).insert(
-        PurchaseTableCompanion.insert(
-          hashId: Value(_seedId(token)),
-          inventoryId: Value(inv.id),
-          name: Value(inv.name ?? 'Raw Material'),
-          purchaseUnit: Value(inv.purchaseUnit ?? 'kg'),
-          purchaseQty: Value(qty),
-          purchaseDateTime: Value(isoStr),
-          purchasePrice: Value(unitPrice),
-          createdDate: Value(isoStr),
-        ),
-      );
+      await db
+          .into(db.purchaseTable)
+          .insert(
+            PurchaseTableCompanion.insert(
+              hashId: Value(_seedId(token)),
+              inventoryId: Value(inv.id),
+              name: Value(inv.name ?? 'Raw Material'),
+              purchaseUnit: Value(inv.purchaseUnit ?? 'kg'),
+              purchaseQty: Value(qty),
+              purchaseDateTime: Value(isoStr),
+              purchasePrice: Value(unitPrice),
+              createdDate: Value(isoStr),
+            ),
+          );
       inserted++;
     }
 
@@ -2342,23 +2335,24 @@ class FakeDataHelper {
       DateTime adjDate,
     ) async {
       final prevStock = inv.currentStock ?? 15.0;
-      final newStock =
-          isAdd
-              ? prevStock + adjQty
-              : (prevStock > adjQty ? prevStock - adjQty : 0.0);
-      await db.into(db.inventoryStockAdjustmentsTable).insert(
-        InventoryStockAdjustmentsTableCompanion.insert(
-          hashId: Value(_seedId(token)),
-          inventoryId: Value(inv.id),
-          inventoryName: Value(inv.name ?? 'Item'),
-          adjustmentType: Value(isAdd ? 'add' : 'remove'),
-          adjustedQty: Value(adjQty),
-          previousStock: Value(prevStock),
-          newStock: Value(newStock),
-          reason: Value(reason),
-          createdDate: Value(adjDate.toIso8601String()),
-        ),
-      );
+      final newStock = isAdd
+          ? prevStock + adjQty
+          : (prevStock > adjQty ? prevStock - adjQty : 0.0);
+      await db
+          .into(db.inventoryStockAdjustmentsTable)
+          .insert(
+            InventoryStockAdjustmentsTableCompanion.insert(
+              hashId: Value(_seedId(token)),
+              inventoryId: Value(inv.id),
+              inventoryName: Value(inv.name ?? 'Item'),
+              adjustmentType: Value(isAdd ? 'add' : 'remove'),
+              adjustedQty: Value(adjQty),
+              previousStock: Value(prevStock),
+              newStock: Value(newStock),
+              reason: Value(reason),
+              createdDate: Value(adjDate.toIso8601String()),
+            ),
+          );
     }
 
     // Today adjustments (2)
@@ -2767,9 +2761,22 @@ class FakeDataHelper {
 
     // Horizon A: TODAY (16 completed orders from morning to night)
     final todaySlots = [
-      (8, 15), (8, 45), (9, 20), (10, 5), (11, 15), (12, 10),
-      (12, 45), (13, 30), (14, 15), (15, 30), (16, 20), (17, 10),
-      (18, 0), (19, 15), (20, 30), (21, 15),
+      (8, 15),
+      (8, 45),
+      (9, 20),
+      (10, 5),
+      (11, 15),
+      (12, 10),
+      (12, 45),
+      (13, 30),
+      (14, 15),
+      (15, 30),
+      (16, 20),
+      (17, 10),
+      (18, 0),
+      (19, 15),
+      (20, 30),
+      (21, 15),
     ];
     for (final s in todaySlots) {
       orderTimestamps.add(today.add(Duration(hours: s.$1, minutes: s.$2)));
@@ -2778,9 +2785,21 @@ class FakeDataHelper {
     // Horizon B: YESTERDAY (15 completed orders)
     final yesterday = today.subtract(const Duration(days: 1));
     final yestSlots = [
-      (8, 30), (9, 15), (10, 0), (11, 20), (12, 15), (13, 0),
-      (13, 45), (14, 30), (16, 0), (16, 45), (17, 30), (18, 30),
-      (19, 30), (20, 45), (21, 30),
+      (8, 30),
+      (9, 15),
+      (10, 0),
+      (11, 20),
+      (12, 15),
+      (13, 0),
+      (13, 45),
+      (14, 30),
+      (16, 0),
+      (16, 45),
+      (17, 30),
+      (18, 30),
+      (19, 30),
+      (20, 45),
+      (21, 30),
     ];
     for (final s in yestSlots) {
       orderTimestamps.add(yesterday.add(Duration(hours: s.$1, minutes: s.$2)));
@@ -2789,26 +2808,32 @@ class FakeDataHelper {
     // Horizon C: THIS WEEK (Days 2 to 7: 12-16 orders/day with weekend boost)
     for (int day = 2; day <= 7; day++) {
       final baseDate = today.subtract(Duration(days: day));
-      final isWeekend = baseDate.weekday == DateTime.saturday ||
+      final isWeekend =
+          baseDate.weekday == DateTime.saturday ||
           baseDate.weekday == DateTime.sunday;
       final dayCount = isWeekend ? 16 : 12;
       for (int i = 0; i < dayCount; i++) {
         final hour = 8 + (i * 13 ~/ dayCount);
         final minute = (i * 23 + random.nextInt(15)) % 60;
-        orderTimestamps.add(baseDate.add(Duration(hours: hour, minutes: minute)));
+        orderTimestamps.add(
+          baseDate.add(Duration(hours: hour, minutes: minute)),
+        );
       }
     }
 
     // Horizon D: LAST 30 DAYS (Days 8 to 30: 8-12 orders/day)
     for (int day = 8; day <= 30; day++) {
       final baseDate = today.subtract(Duration(days: day));
-      final isWeekend = baseDate.weekday == DateTime.saturday ||
+      final isWeekend =
+          baseDate.weekday == DateTime.saturday ||
           baseDate.weekday == DateTime.sunday;
       final dayCount = isWeekend ? 12 : 8;
       for (int i = 0; i < dayCount; i++) {
         final hour = 8 + (i * 13 ~/ dayCount);
         final minute = (i * 17 + random.nextInt(20)) % 60;
-        orderTimestamps.add(baseDate.add(Duration(hours: hour, minutes: minute)));
+        orderTimestamps.add(
+          baseDate.add(Duration(hours: hour, minutes: minute)),
+        );
       }
     }
 
@@ -2819,7 +2844,9 @@ class FakeDataHelper {
         final baseDate = today.subtract(Duration(days: daysAgo));
         final hour = 9 + random.nextInt(12);
         final minute = random.nextInt(60);
-        orderTimestamps.add(baseDate.add(Duration(hours: hour, minutes: minute)));
+        orderTimestamps.add(
+          baseDate.add(Duration(hours: hour, minutes: minute)),
+        );
       }
     }
 
@@ -2835,7 +2862,9 @@ class FakeDataHelper {
       final pRoll = random.nextDouble();
       final chosenPayment = pRoll < 0.48
           ? 'UPI'
-          : (pRoll < 0.74 ? 'Cash' : (pRoll < 0.90 ? 'Credit Card' : 'Debit Card'));
+          : (pRoll < 0.74
+                ? 'Cash'
+                : (pRoll < 0.90 ? 'Credit Card' : 'Debit Card'));
 
       // Weighted order type: Dine-In 60%, Takeaway 30%, Delivery 10%
       final tRoll = random.nextDouble();
@@ -2848,7 +2877,9 @@ class FakeDataHelper {
       final chosenItems = <MenuItem>[];
       for (int b = 0; b < itemBatchCount; b++) {
         if (bestsellerItems.isNotEmpty && random.nextDouble() < 0.65) {
-          chosenItems.add(bestsellerItems[random.nextInt(bestsellerItems.length)]);
+          chosenItems.add(
+            bestsellerItems[random.nextInt(bestsellerItems.length)],
+          );
         } else {
           chosenItems.add(menuItems[random.nextInt(menuItems.length)]);
         }
@@ -3073,7 +3104,9 @@ class FakeDataHelper {
               hashId: Value(_seedId(token)),
               taxPercentage: const Value(5.0),
               discountAmount: Value(discount),
-              discountType: Value(discount > 0 ? (discount == 50.0 ? 0 : 1) : 0),
+              discountType: Value(
+                discount > 0 ? (discount == 50.0 ? 0 : 1) : 0,
+              ),
               totalCost: Value(subtotal),
               taxCost: Value(tax),
               taxableAmount: Value(subtotal - discount),

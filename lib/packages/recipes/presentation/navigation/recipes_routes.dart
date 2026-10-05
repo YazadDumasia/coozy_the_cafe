@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/core/navigation/app_routes.dart';
 import 'package:coozy_the_cafe/packages/recipes/domain/entities/recipe.dart';
+
 import '../bloc/recipes_full_list_cubit.dart';
 import '../bloc/recipes_bookmark_list_cubit.dart';
 import '../pages/recipes_list/recipes_list_screen.dart';

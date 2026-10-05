@@ -12,6 +12,7 @@ import 'package:coozy_the_cafe/packages/table_management/presentation/pages/new_
 import 'package:coozy_the_cafe/packages/table_management/presentation/pages/table_update_dialog/table_update_dialog.dart';
 
 import 'package:go_router/go_router.dart';
+
 import '../table_qr_dialog/table_qr_dialog.dart';
 
 class TableScreenActions {

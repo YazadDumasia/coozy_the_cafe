@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../domain/entities/reservation_entity.dart';
 import '../bloc/current_reservation_cubit.dart';
 import '../bloc/upcoming_reservation_bloc.dart';

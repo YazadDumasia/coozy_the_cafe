@@ -27,9 +27,8 @@ class SignUpHeaderWidget extends StatelessWidget {
             ],
           ),
           textAlign: TextAlign.center,
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleLarge
+              ?.copyWith(fontWeight: FontWeight.w600),
         ),
       ),
     );

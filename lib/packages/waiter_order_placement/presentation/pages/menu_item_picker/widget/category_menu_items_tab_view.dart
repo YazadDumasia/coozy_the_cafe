@@ -4,6 +4,7 @@ import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/entities/m
 import 'package:coozy_the_cafe/packages/waiter_order_placement/presentation/bloc/menu_item_picker_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'menu_item_picker_tile.dart';
 import 'subcategory_header_widget.dart';
 

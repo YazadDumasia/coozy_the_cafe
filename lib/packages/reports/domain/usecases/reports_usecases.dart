@@ -109,7 +109,8 @@ class GetExpenditureSummaryReportUseCase {
     String startIso,
     String endIso, {
     SalesPeriodFormat format = SalesPeriodFormat.daily,
-  }) => repository.getExpenditureSummaryReport(startIso, endIso, format: format);
+  }) =>
+      repository.getExpenditureSummaryReport(startIso, endIso, format: format);
 }
 
 class GetStockAdjustmentsReportUseCase {

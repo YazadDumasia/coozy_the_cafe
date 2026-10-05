@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../../domain/entities/inventory_stock_entry.dart';
 
 class InventoryStockBarChart extends StatelessWidget {
@@ -13,9 +14,8 @@ class InventoryStockBarChart extends StatelessWidget {
       return Center(
         child: Text(
           'No inventory items found',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: scheme.onSurface.withValues(alpha: 0.5),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }
@@ -60,8 +60,8 @@ class InventoryStockBarChart extends StatelessWidget {
           yValueMapper: (InventoryStockEntry e, _) => e.currentStock,
           dataLabelMapper: (InventoryStockEntry e, _) =>
               e.currentStock == e.currentStock.toInt()
-                  ? '${e.currentStock.toInt()}'
-                  : '${e.currentStock}',
+              ? '${e.currentStock.toInt()}'
+              : '${e.currentStock}',
           pointColorMapper: (InventoryStockEntry e, _) =>
               e.currentStock <= 5 ? Colors.red : scheme.primary,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),

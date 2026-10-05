@@ -129,7 +129,7 @@ class SocialMediaLoginRowWidget extends StatelessWidget {
     );
   }
 
-  Future<void> _handleGoogleSignIn(final BuildContext context) async {
+  Future<void> _handleGoogleSignIn(BuildContext context) async {
     try {
       /*  GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
         GoogleSignInAuthentication? googleAuth = await googleUser!.authentication;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../../domain/entities/sales_dashboard.dart';
 
 class DashboardKpiCard extends StatelessWidget {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../../domain/entities/sales_trend_entry.dart';
 import '../../../../domain/utils/report_date_utils.dart';
 
@@ -65,9 +66,8 @@ class _SalesTrendsChartState extends State<SalesTrendsChart> {
                 track: shared.TrackConstants.reportPageTrack,
               ) ??
               'No data found for the selected range',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: scheme.onSurface.withValues(alpha: 0.5),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }
@@ -88,7 +88,9 @@ class _SalesTrendsChartState extends State<SalesTrendsChart> {
                 return IconButton.outlined(
                   iconSize: 18,
                   visualDensity: VisualDensity.compact,
-                  tooltip: isBar ? 'Switch to Line Chart' : 'Switch to Bar Chart',
+                  tooltip: isBar
+                      ? 'Switch to Line Chart'
+                      : 'Switch to Bar Chart',
                   icon: Icon(
                     isBar ? Icons.show_chart_rounded : Icons.bar_chart_rounded,
                   ),

@@ -67,10 +67,9 @@ class _ConfirmPasswordFieldState extends State<ConfirmPasswordField> {
             focusNode: widget.focusNode,
             keyboardType: TextInputType.text,
             autovalidateMode: AutovalidateMode.onUserInteraction,
-            textInputAction:
-                widget.nextFocusNode != null
-                    ? TextInputAction.next
-                    : TextInputAction.done,
+            textInputAction: widget.nextFocusNode != null
+                ? TextInputAction.next
+                : TextInputAction.done,
             onFieldSubmitted: (value) {
               if (widget.nextFocusNode != null) {
                 FocusScope.of(context).requestFocus(widget.nextFocusNode);

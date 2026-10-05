@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart';
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:flutter/material.dart';

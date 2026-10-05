@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:cached_network_image_ce/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -35,9 +36,8 @@ class ImageProcessor {
     for (var imageData in batch) {
       tasks.add(
         semaphore.withPermits(() async {
-          final String? downloadUrl = Uri.tryParse(
-            imageData['download_url'],
-          )?.toString();
+          final String? downloadUrl = Uri.tryParse(imageData['download_url'])
+              ?.toString();
           if (downloadUrl == null) return;
 
           try {

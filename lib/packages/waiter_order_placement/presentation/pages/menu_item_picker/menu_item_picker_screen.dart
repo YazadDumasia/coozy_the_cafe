@@ -4,6 +4,7 @@ import 'package:coozy_the_cafe/packages/table_management/domain/entities/table_e
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import '../../bloc/menu_item_picker_bloc.dart';
 import 'menu_item_picker_screen_actions.dart';
 import 'widget/category_dropdown_app_bar_title.dart';

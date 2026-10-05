@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as enc;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -20,15 +21,13 @@ class SecurityStorageService {
     ),
   );
   static final enc.IV _encIv = enc.IV(
-    Uint8List.fromList(
-      md5.convert(utf8.encode('coozy_cafe_iv_vector')).bytes,
-    ),
+    Uint8List.fromList(md5.convert(utf8.encode('coozy_cafe_iv_vector')).bytes),
   );
 
   final FlutterSecureStorage _secureStorage;
 
   SecurityStorageService({FlutterSecureStorage? secureStorage})
-      : _secureStorage = secureStorage ?? const FlutterSecureStorage();
+    : _secureStorage = secureStorage ?? const FlutterSecureStorage();
 
   /// Computes a cryptographically secure SHA-256 hash of [plainPassword] with salt.
   String hashPassword(String plainPassword) {
@@ -46,20 +45,28 @@ class SecurityStorageService {
   /// Decrypts AES-256 encrypted base64 payload.
   String _decrypt(String cipherBase64) {
     final encrypter = enc.Encrypter(enc.AES(_encKey, mode: enc.AESMode.cbc));
-    return encrypter.decrypt(enc.Encrypted.fromBase64(cipherBase64), iv: _encIv);
+    return encrypter.decrypt(
+      enc.Encrypted.fromBase64(cipherBase64),
+      iv: _encIv,
+    );
   }
 
   /// Ensures an initial password exists in secure storage.
   /// If not set yet, defaults to 'admin123'.
   Future<void> initDefaultPasswordIfNeeded() async {
     try {
-      final currentHash = await _secureStorage.read(key: _storageKeyPasswordHash);
+      final currentHash = await _secureStorage.read(
+        key: _storageKeyPasswordHash,
+      );
       if (currentHash == null || currentHash.isEmpty) {
         await savePassword(_defaultUserPassword);
       }
       final currentEmail = await _secureStorage.read(key: _storageKeyUserEmail);
       if (currentEmail == null || currentEmail.isEmpty) {
-        await _secureStorage.write(key: _storageKeyUserEmail, value: _defaultUserEmail);
+        await _secureStorage.write(
+          key: _storageKeyUserEmail,
+          value: _defaultUserEmail,
+        );
       }
     } catch (_) {
       // In case of platform-specific secure storage read error, set initial
@@ -81,7 +88,9 @@ class SecurityStorageService {
   /// Verifies whether [candidatePassword] matches the stored password.
   Future<bool> verifyPassword(String candidatePassword) async {
     await initDefaultPasswordIfNeeded();
-    final encryptedHash = await _secureStorage.read(key: _storageKeyPasswordHash);
+    final encryptedHash = await _secureStorage.read(
+      key: _storageKeyPasswordHash,
+    );
     if (encryptedHash == null || encryptedHash.isEmpty) {
       return candidatePassword.trim() == _defaultUserPassword;
     }

@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
+
 import '../database.dart';
 import '../tables.dart';
 
@@ -24,9 +25,8 @@ class MenuItemsDao extends DatabaseAccessor<CoozyDatabase>
     List<MenuItemVariationsTableCompanion>? variations,
   }) async {
     return transaction(() async {
-      final itemId = await into(
-        menuItemsTable,
-      ).insert(item, mode: InsertMode.replace);
+      final itemId = await into(menuItemsTable)
+          .insert(item, mode: InsertMode.replace);
 
       if (variations != null && variations.isNotEmpty) {
         for (int i = 0; i < variations.length; i++) {
@@ -39,9 +39,8 @@ class MenuItemsDao extends DatabaseAccessor<CoozyDatabase>
             menuItemId: Value(itemId),
             sortOrderIndex: Value(i),
           );
-          await into(
-            menuItemVariationsTable,
-          ).insert(v, mode: InsertMode.replace);
+          await into(menuItemVariationsTable)
+              .insert(v, mode: InsertMode.replace);
         }
       }
       return itemId;
@@ -72,9 +71,8 @@ class MenuItemsDao extends DatabaseAccessor<CoozyDatabase>
             menuItemId: Value(id),
             sortOrderIndex: Value(i),
           );
-          await into(
-            menuItemVariationsTable,
-          ).insert(v, mode: InsertMode.replace);
+          await into(menuItemVariationsTable)
+              .insert(v, mode: InsertMode.replace);
         }
       }
       return updated > 0;

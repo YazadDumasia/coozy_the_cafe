@@ -7,7 +7,7 @@ plugins {
 android {
     namespace = "com.app.coozy_the_cafe"
     compileSdk = 37
-    ndkVersion = "30.0.14904198 rc1"
+    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -16,11 +16,13 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.app.coozy_the_cafe"
-        minSdk = 24
+         applicationId = "com.app.coozy_the_cafe"
+        minSdk = 25
         targetSdk = 37
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        // Uses the version code from pubspec.yaml. When using split APKs, 1000 * ABI_VERSION
+        // is added automatically by Flutter. (https://developer.android.com/studio/build/configure-apk-splits#configure-APK-versions)
+        // You can force using the value of versionCode by specifying the `-P force-version-code-ignoring-abi=true`
+        // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
@@ -47,8 +49,8 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-    compileSdkMinor = 0
     buildToolsVersion = "37.0.0"
+    compileSdkMinor = 2
 }
 
 kotlin {

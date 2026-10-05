@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart';
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../models/recipe_model.dart';
 
 abstract class RecipesLocalDataSource {

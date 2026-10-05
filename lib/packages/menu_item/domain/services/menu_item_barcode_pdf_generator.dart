@@ -1,9 +1,10 @@
+import 'package:barcode/barcode.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/entities/menu_catalog_data.dart';
 
@@ -32,10 +33,12 @@ class MenuItemBarcodeInfo {
       : name;
 
   String get categorySubcategoryDisplay {
-    if (subcategoryName != null && subcategoryName!.isNotEmpty) {
-      return '$categoryName > $subcategoryName'.toUpperCase();
+    final cleanCategory = categoryName.trim();
+    final cleanSub = subcategoryName?.trim();
+    if (cleanSub != null && cleanSub.isNotEmpty) {
+      return '$cleanCategory > $cleanSub'.toUpperCase();
     }
-    return categoryName.toUpperCase();
+    return cleanCategory.toUpperCase();
   }
 }
 
@@ -43,16 +46,16 @@ class _BarcodeComputeParams {
   final List<MenuItemBarcodeInfo> barcodeItems;
   final int columnsCount;
   final String? title;
-  final pw.Font? ttfFont;
-  final pw.Font? ttfBoldFont;
+  final Uint8List? fontBytes;
+  final Uint8List? boldFontBytes;
   final Uint8List? logoBytes;
 
   _BarcodeComputeParams({
     required this.barcodeItems,
     required this.columnsCount,
     this.title,
-    this.ttfFont,
-    this.ttfBoldFont,
+    this.fontBytes,
+    this.boldFontBytes,
     this.logoBytes,
   });
 }
@@ -144,32 +147,27 @@ class MenuItemBarcodePdfGenerator {
     }
   }
 
-  /// Generates printable PDF document containing barcode label stickers asynchronously.
+  /// Generates printable PDF document containing barcode label stickers asynchronously using Syncfusion.
   static Future<Uint8List> generatePdf({
     required List<MenuItemBarcodeInfo> barcodeItems,
     int columnsCount = 3,
     String? title,
   }) async {
     // 1. Pre-load fonts and logo bytes asynchronously
-    pw.Font? ttfFont;
-    pw.Font? ttfBoldFont;
+    Uint8List? fontBytes;
+    Uint8List? boldFontBytes;
     try {
-      ttfFont = await PdfGoogleFonts.openSansRegular();
-      ttfBoldFont = await PdfGoogleFonts.openSansBold();
+      final fontByteData = await rootBundle.load(
+        'assets/font/BwAletaNo10/BwAletaNo10_Regular.ttf',
+      );
+      fontBytes = fontByteData.buffer.asUint8List();
+      final boldFontByteData = await rootBundle.load(
+        'assets/font/BwAletaNo10/BwAletaNo10_Bold.ttf',
+      );
+      boldFontBytes = boldFontByteData.buffer.asUint8List();
     } catch (_) {
-      try {
-        final fontByteData = await rootBundle.load(
-          'assets/font/BwAletaNo10/BwAletaNo10_Regular.ttf',
-        );
-        ttfFont = pw.Font.ttf(fontByteData);
-        final boldFontByteData = await rootBundle.load(
-          'assets/font/BwAletaNo10/BwAletaNo10_Bold.ttf',
-        );
-        ttfBoldFont = pw.Font.ttf(boldFontByteData);
-      } catch (_) {
-        ttfFont = null;
-        ttfBoldFont = null;
-      }
+      fontBytes = null;
+      boldFontBytes = null;
     }
 
     Uint8List? logoBytes;
@@ -184,8 +182,8 @@ class MenuItemBarcodePdfGenerator {
       barcodeItems: barcodeItems,
       columnsCount: columnsCount,
       title: title,
-      ttfFont: ttfFont,
-      ttfBoldFont: ttfBoldFont,
+      fontBytes: fontBytes,
+      boldFontBytes: boldFontBytes,
       logoBytes: logoBytes,
     );
 
@@ -196,61 +194,90 @@ class MenuItemBarcodePdfGenerator {
     return compute(_generatePdfInIsolate, params);
   }
 
-  /// Entry point for PDF generation.
+  /// Entry point for PDF generation using Syncfusion PDF document.
   static Future<Uint8List> _generatePdfInIsolate(
     _BarcodeComputeParams params,
   ) async {
     final int cols = params.columnsCount.clamp(2, 4);
 
-    final docTheme = pw.ThemeData.withFont(
-      base: params.ttfFont,
-      bold: params.ttfBoldFont,
-    );
+    final document = PdfDocument();
+    // A4 dimensions: 595.28 x 841.89 points
+    document.pageSettings.size = PdfPageSize.a4;
+    document.pageSettings.margins.all = 18;
 
-    final pdf = pw.Document(theme: docTheme);
-    final logoBytes = params.logoBytes;
+    // Resolve fonts
+    PdfFont regularFont(double size) => params.fontBytes != null
+        ? PdfTrueTypeFont(params.fontBytes!, size)
+        : PdfStandardFont(PdfFontFamily.helvetica, size);
+
+    PdfFont boldFont(double size) => params.boldFontBytes != null
+        ? PdfTrueTypeFont(params.boldFontBytes!, size)
+        : (params.fontBytes != null
+              ? PdfTrueTypeFont(params.fontBytes!, size)
+              : PdfStandardFont(
+                  PdfFontFamily.helvetica,
+                  size,
+                  style: PdfFontStyle.bold,
+                ));
+
     final barcodeItems = params.barcodeItems;
-    final ttfFont = params.ttfFont;
+    final logoBytes = params.logoBytes;
+    PdfBitmap? logoBitmap;
+    if (logoBytes != null) {
+      try {
+        logoBitmap = PdfBitmap(logoBytes);
+      } catch (_) {
+        logoBitmap = null;
+      }
+    }
 
     if (barcodeItems.isEmpty) {
-      pdf.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          theme: docTheme,
-          build: (pw.Context context) {
-            return pw.Center(
-              child: pw.Text(
-                'No Menu Items Available for Barcode Labels',
-                style: const pw.TextStyle(fontSize: 14),
-              ),
-            );
-          },
+      final page = document.pages.add();
+      final textFont = regularFont(14);
+      final clientSize = page.getClientSize();
+      page.graphics.drawString(
+        'No Menu Items Available for Barcode Labels',
+        textFont,
+        brush: PdfBrushes.black,
+        bounds: Rect.fromLTWH(
+          0,
+          clientSize.height / 2 - 20,
+          clientSize.width,
+          40,
+        ),
+        format: PdfStringFormat(
+          alignment: PdfTextAlignment.center,
+          lineAlignment: PdfVerticalAlignment.middle,
         ),
       );
-      return await pdf.save();
+      final bytes = Uint8List.fromList(document.saveSync());
+      document.dispose();
+      return bytes;
     }
 
     // Determine dimensions and count per page based on columns count
+    // Printable width on A4 with 18 margin on each side: 595.28 - 36 = 559.28
     int rowsPerPage;
     double labelWidth;
     double labelHeight;
+    const double colSpacing = 8.0;
+    const double rowSpacing = 8.0;
 
     if (cols == 2) {
       rowsPerPage = 5;
-      labelWidth = 262;
-      labelHeight = 120;
+      labelWidth = 268;
+      labelHeight = 135;
     } else if (cols == 4) {
       rowsPerPage = 6;
-      labelWidth = 130;
-      labelHeight = 96;
+      labelWidth = 132;
+      labelHeight = 110;
     } else {
       rowsPerPage = 5;
-      labelWidth = 175;
-      labelHeight = 120;
+      labelWidth = 178;
+      labelHeight = 135;
     }
 
     final int labelsPerPage = cols * rowsPerPage;
-
     final List<List<MenuItemBarcodeInfo>> pages = [];
     for (var i = 0; i < barcodeItems.length; i += labelsPerPage) {
       pages.add(
@@ -264,222 +291,363 @@ class MenuItemBarcodePdfGenerator {
     }
 
     final docTitle = params.title ?? 'Coozy The Cafe - Product Barcode Labels';
+    final headerTitleFont = boldFont(12);
+    final headerCountFont = regularFont(9);
+    final footerFont = regularFont(8);
+    final brownBrush = PdfSolidBrush(PdfColor(78, 52, 46));
+    final greyBrush = PdfSolidBrush(PdfColor(117, 117, 117));
+    final headerBorderPen = PdfPen(PdfColor(220, 220, 220), width: 0.8);
 
-    for (final pageItems in pages) {
-      pdf.addPage(
-        pw.Page(
-          pageFormat: PdfPageFormat.a4,
-          theme: docTheme,
-          margin: const pw.EdgeInsets.all(18),
-          build: (pw.Context context) {
-            final List<List<MenuItemBarcodeInfo>> rows = [];
-            for (var j = 0; j < pageItems.length; j += cols) {
-              rows.add(
-                pageItems.sublist(
-                  j,
-                  j + cols > pageItems.length ? pageItems.length : j + cols,
-                ),
-              );
-            }
+    for (int pageIdx = 0; pageIdx < pages.length; pageIdx++) {
+      final pageItems = pages[pageIdx];
+      final page = document.pages.add();
+      final graphics = page.graphics;
+      final clientSize = page.getClientSize();
 
-            return pw.Column(
-              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
-              children: [
-                pw.Header(
-                  level: 0,
-                  child: pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text(
-                        '$docTitle ($cols Columns)',
-                        style: pw.TextStyle(
-                          fontSize: 13,
-                          fontWeight: pw.FontWeight.bold,
-                          color: PdfColors.brown900,
-                        ),
-                      ),
-                      pw.Text(
-                        'Total Labels: ${barcodeItems.length}',
-                        style: const pw.TextStyle(
-                          fontSize: 9,
-                          color: PdfColors.grey700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                pw.SizedBox(height: 8),
-                pw.Column(
-                  children: rows.map((rowItems) {
-                    final List<pw.Widget> rowWidgets = [];
-                    for (int c = 0; c < cols; c++) {
-                      if (c < rowItems.length) {
-                        rowWidgets.add(
-                          _buildSmallBarcodeLabel(
-                            itemInfo: rowItems[c],
-                            logoBytes: logoBytes,
-                            labelWidth: labelWidth,
-                            labelHeight: labelHeight,
-                            cols: cols,
-                            font: ttfFont,
-                          ),
-                        );
-                      } else {
-                        rowWidgets.add(
-                          pw.SizedBox(width: labelWidth, height: labelHeight),
-                        );
-                      }
-                    }
+      // Top Header
+      const double headerHeight = 22;
+      graphics.drawString(
+        '$docTitle ($cols Columns)',
+        headerTitleFont,
+        brush: brownBrush,
+        bounds: Rect.fromLTWH(0, 0, clientSize.width - 120, headerHeight),
+        format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.middle),
+      );
+      graphics.drawString(
+        'Total Labels: ${barcodeItems.length}',
+        headerCountFont,
+        brush: greyBrush,
+        bounds: Rect.fromLTWH(clientSize.width - 120, 0, 120, headerHeight),
+        format: PdfStringFormat(
+          alignment: PdfTextAlignment.right,
+          lineAlignment: PdfVerticalAlignment.middle,
+        ),
+      );
+      graphics.drawLine(
+        headerBorderPen,
+        const Offset(0, headerHeight + 2),
+        Offset(clientSize.width, headerHeight + 2),
+      );
 
-                    return pw.Padding(
-                      padding: const pw.EdgeInsets.only(bottom: 8),
-                      child: pw.Row(
-                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                        children: rowWidgets,
-                      ),
-                    );
-                  }).toList(),
-                ),
-                pw.Spacer(),
-                pw.Footer(
-                  trailing: pw.Text(
-                    'Page ${context.pageNumber} of ${context.pagesCount}',
-                    style: const pw.TextStyle(
-                      fontSize: 8,
-                      color: PdfColors.grey600,
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+      // Labels Grid
+      const double contentStartY = headerHeight + 10;
+      final totalRowWidth = (cols * labelWidth) + ((cols - 1) * colSpacing);
+      final double startX = (clientSize.width - totalRowWidth) / 2 > 0
+          ? (clientSize.width - totalRowWidth) / 2
+          : 0.0;
+
+      for (int itemIdx = 0; itemIdx < pageItems.length; itemIdx++) {
+        final row = itemIdx ~/ cols;
+        final col = itemIdx % cols;
+        final item = pageItems[itemIdx];
+
+        final double x = startX + (col * (labelWidth + colSpacing));
+        final double y = contentStartY + (row * (labelHeight + rowSpacing));
+
+        _drawBarcodeLabel(
+          graphics: graphics,
+          itemInfo: item,
+          logoBitmap: logoBitmap,
+          bounds: Rect.fromLTWH(x, y, labelWidth, labelHeight),
+          cols: cols,
+          regularFont: regularFont,
+          boldFont: boldFont,
+        );
+      }
+
+      // Bottom Footer
+      final pageNumberText = 'Page ${pageIdx + 1} of ${pages.length}';
+      graphics.drawString(
+        pageNumberText,
+        footerFont,
+        brush: greyBrush,
+        bounds: Rect.fromLTWH(0, clientSize.height - 14, clientSize.width, 14),
+        format: PdfStringFormat(
+          alignment: PdfTextAlignment.right,
+          lineAlignment: PdfVerticalAlignment.bottom,
         ),
       );
     }
 
-    return await pdf.save();
+    final bytes = Uint8List.fromList(document.saveSync());
+    document.dispose();
+    return bytes;
   }
 
-  /// Builds a small compact Barcode Tag / Label sticker adjusted for column count.
-  static pw.Widget _buildSmallBarcodeLabel({
+  /// Draws a single compact Barcode Tag sticker card onto the page graphics.
+  static void _drawBarcodeLabel({
+    required PdfGraphics graphics,
     required MenuItemBarcodeInfo itemInfo,
-    Uint8List? logoBytes,
-    required double labelWidth,
-    required double labelHeight,
+    required PdfBitmap? logoBitmap,
+    required Rect bounds,
     required int cols,
-    pw.Font? font,
+    required PdfFont Function(double size) regularFont,
+    required PdfFont Function(double size) boldFont,
   }) {
-    final priceStr = '\$${itemInfo.price.toStringAsFixed(2)}';
+    final double padding = cols == 4 ? 4.0 : 6.0;
+    final innerBounds = Rect.fromLTWH(
+      bounds.left + padding,
+      bounds.top + padding,
+      bounds.width - (padding * 2),
+      bounds.height - (padding * 2),
+    );
 
-    final double nameFontSize = cols == 4 ? 7.5 : (cols == 2 ? 11 : 9.5);
-    final double priceFontSize = cols == 4 ? 9 : (cols == 2 ? 13 : 11);
-    final double barcodeHeight = cols == 4 ? 28 : 36;
-    final double categoryFontSize = cols == 4 ? 4.5 : 5.5;
+    // 1. Label card background and border with corner radius 10 and primary color 0xffa43c12
+    final cardBorderPen = PdfPen(PdfColor(0xa4, 0x3c, 0x12), width: 1.0);
+    _drawRoundedRectangle(
+      graphics: graphics,
+      bounds: bounds,
+      radius: 10.0,
+      brush: PdfBrushes.white,
+      pen: cardBorderPen,
+    );
 
-    return pw.Container(
-      width: labelWidth,
-      height: labelHeight,
-      padding: pw.EdgeInsets.all(cols == 4 ? 5 : 7),
-      decoration: pw.BoxDecoration(
-        color: PdfColors.white,
-        borderRadius: const pw.BorderRadius.all(pw.Radius.circular(6)),
-        border: pw.Border.all(color: PdfColors.grey400, width: 0.8),
-      ),
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.start,
-        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-        children: [
-          // Header: Logo / Brand + Category Badge
-          pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: pw.CrossAxisAlignment.center,
-            children: [
-              if (logoBytes != null)
-                pw.Container(
-                  height: cols == 4 ? 12 : 16,
-                  child: pw.Image(
-                    pw.MemoryImage(logoBytes),
-                    fit: pw.BoxFit.contain,
-                  ),
-                )
-              else
-                pw.Text(
-                  'COOZY',
-                  style: pw.TextStyle(
-                    fontSize: cols == 4 ? 6 : 7.5,
-                    fontWeight: pw.FontWeight.bold,
-                    color: PdfColors.brown800,
-                  ),
-                ),
-              pw.Container(
-                padding: const pw.EdgeInsets.symmetric(
-                  horizontal: 3,
-                  vertical: 1,
-                ),
-                decoration: const pw.BoxDecoration(
-                  color: PdfColors.grey200,
-                  borderRadius: pw.BorderRadius.all(pw.Radius.circular(2)),
-                ),
-                child: pw.Text(
-                  itemInfo.categorySubcategoryDisplay,
-                  style: pw.TextStyle(
-                    fontSize: categoryFontSize,
-                    color: PdfColors.grey800,
-                  ),
-                  maxLines: 1,
-                ),
-              ),
-            ],
-          ),
+    // 2. Header Row: Logo or Brand + Category badge
+    final double headerRowHeight = cols == 4 ? 12.0 : 16.0;
+    final headerRect = Rect.fromLTWH(
+      innerBounds.left,
+      innerBounds.top,
+      innerBounds.width,
+      headerRowHeight,
+    );
 
-          // Middle: Item Name & Price
-          pw.Row(
-            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            children: [
-              pw.Expanded(
-                child: pw.Text(
-                  itemInfo.fullDisplayName,
-                  style: pw.TextStyle(
-                    fontSize: nameFontSize,
-                    fontWeight: pw.FontWeight.bold,
-                    color: PdfColors.black,
-                  ),
-                  maxLines: 2,
-                ),
-              ),
-              pw.SizedBox(width: 3),
-              pw.Text(
-                priceStr,
-                style: pw.TextStyle(
-                  fontSize: priceFontSize,
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.brown900,
-                ),
-              ),
-            ],
-          ),
+    if (logoBitmap != null) {
+      final double logoHeight = headerRowHeight;
+      final double logoWidth =
+          logoHeight * (logoBitmap.width / logoBitmap.height.clamp(1, 9999));
+      graphics.drawImage(
+        logoBitmap,
+        Rect.fromLTWH(headerRect.left, headerRect.top, logoWidth, logoHeight),
+      );
+    } else {
+      final brandFont = boldFont(cols == 4 ? 6.5 : 7.5);
+      graphics.drawString(
+        'COOZY',
+        brandFont,
+        brush: PdfSolidBrush(PdfColor(109, 76, 65)),
+        bounds: Rect.fromLTWH(
+          headerRect.left,
+          headerRect.top,
+          50,
+          headerRowHeight,
+        ),
+        format: PdfStringFormat(lineAlignment: PdfVerticalAlignment.middle),
+      );
+    }
 
-          // Bottom: Code 128 Barcode Widget
-          pw.Center(
-            child: pw.Container(
-              height: barcodeHeight,
-              width: labelWidth * 0.90,
-              alignment: pw.Alignment.center,
-              child: pw.BarcodeWidget(
-                barcode: pw.Barcode.code128(),
-                data: itemInfo.barcodePayload,
-                drawText: true,
-                textStyle: pw.TextStyle(
-                  font: font,
-                  fontSize: cols == 4 ? 4.5 : 5.5,
-                ),
-              ),
-            ),
-          ),
-        ],
+    // Category badge
+    final double catFontSize = cols == 4 ? 4.5 : 5.5;
+    final catFont = regularFont(catFontSize);
+    final catText = itemInfo.categorySubcategoryDisplay;
+    final catSize = catFont.measureString(catText);
+    final double maxBadgeWidth =
+        innerBounds.width - (logoBitmap != null ? 24.0 : 42.0);
+    final badgeWidth = (catSize.width + 8).clamp(20.0, maxBadgeWidth);
+    final badgeHeight = (catSize.height + 3).clamp(9.0, 14.0);
+    final badgeRect = Rect.fromLTWH(
+      innerBounds.right - badgeWidth,
+      headerRect.top + ((headerRowHeight - badgeHeight) / 2),
+      badgeWidth,
+      badgeHeight,
+    );
+
+    final badgeBgBrush = PdfSolidBrush(PdfColor(240, 240, 240));
+    graphics.drawRectangle(brush: badgeBgBrush, bounds: badgeRect);
+    graphics.drawString(
+      catText,
+      catFont,
+      brush: PdfSolidBrush(PdfColor(66, 66, 66)),
+      bounds: badgeRect,
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.center,
+        lineAlignment: PdfVerticalAlignment.middle,
+        wordWrap: PdfWordWrapType.none,
       ),
     );
+
+    // 3. Middle: Item Name & Formatted Price with currency
+    final double nameFontSize = cols == 4 ? 7.5 : (cols == 2 ? 10.5 : 9.0);
+    final double priceFontSize = cols == 4 ? 8.5 : (cols == 2 ? 12.0 : 10.5);
+    final nameFont = boldFont(nameFontSize);
+    final priceFont = boldFont(priceFontSize);
+
+    final priceStr = core.CurrencyFormatter.format(value: itemInfo.price);
+    final priceSize = priceFont.measureString(priceStr);
+    final priceWidth = priceSize.width + 4;
+
+    final double namePriceY = headerRect.bottom + 4;
+    final double namePriceHeight = cols == 4 ? 22.0 : 26.0;
+
+    // Price drawn on the right
+    graphics.drawString(
+      priceStr,
+      priceFont,
+      brush: PdfSolidBrush(PdfColor(62, 39, 35)),
+      bounds: Rect.fromLTWH(
+        innerBounds.right - priceWidth,
+        namePriceY,
+        priceWidth,
+        namePriceHeight,
+      ),
+      format: PdfStringFormat(
+        alignment: PdfTextAlignment.right,
+        lineAlignment: PdfVerticalAlignment.top,
+      ),
+    );
+
+    // Item name drawn on the left
+    final double nameWidth = innerBounds.width - priceWidth - 4;
+    graphics.drawString(
+      itemInfo.fullDisplayName,
+      nameFont,
+      brush: PdfBrushes.black,
+      bounds: Rect.fromLTWH(
+        innerBounds.left,
+        namePriceY,
+        nameWidth,
+        namePriceHeight,
+      ),
+      format: PdfStringFormat(
+        lineAlignment: PdfVerticalAlignment.top,
+        wordWrap: PdfWordWrapType.word,
+      ),
+    );
+
+    // 4. Bottom: Code 128 Barcode
+    final double barcodeAreaTop = namePriceY + namePriceHeight + 2;
+    final double barcodeAreaHeight = innerBounds.bottom - barcodeAreaTop;
+    final double barcodeWidth = innerBounds.width * 0.95;
+
+    _drawBarcode(
+      graphics: graphics,
+      payload: itemInfo.barcodePayload,
+      bounds: Rect.fromLTWH(
+        innerBounds.left + ((innerBounds.width - barcodeWidth) / 2),
+        barcodeAreaTop,
+        barcodeWidth,
+        barcodeAreaHeight.clamp(20.0, 50.0),
+      ),
+      fontSize: cols == 4 ? 5.0 : 6.0,
+      regularFont: regularFont,
+    );
+  }
+
+  /// Draws vector Code 128 barcode bars and label text onto [graphics].
+  static void _drawBarcode({
+    required PdfGraphics graphics,
+    required String payload,
+    required Rect bounds,
+    required double fontSize,
+    required PdfFont Function(double size) regularFont,
+  }) {
+    try {
+      final bc = Barcode.code128();
+      final elements = bc.make(
+        payload,
+        width: bounds.width,
+        height: bounds.height,
+        drawText: true,
+        fontHeight: fontSize,
+        textPadding: 2,
+      );
+
+      final brush = PdfBrushes.black;
+      final textFont = regularFont(fontSize);
+
+      for (final elem in elements) {
+        if (elem is BarcodeBar) {
+          if (elem.black) {
+            graphics.drawRectangle(
+              brush: brush,
+              bounds: Rect.fromLTWH(
+                bounds.left + elem.left,
+                bounds.top + elem.top,
+                elem.width,
+                elem.height,
+              ),
+            );
+          }
+        } else if (elem is BarcodeText) {
+          graphics.drawString(
+            elem.text,
+            textFont,
+            brush: brush,
+            bounds: Rect.fromLTWH(
+              bounds.left + elem.left,
+              bounds.top + elem.top,
+              elem.width,
+              elem.height,
+            ),
+            format: PdfStringFormat(alignment: PdfTextAlignment.center),
+          );
+        }
+      }
+    } catch (e) {
+      // Fallback: draw text if payload encoding fails
+      final fallbackFont = regularFont(fontSize + 1);
+      graphics.drawString(
+        payload,
+        fallbackFont,
+        brush: PdfBrushes.black,
+        bounds: bounds,
+        format: PdfStringFormat(
+          alignment: PdfTextAlignment.center,
+          lineAlignment: PdfVerticalAlignment.middle,
+        ),
+      );
+    }
+  }
+
+  /// Draws a rectangle with rounded corners using [PdfPath].
+  static void _drawRoundedRectangle({
+    required PdfGraphics graphics,
+    required Rect bounds,
+    required double radius,
+    PdfBrush? brush,
+    PdfPen? pen,
+  }) {
+    final double r = radius.clamp(
+      0.0,
+      (bounds.width < bounds.height ? bounds.width : bounds.height) / 2,
+    );
+    final double d = r * 2;
+    final path = PdfPath();
+
+    // Top-left arc
+    path.addArc(Rect.fromLTWH(bounds.left, bounds.top, d, d), 180, 90);
+    // Top line
+    path.addLine(
+      Offset(bounds.left + r, bounds.top),
+      Offset(bounds.right - r, bounds.top),
+    );
+    // Top-right arc
+    path.addArc(Rect.fromLTWH(bounds.right - d, bounds.top, d, d), 270, 90);
+    // Right line
+    path.addLine(
+      Offset(bounds.right, bounds.top + r),
+      Offset(bounds.right, bounds.bottom - r),
+    );
+    // Bottom-right arc
+    path.addArc(
+      Rect.fromLTWH(bounds.right - d, bounds.bottom - d, d, d),
+      0,
+      90,
+    );
+    // Bottom line
+    path.addLine(
+      Offset(bounds.right - r, bounds.bottom),
+      Offset(bounds.left + r, bounds.bottom),
+    );
+    // Bottom-left arc
+    path.addArc(Rect.fromLTWH(bounds.left, bounds.bottom - d, d, d), 90, 90);
+    // Left line & close
+    path.addLine(
+      Offset(bounds.left, bounds.bottom - r),
+      Offset(bounds.left, bounds.top + r),
+    );
+    path.closeFigure();
+
+    graphics.drawPath(path, pen: pen, brush: brush);
   }
 
   /// Displays interactive print preview screen using `printing`.
@@ -492,10 +660,7 @@ class MenuItemBarcodePdfGenerator {
       barcodeItems: barcodeItems,
       columnsCount: columnsCount,
     );
-    await Printing.layoutPdf(
-      onLayout: (PdfPageFormat format) async => pdfBytes,
-      name: docName,
-    );
+    await Printing.layoutPdf(onLayout: (_) async => pdfBytes, name: docName);
   }
 
   /// Downloads or saves generated Barcode PDF file directly to device storage across Mobile, Desktop & Web.

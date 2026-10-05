@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:drift/drift.dart';
+
 import '../../../database/coozy_database.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/entities/user_role.dart' as domain;
@@ -152,7 +154,9 @@ class AuthRepositoryImpl implements AuthRepository {
       await localDataSource.savePassword(temporaryPassword);
     }
     final user = await userLoginsDao.getUserByUsernameOrEmail(email);
-    if (user != null && temporaryPassword != null && temporaryPassword.isNotEmpty) {
+    if (user != null &&
+        temporaryPassword != null &&
+        temporaryPassword.isNotEmpty) {
       // Store temporary password hash in DB if user exists
       await userLoginsDao.updatePassword(user.id, temporaryPassword);
     }
@@ -180,8 +184,9 @@ class AuthRepositoryImpl implements AuthRepository {
     required String newPassword,
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 800));
-    final isOldPasswordValid =
-        await localDataSource.verifyPassword(oldPassword);
+    final isOldPasswordValid = await localDataSource.verifyPassword(
+      oldPassword,
+    );
     if (!isOldPasswordValid) {
       return false;
     }

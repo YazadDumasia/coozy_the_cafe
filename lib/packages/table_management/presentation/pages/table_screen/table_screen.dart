@@ -1,6 +1,8 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'table_screen_actions.dart';
 import '../../widgets/table_list/table_empty_view.dart';
 import '../../widgets/table_list/table_grid_item.dart';

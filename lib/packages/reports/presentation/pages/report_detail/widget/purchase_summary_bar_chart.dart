@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../../domain/entities/purchase_summary_entry.dart';
 
 class PurchaseSummaryBarChart extends StatelessWidget {
@@ -14,9 +15,8 @@ class PurchaseSummaryBarChart extends StatelessWidget {
       return Center(
         child: Text(
           'No purchases recorded in this date range',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: scheme.onSurface.withValues(alpha: 0.5),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }
@@ -89,7 +89,9 @@ class PurchaseSummaryBarChart extends StatelessWidget {
           xValueMapper: (PurchaseSummaryEntry e, _) => e.itemName,
           yValueMapper: (PurchaseSummaryEntry e, _) => e.totalCost,
           dataLabelMapper: (PurchaseSummaryEntry e, _) =>
-              NumberFormat.compactCurrency(symbol: '').format(e.totalCost).trim(),
+              NumberFormat.compactCurrency(symbol: '')
+                  .format(e.totalCost)
+                  .trim(),
           color: Colors.deepOrange,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
           dataLabelSettings: const DataLabelSettings(
@@ -110,8 +112,8 @@ class PurchaseSummaryBarChart extends StatelessWidget {
           yValueMapper: (PurchaseSummaryEntry e, _) => e.totalQty,
           dataLabelMapper: (PurchaseSummaryEntry e, _) =>
               e.totalQty == e.totalQty.toInt()
-                  ? '${e.totalQty.toInt()}'
-                  : '${e.totalQty}',
+              ? '${e.totalQty.toInt()}'
+              : '${e.totalQty}',
           color: scheme.primary.withValues(alpha: 0.7),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
           dataLabelSettings: const DataLabelSettings(

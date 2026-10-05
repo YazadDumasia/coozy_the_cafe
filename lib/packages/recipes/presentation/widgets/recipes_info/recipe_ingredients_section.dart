@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
@@ -6,6 +7,7 @@ import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:translator/translator.dart';
 import 'package:coozy_the_cafe/packages/recipes/data/models/translator_language_model.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../pages/recipes_info/recipes_info_screen.dart'; // For RecipesInfoStateHolder
 
 class RecipeIngredientsSection extends StatefulWidget {
@@ -43,9 +45,8 @@ class _RecipeIngredientsSectionState extends State<RecipeIngredientsSection> {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(10),
             child: Theme(
-              data: Theme.of(
-                context,
-              ).copyWith(dividerColor: Colors.transparent),
+              data: Theme.of(context)
+                  .copyWith(dividerColor: Colors.transparent),
               child: ExpansionTile(
                 initiallyExpanded: true,
                 shape: RoundedRectangleBorder(

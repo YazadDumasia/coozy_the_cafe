@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+
 import '../database.dart';
 import '../tables.dart';
 
@@ -318,7 +319,8 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     final hasItemFilter = itemName != null && itemName.trim().isNotEmpty;
     final itemFilterClause = hasItemFilter ? 'AND ii.item_name = ?' : '';
 
-    final sql = '''
+    final sql =
+        '''
       SELECT
         ii.item_name                                AS itemName,
         CASE ?

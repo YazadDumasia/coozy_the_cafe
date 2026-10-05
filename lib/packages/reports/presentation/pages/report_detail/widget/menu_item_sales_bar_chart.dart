@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import '../../../../domain/entities/menu_item_sales_entry.dart';
 
 import '../../../../domain/entities/sales_trend_entry.dart';
@@ -22,9 +23,8 @@ class MenuItemSalesBarChart extends StatelessWidget {
       return Center(
         child: Text(
           'No menu item sales recorded for selected range',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: scheme.onSurface.withValues(alpha: 0.5),
-          ),
+          style: Theme.of(context).textTheme.bodyMedium
+              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
         ),
       );
     }

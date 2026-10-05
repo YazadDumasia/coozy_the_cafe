@@ -1,12 +1,11 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
 
-typedef CashPaymentConfirmedCallback =
-    void Function({
-      required double cashReceived,
-      required double changeAmount,
-      String? note,
-    });
+typedef CashPaymentConfirmedCallback = void Function({
+  required double cashReceived,
+  required double changeAmount,
+  String? note,
+});
 
 class CashPaymentView extends StatefulWidget {
   final double grandTotal;

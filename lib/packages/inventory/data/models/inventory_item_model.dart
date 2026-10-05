@@ -1,5 +1,7 @@
 import 'package:drift/drift.dart';
+
 import '../../domain/entities/inventory_item.dart';
+
 import 'package:coozy_the_cafe/packages/database/src/database.dart' as db;
 
 class InventoryItemModel extends InventoryItem {
