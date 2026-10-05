@@ -22,14 +22,20 @@ lib/
     ├── database/              # Drift ORM tables, DAOs, helpers, & web sync scripts
     ├── shared/                # Common UI widgets, design system components, shared themes
     ├── auth/                  # Authentication module
+    ├── checkout/              # Order checkout & billing processing
     ├── customer/              # Customer management module
+    ├── expenditure/           # Expense tracking & financial logs
     ├── home_page/             # Dashboard and home navigation
     ├── inventory/             # Inventory and stock management
+    ├── invoice_management/    # Invoices & billing receipts
+    ├── kitchen_management/    # Kitchen display system (KDS) & order queue
     ├── menu_category/         # Menu category features
     ├── menu_subcategory/      # Menu subcategory features
     ├── menu_item/             # Menu item catalog
+    ├── order_management/      # Order lifecycle & history
     ├── purchase/              # Purchase orders and supplier logs
     ├── recipes/               # Recipe management
+    ├── reports/               # Sales trends, analytics & stock adjustment reports
     ├── reservation/           # Table reservation management
     ├── settings/              # Application settings & configurations
     ├── staff_management/      # Staff roles and scheduling

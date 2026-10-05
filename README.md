@@ -1,6 +1,6 @@
 # Coozy the Cafe
 
-![Flutter](https://img.shields.io/badge/Flutter-3.44.9-02569B?logo=flutter)
+![Flutter](https://img.shields.io/badge/Flutter-3.47.5-02569B?logo=flutter)
 ![License](https://img.shields.io/badge/License-MIT-green.svg)
 ![Demo](https://img.shields.io/badge/Demo-Live-8A2BE2)
 ![AI Assisted Development](https://img.shields.io/badge/AI--Assisted-Development-blueviolet?logo=google)
@@ -187,8 +187,8 @@ To update the AI agent's behavior for this project:
 
 ## Development Environment
 
-- Flutter Version: 3.44.9 (stable channel)
-- Android Studio: Quail 2 2026.1.2 Patch 1
+- Flutter Version: 3.47.5 (stable channel)
+- Android Studio: Rabbit 1 | 2026.2.1
 - AI Assistant: Google Antigravity IDE
 
 ## Project Architecture
@@ -204,14 +204,20 @@ lib/
     ├── database/                # Drift ORM tables, DAOs, web sync scripts
     ├── shared/                  # Common UI widgets, design system, themes, AppThemeExtension
     ├── auth/                    # Authentication
+    ├── checkout/                # Order checkout & billing processing
     ├── customer/                # Customer management
+    ├── expenditure/             # Expense tracking & financial logs
     ├── home_page/               # Dashboard & home navigation
     ├── inventory/               # Inventory & stock management
+    ├── invoice_management/      # Invoices & billing receipts
+    ├── kitchen_management/      # Kitchen display system (KDS) & order queue
     ├── menu_category/           # Menu categories
     ├── menu_subcategory/        # Menu subcategories
     ├── menu_item/               # Menu item catalog
+    ├── order_management/        # Order lifecycle & history
     ├── purchase/                # Purchase orders & supplier logs
     ├── recipes/                 # Recipe management
+    ├── reports/                 # Sales trends, analytics & stock adjustment reports
     ├── reservation/             # Table reservation management
     ├── settings/                # App settings & configurations
     ├── staff_management/        # Staff roles & scheduling
