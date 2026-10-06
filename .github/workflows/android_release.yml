@@ -1,0 +1,102 @@
+name: Build Android Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      build_aab:
+        description: 'Also build Android App Bundle (AAB)'
+        required: false
+        type: boolean
+        default: false
+      custom_version_name:
+        description: 'Custom version name (e.g. 1.0.1, leave empty to use pubspec.yaml base version)'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    name: Build Android Release APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java Development Kit (JDK 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Run Drift & code generation
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Resolve Version and Build Number
+        id: version_step
+        run: |
+          # Read base version from pubspec.yaml (e.g., version: 1.0.0+1)
+          PUBSPEC_VERSION=$(grep '^version:' pubspec.yaml | sed 's/version:[[:space:]]*//')
+          BASE_VERSION_NAME=$(echo "$PUBSPEC_VERSION" | cut -d'+' -f1)
+          
+          # Allow override from workflow input if provided
+          if [ -n "${{ inputs.custom_version_name }}" ]; then
+            VERSION_NAME="${{ inputs.custom_version_name }}"
+          else
+            VERSION_NAME="$BASE_VERSION_NAME"
+          fi
+          
+          # Use GitHub run number as build number to guarantee auto-incrementing on every build
+          BUILD_NUMBER="${{ github.run_number }}"
+          
+          echo "Building with Version Name: $VERSION_NAME, Build Number: $BUILD_NUMBER (Version: $VERSION_NAME+$BUILD_NUMBER)"
+          echo "version_name=$VERSION_NAME" >> $GITHUB_OUTPUT
+          echo "build_number=$BUILD_NUMBER" >> $GITHUB_OUTPUT
+
+      - name: Build Android Release APK
+        run: |
+          flutter build apk --release --tree-shake-icons \
+            --build-name="${{ steps.version_step.outputs.version_name }}" \
+            --build-number="${{ steps.version_step.outputs.build_number }}"
+
+      - name: Build Android App Bundle (Optional)
+        if: ${{ inputs.build_aab }}
+        run: |
+          flutter build appbundle --release --tree-shake-icons \
+            --build-name="${{ steps.version_step.outputs.version_name }}" \
+            --build-number="${{ steps.version_step.outputs.build_number }}"
+
+      - name: Upload Release APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coozy-cafe-release-apk-v${{ steps.version_step.outputs.version_name }}+${{ steps.version_step.outputs.build_number }}
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Release AAB Artifact (Optional)
+        if: ${{ inputs.build_aab }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coozy-cafe-release-aab-v${{ steps.version_step.outputs.version_name }}+${{ steps.version_step.outputs.build_number }}
+          path: build/app/outputs/bundle/release/app-release.aab
+          if-no-files-found: warn
+          retention-days: 14
