@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 typedef CashPaymentConfirmedCallback = void Function({
   required double cashReceived,
@@ -47,10 +48,8 @@ class _CashPaymentViewState extends State<CashPaymentView> {
   @override
   void initState() {
     super.initState();
-    final initialText = widget.grandTotal % 1 == 0
-        ? widget.grandTotal.toInt().toString()
-        : widget.grandTotal.toStringAsFixed(2);
-    _cashReceivedController = TextEditingController(text: initialText);
+    // Do not pre-fill text so grandTotal appears as a placeholder hint.
+    _cashReceivedController = TextEditingController();
     _cashReceivedFocusNode = FocusNode();
     _cashReceivedController.addListener(_onCashReceivedChanged);
 
@@ -72,20 +71,34 @@ class _CashPaymentViewState extends State<CashPaymentView> {
     setState(() {});
   }
 
-  double get _cashReceivedValue {
+  bool get _hasEnteredCash => _cashReceivedController.text.trim().isNotEmpty;
+
+  double get _enteredCashValue {
     final text = _cashReceivedController.text.trim();
     return double.tryParse(text) ?? 0.0;
   }
 
+  /// Effective cash received: user entered amount, or fallback to exact grandTotal if left blank
+  double get _effectiveCashReceived {
+    if (_hasEnteredCash) {
+      return _enteredCashValue;
+    }
+    return widget.grandTotal;
+  }
+
+  /// Change amount: calculated when user enters an amount; returns 0 if exact or not entered
   double get _changeValue {
-    final received = _cashReceivedValue;
-    final diff = received - widget.grandTotal;
+    if (!_hasEnteredCash) {
+      return 0.0;
+    }
+    final diff = _enteredCashValue - widget.grandTotal;
     return diff > 0 ? diff : 0.0;
   }
 
   void _addQuickAmount(int amount) {
-    final current = _cashReceivedValue;
-    final updated = current + amount;
+    // If empty, start adding from grandTotal or 0
+    final base = _hasEnteredCash ? _enteredCashValue : widget.grandTotal;
+    final updated = base + amount;
     final updatedText = updated % 1 == 0
         ? updated.toInt().toString()
         : updated.toStringAsFixed(2);
@@ -225,16 +238,29 @@ class _CashPaymentViewState extends State<CashPaymentView> {
                             keyboardType: const TextInputType.numberWithOptions(
                               decimal: true,
                             ),
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d*\.?\d*'),
+                              ),
+                            ],
                             style: theme.textTheme.headlineLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 32,
                               color: theme.colorScheme.onSurface.withValues(
-                                alpha: 0.8,
+                                alpha: 0.85,
                               ),
                             ),
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.zero,
+                              hintText: _formatAmount(widget.grandTotal),
+                              hintStyle: theme.textTheme.headlineLarge?.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 32,
+                                color: theme.colorScheme.onSurface.withValues(
+                                  alpha: 0.35,
+                                ),
+                              ),
                             ),
                           ),
                         ],
@@ -273,9 +299,11 @@ class _CashPaymentViewState extends State<CashPaymentView> {
                             style: theme.textTheme.headlineLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: 30,
-                              color: theme.colorScheme.onSurface.withValues(
-                                alpha: 0.6,
-                              ),
+                              color: _changeValue > 0
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.onSurface.withValues(
+                                      alpha: 0.6,
+                                    ),
                             ),
                           ),
                         ],
@@ -419,7 +447,7 @@ class _CashPaymentViewState extends State<CashPaymentView> {
               child: ElevatedButton(
                 onPressed: () {
                   widget.onPaymentConfirmed(
-                    cashReceived: _cashReceivedValue,
+                    cashReceived: _effectiveCashReceived,
                     changeAmount: _changeValue,
                     note: _receiptNoteController.text.trim(),
                   );

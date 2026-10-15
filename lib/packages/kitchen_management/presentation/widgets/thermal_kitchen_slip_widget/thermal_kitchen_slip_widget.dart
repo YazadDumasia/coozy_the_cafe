@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import 'package:coozy_the_cafe/packages/settings/coozy_settings.dart'
+    as settings;
+
+import '../../../domain/entities/kitchen_order_entity.dart';
+import '../../../domain/entities/kitchen_order_item_entity.dart';
 
 class ThermalKitchenSlipWidget extends StatelessWidget {
   final int orderId;
@@ -129,19 +134,97 @@ class ThermalKitchenSlipWidget extends StatelessWidget {
                           shared.LocaleKeys.thermalKotSimulatePrintBtn,
                           track: shared.TrackConstants.tablePageTrack,
                         ) ??
-                        'Simulate Print Job',
+                        'Print KOT Slip',
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     Navigator.of(context).pop();
-                    shared.SnackBarUtils.showSuccess(
-                      context,
-                      message:
-                          context.tr(
-                            shared.LocaleKeys.thermalKotPrintSuccessMsg,
-                            track: shared.TrackConstants.tablePageTrack,
-                          ) ??
-                          'KOT Slip sent to Thermal Printer successfully!',
-                    );
+                    try {
+                      final kitchenConfig = await settings
+                          .ThermalPrinterService
+                          .instance
+                          .getPrinterConfig(
+                            stationKey: shared
+                                .PreferencesKeys
+                                .kitchenStationPrinterConfig,
+                          );
+                      final demoOrder = KitchenOrderEntity(
+                        id: 1048,
+                        tableNameText: 'Table 04',
+                        creationDate: DateTime.now().toIso8601String(),
+                        status: 'pending',
+                        orderType: 'Dine-In',
+                        items: const [
+                          KitchenOrderItemEntity(
+                            id: 1,
+                            itemName: 'Cappuccino',
+                            quantity: 2,
+                            status: 'pending',
+                            remarks: 'Extra Shot Espresso',
+                            variationQuantity: 'Large (350 ml)',
+                          ),
+                          KitchenOrderItemEntity(
+                            id: 2,
+                            itemName: 'Avocado Toast',
+                            quantity: 1,
+                            status: 'pending',
+                            remarks: 'No Onions, Extra Cheese',
+                            variationQuantity: 'Regular (1 pc)',
+                          ),
+                          KitchenOrderItemEntity(
+                            id: 3,
+                            itemName: 'Cold Brew Coffee',
+                            quantity: 3,
+                            status: 'pending',
+                            remarks: 'Less Ice',
+                            variationQuantity: '500 ml Bottle',
+                          ),
+                        ],
+                      );
+                      final bytes =
+                          await settings
+                              .EscPosTicketBuilder.buildKitchenTicketBytes(
+                            order: demoOrder,
+                            paperSize: isWidth58mm
+                                ? settings.ThermalPaperSize.mm58
+                                : settings.ThermalPaperSize.mm80,
+                            serverName: 'Waiter Alex',
+                            remarks:
+                                'Fast track order - Table 04 VIP Customer.',
+                          );
+                      final success = await settings
+                          .ThermalPrinterService
+                          .instance
+                          .printBytesWithConfig(
+                            config: kitchenConfig,
+                            bytes: bytes,
+                            jobName: 'KOT Slip #1048',
+                          );
+                      if (context.mounted) {
+                        if (success) {
+                          shared.SnackBarUtils.showSuccess(
+                            context,
+                            message:
+                                context.tr(
+                                  shared.LocaleKeys.thermalKotPrintSuccessMsg,
+                                  track: shared.TrackConstants.tablePageTrack,
+                                ) ??
+                                'KOT Slip sent to Thermal Printer successfully!',
+                          );
+                        } else {
+                          shared.SnackBarUtils.showError(
+                            context,
+                            message: 'Failed to send KOT slip. Please check printer configuration.',
+                          );
+                        }
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        shared.SnackBarUtils.showError(
+                          context,
+                          message: 'Print error: $e',
+                        );
+                      }
+                    }
                   },
                 ),
               ],

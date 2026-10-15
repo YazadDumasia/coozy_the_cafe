@@ -1,10 +1,11 @@
-import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart' as shared_prefs;
 
 import '../../waiter_order_placement/domain/entities/order_cart_item.dart'
     as cart;
 import '../../core/coozy_core.dart' as core;
 import '../../shared/coozy_shared.dart' as shared;
+import '../../settings/coozy_settings.dart' as settings;
+import '../domain/entities/kitchen_order_entity.dart';
+import '../domain/entities/kitchen_order_item_entity.dart';
 
 class OrderPrintBackgroundService {
   OrderPrintBackgroundService._();
@@ -18,22 +19,9 @@ class OrderPrintBackgroundService {
     required String tableName,
     required List<cart.OrderCartItem> cartItems,
   }) async {
-    // Offload preference check and slip formatting to isolate / background job
-    compute(_bgProcessOrderTask, {
-      'orderId': orderId,
-      'tableName': tableName,
-      'cartItemsCount': cartItems.length,
-    }).catchError((e) {
-      core.PlatformUtils.debugLog(
-        OrderPrintBackgroundService,
-        'Background order processing error: $e',
-      );
-    });
-
-    final prefs = await shared_prefs.SharedPreferences.getInstance();
-    final bool isAutoPrintEnabled =
-        prefs.getBool(shared.PreferencesKeys.autoPrintKitchenOrderSlip.name) ??
-        false;
+    final bool isAutoPrintEnabled = shared.LocalManager.instance.getBoolValue(
+      key: shared.PreferencesKeys.autoPrintKitchenOrderSlip,
+    );
 
     if (isAutoPrintEnabled) {
       core.PlatformUtils.debugLog(
@@ -48,16 +36,62 @@ class OrderPrintBackgroundService {
         tableName: tableName,
         itemCount: cartItems.length,
       );
-    }
-  }
 
-  static Future<void> _bgProcessOrderTask(Map<String, dynamic> data) async {
-    // Simulated ESC/POS payload format computation in background worker isolate
-    final orderId = data['orderId'];
-    final tableName = data['tableName'];
-    final count = data['cartItemsCount'];
-    debugPrint(
-      '[ComputeWorker] Prepared KOT print buffer for Order #$orderId ($tableName, $count items)',
-    );
+      // Perform real ESC/POS thermal printing for Kitchen station
+      try {
+        final kitchenConfig = await settings.ThermalPrinterService.instance
+            .getPrinterConfig(
+              stationKey: shared.PreferencesKeys.kitchenStationPrinterConfig,
+            );
+
+        // Convert cart items to kitchen order items
+        final kitchenItems = cartItems
+            .map(
+              (c) => KitchenOrderItemEntity(
+                id: c.menuItemId,
+                orderId: orderId,
+                itemId: c.menuItemId,
+                itemName: c.name,
+                quantity: c.quantity,
+                status: 'pending',
+                remarks: c.remarks,
+                variationQuantity: c.variationName,
+              ),
+            )
+            .toList();
+
+        final kitchenOrder = KitchenOrderEntity(
+          id: orderId,
+          tableNameText: tableName,
+          creationDate: DateTime.now().toIso8601String(),
+          status: 'pending',
+          orderType: 'Dine-In',
+          items: kitchenItems,
+        );
+
+        final bytes =
+            await settings.EscPosTicketBuilder.buildKitchenTicketBytes(
+              order: kitchenOrder,
+              paperSize: kitchenConfig.paperSize,
+            );
+
+        final success = await settings.ThermalPrinterService.instance
+            .printBytesWithConfig(
+              config: kitchenConfig,
+              bytes: bytes,
+              jobName: 'Auto KOT #$orderId',
+            );
+
+        core.PlatformUtils.debugLog(
+          OrderPrintBackgroundService,
+          '[AUTO-PRINT KOT] Print job completed with success=$success',
+        );
+      } catch (e) {
+        core.PlatformUtils.debugLog(
+          OrderPrintBackgroundService,
+          'Error during auto-print KOT ticket: $e',
+        );
+      }
+    }
   }
 }

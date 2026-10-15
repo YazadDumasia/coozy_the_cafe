@@ -1099,10 +1099,59 @@ abstract class LocaleKeys {
       'settings_auto_print_kitchen_slip_enabled';
   static const String settingsAutoPrintKitchenSlipDisabled =
       'settings_auto_print_kitchen_slip_disabled';
+  static const String settingsAutoPrintCustomerReceiptLabel =
+      'settings_auto_print_customer_receipt_label';
+  static const String settingsAutoPrintCustomerReceiptSubtitle =
+      'settings_auto_print_customer_receipt_subtitle';
+  static const String settingsAutoPrintCustomerReceiptTooltip =
+      'settings_auto_print_customer_receipt_tooltip';
+  static const String settingsAutoPrintCustomerReceiptEnabled =
+      'settings_auto_print_customer_receipt_enabled';
+  static const String settingsAutoPrintCustomerReceiptDisabled =
+      'settings_auto_print_customer_receipt_disabled';
+  static const String settingsThermalPrintersBtn =
+      'settings_thermal_printers_btn';
+  static const String settingsThermalPrintersDialogTitle =
+      'settings_thermal_printers_dialog_title';
+  static const String settingsThermalPrintersCustomerTitle =
+      'settings_thermal_printers_customer_title';
+  static const String settingsThermalPrintersKitchenTitle =
+      'settings_thermal_printers_kitchen_title';
+  static const String settingsThermalPrintersNetworkTab =
+      'settings_thermal_printers_network_tab';
+  static const String settingsThermalPrintersBluetoothTab =
+      'settings_thermal_printers_bluetooth_tab';
   static const String settingsChangePasswordLabel =
       'settings_change_password_label';
   static const String settingsChangePasswordSubtitle =
       'settings_change_password_subtitle';
+  static const String settingsInvoiceShareBtn = 'settings_invoice_share_btn';
+  static const String settingsInvoiceShareCustomLinkHint =
+      'settings_invoice_share_custom_link_hint';
+  static const String settingsInvoiceShareCustomLinkLabel =
+      'settings_invoice_share_custom_link_label';
+  static const String settingsInvoiceShareDialogSubtitle =
+      'settings_invoice_share_dialog_subtitle';
+  static const String settingsInvoiceShareDialogTitle =
+      'settings_invoice_share_dialog_title';
+  static const String settingsInvoiceShareLivePreviewTitle =
+      'settings_invoice_share_live_preview_title';
+  static const String settingsInvoiceShareResetBtn =
+      'settings_invoice_share_reset_btn';
+  static const String settingsInvoiceShareResetContent =
+      'settings_invoice_share_reset_content';
+  static const String settingsInvoiceShareResetSuccess =
+      'settings_invoice_share_reset_success';
+  static const String settingsInvoiceShareResetTitle =
+      'settings_invoice_share_reset_title';
+  static const String settingsInvoiceShareSavedSuccess =
+      'settings_invoice_share_saved_success';
+  static const String settingsInvoiceShareTemplateHint =
+      'settings_invoice_share_template_hint';
+  static const String settingsInvoiceShareTemplateTitle =
+      'settings_invoice_share_template_title';
+  static const String settingsInvoiceShareTokensTitle =
+      'settings_invoice_share_tokens_title';
   static const String settingsPreviewThermalSlipBtn =
       'settings_preview_thermal_slip_btn';
   static const String settingsDarkThemeLabel = 'settings_dark_theme_label';
@@ -1397,9 +1446,16 @@ abstract class LocaleKeys {
   static const String invoiceItemCountUnit = 'invoice_item_count_unit';
   static const String invoiceItemCountUnitsShort =
       'invoice_item_count_units_short';
+  static const String invoiceCopySummary = 'invoice_copy_summary';
   static const String invoiceListTitle = 'invoice_list_title';
+  static const String invoicePreviewA4 = 'invoice_preview_a4';
+  static const String invoicePreviewBillTitle = 'invoice_preview_bill_title';
   static const String invoicePreviewError = 'invoice_preview_error';
+  static const String invoicePreviewThermal80mm =
+      'invoice_preview_thermal_80mm';
   static const String invoicePreviewTitle = 'invoice_preview_title';
+  static const String invoicePrintThermalReceipt =
+      'invoice_print_thermal_receipt';
   static const String invoiceTableAmount = 'invoice_table_amount';
   static const String invoiceTableItemsCount = 'invoice_table_items_count';
   static const String invoiceTableName = 'invoice_table_name';

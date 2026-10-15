@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import 'package:coozy_the_cafe/packages/settings/coozy_settings.dart'
+    as settings;
 
 import '../../../../domain/entities/kitchen_order_entity.dart';
 import 'kitchen_item_tile.dart';
@@ -93,27 +95,84 @@ class KitchenTicketCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 8),
-            // Footer Action ("Bump Ticket" / Mark All Ready)
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () => onBumpOrder(order.id, 'ready'),
-                icon: const Icon(Icons.check_circle_outline, size: 18),
-                label: Text(
-                  context.tr(
-                        shared.LocaleKeys.kitchenBumpAllReadyBtn,
-                        track: shared.TrackConstants.orderPageTrack,
-                      ) ??
-                      'BUMP (ALL READY)',
+            const SizedBox(height: 8),
+            // Footer Actions: Print KOT slip & Bump Ticket
+            Row(
+              children: [
+                IconButton.filledTonal(
+                  tooltip: 'Print Kitchen Slip',
+                  icon: const Icon(Icons.print_rounded, size: 20),
+                  onPressed: () async {
+                    try {
+                      final kitchenConfig = await settings
+                          .ThermalPrinterService
+                          .instance
+                          .getPrinterConfig(
+                            stationKey: shared
+                                .PreferencesKeys
+                                .kitchenStationPrinterConfig,
+                          );
+                      final bytes =
+                          await settings
+                              .EscPosTicketBuilder.buildKitchenTicketBytes(
+                            order: order,
+                            paperSize: kitchenConfig.paperSize,
+                          );
+                      final success = await settings
+                          .ThermalPrinterService
+                          .instance
+                          .printBytesWithConfig(
+                            config: kitchenConfig,
+                            bytes: bytes,
+                            jobName: 'Kitchen Ticket #${order.id}',
+                          );
+                      if (context.mounted) {
+                        if (success) {
+                          shared.SnackBarUtils.showSuccess(
+                            context,
+                            message:
+                                'Ticket #${order.id} sent to Kitchen printer',
+                          );
+                        } else {
+                          shared.SnackBarUtils.showError(
+                            context,
+                            message:
+                                'Failed to print ticket #${order.id}. Check printer settings.',
+                          );
+                        }
+                      }
+                    } catch (e) {
+                      if (context.mounted) {
+                        shared.SnackBarUtils.showError(
+                          context,
+                          message: 'Print error: $e',
+                        );
+                      }
+                    }
+                  },
                 ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primaryContainer,
-                  foregroundColor: theme.colorScheme.onPrimaryContainer,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () => onBumpOrder(order.id, 'ready'),
+                    icon: const Icon(Icons.check_circle_outline, size: 18),
+                    label: Text(
+                      context.tr(
+                            shared.LocaleKeys.kitchenBumpAllReadyBtn,
+                            track: shared.TrackConstants.orderPageTrack,
+                          ) ??
+                          'BUMP (ALL READY)',
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.primaryContainer,
+                      foregroundColor: theme.colorScheme.onPrimaryContainer,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
           ],
         ),

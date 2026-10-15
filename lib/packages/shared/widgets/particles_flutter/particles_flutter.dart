@@ -60,7 +60,8 @@ class _CircularParticleState extends State<CircularParticle>
   _CircularParticleState();
   late Animation<double> animation;
   late AnimationController controller;
-  late AnimationController awayAnimationController;
+  AnimationController? awayAnimationController;
+  bool _isDisposed = false;
   late double dx;
   late double dy;
   List<Offset> offsets = <Offset>[];
@@ -132,8 +133,11 @@ class _CircularParticleState extends State<CircularParticle>
 
   @override
   void dispose() {
+    _isDisposed = true;
     animation.removeListener(_myListener);
     controller.dispose();
+    awayAnimationController?.dispose();
+    awayAnimationController = null;
     super.dispose();
   }
 
@@ -141,6 +145,7 @@ class _CircularParticleState extends State<CircularParticle>
     unawaited(
       Future.doWhile(() async {
         await Future.delayed(const Duration(milliseconds: 600));
+        if (_isDisposed || !mounted) return false;
         for (int index = 0; index < widget.numberOfParticles; index++) {
           randDirection[index] = rng.nextBool();
         }
@@ -171,11 +176,14 @@ class _CircularParticleState extends State<CircularParticle>
   }
 
   void onTapGesture(double tapdx, double tapdy) {
-    awayAnimationController = AnimationController(
+    if (!mounted || _isDisposed) return;
+    awayAnimationController?.dispose();
+    final animController = AnimationController(
       duration: widget.awayAnimationDuration,
       vsync: this,
     );
-    awayAnimationController.reset();
+    awayAnimationController = animController;
+    animController.reset();
     double directiondx;
     double directiondy;
     final List<double> distance = <double>[];
@@ -183,7 +191,7 @@ class _CircularParticleState extends State<CircularParticle>
 
     if (widget.onTapAnimation) {
       final List<Animation<Offset>> awayAnimation = <Animation<Offset>>[];
-      awayAnimationController.forward();
+      animController.forward();
       for (int index = 0; index < offsets.length; index++) {
         distance.add(
           sqrt(
@@ -205,17 +213,21 @@ class _CircularParticleState extends State<CircularParticle>
               ),
             ).animate(
               CurvedAnimation(
-                parent: awayAnimationController,
+                parent: animController,
                 curve: widget.awayAnimationCurve,
               ),
             )
             ..addListener(() {
+              if (!mounted || _isDisposed) return;
               if (distance[index] < widget.awayRadius) {
                 setState(() => offsets[index] = awayAnimation[index].value);
               }
-              if (awayAnimationController.isCompleted &&
+              if (animController.isCompleted &&
                   index == offsets.length - 1) {
-                awayAnimationController.dispose();
+                animController.dispose();
+                if (awayAnimationController == animController) {
+                  awayAnimationController = null;
+                }
               }
             }),
         );
@@ -243,29 +255,22 @@ class _CircularParticleState extends State<CircularParticle>
   }
 
   void onHover(double tapdx, double tapdy) {
-    {
-      awayAnimationController = AnimationController(
-        duration: widget.awayAnimationDuration,
-        vsync: this,
+    if (!mounted || _isDisposed) return;
+    double noAnimationDistance = 0;
+    for (int index = 0; index < offsets.length; index++) {
+      noAnimationDistance = sqrt(
+        ((tapdx - offsets[index].dx) * (tapdx - offsets[index].dx)) +
+            ((tapdy - offsets[index].dy) * (tapdy - offsets[index].dy)),
       );
-      awayAnimationController.reset();
 
-      double noAnimationDistance = 0;
-      for (int index = 0; index < offsets.length; index++) {
-        noAnimationDistance = sqrt(
-          ((tapdx - offsets[index].dx) * (tapdx - offsets[index].dx)) +
-              ((tapdy - offsets[index].dy) * (tapdy - offsets[index].dy)),
-        );
-
-        if (noAnimationDistance < widget.hoverRadius) {
-          setState(() {
-            if (hoverIndex.length >
-                (widget.numberOfParticles * 0.1).floor() + 1) {
-              hoverIndex.removeAt(0);
-            }
-            hoverIndex.add(index);
-          });
-        }
+      if (noAnimationDistance < widget.hoverRadius) {
+        setState(() {
+          if (hoverIndex.length >
+              (widget.numberOfParticles * 0.1).floor() + 1) {
+            hoverIndex.removeAt(0);
+          }
+          hoverIndex.add(index);
+        });
       }
     }
   }

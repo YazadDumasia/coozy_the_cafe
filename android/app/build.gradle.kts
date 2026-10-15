@@ -7,7 +7,7 @@ plugins {
 android {
     namespace = "com.app.coozy_the_cafe"
     compileSdk = 37
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "30.0.16248370"
 
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
@@ -41,9 +41,10 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-//            )
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")

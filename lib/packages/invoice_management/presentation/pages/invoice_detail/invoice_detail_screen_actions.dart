@@ -6,12 +6,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+import 'package:coozy_the_cafe/packages/settings/coozy_settings.dart'
+    as settings;
 
 import '../../bloc/invoice_management_bloc.dart';
 import '../../../domain/entities/invoice_management_entity.dart';
 import '../../../domain/services/invoice_pdf_generator.dart';
+import '../../../domain/services/invoice_share_service.dart';
 import '../../widgets/invoice_pdf_preview_dialog/invoice_pdf_preview_dialog.dart';
 
 class InvoiceDetailScreenActions {
@@ -137,7 +141,7 @@ class InvoiceDetailScreenActions {
       return;
     }
 
-    final summary = _buildInvoiceTextSummary(invoiceDetails);
+    final summary = await InvoiceShareService.instance.buildShareMessage(invoiceDetails);
     final receiptNo = invoiceDetails.invoice.hashId.isNotEmpty
         ? invoiceDetails.invoice.hashId
         : 'MD-${invoiceDetails.invoice.id}';
@@ -163,7 +167,25 @@ class InvoiceDetailScreenActions {
       return;
     }
 
-    final summary = _buildInvoiceTextSummary(invoiceDetails);
+    final summary = await InvoiceShareService.instance.buildShareMessage(invoiceDetails);
+    final phone = invoiceDetails.invoice.phoneNumber?.trim() ?? '';
+    final cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (cleanPhone.isNotEmpty) {
+      try {
+        final whatsappUri = Uri.parse(
+          'https://wa.me/$cleanPhone?text=${Uri.encodeComponent(summary)}',
+        );
+        if (await canLaunchUrl(whatsappUri)) {
+          final launched = await launchUrl(
+            whatsappUri,
+            mode: LaunchMode.externalApplication,
+          );
+          if (launched) return;
+        }
+      } catch (_) {}
+    }
+
     final receiptNo = invoiceDetails.invoice.hashId.isNotEmpty
         ? invoiceDetails.invoice.hashId
         : 'MD-${invoiceDetails.invoice.id}';
@@ -350,7 +372,39 @@ class InvoiceDetailScreenActions {
     }
 
     try {
-      await InvoicePdfGenerator.printPdf(details: invoiceDetails);
+      final config = await settings.ThermalPrinterService.instance
+          .getPrinterConfig(
+            stationKey: shared.PreferencesKeys.customerReceiptPrinterConfig,
+          );
+
+      if (config.type == settings.ThermalPrinterType.systemSpooler) {
+        await InvoicePdfGenerator.printPdf(details: invoiceDetails);
+      } else {
+        final bytes =
+            await settings.EscPosTicketBuilder.buildCustomerReceiptBytes(
+              details: invoiceDetails,
+              paperSize: config.paperSize,
+            );
+        final success = await settings.ThermalPrinterService.instance
+            .printBytesWithConfig(
+              config: config,
+              bytes: bytes,
+              jobName: 'Receipt ${invoiceDetails.invoice.hashId}',
+            );
+        if (context.mounted) {
+          if (success) {
+            shared.SnackBarUtils.showSuccess(
+              context,
+              message: 'Receipt sent to thermal printer successfully!',
+            );
+          } else {
+            shared.SnackBarUtils.showError(
+              context,
+              message: 'Failed to send receipt to thermal printer.',
+            );
+          }
+        }
+      }
     } catch (e) {
       if (context.mounted) {
         shared.SnackBarUtils.showError(
@@ -359,47 +413,5 @@ class InvoiceDetailScreenActions {
         );
       }
     }
-  }
-
-  static String _buildInvoiceTextSummary(InvoiceDetailsEntity details) {
-    final inv = details.invoice;
-    final receiptNo = inv.hashId.isNotEmpty ? inv.hashId : 'MD-${inv.id}';
-    final buffer = StringBuffer();
-    buffer.writeln('COOZY THE CAFE - INVOICE');
-    buffer.writeln('Receipt No: $receiptNo');
-    if (inv.createdDate != null) {
-      buffer.writeln(
-        'Date: ${core.DateUtil.localFormat(inv.createdDate, 'dd MMM yyyy - hh:mm a') ?? inv.createdDate}',
-      );
-    }
-    if (details.tableName != null && details.tableName!.isNotEmpty) {
-      buffer.writeln('Table: ${details.tableName}');
-    }
-    buffer.writeln('----------------------');
-    for (final item in details.items) {
-      buffer.writeln(
-        '${item.itemName} x${item.quantity} = ${core.CurrencyFormatter.format(value: item.totalPrice)}',
-      );
-    }
-    buffer.writeln('----------------------');
-    buffer.writeln(
-      'Subtotal: ${core.CurrencyFormatter.format(value: inv.totalCost)}',
-    );
-    if (inv.discountAmount > 0) {
-      buffer.writeln(
-        'Discount: -${core.CurrencyFormatter.format(value: inv.discountAmount)}',
-      );
-    }
-    if (inv.taxCost > 0) {
-      buffer.writeln(
-        'Tax: +${core.CurrencyFormatter.format(value: inv.taxCost)}',
-      );
-    }
-    buffer.writeln(
-      'Grand Total: ${core.CurrencyFormatter.format(value: inv.netPaymentAmount)}',
-    );
-    buffer.writeln('Payment: ${inv.paymentMethodName ?? 'Cash'}');
-    buffer.writeln('Thank you for visiting Coozy The Cafe!');
-    return buffer.toString();
   }
 }

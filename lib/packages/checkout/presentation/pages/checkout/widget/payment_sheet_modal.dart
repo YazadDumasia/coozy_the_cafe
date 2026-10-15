@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:coozy_the_cafe/packages/settings/coozy_settings.dart'
+    as settings;
+import 'package:coozy_the_cafe/packages/invoice_management/domain/entities/invoice_management_entity.dart';
+
 import '../../../bloc/checkout_bloc.dart';
 import '../../../../domain/entities/customer_details.dart';
 import '../../../utils/responsive_modal.dart';
@@ -265,6 +269,113 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
     );
   }
 
+  void _triggerAutoPrintCustomerReceipt(CheckoutState state) {
+    Future.microtask(() async {
+      try {
+        final autoPrint = shared.LocalManager.instance.getBoolValue(
+          key: shared.PreferencesKeys.autoPrintCustomerReceipt,
+        );
+        core.PlatformUtils.debugLog(
+          PaymentSheetModal,
+          '[AUTO-PRINT RECEIPT] Checked auto-print setting: isEnabled=$autoPrint',
+        );
+        if (!autoPrint) return;
+
+        final printerConfig = await settings.ThermalPrinterService.instance
+            .getPrinterConfig(
+              stationKey: shared.PreferencesKeys.customerReceiptPrinterConfig,
+            );
+
+        final hasConfiguredPrinter =
+            (printerConfig.type == settings.ThermalPrinterType.network &&
+                printerConfig.ipAddress.isNotEmpty) ||
+            (printerConfig.type == settings.ThermalPrinterType.bluetooth &&
+                printerConfig.bluetoothAddress.isNotEmpty) ||
+            (printerConfig.type == settings.ThermalPrinterType.usb &&
+                (printerConfig.usbName.isNotEmpty ||
+                    printerConfig.usbVendorId.isNotEmpty)) ||
+            (printerConfig.type == settings.ThermalPrinterType.systemSpooler);
+
+        if (!hasConfiguredPrinter) {
+          core.PlatformUtils.debugLog(
+            PaymentSheetModal,
+            '[AUTO-PRINT RECEIPT] No printer configured for customer receipts. Skipping.',
+          );
+          return;
+        }
+
+        final orderIdInt = int.tryParse(state.orderId ?? '') ?? 0;
+        final invoiceHash =
+            'INV-${DateTime.now().millisecondsSinceEpoch % 100000}';
+
+        final items = state.cartItems
+            .map(
+              (item) => InvoiceItemEntity(
+                id: 0,
+                invoiceId: 0,
+                itemId: int.tryParse(
+                  item.id.replaceAll('var_', '').replaceAll('item_', ''),
+                ),
+                itemName: item.name,
+                quantity: item.quantity,
+                unitPrice: item.unitPrice,
+                totalPrice: item.lineTotal,
+              ),
+            )
+            .toList();
+
+        final details = InvoiceDetailsEntity(
+          invoice: InvoiceEntity(
+            id: orderIdInt,
+            orderId: orderIdInt,
+            hashId: invoiceHash,
+            totalCost: state.summary.subtotal,
+            taxCost: state.summary.totalTaxes,
+            discountAmount: state.summary.totalDiscounts,
+            netPaymentAmount: state.summary.grandTotal,
+            customerName: state.customerDetails.name.isNotEmpty
+                ? state.customerDetails.name
+                : null,
+            phoneNumber: state.customerDetails.mobileNumber.isNotEmpty
+                ? state.customerDetails.mobileNumber
+                : null,
+            createdDate: DateTime.now().toIso8601String(),
+            paymentMethodName: state.selectedPaymentMethod?.name ?? 'Cash',
+          ),
+          items: items,
+          tableName: state.orderId != null ? 'Table ${state.orderId}' : null,
+        );
+
+        core.PlatformUtils.debugLog(
+          PaymentSheetModal,
+          '[AUTO-PRINT RECEIPT] Generating receipt bytes for Order #$orderIdInt ($invoiceHash)...',
+        );
+
+        final bytes =
+            await settings.EscPosTicketBuilder.buildCustomerReceiptBytes(
+              details: details,
+              paperSize: printerConfig.paperSize,
+            );
+
+        final success = await settings.ThermalPrinterService.instance.printBytes(
+          stationKey: shared.PreferencesKeys.customerReceiptPrinterConfig,
+          bytes: bytes,
+          jobName: 'Receipt $invoiceHash',
+        );
+
+        core.PlatformUtils.debugLog(
+          PaymentSheetModal,
+          '[AUTO-PRINT RECEIPT] Print job completed with success=$success',
+        );
+      } catch (e) {
+        core.PlatformUtils.debugLog(
+          PaymentSheetModal,
+          'Auto print customer receipt error: $e',
+        );
+      }
+    });
+  }
+
   void _openPaymentSettings(BuildContext context) {
     showResponsiveModal(
       context: context,
@@ -345,6 +456,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                       changeAmount: changeAmount,
                     ),
                   );
+                  _triggerAutoPrintCustomerReceipt(state);
                   setState(() {
                     _activeStep = _PaymentStep.success;
                   });
@@ -363,6 +475,7 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
             },
             onPaymentConfirmed: (note) {
               widget.checkoutBloc.add(CheckoutPaymentConfirmed(note: note));
+              _triggerAutoPrintCustomerReceipt(state);
               setState(() {
                 _activeStep = _PaymentStep.success;
               });

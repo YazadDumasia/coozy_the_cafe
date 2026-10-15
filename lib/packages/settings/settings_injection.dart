@@ -1,16 +1,26 @@
 import 'package:get_it/get_it.dart';
 
 import 'data/datasources/currency_exchange_api_service.dart';
+import 'domain/services/thermal_printer_service.dart';
 import 'presentation/pages/currency_exchange/cubit/currency_exchange_cubit.dart';
+import 'presentation/pages/settings/cubit/thermal_printer_settings_cubit.dart';
 
 void registerSettingsDependencies(GetIt sl) {
   // Services
   sl.registerLazySingleton<CurrencyExchangeApiService>(
     () => CurrencyExchangeApiService(),
   );
+  sl.registerLazySingleton<ThermalPrinterService>(
+    () => ThermalPrinterService.instance,
+  );
 
   // Cubits
   sl.registerFactory<CurrencyExchangeCubit>(
     () => CurrencyExchangeCubit(apiService: sl<CurrencyExchangeApiService>()),
+  );
+  sl.registerFactory<ThermalPrinterSettingsCubit>(
+    () => ThermalPrinterSettingsCubit(
+      printerService: sl<ThermalPrinterService>(),
+    ),
   );
 }

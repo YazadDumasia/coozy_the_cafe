@@ -8,6 +8,8 @@ import 'package:world_countries/world_countries.dart';
 import '../../../../auth/data/datasources/ip_location_remote_data_source.dart';
 import '../../../../database/coozy_database.dart';
 import '../../../../kitchen_management/presentation/widgets/thermal_kitchen_slip_widget/thermal_kitchen_slip_widget.dart';
+import 'widget/thermal_printer_config_dialog.dart';
+import 'widget/invoice_share_config_dialog.dart';
 import '../../../../core/coozy_core.dart' as core;
 import '../../../../shared/coozy_shared.dart' as shared;
 
@@ -23,6 +25,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   final ValueNotifier<bool> _isFakeDataEnabledNotifier = ValueNotifier(false);
   final ValueNotifier<bool> _autoPrintKitchenSlipNotifier = ValueNotifier(
+    false,
+  );
+  final ValueNotifier<bool> _autoPrintCustomerReceiptNotifier = ValueNotifier(
     false,
   );
   final ValueNotifier<bool> _enableDetailedItemRemarksNotifier = ValueNotifier(
@@ -83,6 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _showScrollToTopNotifier.dispose();
     _isFakeDataEnabledNotifier.dispose();
     _autoPrintKitchenSlipNotifier.dispose();
+    _autoPrintCustomerReceiptNotifier.dispose();
     _enableDetailedItemRemarksNotifier.dispose();
     _enableQrScannerOrderPlacementNotifier.dispose();
     _selectedCurrencySymbolNotifier.dispose();
@@ -102,12 +108,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final prefs = await SharedPreferences.getInstance();
     final isEnabled = prefs.getBool(_prefKeyFakeData) ?? false;
     _isFakeDataEnabledNotifier.value = isEnabled;
-    _autoPrintKitchenSlipNotifier.value =
-        prefs.getBool(shared.PreferencesKeys.autoPrintKitchenOrderSlip.name) ??
-        false;
-    _enableDetailedItemRemarksNotifier.value =
-        prefs.getBool(shared.PreferencesKeys.enableDetailedItemRemarks.name) ??
-        true;
+    _autoPrintKitchenSlipNotifier.value = shared.LocalManager.instance
+        .getBoolValue(
+          key: shared.PreferencesKeys.autoPrintKitchenOrderSlip,
+        );
+    _autoPrintCustomerReceiptNotifier.value = shared.LocalManager.instance
+        .getBoolValue(
+          key: shared.PreferencesKeys.autoPrintCustomerReceipt,
+        );
+    _enableDetailedItemRemarksNotifier.value = shared.LocalManager.instance
+        .getBoolValue(
+          key: shared.PreferencesKeys.enableDetailedItemRemarks,
+        );
     _enableQrScannerOrderPlacementNotifier.value = shared.LocalManager.instance
         .getBoolValue(
           key: shared.PreferencesKeys.enableQrScannerOrderPlacement,
@@ -1179,15 +1191,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     onChanged: (value) async {
                                       _autoPrintKitchenSlipNotifier.value =
                                           value;
-                                      final prefs =
-                                          await SharedPreferences.getInstance();
-                                      await prefs.setBool(
-                                        shared
-                                            .PreferencesKeys
-                                            .autoPrintKitchenOrderSlip
-                                            .name,
-                                        value,
-                                      );
+                                      await shared.LocalManager.instance
+                                          .setBoolValue(
+                                            key: shared
+                                                .PreferencesKeys
+                                                .autoPrintKitchenOrderSlip,
+                                            value: value,
+                                          );
                                     },
                                   ),
                                 );
@@ -1351,6 +1361,115 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ],
                         ),
                         const Divider(height: 24),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: theme.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.receipt_long_rounded,
+                                color: theme.primaryColor,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsAutoPrintCustomerReceiptLabel,
+                                      'Auto Print Customer Receipt',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsAutoPrintCustomerReceiptSubtitle,
+                                      'Automatically print invoice receipt when an order checkout is completed',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ValueListenableBuilder<bool>(
+                              valueListenable:
+                                  _autoPrintCustomerReceiptNotifier,
+                              builder: (context, autoPrint, child) {
+                                return Tooltip(
+                                  message: _tr(
+                                    context,
+                                    shared
+                                        .LocaleKeys
+                                        .settingsAutoPrintCustomerReceiptTooltip,
+                                    'Toggle automatic printing of customer receipts upon checkout completion',
+                                  ),
+                                  child: Switch.adaptive(
+                                    value: autoPrint,
+                                    activeThumbColor: theme.primaryColor,
+                                    onChanged: (value) async {
+                                      _autoPrintCustomerReceiptNotifier.value =
+                                          value;
+                                      await shared.LocalManager.instance
+                                          .setBoolValue(
+                                            key: shared
+                                                .PreferencesKeys
+                                                .autoPrintCustomerReceipt,
+                                            value: value,
+                                          );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            icon: const Icon(
+                              Icons.settings_input_composite_rounded,
+                              size: 18,
+                            ),
+                            label: Text(
+                              _tr(
+                                context,
+                                shared.LocaleKeys.settingsThermalPrintersBtn,
+                                'Configure Thermal Printers (Receipt & KOT)',
+                              ),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: theme.primaryColor,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+                            onPressed: () {
+                              ThermalPrinterConfigDialog.show(context);
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton.icon(
@@ -1369,6 +1488,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ThermalKitchenSlipWidget.showPreviewDialog(
                                 context,
                               );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            icon: const Icon(
+                              Icons.share_rounded,
+                              size: 18,
+                            ),
+                            label: Text(
+                              _tr(
+                                context,
+                                shared.LocaleKeys.settingsInvoiceShareBtn,
+                                'Digital Receipt & Share Message (SMS / WhatsApp)',
+                              ),
+                            ),
+                            onPressed: () async {
+                              final saved = await InvoiceShareConfigDialog.show(context);
+                              if (saved == true && context.mounted) {
+                                shared.SnackBarUtils.showSuccess(
+                                  context,
+                                  message: _tr(
+                                    context,
+                                    shared.LocaleKeys.settingsInvoiceShareSavedSuccess,
+                                    'Share message template saved successfully!',
+                                  ),
+                                );
+                              }
                             },
                           ),
                         ),

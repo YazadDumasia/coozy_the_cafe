@@ -14,18 +14,14 @@
     <!--    <uses-permission android:name="android.permission.GET_ACCOUNTS" />-->
 
 
-    <!-- Permissions options for the `storage` group -->
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-    <!-- Read storage permission for Android 12 and lower -->
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <!-- Devices running Android 12L (API level 32) or lower  -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.RUN_USER_INITIATED_JOBS"/>
 
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <!--
-    Granular media permissions for Android 13 and newer.
+    Granular media permissions for Android 13
     See https://developer.android.com/about/versions/13/behavior-changes-13#granular-media-permissions
     for more information.
   -->
@@ -60,15 +56,25 @@
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
     <!-- Permissions options for the `nearby devices` group -->
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+    <!-- Android 12+ (API 31+) Bluetooth permissions -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_SCAN"
+        android:usesPermissionFlags="neverForLocation"
+        tools:targetApi="s" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADVERTISE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.NEARBY_WIFI_DEVICES" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
 
     <!-- Permissions options for the `system alert windows` group -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -83,6 +89,7 @@
         tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <!-- Permissions options for the `alarm` group -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 

@@ -16,6 +16,8 @@ class _InvoicePdfComputeParams {
   final Uint8List? fontBytes;
   final Uint8List? boldFontBytes;
   final Uint8List? logoBytes;
+  final bool isA4Format;
+  final bool is58mm;
 
   _InvoicePdfComputeParams({
     required this.invoice,
@@ -24,6 +26,8 @@ class _InvoicePdfComputeParams {
     this.fontBytes,
     this.boldFontBytes,
     this.logoBytes,
+    this.isA4Format = false,
+    this.is58mm = false,
   });
 }
 
@@ -34,6 +38,8 @@ class InvoicePdfGenerator {
   /// Generates a printable PDF receipt for the given [details].
   static Future<Uint8List> generatePdf({
     required InvoiceDetailsEntity details,
+    bool isA4Format = false,
+    bool is58mm = false,
   }) async {
     // 1. Pre-load fonts and logo bytes asynchronously
     Uint8List? fontBytes;
@@ -67,6 +73,8 @@ class InvoicePdfGenerator {
       fontBytes: fontBytes,
       boldFontBytes: boldFontBytes,
       logoBytes: logoBytes,
+      isA4Format: isA4Format,
+      is58mm: is58mm,
     );
 
     // On web, run directly to avoid web worker postMessage serialization hang; on native, use compute!
@@ -125,10 +133,16 @@ class InvoicePdfGenerator {
             .toDouble()
             .clamp(450.0, 3000.0);
 
-    // 80mm roll receipt: 80mm = ~226.77 points
+    // Page Size Selection: A4 Standard, 58mm roll (~164.4 pt), or 80mm roll (~226.77 pt)
     final document = PdfDocument();
-    document.pageSettings.size = Size(226.77, calculatedHeight);
-    document.pageSettings.margins.all = 10;
+    if (params.isA4Format) {
+      document.pageSettings.size = PdfPageSize.a4;
+      document.pageSettings.margins.all = 25;
+    } else {
+      final rollWidth = params.is58mm ? 164.4 : 226.77;
+      document.pageSettings.size = Size(rollWidth, calculatedHeight);
+      document.pageSettings.margins.all = 10;
+    }
 
     final page = document.pages.add();
     final graphics = page.graphics;
