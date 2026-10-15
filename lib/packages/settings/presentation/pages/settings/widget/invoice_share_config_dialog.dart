@@ -207,12 +207,23 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final screenSize = MediaQuery.sizeOf(context);
+
+    final isMobile = shared.ResponsiveLayout.isMobile(context);
+    final isTablet = shared.ResponsiveLayout.isTablet(context);
+    final isDesktop = shared.ResponsiveLayout.isDesktop(context);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      insetPadding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 12 : (isTablet ? 20 : 32),
+        vertical: isMobile ? 16 : (isTablet ? 24 : 36),
+      ),
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 680, maxHeight: 780),
+        constraints: BoxConstraints(
+          maxWidth: isDesktop ? 980 : (isTablet ? 760 : double.infinity),
+          maxHeight: screenSize.height * (isMobile ? 0.94 : (isTablet ? 0.88 : 0.85)),
+        ),
         child: ValueListenableBuilder<bool>(
           valueListenable: _isLoadingNotifier,
           builder: (context, isLoading, _) {
@@ -224,16 +235,17 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
             }
 
             return Padding(
-              padding: const EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(isMobile ? 14.0 : (isTablet ? 18.0 : 22.0)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Dialog Header
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(10),
+                        padding: EdgeInsets.all(isMobile ? 8 : 10),
                         decoration: BoxDecoration(
                           color: theme.primaryColor.withValues(alpha: 0.12),
                           shape: BoxShape.circle,
@@ -241,7 +253,7 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                         child: Icon(
                           Icons.share_rounded,
                           color: theme.primaryColor,
-                          size: 24,
+                          size: isMobile ? 20 : 24,
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -253,7 +265,10 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                               _tr(shared.LocaleKeys.settingsInvoiceShareDialogTitle).isNotEmpty
                                   ? _tr(shared.LocaleKeys.settingsInvoiceShareDialogTitle)
                                   : 'Digital Receipt & Share Message',
-                              style: theme.textTheme.titleMedium?.copyWith(
+                              style: (isMobile
+                                      ? theme.textTheme.titleSmall
+                                      : theme.textTheme.titleMedium)
+                                  ?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -264,6 +279,7 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                                   : 'Customize the message sent via WhatsApp & SMS. Keep the default or customize anytime.',
                               style: theme.textTheme.bodySmall?.copyWith(
                                 color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                fontSize: isMobile ? 11 : 12,
                               ),
                             ),
                           ],
@@ -271,16 +287,17 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                       ),
                       IconButton(
                         icon: const Icon(Icons.close_rounded),
+                        visualDensity: VisualDensity.compact,
                         onPressed: () => context.pop(),
                         tooltip: 'Close',
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: isMobile ? 10 : 14),
                   const Divider(height: 1),
-                  const SizedBox(height: 16),
+                  SizedBox(height: isMobile ? 12 : 16),
 
-                  // Scrollable Body
+                  // Scrollable Body powered by ResponsiveLayout
                   Expanded(
                     child: SingleChildScrollView(
                       physics: const ClampingScrollPhysics(),
@@ -294,6 +311,7 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                                 : 'Website / Review / Feedback Link (Optional)',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w600,
+                              fontSize: isMobile ? 12.5 : 13.5,
                             ),
                           ),
                           const SizedBox(height: 6),
@@ -315,24 +333,21 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                               ),
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 12,
-                                vertical: 12,
+                                vertical: 10,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 14),
 
                           // Dynamic Placeholders Chips
-                          Row(
-                            children: [
-                              Text(
-                                _tr(shared.LocaleKeys.settingsInvoiceShareTokensTitle).isNotEmpty
-                                    ? _tr(shared.LocaleKeys.settingsInvoiceShareTokensTitle)
-                                    : 'Click token to insert into template:',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            _tr(shared.LocaleKeys.settingsInvoiceShareTokensTitle).isNotEmpty
+                                ? _tr(shared.LocaleKeys.settingsInvoiceShareTokensTitle)
+                                : 'Click token to insert into template:',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: isMobile ? 12.5 : 13.5,
+                            ),
                           ),
                           const SizedBox(height: 6),
                           Wrap(
@@ -343,7 +358,7 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                               final label = tokenInfo['label']!;
                               return ActionChip(
                                 label: Text(
-                                  '$label ($token)',
+                                  isMobile ? token : '$label ($token)',
                                   style: TextStyle(
                                     fontSize: 11,
                                     color: theme.colorScheme.onSurfaceVariant,
@@ -360,84 +375,22 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Message Template Editor
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle).isNotEmpty
-                                    ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle)
-                                    : 'Message Template',
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              TextButton.icon(
-                                icon: const Icon(Icons.restore_rounded, size: 16),
-                                label: Text(
-                                  _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn).isNotEmpty
-                                      ? _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn)
-                                      : 'Reset to Default',
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                                onPressed: _onResetToDefault,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 6),
-                          TextFormField(
-                            controller: _templateController,
-                            focusNode: _templateFocusNode,
-                            maxLines: 8,
-                            style: const TextStyle(
-                              fontFamily: 'monospace',
-                              fontSize: 13,
+                          // ResponsiveLayout for Editor + Live Preview
+                          shared.ResponsiveLayout(
+                            mobile: _buildMobileTemplateSection(theme, isDark),
+                            tablet: _buildWideTemplateSection(
+                              theme,
+                              isDark,
+                              editorFlex: 6,
+                              previewFlex: 5,
+                              editorMaxLines: 12,
                             ),
-                            decoration: InputDecoration(
-                              hintText: _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint).isNotEmpty
-                                  ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint)
-                                  : 'Enter your custom invoice share message template...',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              contentPadding: const EdgeInsets.all(12),
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-
-                          // Live Preview Card
-                          Text(
-                            _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle).isNotEmpty
-                                ? _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle)
-                                : 'Live Preview (with sample invoice):',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
-                          Container(
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: isDark
-                                  ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
-                                  : const Color(0xFFF7F8FA),
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(
-                                color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-                              ),
-                            ),
-                            child: ValueListenableBuilder<String>(
-                              valueListenable: _previewTextNotifier,
-                              builder: (context, preview, _) {
-                                return SelectableText(
-                                  preview.isEmpty ? '(Empty message)' : preview,
-                                  style: const TextStyle(
-                                    fontFamily: 'monospace',
-                                    fontSize: 12,
-                                    height: 1.4,
-                                  ),
-                                );
-                              },
+                            desktop: _buildWideTemplateSection(
+                              theme,
+                              isDark,
+                              editorFlex: 5,
+                              previewFlex: 5,
+                              editorMaxLines: 14,
                             ),
                           ),
                         ],
@@ -445,9 +398,9 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                     ),
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: isMobile ? 12 : 16),
                   const Divider(height: 1),
-                  const SizedBox(height: 14),
+                  SizedBox(height: isMobile ? 10 : 14),
 
                   // Actions
                   Row(
@@ -455,6 +408,12 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                     children: [
                       OutlinedButton(
                         onPressed: () => context.pop(),
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 12 : 16,
+                            vertical: isMobile ? 10 : 12,
+                          ),
+                        ),
                         child: const Text('Cancel'),
                       ),
                       const SizedBox(width: 12),
@@ -476,9 +435,9 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.primaryColor,
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18,
-                                vertical: 12,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: isMobile ? 14 : 18,
+                                vertical: isMobile ? 10 : 12,
                               ),
                             ),
                             onPressed: isSaving ? null : _onSave,
@@ -493,6 +452,209 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
           },
         ),
       ),
+    );
+  }
+
+  /// Two-column layout for Tablet and Desktop/Web
+  Widget _buildWideTemplateSection(
+    ThemeData theme,
+    bool isDark, {
+    required int editorFlex,
+    required int previewFlex,
+    required int editorMaxLines,
+  }) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Left Column: Template Editor
+        Expanded(
+          flex: editorFlex,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle).isNotEmpty
+                        ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle)
+                        : 'Message Template',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  TextButton.icon(
+                    icon: const Icon(Icons.restore_rounded, size: 16),
+                    label: Text(
+                      _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn).isNotEmpty
+                          ? _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn)
+                          : 'Reset to Default',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    onPressed: _onResetToDefault,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              TextFormField(
+                controller: _templateController,
+                focusNode: _templateFocusNode,
+                maxLines: editorMaxLines,
+                style: const TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 12.5,
+                ),
+                decoration: InputDecoration(
+                  hintText: _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint).isNotEmpty
+                      ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint)
+                      : 'Enter your custom invoice share message template...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  contentPadding: const EdgeInsets.all(12),
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(width: 16),
+        // Right Column: Live Preview
+        Expanded(
+          flex: previewFlex,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Text(
+                  _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle).isNotEmpty
+                      ? _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle)
+                      : 'Live Preview (with sample invoice):',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                constraints: const BoxConstraints(minHeight: 250),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                      : const Color(0xFFF7F8FA),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+                  ),
+                ),
+                child: ValueListenableBuilder<String>(
+                  valueListenable: _previewTextNotifier,
+                  builder: (context, preview, _) {
+                    return SelectableText(
+                      preview.isEmpty ? '(Empty message)' : preview,
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                        height: 1.4,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Single-column stacked layout for Mobile
+  Widget _buildMobileTemplateSection(ThemeData theme, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle).isNotEmpty
+                  ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle)
+                  : 'Message Template',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                fontSize: 12.5,
+              ),
+            ),
+            TextButton.icon(
+              icon: const Icon(Icons.restore_rounded, size: 14),
+              label: Text(
+                _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn).isNotEmpty
+                    ? _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn)
+                    : 'Reset to Default',
+                style: const TextStyle(fontSize: 11),
+              ),
+              onPressed: _onResetToDefault,
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        TextFormField(
+          controller: _templateController,
+          focusNode: _templateFocusNode,
+          maxLines: 7,
+          style: const TextStyle(
+            fontFamily: 'monospace',
+            fontSize: 12,
+          ),
+          decoration: InputDecoration(
+            hintText: _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint).isNotEmpty
+                ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint)
+                : 'Enter your custom invoice share message template...',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            contentPadding: const EdgeInsets.all(10),
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        Text(
+          _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle).isNotEmpty
+              ? _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle)
+              : 'Live Preview (with sample invoice):',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 12.5,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark
+                ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                : const Color(0xFFF7F8FA),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+            ),
+          ),
+          child: ValueListenableBuilder<String>(
+            valueListenable: _previewTextNotifier,
+            builder: (context, preview, _) {
+              return SelectableText(
+                preview.isEmpty ? '(Empty message)' : preview,
+                style: const TextStyle(
+                  fontFamily: 'monospace',
+                  fontSize: 11.5,
+                  height: 1.35,
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }

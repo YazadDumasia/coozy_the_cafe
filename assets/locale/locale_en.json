@@ -1,8 +1,8 @@
 {
   "common": {
     "common_accept": "Accept",
-    "common_add": "Add",
     "common_active": "Active",
+    "common_add": "Add",
     "common_alert_title_text": "Are you sure ?",
     "common_apply": "Apply",
     "common_back": "Back",
@@ -344,7 +344,6 @@
   },
   "login_page": {
     "login_Ok": "Login ok",
-    "login_forget_password": "Forget password?",
     "login_captcha_hint": "Login captcha hint",
     "login_captcha_label": "Login captcha label",
     "login_did_account": "Don't have an account ?",
@@ -352,6 +351,7 @@
     "login_email_label": "Email",
     "login_email_validator_empty_error_msg": "Email is required.",
     "login_email_validator_error_msg": "Please enter a valid email.",
+    "login_forget_password": "Forget password?",
     "login_google_login_error": "Unable to SignIn with google!",
     "login_inactive_btn": "Login",
     "login_loading_inactive_btn": "Please Wait...",

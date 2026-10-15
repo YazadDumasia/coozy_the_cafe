@@ -173,31 +173,31 @@ class MaterialTheme {
   static ColorScheme darkScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
-      primary: Color(0xffffb59c),
-      surfaceTint: Color(0xffffb59c),
-      onPrimary: Color(0xff5c1a00),
-      primaryContainer: Color(0xfff7794a),
-      onPrimaryContainer: Color(0xff240600),
-      secondary: Color(0xffffdbcf),
-      onSecondary: Color(0xff55200b),
-      secondaryContainer: Color(0xfff9a486),
-      onSecondaryContainer: Color(0xff501c08),
-      tertiary: Color(0xffffb598),
-      onTertiary: Color(0xff591c00),
-      tertiaryContainer: Color(0xffcb4a00),
-      onTertiaryContainer: Color(0xffffffff),
+      primary: Color(0xffff8a5c),
+      surfaceTint: Color(0xffff8a5c),
+      onPrimary: Color(0xff4a1705),
+      primaryContainer: Color(0xff6e2a12),
+      onPrimaryContainer: Color(0xffffdbcf),
+      secondary: Color(0xffe7bdb2),
+      onSecondary: Color(0xff442a22),
+      secondaryContainer: Color(0xff5d3f37),
+      onSecondaryContainer: Color(0xffffdbcf),
+      tertiary: Color(0xffdebfa8),
+      onTertiary: Color(0xff3f2d1b),
+      tertiaryContainer: Color(0xff574330),
+      onTertiaryContainer: Color(0xfffbdcb8),
       error: Color(0xffffb4ab),
       onError: Color(0xff690005),
       errorContainer: Color(0xff93000a),
       onErrorContainer: Color(0xffffdad6),
-      surface: Color(0xff1b110d),
-      onSurface: Color(0xfff4ded7),
-      onSurfaceVariant: Color(0xffdec0b6),
-      outline: Color(0xffa68b82),
-      outlineVariant: Color(0xff57423b),
+      surface: Color(0xff14100e),
+      onSurface: Color(0xfff3e4dc),
+      onSurfaceVariant: Color(0xffd8c2bb),
+      outline: Color(0xffa08c85),
+      outlineVariant: Color(0xff54433d),
       shadow: Color(0xff000000),
       scrim: Color(0xff000000),
-      inverseSurface: Color(0xfff4ded7),
+      inverseSurface: Color(0xfff3e4dc),
       inversePrimary: Color(0xffa43c12),
       primaryFixed: Color(0xffffdbcf),
       onPrimaryFixed: Color(0xff380c00),
@@ -211,13 +211,13 @@ class MaterialTheme {
       onTertiaryFixed: Color(0xff370e00),
       tertiaryFixedDim: Color(0xffffb598),
       onTertiaryFixedVariant: Color(0xff7e2c00),
-      surfaceDim: Color(0xff1b110d),
-      surfaceBright: Color(0xff443632),
-      surfaceContainerLowest: Color(0xff160c08),
-      surfaceContainerLow: Color(0xff241915),
-      surfaceContainer: Color(0xff281d19),
-      surfaceContainerHigh: Color(0xff342723),
-      surfaceContainerHighest: Color(0xff3f322e),
+      surfaceDim: Color(0xff14100e),
+      surfaceBright: Color(0xff3b312d),
+      surfaceContainerLowest: Color(0xff0e0b09),
+      surfaceContainerLow: Color(0xff1c1613),
+      surfaceContainer: Color(0xff221b17),
+      surfaceContainerHigh: Color(0xff2d2420),
+      surfaceContainerHighest: Color(0xff392f2a),
     );
   }
 
@@ -353,8 +353,13 @@ class MaterialTheme {
     ),
     appBarTheme: AppBarTheme(
       centerTitle: false,
-      titleTextStyle: textTheme.titleMedium!.copyWith(color: Colors.white),
-      backgroundColor: colorScheme.primary,
+      titleTextStyle: textTheme.titleMedium!.copyWith(
+        color: Colors.white,
+        fontWeight: FontWeight.w600,
+      ),
+      backgroundColor: colorScheme.brightness == Brightness.dark
+          ? const Color(0xff3d170b)
+          : colorScheme.primary,
       iconTheme: const IconThemeData(color: Colors.white, size: 24.0),
       actionsIconTheme: const IconThemeData(color: Colors.white, size: 24.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
@@ -369,6 +374,26 @@ class MaterialTheme {
         fontWeight: FontWeight.normal,
       ),
       tabAlignment: TabAlignment.fill,
+    ),
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return colorScheme.primary;
+        }
+        return colorScheme.outline;
+      }),
+      trackColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return colorScheme.primary.withValues(alpha: 0.35);
+        }
+        return colorScheme.surfaceContainerHighest;
+      }),
+      trackOutlineColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.selected)) {
+          return colorScheme.primary;
+        }
+        return colorScheme.outline.withValues(alpha: 0.5);
+      }),
     ),
     listTileTheme: ListTileThemeData(
       contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),

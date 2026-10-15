@@ -1024,75 +1024,101 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     padding: const EdgeInsets.all(16.0),
                     child: BlocBuilder<shared.ThemeBloc, shared.ThemeState>(
                       builder: (context, themeState) {
+                        final currentTheme = Theme.of(context);
+                        final colorScheme = currentTheme.colorScheme;
                         final isDark = themeState.themeMode == ThemeMode.dark;
-                        return Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                color: theme.primaryColor.withValues(
-                                  alpha: 0.1,
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {
+                            context.read<shared.ThemeBloc>().add(
+                              shared.ThemeToggleRequested(!isDark),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primary.withValues(
+                                    alpha: 0.15,
+                                  ),
+                                  shape: BoxShape.circle,
                                 ),
-                                shape: BoxShape.circle,
+                                child: Icon(
+                                  isDark
+                                      ? Icons.dark_mode_rounded
+                                      : Icons.light_mode_rounded,
+                                  color: colorScheme.primary,
+                                ),
                               ),
-                              child: Icon(
-                                isDark
-                                    ? Icons.dark_mode_rounded
-                                    : Icons.light_mode_rounded,
-                                color: theme.primaryColor,
+                              const SizedBox(width: 14),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _tr(
+                                        context,
+                                        shared.LocaleKeys.settingsDarkThemeLabel,
+                                        'Dark Theme',
+                                      ),
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: colorScheme.onSurface,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      isDark
+                                          ? _tr(
+                                              context,
+                                              shared
+                                                  .LocaleKeys
+                                                  .settingsDarkThemeEnabled,
+                                              'Dark theme enabled',
+                                            )
+                                          : _tr(
+                                              context,
+                                              shared
+                                                  .LocaleKeys
+                                                  .settingsDarkThemeDisabled,
+                                              'Light theme enabled',
+                                            ),
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: colorScheme.onSurfaceVariant,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 14),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    _tr(
-                                      context,
-                                      shared.LocaleKeys.settingsDarkThemeLabel,
-                                      'Dark Theme',
-                                    ),
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    isDark
-                                        ? _tr(
-                                            context,
-                                            shared
-                                                .LocaleKeys
-                                                .settingsDarkThemeEnabled,
-                                            'Dark theme enabled',
-                                          )
-                                        : _tr(
-                                            context,
-                                            shared
-                                                .LocaleKeys
-                                                .settingsDarkThemeDisabled,
-                                            'Light theme enabled',
-                                          ),
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
+                              Switch.adaptive(
+                                value: isDark,
+                                activeThumbColor: colorScheme.primary,
+                                activeTrackColor: colorScheme.primary.withValues(alpha: 0.38),
+                                thumbIcon: WidgetStateProperty.resolveWith<Icon?>((states) {
+                                  if (states.contains(WidgetState.selected)) {
+                                    return Icon(
+                                      Icons.dark_mode_rounded,
+                                      size: 16,
+                                      color: colorScheme.onPrimary,
+                                    );
+                                  }
+                                  return Icon(
+                                    Icons.light_mode_rounded,
+                                    size: 16,
+                                    color: colorScheme.onSurfaceVariant,
+                                  );
+                                }),
+                                onChanged: (value) {
+                                  context.read<shared.ThemeBloc>().add(
+                                    shared.ThemeToggleRequested(value),
+                                  );
+                                },
                               ),
-                            ),
-                            Switch.adaptive(
-                              value: isDark,
-                              activeThumbColor: theme.primaryColor,
-                              onChanged: (value) {
-                                context.read<shared.ThemeBloc>().add(
-                                  shared.ThemeToggleRequested(value),
-                                );
-                              },
-                            ),
-                          ],
+                            ],
+                          ),
                         );
                       },
                     ),
