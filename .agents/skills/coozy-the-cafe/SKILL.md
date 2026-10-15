@@ -127,7 +127,11 @@ All package registrations are called inside `lib/injection.dart` during app init
 - **Database Framework**: `drift` / `drift_flutter` with SQLite.
 - **Location**: Database schemas and DAOs live under `lib/packages/database/`.
 - **Code Generation**: Run `dart run build_runner build --delete-conflicting-outputs` whenever modifying Drift tables (`.drift` files or `@DataClassName` annotations).
-- **Web Sync**: Web storage compatibility is managed via `scripts/sync_drift_web.dart`.
+- **Web Sync**: Web storage compatibility is managed via `scripts/sync_drift_web_assets.dart`. Run:
+  ```bash
+  dart run scripts/sync_drift_web_assets.dart
+  ```
+  whenever updating database schemas or assets intended for Web support.
 
 ---
 
@@ -176,6 +180,7 @@ All package registrations are called inside `lib/injection.dart` during app init
 8. **Theme & Dual-Mode UI Principles (Light & Dark Theme)**:
    - **Pre-Design Consideration**: Before implementing any layout or widget design, evaluate how colors, contrasts, borders, and shadows appear in **both Light Mode and Dark Mode**.
    - **Dynamic Theme References**: Never hardcode static color literals (`Colors.white`, `Colors.black`, `#FFFFFF`). Always reference `Theme.of(context).colorScheme` or `Theme.of(context).textTheme`.
+   - **Modern Color Opacity**: Use Flutter's modern `.withValues(alpha: ...)` API instead of the deprecated `.withOpacity(...)`.
    - **Theme Extensions**: Utilize `AppThemeExtension` via `Theme.of(context).extension<shared.AppThemeExtension>()` for custom radii, elevation, or brand colors.
 9. **Form & Input Controller Lifecycle Management**:
    - **Explicit Controllers & FocusNodes**: For every form field (`TextFormField`, text input control), explicitly create its corresponding `TextEditingController` and `FocusNode`.
@@ -183,6 +188,27 @@ All package registrations are called inside `lib/injection.dart` during app init
    - **Validation & FormKey**: Manage form state using a dedicated `GlobalKey<FormState>`.
    - **Mandatory Lifecycle Disposal**: Always call `.dispose()` on all `TextEditingController`s and `FocusNode`s in the widget's `dispose()` method to prevent memory leaks.
    - **Focus Navigation**: Properly configure focus nodes to support keyboard action traversal (e.g. Next, Done, Tab navigation).
+10. **Responsive Layout & Adaptive UI Principles (Mobile, Tablet & Web)**:
+    - **Multi-Platform Mindset**: Always design every screen view, dialog, and component keeping **Mobile, Tablet, and Web/Desktop** users in mind.
+    - **Use `shared.ResponsiveLayout`**: For multi-screen-size adaptation, always leverage `shared.ResponsiveLayout` from `package:coozy_the_cafe/packages/shared/coozy_shared.dart`:
+      - **Breakpoints**:
+        - Mobile: `< 550px` (`shared.ResponsiveLayout.isMobile(context)`)
+        - Tablet: `>= 550px && < 1200px` (`shared.ResponsiveLayout.isTablet(context)`)
+        - Desktop / Web: `>= 1200px` (`shared.ResponsiveLayout.isDesktop(context)`)
+      - **Widget Usage**:
+        ```dart
+        shared.ResponsiveLayout(
+          mobile: MobileViewWidget(),
+          tablet: TabletViewWidget(),
+          desktop: DesktopViewWidget(),
+        )
+        ```
+    - **Responsive Dialog & Modal Sizing (Mobile vs. Tablet & Web)**:
+      - Avoid fixed pixel width and height on modal dialogs (prevents clipping, overflow, or miniature windows on web browsers).
+      - On **Mobile**: Use bottom sheets (`showModalBottomSheet`), full-screen dialogs (`Dialog.fullscreen`), or dynamic width `MediaQuery.of(context).size.width * 0.95`.
+      - On **Tablet & Web/Desktop**: Use `Dialog` or `AlertDialog` with `BoxConstraints(maxWidth: isDesktop ? 900 : 650, maxHeight: ...)` and center content.
+      - Use responsive split layouts: side-by-side (Row / Expanded) on desktop & web / tablet, stacked (Column / scrollable ListView) on mobile.
+      - Provide keyboard traversal, scroll handling, and pointer/hover states for web browsers while ensuring adequate touch targets for mobile/tablet.
 
 
 
@@ -201,6 +227,11 @@ flutter analyze
 dart run build_runner build --delete-conflicting-outputs
 ```
 
+### Synchronizing Drift Web Assets (For Web SQLite support)
+```bash
+dart run scripts/sync_drift_web_assets.dart
+```
+
 ### Running Unit Tests (When Implemented)
 ```bash
 flutter test
@@ -213,7 +244,7 @@ flutter test
 3. Implement Repository & Data Source (Drift DAO/Table) in `data/`.
 4. Create Use Cases in `domain/usecases/`.
 5. Create BLoC/Cubit events, states, and logic in `presentation/bloc/`.
-6. Implement Pages & Widgets in `presentation/pages/` and `presentation/widgets/`.
+6. Implement Pages & Widgets in `presentation/pages/` and `presentation/widgets/`, ensuring all views and dialogs are designed adaptively for **Mobile, Tablet, and Web** using `shared.ResponsiveLayout`.
 7. Create `<new_feature>_injection.dart` and invoke `register<NewFeature>Dependencies(sl)` in `lib/injection.dart`.
 8. Create barrel file `<new_feature>.dart` exporting necessary public APIs.
 9. At the end of completing the feature code and UI, ask the user: *"Do you want to implement unit test cases for the business logic?"*. Based on the user's response, only implement unit tests if the user allows and confirms it.

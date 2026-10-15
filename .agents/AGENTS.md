@@ -10,6 +10,10 @@
 ## 2. Code Generation & Database
 - Database models and DAOs live under `lib/packages/database/`.
 - When updating Drift tables or mock annotations, run code generation using `dart run build_runner build`.
+- **Web Database Synchronization**: Whenever updating Drift database tables, schemas, or assets intended for Web support, synchronize the Drift web assets by running:
+  ```bash
+  dart run scripts/sync_drift_web_assets.dart
+  ```
 
 ## 3. State Management & Navigation
 - **Avoid `setState`**: Do NOT use `setState` for state management in UI widgets. Use `flutter_bloc` (`Bloc` or `Cubit`) with `Equatable` for feature state, or `ValueNotifier` / `ValueListenableBuilder` for lightweight UI-only state.
@@ -43,6 +47,7 @@
 ## 7. Theme & UI Design Principles (Light & Dark Mode)
 - **Dual-Theme Consideration**: Before implementing any UI design or widget, explicitly consider how it renders in **both Light Theme and Dark Theme**.
 - **Use Theme Context**: Avoid hardcoding fixed color values (e.g. `Colors.white`, `Colors.black`, `Colors.grey[200]`). Use theme token properties from `Theme.of(context).colorScheme` or `Theme.of(context).textTheme` so UI components seamlessly adapt to theme changes.
+- **Modern Color Opacity**: Use Flutter's modern `.withValues(alpha: ...)` API instead of the deprecated `.withOpacity(...)`.
 - **AppThemeExtension**: Leverage `Theme.of(context).extension<shared.AppThemeExtension>()` for custom theme parameters.
 
 ## 8. Form & Input Management (Controllers, FocusNodes & Disposal)
@@ -51,6 +56,19 @@
 - **Form Key & Validation**: Use a `GlobalKey<FormState>` for form validation and state management.
 - **Proper Resource Disposal**: Always dispose all `TextEditingController`s and `FocusNode`s inside `dispose()` to prevent memory leaks.
 - **Keyboard Navigation & Accessibility**: Wire focus nodes to enable seamless tab navigation, focus traversal, and action handling.
+
+## 9. Responsive Layout & Adaptive UI Principles (Mobile, Tablet & Web)
+- **Multi-Platform Design Consideration**: Every view, screen, and dialog MUST be designed with **Mobile, Tablet, and Web/Desktop** users in mind.
+- **Use `shared.ResponsiveLayout`**: Always use `shared.ResponsiveLayout` from `package:coozy_the_cafe/packages/shared/coozy_shared.dart` for building adaptive screen views and components across form factors:
+  - **Mobile**: `< 550px` width (`shared.ResponsiveLayout.isMobile(context)`).
+  - **Tablet**: `>= 550px` and `< 1200px` width (`shared.ResponsiveLayout.isTablet(context)`).
+  - **Desktop / Web**: `>= 1200px` width (`shared.ResponsiveLayout.isDesktop(context)`).
+- **Responsive Dialog & Modal Sizing (Mobile vs. Tablet & Web)**:
+  - Never fix rigid dimensions on modal dialogs (prevents clipping, overflow, or tiny UI on large browser windows).
+  - On **Mobile**, use full-screen dialogs (`Dialog.fullscreen`), bottom sheets (`showModalBottomSheet`), or constrain width to `90%-95%` of screen width.
+  - On **Tablet & Web/Desktop**, constrain dialog width (e.g., `constraints: BoxConstraints(maxWidth: isDesktop ? 900 : 650, maxHeight: ...)`).
+  - Stack side-by-side components vertically on mobile and horizontally on tablet & web/desktop layouts.
+  - Ensure interactive elements are keyboard and mouse friendly for web users (scrollbars, hover effects, tab navigation) while supporting touch targets on mobile and tablet.
 
 
 
