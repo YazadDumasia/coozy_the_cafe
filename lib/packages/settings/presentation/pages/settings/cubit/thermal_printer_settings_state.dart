@@ -22,7 +22,7 @@ class ThermalPrinterSettingsLoaded extends ThermalPrinterSettingsState {
   final bool isScanningBluetooth;
   final bool isBluetoothEnabled;
   final bool isBluetoothPermissionGranted;
-  final List<ftp_prn.Printer> usbPrinters;
+  final List<UsbPrinterDevice> usbPrinters;
   final bool isScanningUsb;
 
   const ThermalPrinterSettingsLoaded({
@@ -43,7 +43,7 @@ class ThermalPrinterSettingsLoaded extends ThermalPrinterSettingsState {
     bool? isScanningBluetooth,
     bool? isBluetoothEnabled,
     bool? isBluetoothPermissionGranted,
-    List<ftp_prn.Printer>? usbPrinters,
+    List<UsbPrinterDevice>? usbPrinters,
     bool? isScanningUsb,
   }) {
     return ThermalPrinterSettingsLoaded(

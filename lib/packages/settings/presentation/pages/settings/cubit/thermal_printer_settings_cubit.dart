@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_thermal_printer/utils/printer.dart' as ftp_prn;
+import '../../../../domain/entities/usb_printer_device.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;

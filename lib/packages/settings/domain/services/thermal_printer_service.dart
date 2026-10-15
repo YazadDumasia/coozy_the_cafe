@@ -2,9 +2,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_thermal_printer/flutter_thermal_printer.dart' as ftp;
-import 'package:flutter_thermal_printer/printer_manager.dart' as ftp_mgr;
-import 'package:flutter_thermal_printer/utils/printer.dart' as ftp_prn;
+import '../entities/usb_printer_device.dart';
+import 'thermal_usb_driver.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:printing/printing.dart';
@@ -106,43 +105,11 @@ class ThermalPrinterService {
     }
   }
 
-  /// Fetches USB and thermal printers via flutter_thermal_printer.
-  Future<List<ftp_prn.Printer>> getUsbPrinters() async {
-    try {
-      if (kIsWeb) return [];
-      final printers = <ftp_prn.Printer>[];
-      final subscription = ftp.FlutterThermalPrinter.instance.devicesStream
-          .listen((list) {
-            for (final p in list) {
-              if (p.connectionType == ftp_prn.ConnectionType.USB ||
-                  p.vendorId != null ||
-                  p.productId != null) {
-                if (!printers.any(
-                  (existing) =>
-                      existing.vendorId == p.vendorId &&
-                      existing.productId == p.productId &&
-                      existing.name == p.name,
-                )) {
-                  printers.add(p);
-                }
-              }
-            }
-          });
+  final ThermalUsbDriver _usbDriver = createThermalUsbDriver();
 
-      await ftp.FlutterThermalPrinter.instance.getPrinters(
-        refreshDuration: const Duration(seconds: 1),
-        connectionTypes: [ftp_prn.ConnectionType.USB],
-      );
-      await Future.delayed(const Duration(milliseconds: 1200));
-      await subscription.cancel();
-      return printers;
-    } catch (e) {
-      core.PlatformUtils.debugLog(
-        ThermalPrinterService,
-        'Error listing USB printers via flutter_thermal_printer: $e',
-      );
-      return [];
-    }
+  /// Fetches USB and thermal printers via isolated USB driver.
+  Future<List<UsbPrinterDevice>> getUsbPrinters() async {
+    return _usbDriver.getUsbPrinters();
   }
 
   /// Sends raw ESC/POS bytes to the printer configured for [stationKey].
@@ -188,53 +155,12 @@ class ThermalPrinterService {
     }
   }
 
-  /// Sends bytes over USB using flutter_thermal_printer
+  /// Sends bytes over USB using isolated USB driver
   Future<bool> _printOverUsb({
     required ThermalPrinterConfig config,
     required List<int> bytes,
   }) async {
-    if (kIsWeb) {
-      core.PlatformUtils.debugLog(
-        ThermalPrinterService,
-        'USB Thermal printing not available on Web.',
-      );
-      return false;
-    }
-    try {
-      final usbPrinter = ftp_prn.Printer(
-        name: config.usbName.isNotEmpty
-            ? config.usbName
-            : 'USB Thermal Printer',
-        vendorId: config.usbVendorId.isNotEmpty ? config.usbVendorId : null,
-        productId: config.usbProductId.isNotEmpty ? config.usbProductId : null,
-        connectionType: ftp_prn.ConnectionType.USB,
-      );
-
-      final isConnected = await ftp_mgr.PrinterManager.instance.isConnected(
-        usbPrinter,
-      );
-      if (!isConnected) {
-        await ftp.FlutterThermalPrinter.instance.connect(usbPrinter);
-      }
-
-      await ftp.FlutterThermalPrinter.instance.printData(
-        usbPrinter,
-        bytes,
-        longData: true,
-      );
-
-      core.PlatformUtils.debugLog(
-        ThermalPrinterService,
-        'Successfully printed ${bytes.length} bytes to USB Printer (${config.usbName})',
-      );
-      return true;
-    } catch (e) {
-      core.PlatformUtils.debugLog(
-        ThermalPrinterService,
-        'Error during USB print via flutter_thermal_printer: $e',
-      );
-      return false;
-    }
+    return _usbDriver.printOverUsb(config: config, bytes: bytes);
   }
 
   /// Sends bytes over raw TCP socket (port 9100 standard raw port)
