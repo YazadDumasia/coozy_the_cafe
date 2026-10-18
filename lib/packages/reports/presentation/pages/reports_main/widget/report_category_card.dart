@@ -114,5 +114,6 @@ class ReportCategoryCard extends StatelessWidget {
     ReportType.expenditure => const Color(0xFF43A047),
     ReportType.menuItemSales => const Color(0xFF8E24AA),
     ReportType.stockAdjustments => const Color(0xFF00897B),
+    ReportType.aiDemandInsights => const Color(0xFF7C4DFF),
   };
 }

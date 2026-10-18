@@ -3,6 +3,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 import '../../../domain/entities/customer_entity.dart';
 import '../../pages/customer_list/customer_list_screen_actions.dart';
+import 'customer_loyalty_modal.dart';
 
 class CustomerListItem extends StatelessWidget {
   final CustomerEntity customer;
@@ -90,7 +91,9 @@ class CustomerListItem extends StatelessWidget {
         ),
         trailing: PopupMenuButton<String>(
           onSelected: (value) {
-            if (value == 'edit') {
+            if (value == 'loyalty') {
+              CustomerLoyaltyModal.show(context, customer);
+            } else if (value == 'edit') {
               CustomerListScreenActions.showAddEditForm(context, customer);
             } else if (value == 'delete') {
               if (customer.id != null) {
@@ -98,28 +101,45 @@ class CustomerListItem extends StatelessWidget {
               }
             }
           },
-          itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 'edit',
-              child: Text(
-                context.tr(
-                      shared.LocaleKeys.commonEdit,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    'Edit',
+          itemBuilder: (context) {
+            final isLoyaltyEnabled = shared.LocalManager.instance
+                    .getBoolValue(
+                      key: shared.PreferencesKeys.enableCustomerLoyalty,
+                    );
+            return [
+              if (isLoyaltyEnabled)
+                const PopupMenuItem(
+                  value: 'loyalty',
+                  child: Row(
+                    children: [
+                      Icon(Icons.stars_rounded, color: Colors.amber, size: 20),
+                      SizedBox(width: 8),
+                      Text('Loyalty & Points'),
+                    ],
+                  ),
+                ),
+              PopupMenuItem(
+                value: 'edit',
+                child: Text(
+                  context.tr(
+                        shared.LocaleKeys.commonEdit,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Edit',
+                ),
               ),
-            ),
-            PopupMenuItem(
-              value: 'delete',
-              child: Text(
-                context.tr(
-                      shared.LocaleKeys.commonDelete,
-                      track: shared.TrackConstants.commonTrack,
-                    ) ??
-                    'Delete',
+              PopupMenuItem(
+                value: 'delete',
+                child: Text(
+                  context.tr(
+                        shared.LocaleKeys.commonDelete,
+                        track: shared.TrackConstants.commonTrack,
+                      ) ??
+                      'Delete',
+                ),
               ),
-            ),
-          ],
+            ];
+          },
         ),
       ),
     );

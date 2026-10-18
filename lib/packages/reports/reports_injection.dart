@@ -30,6 +30,7 @@ void registerReportsDependencies(GetIt sl) {
   sl.registerLazySingleton(() => GetPurchaseSummaryReportUseCase(sl()));
   sl.registerLazySingleton(() => GetExpenditureSummaryReportUseCase(sl()));
   sl.registerLazySingleton(() => GetStockAdjustmentsReportUseCase(sl()));
+  sl.registerLazySingleton(() => GetAiDemandInsightsUseCase(sl()));
 
   // Cubit
   sl.registerFactory(
@@ -45,6 +46,7 @@ void registerReportsDependencies(GetIt sl) {
       getExpenditureSummaryReportUseCase: sl(),
       getMenuItemSalesReportUseCase: sl(),
       getStockAdjustmentsReportUseCase: sl(),
+      getAiDemandInsightsUseCase: sl(),
     ),
   );
 }

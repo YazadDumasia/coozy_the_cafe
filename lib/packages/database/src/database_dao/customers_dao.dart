@@ -199,4 +199,145 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
       return rowsAffected > 0 ? rowsAffected : null;
     });
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // Customer Loyalty & Rewards Queries
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Get loyalty summary for a customer
+  Future<Map<String, dynamic>?> getCustomerLoyalty(int customerId) async {
+    final rows = await customSelect(
+      '''
+      SELECT * FROM customer_loyalty WHERE customer_id = ? LIMIT 1;
+      ''',
+      variables: [Variable.withInt(customerId)],
+    ).get();
+
+    if (rows.isEmpty) return null;
+    return Map<String, dynamic>.from(rows.first.data);
+  }
+
+  /// Ensure customer loyalty record exists or initialize it
+  Future<void> ensureCustomerLoyaltyRecord(int customerId) async {
+    await customStatement(
+      '''
+      INSERT OR IGNORE INTO customer_loyalty (
+        customer_id, points_balance, lifetime_points_earned, lifetime_points_redeemed,
+        tier, total_spent, total_visits, created_at, modified_at
+      ) VALUES (?, 0, 0, 0, 'Bronze', 0.0, 0, datetime('now'), datetime('now'));
+      ''',
+      [customerId],
+    );
+  }
+
+  /// Add loyalty points earned from an order
+  Future<void> addLoyaltyPoints({
+    required int customerId,
+    required int points,
+    required double billAmount,
+    int? orderId,
+    int? invoiceId,
+    String? notes,
+  }) async {
+    await transaction(() async {
+      await ensureCustomerLoyaltyRecord(customerId);
+
+      // 1. Insert transaction log
+      await customStatement(
+        '''
+        INSERT INTO loyalty_transactions (
+          customer_id, order_id, invoice_id, transaction_type,
+          points, bill_amount, notes, created_date
+        ) VALUES (?, ?, ?, 'EARNED', ?, ?, ?, datetime('now'));
+        ''',
+        [customerId, orderId, invoiceId, points, billAmount, notes ?? 'Order reward'],
+      );
+
+      // 2. Update loyalty balance, spend, visits, and recalculate Tier
+      final loyalty = await getCustomerLoyalty(customerId);
+      final currentLifetimeEarned = (loyalty?['lifetime_points_earned'] as num?)?.toInt() ?? 0;
+      final newLifetimeEarned = currentLifetimeEarned + points;
+
+      String newTier = 'Bronze';
+      if (newLifetimeEarned >= 2000) {
+        newTier = 'VIP';
+      } else if (newLifetimeEarned >= 1000) {
+        newTier = 'Gold';
+      } else if (newLifetimeEarned >= 500) {
+        newTier = 'Silver';
+      }
+
+      await customStatement(
+        '''
+        UPDATE customer_loyalty
+        SET points_balance = points_balance + ?,
+            lifetime_points_earned = lifetime_points_earned + ?,
+            total_spent = total_spent + ?,
+            total_visits = total_visits + 1,
+            tier = ?,
+            last_visit_date = datetime('now'),
+            modified_at = datetime('now')
+        WHERE customer_id = ?;
+        ''',
+        [points, points, billAmount, newTier, customerId],
+      );
+    });
+  }
+
+  /// Redeem loyalty points as discount
+  Future<bool> redeemLoyaltyPoints({
+    required int customerId,
+    required int pointsToRedeem,
+    int? orderId,
+    int? invoiceId,
+    String? notes,
+  }) async {
+    return await transaction(() async {
+      final loyalty = await getCustomerLoyalty(customerId);
+      if (loyalty == null) return false;
+
+      final currentBalance = (loyalty['points_balance'] as num?)?.toInt() ?? 0;
+      if (currentBalance < pointsToRedeem) return false;
+
+      // 1. Insert transaction log
+      await customStatement(
+        '''
+        INSERT INTO loyalty_transactions (
+          customer_id, order_id, invoice_id, transaction_type,
+          points, notes, created_date
+        ) VALUES (?, ?, ?, 'REDEEMED', ?, ?, datetime('now'));
+        ''',
+        [customerId, orderId, invoiceId, pointsToRedeem, notes ?? 'Points redemption discount'],
+      );
+
+      // 2. Deduct from balance
+      await customStatement(
+        '''
+        UPDATE customer_loyalty
+        SET points_balance = points_balance - ?,
+            lifetime_points_redeemed = lifetime_points_redeemed + ?,
+            modified_at = datetime('now')
+        WHERE customer_id = ?;
+        ''',
+        [pointsToRedeem, pointsToRedeem, customerId],
+      );
+
+      return true;
+    });
+  }
+
+  /// Get transaction history for customer
+  Future<List<Map<String, dynamic>>> getLoyaltyTransactions(int customerId) async {
+    final rows = await customSelect(
+      '''
+      SELECT * FROM loyalty_transactions
+      WHERE customer_id = ?
+      ORDER BY created_date DESC, id DESC
+      LIMIT 50;
+      ''',
+      variables: [Variable.withInt(customerId)],
+    ).get();
+
+    return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
+  }
 }

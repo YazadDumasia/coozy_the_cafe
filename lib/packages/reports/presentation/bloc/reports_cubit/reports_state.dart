@@ -84,7 +84,17 @@ final class ReportsStockAdjustmentsLoaded extends ReportsState {
   final SalesPeriodFormat format;
 }
 
+final class ReportsAiInsightsLoaded extends ReportsState {
+  ReportsAiInsightsLoaded(
+    this.insights, [
+    this.format = SalesPeriodFormat.daily,
+  ]);
+  final AiDemandInsights insights;
+  final SalesPeriodFormat format;
+}
+
 final class ReportsError extends ReportsState {
   ReportsError(this.message);
   final String message;
 }
+

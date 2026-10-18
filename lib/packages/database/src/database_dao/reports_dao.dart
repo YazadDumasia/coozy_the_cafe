@@ -564,4 +564,114 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     ).get();
     return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
   }
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // AI Demand Forecasting & Insights Queries
+  // ─────────────────────────────────────────────────────────────────────────
+
+  /// Daily sales and orders aggregated for time series forecasting
+  Future<List<Map<String, dynamic>>> getDailySalesHistoryForForecast({
+    required String startIso,
+    required String endIso,
+  }) async {
+    const sql = '''
+      SELECT
+        DATE(created_date) AS date,
+        COUNT(DISTINCT id) AS orders,
+        COALESCE(SUM(total_cost), 0) AS sales
+      FROM invoices
+      WHERE created_date >= ? AND created_date <= ?
+      GROUP BY DATE(created_date)
+      ORDER BY date ASC
+    ''';
+    final rows = await customSelect(
+      sql,
+      variables: [
+        Variable.withString(startIso),
+        Variable.withString(endIso),
+      ],
+    ).get();
+    return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
+  }
+
+  /// Hourly order volume and revenue for rush-hour peak demand distribution
+  Future<List<Map<String, dynamic>>> getHourlyOrderDistribution({
+    required String startIso,
+    required String endIso,
+  }) async {
+    const sql = '''
+      SELECT
+        CAST(STRFTIME('%H', created_date) AS INTEGER) AS hour,
+        COUNT(DISTINCT id) AS orders,
+        COALESCE(SUM(total_cost), 0) AS sales
+      FROM invoices
+      WHERE created_date >= ? AND created_date <= ?
+      GROUP BY CAST(STRFTIME('%H', created_date) AS INTEGER)
+      ORDER BY hour ASC
+    ''';
+    final rows = await customSelect(
+      sql,
+      variables: [
+        Variable.withString(startIso),
+        Variable.withString(endIso),
+      ],
+    ).get();
+    return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
+  }
+
+  /// Recent stock removals/consumption for inventory burn-rate velocity
+  Future<List<Map<String, dynamic>>> getRecentInventoryConsumption({
+    required String startIso,
+    required String endIso,
+  }) async {
+    const sql = '''
+      SELECT
+        inventory_id AS inventoryId,
+        COALESCE(SUM(adjusted_qty), 0) AS consumedQty
+      FROM inventory_stock_adjustments
+      WHERE created_date >= ? AND created_date <= ?
+        AND adjustment_type = 'remove'
+      GROUP BY inventory_id
+    ''';
+    final rows = await customSelect(
+      sql,
+      variables: [
+        Variable.withString(startIso),
+        Variable.withString(endIso),
+      ],
+    ).get();
+    return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
+  }
+
+  /// Menu items popularity and margin data for BCG Matrix classification
+  Future<List<Map<String, dynamic>>> getMenuEngineeringRawData({
+    required String startIso,
+    required String endIso,
+  }) async {
+    const sql = '''
+      SELECT
+        mi.id AS itemId,
+        mi.name AS itemName,
+        COALESCE(SUM(ii.quantity), 0) AS totalQuantity,
+        COALESCE(SUM(ii.total_price), 0) AS totalRevenue,
+        COALESCE(SUM(ii.quantity * oi.cost_price), 0) AS totalCost
+      FROM invoice_items ii
+      JOIN invoices inv ON inv.id = ii.invoice_id
+      LEFT JOIN order_items oi ON oi.id = ii.order_item_id
+      LEFT JOIN menu_items mi ON mi.id = oi.item_id
+      WHERE inv.created_date >= ? AND inv.created_date <= ?
+        AND mi.id IS NOT NULL
+      GROUP BY mi.id, mi.name
+      ORDER BY totalQuantity DESC
+    ''';
+    final rows = await customSelect(
+      sql,
+      variables: [
+        Variable.withString(startIso),
+        Variable.withString(endIso),
+      ],
+    ).get();
+    return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
+  }
 }
+

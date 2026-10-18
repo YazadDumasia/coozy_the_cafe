@@ -1,7 +1,10 @@
 export 'domain/entities/thermal_printer_config.dart';
+export 'domain/entities/p2p_sync_config.dart';
 export 'domain/services/thermal_printer_service.dart';
+export 'domain/services/local_p2p_sync_service.dart';
 export 'domain/services/esc_pos_ticket_builder.dart';
 export 'presentation/pages/settings/widget/thermal_printer_config_dialog.dart';
+export 'presentation/pages/settings/widget/local_p2p_sync_config_dialog.dart';
 export 'presentation/pages/settings/cubit/thermal_printer_settings_cubit.dart';
 export 'settings_injection.dart';
 export 'presentation/pages/settings/settings_screen.dart';

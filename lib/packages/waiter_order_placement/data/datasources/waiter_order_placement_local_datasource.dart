@@ -1,5 +1,6 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/kitchen_management/services/order_print_background_service.dart';
+import 'package:coozy_the_cafe/packages/settings/domain/services/local_p2p_sync_service.dart';
 import 'package:drift/drift.dart';
 
 import '../../domain/entities/menu_catalog_data.dart';
@@ -201,6 +202,40 @@ class WaiterOrderPlacementLocalDataSourceImpl
         tableName: tableName,
         cartItems: cartItems,
       );
+
+      // Broadcast order to local Wi-Fi peer tablets (POS Hub or KDS)
+      try {
+        final orderRecord = await (db.select(db.ordersTable)
+              ..where((t) => t.id.equals(targetOrderId)))
+            .getSingleOrNull();
+
+        if (orderRecord != null) {
+          final itemsList = cartItems
+              .map(
+                (c) => {
+                  'itemId': c.menuItemId,
+                  'quantity': c.quantity,
+                  'sellingPrice': c.price,
+                  'status': OrderItemStatus.pending.value,
+                  'remarks': c.remarks,
+                },
+              )
+              .toList();
+
+          LocalP2pSyncService.instance.broadcastOrder(
+            orderMap: {
+              'hashId': orderRecord.hashId,
+              'tableInfoId': orderRecord.tableInfoId,
+              'tableNameText': orderRecord.tableNameText,
+              'status': orderRecord.status,
+              'orderType': orderRecord.orderType,
+              'grandTotal': orderRecord.grandTotal,
+              'creationDate': orderRecord.creationDate,
+            },
+            itemsList: itemsList,
+          );
+        }
+      } catch (_) {}
 
       return targetOrderId;
     });

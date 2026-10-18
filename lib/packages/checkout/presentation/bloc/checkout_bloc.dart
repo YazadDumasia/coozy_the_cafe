@@ -17,6 +17,7 @@ import '../../domain/usecases/get_order_checkout_data.dart';
 import 'package:drift/drift.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:coozy_the_cafe/packages/customer/domain/usecases/customer_usecases.dart';
 
 part 'checkout_event.dart';
 part 'checkout_state.dart';
@@ -721,6 +722,24 @@ class CheckoutBloc extends Bloc<CheckoutEvent, CheckoutState> {
                     createdDate: Value(currentDate),
                   ),
                 );
+            // 5. Award Customer Loyalty Points if customer is associated
+            if (customerId != null) {
+              final earnedPoints = (summary.grandTotal / 10).floor();
+              if (earnedPoints > 0) {
+                try {
+                  final addLoyaltyPointsUseCase = sl<AddLoyaltyPointsUseCase>();
+                  await addLoyaltyPointsUseCase(
+                    customerId: customerId,
+                    points: earnedPoints,
+                    billAmount: summary.grandTotal,
+                    orderId: orderId,
+                    invoiceId: targetInvoiceId,
+                  );
+                } catch (e) {
+                  debugPrint('Failed to award loyalty points: $e');
+                }
+              }
+            }
           });
 
           if (targetInvoiceId != null) {

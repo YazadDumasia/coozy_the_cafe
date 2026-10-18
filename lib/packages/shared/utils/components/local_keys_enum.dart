@@ -23,4 +23,6 @@ enum PreferencesKeys {
   enableQrScannerOrderPlacement,
   invoiceShareMessageTemplate,
   invoiceShareCustomLink,
+  p2pSyncConfig,
+  enableCustomerLoyalty,
 }

@@ -49,6 +49,22 @@ abstract class ReportsLocalDataSource {
     String endIso, {
     String format = 'daily',
   });
+  Future<List<Map<String, dynamic>>> getDailySalesHistoryForForecast({
+    required String startIso,
+    required String endIso,
+  });
+  Future<List<Map<String, dynamic>>> getHourlyOrderDistribution({
+    required String startIso,
+    required String endIso,
+  });
+  Future<List<Map<String, dynamic>>> getRecentInventoryConsumption({
+    required String startIso,
+    required String endIso,
+  });
+  Future<List<Map<String, dynamic>>> getMenuEngineeringRawData({
+    required String startIso,
+    required String endIso,
+  });
 }
 
 class ReportsLocalDataSourceImpl implements ReportsLocalDataSource {
@@ -145,5 +161,41 @@ class ReportsLocalDataSourceImpl implements ReportsLocalDataSource {
     startIso,
     endIso,
     format: format,
+  );
+
+  @override
+  Future<List<Map<String, dynamic>>> getDailySalesHistoryForForecast({
+    required String startIso,
+    required String endIso,
+  }) => database.reportsDao.getDailySalesHistoryForForecast(
+    startIso: startIso,
+    endIso: endIso,
+  );
+
+  @override
+  Future<List<Map<String, dynamic>>> getHourlyOrderDistribution({
+    required String startIso,
+    required String endIso,
+  }) => database.reportsDao.getHourlyOrderDistribution(
+    startIso: startIso,
+    endIso: endIso,
+  );
+
+  @override
+  Future<List<Map<String, dynamic>>> getRecentInventoryConsumption({
+    required String startIso,
+    required String endIso,
+  }) => database.reportsDao.getRecentInventoryConsumption(
+    startIso: startIso,
+    endIso: endIso,
+  );
+
+  @override
+  Future<List<Map<String, dynamic>>> getMenuEngineeringRawData({
+    required String startIso,
+    required String endIso,
+  }) => database.reportsDao.getMenuEngineeringRawData(
+    startIso: startIso,
+    endIso: endIso,
   );
 }

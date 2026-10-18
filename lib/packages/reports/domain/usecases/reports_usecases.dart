@@ -9,6 +9,7 @@ import '../entities/inventory_stock_entry.dart';
 import '../entities/purchase_summary_entry.dart';
 import '../entities/expenditure_summary_entry.dart';
 import '../entities/stock_adjustment_entry.dart';
+import '../entities/demand_insights.dart';
 import '../repositories/reports_repository.dart';
 
 class GetSalesTrendsReportUseCase {
@@ -123,3 +124,12 @@ class GetStockAdjustmentsReportUseCase {
     SalesPeriodFormat format = SalesPeriodFormat.daily,
   }) => repository.getStockAdjustmentsReport(startIso, endIso, format: format);
 }
+
+class GetAiDemandInsightsUseCase {
+  GetAiDemandInsightsUseCase(this.repository);
+  final ReportsRepository repository;
+
+  Future<AiDemandInsights> call(String startIso, String endIso) =>
+      repository.getAiDemandInsights(startIso: startIso, endIso: endIso);
+}
+

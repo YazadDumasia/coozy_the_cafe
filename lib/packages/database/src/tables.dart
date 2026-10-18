@@ -762,3 +762,48 @@ class ExpendituresTable extends BaseTable {
   TextColumn get modifiedAt =>
       text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
 }
+
+@DataClassName('CustomerLoyaltyData')
+@TableIndex(name: 'idx_loyalty_customer_id', columns: {#customerId})
+class CustomerLoyaltyTable extends BaseTable {
+  @override
+  String get tableName => 'customer_loyalty';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  IntColumn get customerId =>
+      integer().unique().references(CustomersTable, #id, onDelete: KeyAction.cascade)();
+  IntColumn get pointsBalance => integer().withDefault(const Constant(0))();
+  IntColumn get lifetimePointsEarned => integer().withDefault(const Constant(0))();
+  IntColumn get lifetimePointsRedeemed => integer().withDefault(const Constant(0))();
+  TextColumn get tier => text().withDefault(const Constant('Bronze'))(); // Bronze, Silver, Gold, VIP
+  RealColumn get totalSpent => real().withDefault(const Constant(0.0))();
+  IntColumn get totalVisits => integer().withDefault(const Constant(0))();
+  TextColumn get lastVisitDate => text().nullable()();
+  TextColumn get createdAt =>
+      text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
+  TextColumn get modifiedAt =>
+      text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
+}
+
+@DataClassName('LoyaltyTransactionData')
+@TableIndex(name: 'idx_loyalty_tx_customer_id', columns: {#customerId})
+@TableIndex(name: 'idx_loyalty_tx_date', columns: {#createdDate})
+class LoyaltyTransactionsTable extends BaseTable {
+  @override
+  String get tableName => 'loyalty_transactions';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  IntColumn get customerId =>
+      integer().references(CustomersTable, #id, onDelete: KeyAction.cascade)();
+  IntColumn get orderId => integer().nullable().references(OrdersTable, #id)();
+  IntColumn get invoiceId => integer().nullable().references(InvoicesTable, #id)();
+  TextColumn get transactionType => text()(); // 'EARNED', 'REDEEMED', 'ADJUSTED'
+  IntColumn get points => integer()(); // Positive for earned/adjusted, positive amount deducted for redeemed
+  RealColumn get billAmount => real().nullable()();
+  TextColumn get notes => text().nullable()();
+  TextColumn get createdDate =>
+      text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
+}
+

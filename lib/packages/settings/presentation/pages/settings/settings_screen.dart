@@ -10,6 +10,7 @@ import '../../../../database/coozy_database.dart';
 import '../../../../kitchen_management/presentation/widgets/thermal_kitchen_slip_widget/thermal_kitchen_slip_widget.dart';
 import 'widget/thermal_printer_config_dialog.dart';
 import 'widget/invoice_share_config_dialog.dart';
+import 'widget/local_p2p_sync_config_dialog.dart';
 import '../../../../core/coozy_core.dart' as core;
 import '../../../../shared/coozy_shared.dart' as shared;
 
@@ -34,6 +35,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
     true,
   );
   final ValueNotifier<bool> _enableQrScannerOrderPlacementNotifier =
+      ValueNotifier(false);
+  final ValueNotifier<bool> _enableCustomerLoyaltyNotifier =
       ValueNotifier(false);
   final ValueNotifier<String> _selectedCurrencySymbolNotifier = ValueNotifier(
     '₹',
@@ -91,6 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _autoPrintCustomerReceiptNotifier.dispose();
     _enableDetailedItemRemarksNotifier.dispose();
     _enableQrScannerOrderPlacementNotifier.dispose();
+    _enableCustomerLoyaltyNotifier.dispose();
     _selectedCurrencySymbolNotifier.dispose();
     _selectedSecondaryCurrencySymbolNotifier.dispose();
     _enableSecondaryCurrencyNotifier.dispose();
@@ -123,6 +127,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
     _enableQrScannerOrderPlacementNotifier.value = shared.LocalManager.instance
         .getBoolValue(
           key: shared.PreferencesKeys.enableQrScannerOrderPlacement,
+        );
+    _enableCustomerLoyaltyNotifier.value = shared.LocalManager.instance
+        .getBoolValue(
+          key: shared.PreferencesKeys.enableCustomerLoyalty,
         );
 
     // Load saved currency preferences
@@ -1399,6 +1407,81 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 shape: BoxShape.circle,
                               ),
                               child: Icon(
+                                Icons.stars_rounded,
+                                color: theme.primaryColor,
+                                size: 24,
+                              ),
+                            ),
+                            const SizedBox(width: 14),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsEnableCustomerLoyaltyLabel,
+                                      'Customer Loyalty & Rewards Program',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _tr(
+                                      context,
+                                      shared
+                                          .LocaleKeys
+                                          .settingsEnableCustomerLoyaltySubtitle,
+                                      'Track customer visits, reward points on completed orders, and enable points redemption on checkout',
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            ValueListenableBuilder<bool>(
+                              valueListenable: _enableCustomerLoyaltyNotifier,
+                              builder: (context, enabled, child) {
+                                return Switch.adaptive(
+                                  value: enabled,
+                                  activeThumbColor: theme.primaryColor,
+                                  onChanged: (value) async {
+                                    _enableCustomerLoyaltyNotifier.value =
+                                        value;
+                                    await shared.LocalManager.instance
+                                        .setBoolValue(
+                                          key: shared
+                                              .PreferencesKeys
+                                              .enableCustomerLoyalty,
+                                          value: value,
+                                        );
+                                  },
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        const Divider(height: 24),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: theme.primaryColor.withValues(
+                                  alpha: 0.1,
+                                ),
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
                                 Icons.receipt_long_rounded,
                                 color: theme.primaryColor,
                               ),
@@ -1544,6 +1627,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ),
                                 );
                               }
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            icon: const Icon(
+                              Icons.wifi_tethering_rounded,
+                              size: 18,
+                            ),
+                            label: Text(
+                              _tr(
+                                context,
+                                shared.LocaleKeys.settingsLocalP2pSyncBtn,
+                                'Local Wi-Fi Multi-Device Sync (POS / Tablets)',
+                              ),
+                            ),
+                            onPressed: () {
+                              LocalP2pSyncConfigDialog.show(context);
                             },
                           ),
                         ),

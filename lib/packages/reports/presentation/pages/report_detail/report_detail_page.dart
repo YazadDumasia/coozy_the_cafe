@@ -20,6 +20,7 @@ import 'widget/stock_adjustments_bar_chart.dart';
 import 'widget/sales_period_format_selector.dart';
 import 'widget/sales_trends_chart.dart';
 import 'widget/report_data_table.dart';
+import 'widget/insights_dashboard_view.dart';
 
 class ReportDetailPage extends StatefulWidget {
   const ReportDetailPage({super.key, required this.category});
@@ -664,6 +665,31 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
       );
     }
 
+    if (state is ReportsAiInsightsLoaded) {
+      final headers = [
+        'Forecast Date',
+        'Projected Sales',
+        'Projected Orders',
+        'Lower Bound (80%)',
+        'Upper Bound (80%)',
+      ];
+      final rows = state.insights.salesForecasts.map((f) {
+        return [
+          f.dateIso,
+          '₹${f.predictedSales.toStringAsFixed(2)}',
+          f.predictedOrders,
+          '₹${f.lowerBound.toStringAsFixed(2)}',
+          '₹${f.upperBound.toStringAsFixed(2)}',
+        ];
+      }).toList();
+      return ReportExportRowData(
+        reportTitle: title,
+        dateRangeStr: rangeStr,
+        headers: headers,
+        rows: rows,
+      );
+    }
+
     return null;
   }
 
@@ -1095,6 +1121,10 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                 padding: const EdgeInsets.all(16),
                 child: StockAdjustmentsBarChart(entries: state.entries),
               )
+            : const _EmptyChart(),
+      ReportType.aiDemandInsights =>
+        state is ReportsAiInsightsLoaded
+            ? InsightsDashboardView(insights: state.insights)
             : const _EmptyChart(),
     };
   }

@@ -8,6 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:coozy_the_cafe/packages/settings/coozy_settings.dart'
     as settings;
 import 'package:coozy_the_cafe/packages/invoice_management/domain/entities/invoice_management_entity.dart';
+import 'package:coozy_the_cafe/packages/customer/domain/entities/customer_loyalty_entity.dart';
+import 'package:coozy_the_cafe/packages/customer/domain/usecases/customer_usecases.dart';
+import 'package:coozy_the_cafe/packages/checkout/checkout.dart' as checkout;
 
 import '../../../bloc/checkout_bloc.dart';
 import '../../../../domain/entities/customer_details.dart';
@@ -45,6 +48,8 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
   List<db.Customer> _customerSuggestions = [];
   String _isoCode = 'IN';
   int _phoneFieldKey = 0;
+  CustomerLoyaltyEntity? _customerLoyalty;
+  bool _isLoyaltyPointsApplied = false;
 
   @override
   void initState() {
@@ -156,7 +161,34 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
       });
     }
 
+    _fetchCustomerLoyalty(selection.id);
+
     _updateCustomer();
+  }
+
+  Future<void> _fetchCustomerLoyalty(int? customerId) async {
+    final isLoyaltyEnabled = shared.LocalManager.instance
+            .getBoolValue(
+              key: shared.PreferencesKeys.enableCustomerLoyalty,
+            );
+    if (!isLoyaltyEnabled || customerId == null) {
+      if (mounted) {
+        setState(() {
+          _customerLoyalty = null;
+          _isLoyaltyPointsApplied = false;
+        });
+      }
+      return;
+    }
+    try {
+      final getLoyalty = core.sl<GetCustomerLoyaltyUseCase>();
+      final loyalty = await getLoyalty(customerId);
+      if (mounted) {
+        setState(() {
+          _customerLoyalty = loyalty;
+        });
+      }
+    } catch (_) {}
   }
 
   String _formatCustomerPhone(db.Customer customer) {
@@ -671,6 +703,122 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                   decoration: const InputDecoration(
                     labelText: 'Customer Address',
                     border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+
+              // ── Loyalty Points Redemption Banner ────────────────────────
+              if (_customerLoyalty != null) ...[
+                const SizedBox(height: 14),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary.withValues(alpha: 0.08),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: theme.colorScheme.primary.withValues(alpha: 0.25),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
+                        child: Icon(Icons.stars_rounded, color: theme.colorScheme.primary, size: 20),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  '${_customerLoyalty!.tier} Member',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.colorScheme.primary,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    '${_customerLoyalty!.pointsBalance} pts (₹${_customerLoyalty!.discountValueInRupees.toStringAsFixed(0)})',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 2),
+                            Text(
+                              _isLoyaltyPointsApplied
+                                  ? 'Loyalty discount applied to invoice!'
+                                  : 'Redeem available points for discount',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (_customerLoyalty!.pointsBalance > 0)
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: _isLoyaltyPointsApplied
+                                ? Colors.red.withValues(alpha: 0.1)
+                                : theme.colorScheme.primary.withValues(alpha: 0.15),
+                            foregroundColor: _isLoyaltyPointsApplied
+                                ? Colors.red
+                                : theme.colorScheme.primary,
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          onPressed: () {
+                            if (_isLoyaltyPointsApplied) {
+                              widget.checkoutBloc.add(
+                                const CheckoutDiscountRemoved('loyalty_rewards'),
+                              );
+                              setState(() {
+                                _isLoyaltyPointsApplied = false;
+                              });
+                            } else {
+                              final discountVal = _customerLoyalty!.discountValueInRupees;
+                              if (discountVal > 0) {
+                                widget.checkoutBloc.add(
+                                  CheckoutDiscountAdded(
+                                    checkout.Discount(
+                                      id: 'loyalty_rewards',
+                                      name: 'Loyalty Rewards (${_customerLoyalty!.pointsBalance} pts)',
+                                      value: discountVal,
+                                      isPercentage: false,
+                                      isDefaultAdd: false,
+                                    ),
+                                  ),
+                                );
+                                setState(() {
+                                  _isLoyaltyPointsApplied = true;
+                                });
+                              }
+                            }
+                          },
+                          child: Text(
+                            _isLoyaltyPointsApplied ? 'Remove' : 'Redeem',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ],

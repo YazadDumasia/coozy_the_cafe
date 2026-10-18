@@ -3,6 +3,7 @@ import 'package:coozy_the_cafe/packages/database/src/database.dart';
 import 'package:coozy_the_cafe/packages/database/src/database_dao/customers_dao.dart';
 
 import '../../domain/entities/customer_entity.dart';
+import '../../domain/entities/customer_loyalty_entity.dart';
 import '../../domain/repositories/customer_repository.dart';
 
 class CustomerRepositoryImpl implements CustomerRepository {
@@ -74,5 +75,49 @@ class CustomerRepositoryImpl implements CustomerRepository {
   Future<bool> deleteCustomer(int id) async {
     final result = await _customersDao.deleteCustomer(id);
     return result != null && result > 0;
+  }
+
+  @override
+  Future<CustomerLoyaltyEntity?> getCustomerLoyalty(int customerId) async {
+    final map = await _customersDao.getCustomerLoyalty(customerId);
+    if (map == null) return null;
+    return CustomerLoyaltyEntity.fromMap(map);
+  }
+
+  @override
+  Future<void> addLoyaltyPoints({
+    required int customerId,
+    required int points,
+    required double billAmount,
+    int? orderId,
+    int? invoiceId,
+  }) async {
+    await _customersDao.addLoyaltyPoints(
+      customerId: customerId,
+      points: points,
+      billAmount: billAmount,
+      orderId: orderId,
+      invoiceId: invoiceId,
+    );
+  }
+
+  @override
+  Future<bool> redeemLoyaltyPoints({
+    required int customerId,
+    required int pointsToRedeem,
+    int? orderId,
+    int? invoiceId,
+  }) async {
+    return await _customersDao.redeemLoyaltyPoints(
+      customerId: customerId,
+      pointsToRedeem: pointsToRedeem,
+      orderId: orderId,
+      invoiceId: invoiceId,
+    );
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getLoyaltyTransactions(int customerId) async {
+    return await _customersDao.getLoyaltyTransactions(customerId);
   }
 }

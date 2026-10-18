@@ -12,6 +12,7 @@ enum ReportType {
   expenditure,
   menuItemSales,
   stockAdjustments,
+  aiDemandInsights,
 }
 
 class ReportCategory {

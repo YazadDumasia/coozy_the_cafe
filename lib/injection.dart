@@ -13,7 +13,8 @@ import 'package:coozy_the_cafe/packages/customer/customer_injection.dart';
 import 'package:coozy_the_cafe/packages/recipes/recipes_injection.dart';
 import 'package:coozy_the_cafe/packages/reservation/reservation_injection.dart';
 import 'package:coozy_the_cafe/packages/staff_management/staff_management_injection.dart';
-import 'package:coozy_the_cafe/packages/settings/settings_injection.dart';
+import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:coozy_the_cafe/packages/settings/coozy_settings.dart';
 import 'package:coozy_the_cafe/packages/waiter_order_placement/waiter_order_placement.dart';
 import 'package:coozy_the_cafe/packages/kitchen_management/kitchen_management.dart';
 import 'package:coozy_the_cafe/packages/checkout/checkout.dart';
@@ -76,4 +77,9 @@ Future<void> initDI() async {
 
   // Reports Package Dependencies
   registerReportsDependencies(sl);
+
+  // Initialize Local Wi-Fi Peer-to-Peer Sync Service with Database
+  if (sl.isRegistered<CoozyDatabase>()) {
+    sl<LocalP2pSyncService>().initialize(database: sl<CoozyDatabase>());
+  }
 }

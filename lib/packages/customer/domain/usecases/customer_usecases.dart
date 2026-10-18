@@ -1,4 +1,5 @@
 import '../entities/customer_entity.dart';
+import '../entities/customer_loyalty_entity.dart';
 import '../repositories/customer_repository.dart';
 
 class GetCustomersUseCase {
@@ -44,3 +45,62 @@ class DeleteCustomerUseCase {
     return await repository.deleteCustomer(id);
   }
 }
+
+class GetCustomerLoyaltyUseCase {
+  final CustomerRepository repository;
+  GetCustomerLoyaltyUseCase(this.repository);
+
+  Future<CustomerLoyaltyEntity?> call(int customerId) async {
+    return await repository.getCustomerLoyalty(customerId);
+  }
+}
+
+class AddLoyaltyPointsUseCase {
+  final CustomerRepository repository;
+  AddLoyaltyPointsUseCase(this.repository);
+
+  Future<void> call({
+    required int customerId,
+    required int points,
+    required double billAmount,
+    int? orderId,
+    int? invoiceId,
+  }) async {
+    await repository.addLoyaltyPoints(
+      customerId: customerId,
+      points: points,
+      billAmount: billAmount,
+      orderId: orderId,
+      invoiceId: invoiceId,
+    );
+  }
+}
+
+class RedeemLoyaltyPointsUseCase {
+  final CustomerRepository repository;
+  RedeemLoyaltyPointsUseCase(this.repository);
+
+  Future<bool> call({
+    required int customerId,
+    required int pointsToRedeem,
+    int? orderId,
+    int? invoiceId,
+  }) async {
+    return await repository.redeemLoyaltyPoints(
+      customerId: customerId,
+      pointsToRedeem: pointsToRedeem,
+      orderId: orderId,
+      invoiceId: invoiceId,
+    );
+  }
+}
+
+class GetLoyaltyTransactionsUseCase {
+  final CustomerRepository repository;
+  GetLoyaltyTransactionsUseCase(this.repository);
+
+  Future<List<Map<String, dynamic>>> call(int customerId) async {
+    return await repository.getLoyaltyTransactions(customerId);
+  }
+}
+

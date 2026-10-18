@@ -23858,6 +23858,1542 @@ class ExpendituresTableCompanion extends UpdateCompanion<ExpenditureTableData> {
   }
 }
 
+class $CustomerLoyaltyTableTable extends CustomerLoyaltyTable
+    with TableInfo<$CustomerLoyaltyTableTable, CustomerLoyaltyData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CustomerLoyaltyTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _customerIdMeta = const VerificationMeta(
+    'customerId',
+  );
+  @override
+  late final GeneratedColumn<int> customerId = GeneratedColumn<int>(
+    'customer_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES customers (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _pointsBalanceMeta = const VerificationMeta(
+    'pointsBalance',
+  );
+  @override
+  late final GeneratedColumn<int> pointsBalance = GeneratedColumn<int>(
+    'points_balance',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lifetimePointsEarnedMeta =
+      const VerificationMeta('lifetimePointsEarned');
+  @override
+  late final GeneratedColumn<int> lifetimePointsEarned = GeneratedColumn<int>(
+    'lifetime_points_earned',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lifetimePointsRedeemedMeta =
+      const VerificationMeta('lifetimePointsRedeemed');
+  @override
+  late final GeneratedColumn<int> lifetimePointsRedeemed = GeneratedColumn<int>(
+    'lifetime_points_redeemed',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _tierMeta = const VerificationMeta('tier');
+  @override
+  late final GeneratedColumn<String> tier = GeneratedColumn<String>(
+    'tier',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('Bronze'),
+  );
+  static const VerificationMeta _totalSpentMeta = const VerificationMeta(
+    'totalSpent',
+  );
+  @override
+  late final GeneratedColumn<double> totalSpent = GeneratedColumn<double>(
+    'total_spent',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _totalVisitsMeta = const VerificationMeta(
+    'totalVisits',
+  );
+  @override
+  late final GeneratedColumn<int> totalVisits = GeneratedColumn<int>(
+    'total_visits',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastVisitDateMeta = const VerificationMeta(
+    'lastVisitDate',
+  );
+  @override
+  late final GeneratedColumn<String> lastVisitDate = GeneratedColumn<String>(
+    'last_visit_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => DateTime.now().toUtc().toIso8601String(),
+  );
+  static const VerificationMeta _modifiedAtMeta = const VerificationMeta(
+    'modifiedAt',
+  );
+  @override
+  late final GeneratedColumn<String> modifiedAt = GeneratedColumn<String>(
+    'modified_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => DateTime.now().toUtc().toIso8601String(),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    customerId,
+    pointsBalance,
+    lifetimePointsEarned,
+    lifetimePointsRedeemed,
+    tier,
+    totalSpent,
+    totalVisits,
+    lastVisitDate,
+    createdAt,
+    modifiedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'customer_loyalty';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CustomerLoyaltyData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('customer_id')) {
+      context.handle(
+        _customerIdMeta,
+        customerId.isAcceptableOrUnknown(data['customer_id']!, _customerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_customerIdMeta);
+    }
+    if (data.containsKey('points_balance')) {
+      context.handle(
+        _pointsBalanceMeta,
+        pointsBalance.isAcceptableOrUnknown(
+          data['points_balance']!,
+          _pointsBalanceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('lifetime_points_earned')) {
+      context.handle(
+        _lifetimePointsEarnedMeta,
+        lifetimePointsEarned.isAcceptableOrUnknown(
+          data['lifetime_points_earned']!,
+          _lifetimePointsEarnedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('lifetime_points_redeemed')) {
+      context.handle(
+        _lifetimePointsRedeemedMeta,
+        lifetimePointsRedeemed.isAcceptableOrUnknown(
+          data['lifetime_points_redeemed']!,
+          _lifetimePointsRedeemedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('tier')) {
+      context.handle(
+        _tierMeta,
+        tier.isAcceptableOrUnknown(data['tier']!, _tierMeta),
+      );
+    }
+    if (data.containsKey('total_spent')) {
+      context.handle(
+        _totalSpentMeta,
+        totalSpent.isAcceptableOrUnknown(data['total_spent']!, _totalSpentMeta),
+      );
+    }
+    if (data.containsKey('total_visits')) {
+      context.handle(
+        _totalVisitsMeta,
+        totalVisits.isAcceptableOrUnknown(
+          data['total_visits']!,
+          _totalVisitsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_visit_date')) {
+      context.handle(
+        _lastVisitDateMeta,
+        lastVisitDate.isAcceptableOrUnknown(
+          data['last_visit_date']!,
+          _lastVisitDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('modified_at')) {
+      context.handle(
+        _modifiedAtMeta,
+        modifiedAt.isAcceptableOrUnknown(data['modified_at']!, _modifiedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CustomerLoyaltyData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CustomerLoyaltyData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      customerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}customer_id'],
+      )!,
+      pointsBalance: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}points_balance'],
+      )!,
+      lifetimePointsEarned: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lifetime_points_earned'],
+      )!,
+      lifetimePointsRedeemed: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lifetime_points_redeemed'],
+      )!,
+      tier: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}tier'],
+      )!,
+      totalSpent: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}total_spent'],
+      )!,
+      totalVisits: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_visits'],
+      )!,
+      lastVisitDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_visit_date'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      modifiedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}modified_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CustomerLoyaltyTableTable createAlias(String alias) {
+    return $CustomerLoyaltyTableTable(attachedDatabase, alias);
+  }
+}
+
+class CustomerLoyaltyData extends DataClass
+    implements Insertable<CustomerLoyaltyData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final int customerId;
+  final int pointsBalance;
+  final int lifetimePointsEarned;
+  final int lifetimePointsRedeemed;
+  final String tier;
+  final double totalSpent;
+  final int totalVisits;
+  final String? lastVisitDate;
+  final String createdAt;
+  final String modifiedAt;
+  const CustomerLoyaltyData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.customerId,
+    required this.pointsBalance,
+    required this.lifetimePointsEarned,
+    required this.lifetimePointsRedeemed,
+    required this.tier,
+    required this.totalSpent,
+    required this.totalVisits,
+    this.lastVisitDate,
+    required this.createdAt,
+    required this.modifiedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['customer_id'] = Variable<int>(customerId);
+    map['points_balance'] = Variable<int>(pointsBalance);
+    map['lifetime_points_earned'] = Variable<int>(lifetimePointsEarned);
+    map['lifetime_points_redeemed'] = Variable<int>(lifetimePointsRedeemed);
+    map['tier'] = Variable<String>(tier);
+    map['total_spent'] = Variable<double>(totalSpent);
+    map['total_visits'] = Variable<int>(totalVisits);
+    if (!nullToAbsent || lastVisitDate != null) {
+      map['last_visit_date'] = Variable<String>(lastVisitDate);
+    }
+    map['created_at'] = Variable<String>(createdAt);
+    map['modified_at'] = Variable<String>(modifiedAt);
+    return map;
+  }
+
+  CustomerLoyaltyTableCompanion toCompanion(bool nullToAbsent) {
+    return CustomerLoyaltyTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      customerId: Value(customerId),
+      pointsBalance: Value(pointsBalance),
+      lifetimePointsEarned: Value(lifetimePointsEarned),
+      lifetimePointsRedeemed: Value(lifetimePointsRedeemed),
+      tier: Value(tier),
+      totalSpent: Value(totalSpent),
+      totalVisits: Value(totalVisits),
+      lastVisitDate: lastVisitDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastVisitDate),
+      createdAt: Value(createdAt),
+      modifiedAt: Value(modifiedAt),
+    );
+  }
+
+  factory CustomerLoyaltyData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CustomerLoyaltyData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      customerId: serializer.fromJson<int>(json['customerId']),
+      pointsBalance: serializer.fromJson<int>(json['pointsBalance']),
+      lifetimePointsEarned: serializer.fromJson<int>(
+        json['lifetimePointsEarned'],
+      ),
+      lifetimePointsRedeemed: serializer.fromJson<int>(
+        json['lifetimePointsRedeemed'],
+      ),
+      tier: serializer.fromJson<String>(json['tier']),
+      totalSpent: serializer.fromJson<double>(json['totalSpent']),
+      totalVisits: serializer.fromJson<int>(json['totalVisits']),
+      lastVisitDate: serializer.fromJson<String?>(json['lastVisitDate']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      modifiedAt: serializer.fromJson<String>(json['modifiedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'customerId': serializer.toJson<int>(customerId),
+      'pointsBalance': serializer.toJson<int>(pointsBalance),
+      'lifetimePointsEarned': serializer.toJson<int>(lifetimePointsEarned),
+      'lifetimePointsRedeemed': serializer.toJson<int>(lifetimePointsRedeemed),
+      'tier': serializer.toJson<String>(tier),
+      'totalSpent': serializer.toJson<double>(totalSpent),
+      'totalVisits': serializer.toJson<int>(totalVisits),
+      'lastVisitDate': serializer.toJson<String?>(lastVisitDate),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'modifiedAt': serializer.toJson<String>(modifiedAt),
+    };
+  }
+
+  CustomerLoyaltyData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    int? customerId,
+    int? pointsBalance,
+    int? lifetimePointsEarned,
+    int? lifetimePointsRedeemed,
+    String? tier,
+    double? totalSpent,
+    int? totalVisits,
+    Value<String?> lastVisitDate = const Value.absent(),
+    String? createdAt,
+    String? modifiedAt,
+  }) => CustomerLoyaltyData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    customerId: customerId ?? this.customerId,
+    pointsBalance: pointsBalance ?? this.pointsBalance,
+    lifetimePointsEarned: lifetimePointsEarned ?? this.lifetimePointsEarned,
+    lifetimePointsRedeemed:
+        lifetimePointsRedeemed ?? this.lifetimePointsRedeemed,
+    tier: tier ?? this.tier,
+    totalSpent: totalSpent ?? this.totalSpent,
+    totalVisits: totalVisits ?? this.totalVisits,
+    lastVisitDate: lastVisitDate.present
+        ? lastVisitDate.value
+        : this.lastVisitDate,
+    createdAt: createdAt ?? this.createdAt,
+    modifiedAt: modifiedAt ?? this.modifiedAt,
+  );
+  CustomerLoyaltyData copyWithCompanion(CustomerLoyaltyTableCompanion data) {
+    return CustomerLoyaltyData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      customerId: data.customerId.present
+          ? data.customerId.value
+          : this.customerId,
+      pointsBalance: data.pointsBalance.present
+          ? data.pointsBalance.value
+          : this.pointsBalance,
+      lifetimePointsEarned: data.lifetimePointsEarned.present
+          ? data.lifetimePointsEarned.value
+          : this.lifetimePointsEarned,
+      lifetimePointsRedeemed: data.lifetimePointsRedeemed.present
+          ? data.lifetimePointsRedeemed.value
+          : this.lifetimePointsRedeemed,
+      tier: data.tier.present ? data.tier.value : this.tier,
+      totalSpent: data.totalSpent.present
+          ? data.totalSpent.value
+          : this.totalSpent,
+      totalVisits: data.totalVisits.present
+          ? data.totalVisits.value
+          : this.totalVisits,
+      lastVisitDate: data.lastVisitDate.present
+          ? data.lastVisitDate.value
+          : this.lastVisitDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      modifiedAt: data.modifiedAt.present
+          ? data.modifiedAt.value
+          : this.modifiedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomerLoyaltyData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('customerId: $customerId, ')
+          ..write('pointsBalance: $pointsBalance, ')
+          ..write('lifetimePointsEarned: $lifetimePointsEarned, ')
+          ..write('lifetimePointsRedeemed: $lifetimePointsRedeemed, ')
+          ..write('tier: $tier, ')
+          ..write('totalSpent: $totalSpent, ')
+          ..write('totalVisits: $totalVisits, ')
+          ..write('lastVisitDate: $lastVisitDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('modifiedAt: $modifiedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    customerId,
+    pointsBalance,
+    lifetimePointsEarned,
+    lifetimePointsRedeemed,
+    tier,
+    totalSpent,
+    totalVisits,
+    lastVisitDate,
+    createdAt,
+    modifiedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CustomerLoyaltyData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.customerId == this.customerId &&
+          other.pointsBalance == this.pointsBalance &&
+          other.lifetimePointsEarned == this.lifetimePointsEarned &&
+          other.lifetimePointsRedeemed == this.lifetimePointsRedeemed &&
+          other.tier == this.tier &&
+          other.totalSpent == this.totalSpent &&
+          other.totalVisits == this.totalVisits &&
+          other.lastVisitDate == this.lastVisitDate &&
+          other.createdAt == this.createdAt &&
+          other.modifiedAt == this.modifiedAt);
+}
+
+class CustomerLoyaltyTableCompanion
+    extends UpdateCompanion<CustomerLoyaltyData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<int> customerId;
+  final Value<int> pointsBalance;
+  final Value<int> lifetimePointsEarned;
+  final Value<int> lifetimePointsRedeemed;
+  final Value<String> tier;
+  final Value<double> totalSpent;
+  final Value<int> totalVisits;
+  final Value<String?> lastVisitDate;
+  final Value<String> createdAt;
+  final Value<String> modifiedAt;
+  const CustomerLoyaltyTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.customerId = const Value.absent(),
+    this.pointsBalance = const Value.absent(),
+    this.lifetimePointsEarned = const Value.absent(),
+    this.lifetimePointsRedeemed = const Value.absent(),
+    this.tier = const Value.absent(),
+    this.totalSpent = const Value.absent(),
+    this.totalVisits = const Value.absent(),
+    this.lastVisitDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.modifiedAt = const Value.absent(),
+  });
+  CustomerLoyaltyTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required int customerId,
+    this.pointsBalance = const Value.absent(),
+    this.lifetimePointsEarned = const Value.absent(),
+    this.lifetimePointsRedeemed = const Value.absent(),
+    this.tier = const Value.absent(),
+    this.totalSpent = const Value.absent(),
+    this.totalVisits = const Value.absent(),
+    this.lastVisitDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.modifiedAt = const Value.absent(),
+  }) : customerId = Value(customerId);
+  static Insertable<CustomerLoyaltyData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<int>? customerId,
+    Expression<int>? pointsBalance,
+    Expression<int>? lifetimePointsEarned,
+    Expression<int>? lifetimePointsRedeemed,
+    Expression<String>? tier,
+    Expression<double>? totalSpent,
+    Expression<int>? totalVisits,
+    Expression<String>? lastVisitDate,
+    Expression<String>? createdAt,
+    Expression<String>? modifiedAt,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (customerId != null) 'customer_id': customerId,
+      if (pointsBalance != null) 'points_balance': pointsBalance,
+      if (lifetimePointsEarned != null)
+        'lifetime_points_earned': lifetimePointsEarned,
+      if (lifetimePointsRedeemed != null)
+        'lifetime_points_redeemed': lifetimePointsRedeemed,
+      if (tier != null) 'tier': tier,
+      if (totalSpent != null) 'total_spent': totalSpent,
+      if (totalVisits != null) 'total_visits': totalVisits,
+      if (lastVisitDate != null) 'last_visit_date': lastVisitDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (modifiedAt != null) 'modified_at': modifiedAt,
+    });
+  }
+
+  CustomerLoyaltyTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<int>? customerId,
+    Value<int>? pointsBalance,
+    Value<int>? lifetimePointsEarned,
+    Value<int>? lifetimePointsRedeemed,
+    Value<String>? tier,
+    Value<double>? totalSpent,
+    Value<int>? totalVisits,
+    Value<String?>? lastVisitDate,
+    Value<String>? createdAt,
+    Value<String>? modifiedAt,
+  }) {
+    return CustomerLoyaltyTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      customerId: customerId ?? this.customerId,
+      pointsBalance: pointsBalance ?? this.pointsBalance,
+      lifetimePointsEarned: lifetimePointsEarned ?? this.lifetimePointsEarned,
+      lifetimePointsRedeemed:
+          lifetimePointsRedeemed ?? this.lifetimePointsRedeemed,
+      tier: tier ?? this.tier,
+      totalSpent: totalSpent ?? this.totalSpent,
+      totalVisits: totalVisits ?? this.totalVisits,
+      lastVisitDate: lastVisitDate ?? this.lastVisitDate,
+      createdAt: createdAt ?? this.createdAt,
+      modifiedAt: modifiedAt ?? this.modifiedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (customerId.present) {
+      map['customer_id'] = Variable<int>(customerId.value);
+    }
+    if (pointsBalance.present) {
+      map['points_balance'] = Variable<int>(pointsBalance.value);
+    }
+    if (lifetimePointsEarned.present) {
+      map['lifetime_points_earned'] = Variable<int>(lifetimePointsEarned.value);
+    }
+    if (lifetimePointsRedeemed.present) {
+      map['lifetime_points_redeemed'] = Variable<int>(
+        lifetimePointsRedeemed.value,
+      );
+    }
+    if (tier.present) {
+      map['tier'] = Variable<String>(tier.value);
+    }
+    if (totalSpent.present) {
+      map['total_spent'] = Variable<double>(totalSpent.value);
+    }
+    if (totalVisits.present) {
+      map['total_visits'] = Variable<int>(totalVisits.value);
+    }
+    if (lastVisitDate.present) {
+      map['last_visit_date'] = Variable<String>(lastVisitDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (modifiedAt.present) {
+      map['modified_at'] = Variable<String>(modifiedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CustomerLoyaltyTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('customerId: $customerId, ')
+          ..write('pointsBalance: $pointsBalance, ')
+          ..write('lifetimePointsEarned: $lifetimePointsEarned, ')
+          ..write('lifetimePointsRedeemed: $lifetimePointsRedeemed, ')
+          ..write('tier: $tier, ')
+          ..write('totalSpent: $totalSpent, ')
+          ..write('totalVisits: $totalVisits, ')
+          ..write('lastVisitDate: $lastVisitDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('modifiedAt: $modifiedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LoyaltyTransactionsTableTable extends LoyaltyTransactionsTable
+    with TableInfo<$LoyaltyTransactionsTableTable, LoyaltyTransactionData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LoyaltyTransactionsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _customerIdMeta = const VerificationMeta(
+    'customerId',
+  );
+  @override
+  late final GeneratedColumn<int> customerId = GeneratedColumn<int>(
+    'customer_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES customers (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _orderIdMeta = const VerificationMeta(
+    'orderId',
+  );
+  @override
+  late final GeneratedColumn<int> orderId = GeneratedColumn<int>(
+    'order_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES orders (id)',
+    ),
+  );
+  static const VerificationMeta _invoiceIdMeta = const VerificationMeta(
+    'invoiceId',
+  );
+  @override
+  late final GeneratedColumn<int> invoiceId = GeneratedColumn<int>(
+    'invoice_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES invoices (id)',
+    ),
+  );
+  static const VerificationMeta _transactionTypeMeta = const VerificationMeta(
+    'transactionType',
+  );
+  @override
+  late final GeneratedColumn<String> transactionType = GeneratedColumn<String>(
+    'transaction_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _pointsMeta = const VerificationMeta('points');
+  @override
+  late final GeneratedColumn<int> points = GeneratedColumn<int>(
+    'points',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _billAmountMeta = const VerificationMeta(
+    'billAmount',
+  );
+  @override
+  late final GeneratedColumn<double> billAmount = GeneratedColumn<double>(
+    'bill_amount',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdDateMeta = const VerificationMeta(
+    'createdDate',
+  );
+  @override
+  late final GeneratedColumn<String> createdDate = GeneratedColumn<String>(
+    'created_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    clientDefault: () => DateTime.now().toUtc().toIso8601String(),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    customerId,
+    orderId,
+    invoiceId,
+    transactionType,
+    points,
+    billAmount,
+    notes,
+    createdDate,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'loyalty_transactions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<LoyaltyTransactionData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('customer_id')) {
+      context.handle(
+        _customerIdMeta,
+        customerId.isAcceptableOrUnknown(data['customer_id']!, _customerIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_customerIdMeta);
+    }
+    if (data.containsKey('order_id')) {
+      context.handle(
+        _orderIdMeta,
+        orderId.isAcceptableOrUnknown(data['order_id']!, _orderIdMeta),
+      );
+    }
+    if (data.containsKey('invoice_id')) {
+      context.handle(
+        _invoiceIdMeta,
+        invoiceId.isAcceptableOrUnknown(data['invoice_id']!, _invoiceIdMeta),
+      );
+    }
+    if (data.containsKey('transaction_type')) {
+      context.handle(
+        _transactionTypeMeta,
+        transactionType.isAcceptableOrUnknown(
+          data['transaction_type']!,
+          _transactionTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_transactionTypeMeta);
+    }
+    if (data.containsKey('points')) {
+      context.handle(
+        _pointsMeta,
+        points.isAcceptableOrUnknown(data['points']!, _pointsMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_pointsMeta);
+    }
+    if (data.containsKey('bill_amount')) {
+      context.handle(
+        _billAmountMeta,
+        billAmount.isAcceptableOrUnknown(data['bill_amount']!, _billAmountMeta),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(
+        _createdDateMeta,
+        createdDate.isAcceptableOrUnknown(
+          data['created_date']!,
+          _createdDateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LoyaltyTransactionData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LoyaltyTransactionData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      customerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}customer_id'],
+      )!,
+      orderId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}order_id'],
+      ),
+      invoiceId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}invoice_id'],
+      ),
+      transactionType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}transaction_type'],
+      )!,
+      points: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}points'],
+      )!,
+      billAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}bill_amount'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_date'],
+      )!,
+    );
+  }
+
+  @override
+  $LoyaltyTransactionsTableTable createAlias(String alias) {
+    return $LoyaltyTransactionsTableTable(attachedDatabase, alias);
+  }
+}
+
+class LoyaltyTransactionData extends DataClass
+    implements Insertable<LoyaltyTransactionData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final int customerId;
+  final int? orderId;
+  final int? invoiceId;
+  final String transactionType;
+  final int points;
+  final double? billAmount;
+  final String? notes;
+  final String createdDate;
+  const LoyaltyTransactionData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.customerId,
+    this.orderId,
+    this.invoiceId,
+    required this.transactionType,
+    required this.points,
+    this.billAmount,
+    this.notes,
+    required this.createdDate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['customer_id'] = Variable<int>(customerId);
+    if (!nullToAbsent || orderId != null) {
+      map['order_id'] = Variable<int>(orderId);
+    }
+    if (!nullToAbsent || invoiceId != null) {
+      map['invoice_id'] = Variable<int>(invoiceId);
+    }
+    map['transaction_type'] = Variable<String>(transactionType);
+    map['points'] = Variable<int>(points);
+    if (!nullToAbsent || billAmount != null) {
+      map['bill_amount'] = Variable<double>(billAmount);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_date'] = Variable<String>(createdDate);
+    return map;
+  }
+
+  LoyaltyTransactionsTableCompanion toCompanion(bool nullToAbsent) {
+    return LoyaltyTransactionsTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      customerId: Value(customerId),
+      orderId: orderId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(orderId),
+      invoiceId: invoiceId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(invoiceId),
+      transactionType: Value(transactionType),
+      points: Value(points),
+      billAmount: billAmount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(billAmount),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdDate: Value(createdDate),
+    );
+  }
+
+  factory LoyaltyTransactionData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LoyaltyTransactionData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      customerId: serializer.fromJson<int>(json['customerId']),
+      orderId: serializer.fromJson<int?>(json['orderId']),
+      invoiceId: serializer.fromJson<int?>(json['invoiceId']),
+      transactionType: serializer.fromJson<String>(json['transactionType']),
+      points: serializer.fromJson<int>(json['points']),
+      billAmount: serializer.fromJson<double?>(json['billAmount']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdDate: serializer.fromJson<String>(json['createdDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'customerId': serializer.toJson<int>(customerId),
+      'orderId': serializer.toJson<int?>(orderId),
+      'invoiceId': serializer.toJson<int?>(invoiceId),
+      'transactionType': serializer.toJson<String>(transactionType),
+      'points': serializer.toJson<int>(points),
+      'billAmount': serializer.toJson<double?>(billAmount),
+      'notes': serializer.toJson<String?>(notes),
+      'createdDate': serializer.toJson<String>(createdDate),
+    };
+  }
+
+  LoyaltyTransactionData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    int? customerId,
+    Value<int?> orderId = const Value.absent(),
+    Value<int?> invoiceId = const Value.absent(),
+    String? transactionType,
+    int? points,
+    Value<double?> billAmount = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    String? createdDate,
+  }) => LoyaltyTransactionData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    customerId: customerId ?? this.customerId,
+    orderId: orderId.present ? orderId.value : this.orderId,
+    invoiceId: invoiceId.present ? invoiceId.value : this.invoiceId,
+    transactionType: transactionType ?? this.transactionType,
+    points: points ?? this.points,
+    billAmount: billAmount.present ? billAmount.value : this.billAmount,
+    notes: notes.present ? notes.value : this.notes,
+    createdDate: createdDate ?? this.createdDate,
+  );
+  LoyaltyTransactionData copyWithCompanion(
+    LoyaltyTransactionsTableCompanion data,
+  ) {
+    return LoyaltyTransactionData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      customerId: data.customerId.present
+          ? data.customerId.value
+          : this.customerId,
+      orderId: data.orderId.present ? data.orderId.value : this.orderId,
+      invoiceId: data.invoiceId.present ? data.invoiceId.value : this.invoiceId,
+      transactionType: data.transactionType.present
+          ? data.transactionType.value
+          : this.transactionType,
+      points: data.points.present ? data.points.value : this.points,
+      billAmount: data.billAmount.present
+          ? data.billAmount.value
+          : this.billAmount,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdDate: data.createdDate.present
+          ? data.createdDate.value
+          : this.createdDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LoyaltyTransactionData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('customerId: $customerId, ')
+          ..write('orderId: $orderId, ')
+          ..write('invoiceId: $invoiceId, ')
+          ..write('transactionType: $transactionType, ')
+          ..write('points: $points, ')
+          ..write('billAmount: $billAmount, ')
+          ..write('notes: $notes, ')
+          ..write('createdDate: $createdDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    customerId,
+    orderId,
+    invoiceId,
+    transactionType,
+    points,
+    billAmount,
+    notes,
+    createdDate,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LoyaltyTransactionData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.customerId == this.customerId &&
+          other.orderId == this.orderId &&
+          other.invoiceId == this.invoiceId &&
+          other.transactionType == this.transactionType &&
+          other.points == this.points &&
+          other.billAmount == this.billAmount &&
+          other.notes == this.notes &&
+          other.createdDate == this.createdDate);
+}
+
+class LoyaltyTransactionsTableCompanion
+    extends UpdateCompanion<LoyaltyTransactionData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<int> customerId;
+  final Value<int?> orderId;
+  final Value<int?> invoiceId;
+  final Value<String> transactionType;
+  final Value<int> points;
+  final Value<double?> billAmount;
+  final Value<String?> notes;
+  final Value<String> createdDate;
+  const LoyaltyTransactionsTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.customerId = const Value.absent(),
+    this.orderId = const Value.absent(),
+    this.invoiceId = const Value.absent(),
+    this.transactionType = const Value.absent(),
+    this.points = const Value.absent(),
+    this.billAmount = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdDate = const Value.absent(),
+  });
+  LoyaltyTransactionsTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required int customerId,
+    this.orderId = const Value.absent(),
+    this.invoiceId = const Value.absent(),
+    required String transactionType,
+    required int points,
+    this.billAmount = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdDate = const Value.absent(),
+  }) : customerId = Value(customerId),
+       transactionType = Value(transactionType),
+       points = Value(points);
+  static Insertable<LoyaltyTransactionData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<int>? customerId,
+    Expression<int>? orderId,
+    Expression<int>? invoiceId,
+    Expression<String>? transactionType,
+    Expression<int>? points,
+    Expression<double>? billAmount,
+    Expression<String>? notes,
+    Expression<String>? createdDate,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (customerId != null) 'customer_id': customerId,
+      if (orderId != null) 'order_id': orderId,
+      if (invoiceId != null) 'invoice_id': invoiceId,
+      if (transactionType != null) 'transaction_type': transactionType,
+      if (points != null) 'points': points,
+      if (billAmount != null) 'bill_amount': billAmount,
+      if (notes != null) 'notes': notes,
+      if (createdDate != null) 'created_date': createdDate,
+    });
+  }
+
+  LoyaltyTransactionsTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<int>? customerId,
+    Value<int?>? orderId,
+    Value<int?>? invoiceId,
+    Value<String>? transactionType,
+    Value<int>? points,
+    Value<double?>? billAmount,
+    Value<String?>? notes,
+    Value<String>? createdDate,
+  }) {
+    return LoyaltyTransactionsTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      customerId: customerId ?? this.customerId,
+      orderId: orderId ?? this.orderId,
+      invoiceId: invoiceId ?? this.invoiceId,
+      transactionType: transactionType ?? this.transactionType,
+      points: points ?? this.points,
+      billAmount: billAmount ?? this.billAmount,
+      notes: notes ?? this.notes,
+      createdDate: createdDate ?? this.createdDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (customerId.present) {
+      map['customer_id'] = Variable<int>(customerId.value);
+    }
+    if (orderId.present) {
+      map['order_id'] = Variable<int>(orderId.value);
+    }
+    if (invoiceId.present) {
+      map['invoice_id'] = Variable<int>(invoiceId.value);
+    }
+    if (transactionType.present) {
+      map['transaction_type'] = Variable<String>(transactionType.value);
+    }
+    if (points.present) {
+      map['points'] = Variable<int>(points.value);
+    }
+    if (billAmount.present) {
+      map['bill_amount'] = Variable<double>(billAmount.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<String>(createdDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LoyaltyTransactionsTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('customerId: $customerId, ')
+          ..write('orderId: $orderId, ')
+          ..write('invoiceId: $invoiceId, ')
+          ..write('transactionType: $transactionType, ')
+          ..write('points: $points, ')
+          ..write('billAmount: $billAmount, ')
+          ..write('notes: $notes, ')
+          ..write('createdDate: $createdDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$CoozyDatabase extends GeneratedDatabase {
   _$CoozyDatabase(QueryExecutor e) : super(e);
   $CoozyDatabaseManager get managers => $CoozyDatabaseManager(this);
@@ -23915,6 +25451,10 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
       $ExpenditureCategoriesTableTable(this);
   late final $ExpendituresTableTable expendituresTable =
       $ExpendituresTableTable(this);
+  late final $CustomerLoyaltyTableTable customerLoyaltyTable =
+      $CustomerLoyaltyTableTable(this);
+  late final $LoyaltyTransactionsTableTable loyaltyTransactionsTable =
+      $LoyaltyTransactionsTableTable(this);
   late final Index idxTableInfoSortOrder = Index(
     'idx_table_info_sort_order',
     'CREATE INDEX idx_table_info_sort_order ON table_info (sort_order_index)',
@@ -24243,6 +25783,18 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     'idx_expenditures_is_deleted',
     'CREATE INDEX idx_expenditures_is_deleted ON expenditures (is_deleted)',
   );
+  late final Index idxLoyaltyCustomerId = Index(
+    'idx_loyalty_customer_id',
+    'CREATE INDEX idx_loyalty_customer_id ON customer_loyalty (customer_id)',
+  );
+  late final Index idxLoyaltyTxCustomerId = Index(
+    'idx_loyalty_tx_customer_id',
+    'CREATE INDEX idx_loyalty_tx_customer_id ON loyalty_transactions (customer_id)',
+  );
+  late final Index idxLoyaltyTxDate = Index(
+    'idx_loyalty_tx_date',
+    'CREATE INDEX idx_loyalty_tx_date ON loyalty_transactions (created_date)',
+  );
   late final CategoriesDao categoriesDao = CategoriesDao(this as CoozyDatabase);
   late final CustomersDao customersDao = CustomersDao(this as CoozyDatabase);
   late final StaffManagementDao staffManagementDao = StaffManagementDao(
@@ -24300,6 +25852,8 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     paymentMethodsTable,
     expenditureCategoriesTable,
     expendituresTable,
+    customerLoyaltyTable,
+    loyaltyTransactionsTable,
     idxTableInfoSortOrder,
     idxCategoriesPosition,
     idxCategoriesName,
@@ -24382,6 +25936,9 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     idxExpendituresDate,
     idxExpendituresCategoryId,
     idxExpendituresIsDeleted,
+    idxLoyaltyCustomerId,
+    idxLoyaltyTxCustomerId,
+    idxLoyaltyTxDate,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -24496,6 +26053,20 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('expenditures', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'customers',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('customer_loyalty', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'customers',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('loyalty_transactions', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -29087,6 +30658,56 @@ final class $$CustomersTableTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $CustomerLoyaltyTableTable,
+    List<CustomerLoyaltyData>
+  >
+  _customerLoyaltyTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.customerLoyaltyTable,
+        aliasName: 'customers__id__customer_loyalty__customer_id',
+      );
+
+  $$CustomerLoyaltyTableTableProcessedTableManager
+  get customerLoyaltyTableRefs {
+    final manager = $$CustomerLoyaltyTableTableTableManager(
+      $_db,
+      $_db.customerLoyaltyTable,
+    ).filter((f) => f.customerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _customerLoyaltyTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<
+    $LoyaltyTransactionsTableTable,
+    List<LoyaltyTransactionData>
+  >
+  _loyaltyTransactionsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.loyaltyTransactionsTable,
+        aliasName: 'customers__id__loyalty_transactions__customer_id',
+      );
+
+  $$LoyaltyTransactionsTableTableProcessedTableManager
+  get loyaltyTransactionsTableRefs {
+    final manager = $$LoyaltyTransactionsTableTableTableManager(
+      $_db,
+      $_db.loyaltyTransactionsTable,
+    ).filter((f) => f.customerId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _loyaltyTransactionsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$CustomersTableTableFilterComposer
@@ -29210,6 +30831,58 @@ class $$CustomersTableTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> customerLoyaltyTableRefs(
+    Expression<bool> Function($$CustomerLoyaltyTableTableFilterComposer f) f,
+  ) {
+    final $$CustomerLoyaltyTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.customerLoyaltyTable,
+      getReferencedColumn: (t) => t.customerId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomerLoyaltyTableTableFilterComposer(
+            $db: $db,
+            $table: $db.customerLoyaltyTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> loyaltyTransactionsTableRefs(
+    Expression<bool> Function($$LoyaltyTransactionsTableTableFilterComposer f)
+    f,
+  ) {
+    final $$LoyaltyTransactionsTableTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.loyaltyTransactionsTable,
+          getReferencedColumn: (t) => t.customerId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LoyaltyTransactionsTableTableFilterComposer(
+                $db: $db,
+                $table: $db.loyaltyTransactionsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -29376,6 +31049,59 @@ class $$CustomersTableTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> customerLoyaltyTableRefs<T extends Object>(
+    Expression<T> Function($$CustomerLoyaltyTableTableAnnotationComposer a) f,
+  ) {
+    final $$CustomerLoyaltyTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.customerLoyaltyTable,
+          getReferencedColumn: (t) => t.customerId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$CustomerLoyaltyTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.customerLoyaltyTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> loyaltyTransactionsTableRefs<T extends Object>(
+    Expression<T> Function($$LoyaltyTransactionsTableTableAnnotationComposer a)
+    f,
+  ) {
+    final $$LoyaltyTransactionsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.loyaltyTransactionsTable,
+          getReferencedColumn: (t) => t.customerId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LoyaltyTransactionsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.loyaltyTransactionsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$CustomersTableTableTableManager
@@ -29395,6 +31121,8 @@ class $$CustomersTableTableTableManager
             bool reservationsTableRefs,
             bool ordersTableRefs,
             bool invoicesTableRefs,
+            bool customerLoyaltyTableRefs,
+            bool loyaltyTransactionsTableRefs,
           })
         > {
   $$CustomersTableTableTableManager(
@@ -29463,6 +31191,8 @@ class $$CustomersTableTableTableManager
                 reservationsTableRefs = false,
                 ordersTableRefs = false,
                 invoicesTableRefs = false,
+                customerLoyaltyTableRefs = false,
+                loyaltyTransactionsTableRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -29470,6 +31200,9 @@ class $$CustomersTableTableTableManager
                     if (reservationsTableRefs) db.reservationsTable,
                     if (ordersTableRefs) db.ordersTable,
                     if (invoicesTableRefs) db.invoicesTable,
+                    if (customerLoyaltyTableRefs) db.customerLoyaltyTable,
+                    if (loyaltyTransactionsTableRefs)
+                      db.loyaltyTransactionsTable,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -29537,6 +31270,48 @@ class $$CustomersTableTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (customerLoyaltyTableRefs)
+                        await $_getPrefetchedData<
+                          Customer,
+                          $CustomersTableTable,
+                          CustomerLoyaltyData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CustomersTableTableReferences
+                              ._customerLoyaltyTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CustomersTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).customerLoyaltyTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.customerId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (loyaltyTransactionsTableRefs)
+                        await $_getPrefetchedData<
+                          Customer,
+                          $CustomersTableTable,
+                          LoyaltyTransactionData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$CustomersTableTableReferences
+                              ._loyaltyTransactionsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$CustomersTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).loyaltyTransactionsTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.customerId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -29561,6 +31336,8 @@ typedef $$CustomersTableTableProcessedTableManager =
         bool reservationsTableRefs,
         bool ordersTableRefs,
         bool invoicesTableRefs,
+        bool customerLoyaltyTableRefs,
+        bool loyaltyTransactionsTableRefs,
       })
     >;
 typedef $$ReservationsTableTableCreateCompanionBuilder =
@@ -30472,6 +32249,31 @@ final class $$OrdersTableTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $LoyaltyTransactionsTableTable,
+    List<LoyaltyTransactionData>
+  >
+  _loyaltyTransactionsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.loyaltyTransactionsTable,
+        aliasName: 'orders__id__loyalty_transactions__order_id',
+      );
+
+  $$LoyaltyTransactionsTableTableProcessedTableManager
+  get loyaltyTransactionsTableRefs {
+    final manager = $$LoyaltyTransactionsTableTableTableManager(
+      $_db,
+      $_db.loyaltyTransactionsTable,
+    ).filter((f) => f.orderId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _loyaltyTransactionsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$OrdersTableTableFilterComposer
@@ -30739,6 +32541,33 @@ class $$OrdersTableTableFilterComposer
                 $removeJoinBuilderFromRootComposer,
           ),
     );
+    return f(composer);
+  }
+
+  Expression<bool> loyaltyTransactionsTableRefs(
+    Expression<bool> Function($$LoyaltyTransactionsTableTableFilterComposer f)
+    f,
+  ) {
+    final $$LoyaltyTransactionsTableTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.loyaltyTransactionsTable,
+          getReferencedColumn: (t) => t.orderId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LoyaltyTransactionsTableTableFilterComposer(
+                $db: $db,
+                $table: $db.loyaltyTransactionsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
     return f(composer);
   }
 }
@@ -31206,6 +33035,33 @@ class $$OrdersTableTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> loyaltyTransactionsTableRefs<T extends Object>(
+    Expression<T> Function($$LoyaltyTransactionsTableTableAnnotationComposer a)
+    f,
+  ) {
+    final $$LoyaltyTransactionsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.loyaltyTransactionsTable,
+          getReferencedColumn: (t) => t.orderId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LoyaltyTransactionsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.loyaltyTransactionsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$OrdersTableTableTableManager
@@ -31227,6 +33083,7 @@ class $$OrdersTableTableTableManager
             bool reservationId,
             bool orderItemsTableRefs,
             bool invoicesTableRefs,
+            bool loyaltyTransactionsTableRefs,
           })
         > {
   $$OrdersTableTableTableManager(_$CoozyDatabase db, $OrdersTableTable table)
@@ -31387,12 +33244,15 @@ class $$OrdersTableTableTableManager
                 reservationId = false,
                 orderItemsTableRefs = false,
                 invoicesTableRefs = false,
+                loyaltyTransactionsTableRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (orderItemsTableRefs) db.orderItemsTable,
                     if (invoicesTableRefs) db.invoicesTable,
+                    if (loyaltyTransactionsTableRefs)
+                      db.loyaltyTransactionsTable,
                   ],
                   addJoins:
                       <
@@ -31490,6 +33350,27 @@ class $$OrdersTableTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (loyaltyTransactionsTableRefs)
+                        await $_getPrefetchedData<
+                          Order,
+                          $OrdersTableTable,
+                          LoyaltyTransactionData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$OrdersTableTableReferences
+                              ._loyaltyTransactionsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$OrdersTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).loyaltyTransactionsTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.orderId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -31516,6 +33397,7 @@ typedef $$OrdersTableTableProcessedTableManager =
         bool reservationId,
         bool orderItemsTableRefs,
         bool invoicesTableRefs,
+        bool loyaltyTransactionsTableRefs,
       })
     >;
 typedef $$OrderItemsTableTableCreateCompanionBuilder =
@@ -32967,6 +34849,31 @@ final class $$InvoicesTableTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $LoyaltyTransactionsTableTable,
+    List<LoyaltyTransactionData>
+  >
+  _loyaltyTransactionsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.loyaltyTransactionsTable,
+        aliasName: 'invoices__id__loyalty_transactions__invoice_id',
+      );
+
+  $$LoyaltyTransactionsTableTableProcessedTableManager
+  get loyaltyTransactionsTableRefs {
+    final manager = $$LoyaltyTransactionsTableTableTableManager(
+      $_db,
+      $_db.loyaltyTransactionsTable,
+    ).filter((f) => f.invoiceId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _loyaltyTransactionsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$InvoicesTableTableFilterComposer
@@ -33200,6 +35107,33 @@ class $$InvoicesTableTableFilterComposer
               }) => $$PaymentTransactionsTableTableFilterComposer(
                 $db: $db,
                 $table: $db.paymentTransactionsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<bool> loyaltyTransactionsTableRefs(
+    Expression<bool> Function($$LoyaltyTransactionsTableTableFilterComposer f)
+    f,
+  ) {
+    final $$LoyaltyTransactionsTableTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.loyaltyTransactionsTable,
+          getReferencedColumn: (t) => t.invoiceId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LoyaltyTransactionsTableTableFilterComposer(
+                $db: $db,
+                $table: $db.loyaltyTransactionsTable,
                 $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
                 joinBuilder: joinBuilder,
                 $removeJoinBuilderFromRootComposer:
@@ -33624,6 +35558,33 @@ class $$InvoicesTableTableAnnotationComposer
         );
     return f(composer);
   }
+
+  Expression<T> loyaltyTransactionsTableRefs<T extends Object>(
+    Expression<T> Function($$LoyaltyTransactionsTableTableAnnotationComposer a)
+    f,
+  ) {
+    final $$LoyaltyTransactionsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.loyaltyTransactionsTable,
+          getReferencedColumn: (t) => t.invoiceId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$LoyaltyTransactionsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.loyaltyTransactionsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
 }
 
 class $$InvoicesTableTableTableManager
@@ -33645,6 +35606,7 @@ class $$InvoicesTableTableTableManager
             bool paymentModeId,
             bool invoiceItemsTableRefs,
             bool paymentTransactionsTableRefs,
+            bool loyaltyTransactionsTableRefs,
           })
         > {
   $$InvoicesTableTableTableManager(
@@ -33783,6 +35745,7 @@ class $$InvoicesTableTableTableManager
                 paymentModeId = false,
                 invoiceItemsTableRefs = false,
                 paymentTransactionsTableRefs = false,
+                loyaltyTransactionsTableRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -33790,6 +35753,8 @@ class $$InvoicesTableTableTableManager
                     if (invoiceItemsTableRefs) db.invoiceItemsTable,
                     if (paymentTransactionsTableRefs)
                       db.paymentTransactionsTable,
+                    if (loyaltyTransactionsTableRefs)
+                      db.loyaltyTransactionsTable,
                   ],
                   addJoins:
                       <
@@ -33887,6 +35852,27 @@ class $$InvoicesTableTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (loyaltyTransactionsTableRefs)
+                        await $_getPrefetchedData<
+                          Invoice,
+                          $InvoicesTableTable,
+                          LoyaltyTransactionData
+                        >(
+                          currentTable: table,
+                          referencedTable: $$InvoicesTableTableReferences
+                              ._loyaltyTransactionsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$InvoicesTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).loyaltyTransactionsTableRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.invoiceId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -33913,6 +35899,7 @@ typedef $$InvoicesTableTableProcessedTableManager =
         bool paymentModeId,
         bool invoiceItemsTableRefs,
         bool paymentTransactionsTableRefs,
+        bool loyaltyTransactionsTableRefs,
       })
     >;
 typedef $$InvoiceItemsTableTableCreateCompanionBuilder =
@@ -40943,6 +42930,1172 @@ typedef $$ExpendituresTableTableProcessedTableManager =
       ExpenditureTableData,
       PrefetchHooks Function({bool categoryId})
     >;
+typedef $$CustomerLoyaltyTableTableCreateCompanionBuilder =
+    CustomerLoyaltyTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required int customerId,
+      Value<int> pointsBalance,
+      Value<int> lifetimePointsEarned,
+      Value<int> lifetimePointsRedeemed,
+      Value<String> tier,
+      Value<double> totalSpent,
+      Value<int> totalVisits,
+      Value<String?> lastVisitDate,
+      Value<String> createdAt,
+      Value<String> modifiedAt,
+    });
+typedef $$CustomerLoyaltyTableTableUpdateCompanionBuilder =
+    CustomerLoyaltyTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<int> customerId,
+      Value<int> pointsBalance,
+      Value<int> lifetimePointsEarned,
+      Value<int> lifetimePointsRedeemed,
+      Value<String> tier,
+      Value<double> totalSpent,
+      Value<int> totalVisits,
+      Value<String?> lastVisitDate,
+      Value<String> createdAt,
+      Value<String> modifiedAt,
+    });
+
+final class $$CustomerLoyaltyTableTableReferences
+    extends
+        BaseReferences<
+          _$CoozyDatabase,
+          $CustomerLoyaltyTableTable,
+          CustomerLoyaltyData
+        > {
+  $$CustomerLoyaltyTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CustomersTableTable _customerIdTable(_$CoozyDatabase db) => db
+      .customersTable
+      .createAlias('customer_loyalty__customer_id__customers__id');
+
+  $$CustomersTableTableProcessedTableManager get customerId {
+    final $_column = $_itemColumn<int>('customer_id')!;
+
+    final manager = $$CustomersTableTableTableManager(
+      $_db,
+      $_db.customersTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_customerIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$CustomerLoyaltyTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $CustomerLoyaltyTableTable> {
+  $$CustomerLoyaltyTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get pointsBalance => $composableBuilder(
+    column: $table.pointsBalance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lifetimePointsEarned => $composableBuilder(
+    column: $table.lifetimePointsEarned,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lifetimePointsRedeemed => $composableBuilder(
+    column: $table.lifetimePointsRedeemed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tier => $composableBuilder(
+    column: $table.tier,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get totalSpent => $composableBuilder(
+    column: $table.totalSpent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalVisits => $composableBuilder(
+    column: $table.totalVisits,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastVisitDate => $composableBuilder(
+    column: $table.lastVisitDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modifiedAt => $composableBuilder(
+    column: $table.modifiedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CustomersTableTableFilterComposer get customerId {
+    final $$CustomersTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.customerId,
+      referencedTable: $db.customersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomersTableTableFilterComposer(
+            $db: $db,
+            $table: $db.customersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CustomerLoyaltyTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $CustomerLoyaltyTableTable> {
+  $$CustomerLoyaltyTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get pointsBalance => $composableBuilder(
+    column: $table.pointsBalance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lifetimePointsEarned => $composableBuilder(
+    column: $table.lifetimePointsEarned,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lifetimePointsRedeemed => $composableBuilder(
+    column: $table.lifetimePointsRedeemed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tier => $composableBuilder(
+    column: $table.tier,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get totalSpent => $composableBuilder(
+    column: $table.totalSpent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalVisits => $composableBuilder(
+    column: $table.totalVisits,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastVisitDate => $composableBuilder(
+    column: $table.lastVisitDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modifiedAt => $composableBuilder(
+    column: $table.modifiedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CustomersTableTableOrderingComposer get customerId {
+    final $$CustomersTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.customerId,
+      referencedTable: $db.customersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomersTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.customersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CustomerLoyaltyTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $CustomerLoyaltyTableTable> {
+  $$CustomerLoyaltyTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<int> get pointsBalance => $composableBuilder(
+    column: $table.pointsBalance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lifetimePointsEarned => $composableBuilder(
+    column: $table.lifetimePointsEarned,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lifetimePointsRedeemed => $composableBuilder(
+    column: $table.lifetimePointsRedeemed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get tier =>
+      $composableBuilder(column: $table.tier, builder: (column) => column);
+
+  GeneratedColumn<double> get totalSpent => $composableBuilder(
+    column: $table.totalSpent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalVisits => $composableBuilder(
+    column: $table.totalVisits,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastVisitDate => $composableBuilder(
+    column: $table.lastVisitDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get modifiedAt => $composableBuilder(
+    column: $table.modifiedAt,
+    builder: (column) => column,
+  );
+
+  $$CustomersTableTableAnnotationComposer get customerId {
+    final $$CustomersTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.customerId,
+      referencedTable: $db.customersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomersTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.customersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$CustomerLoyaltyTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $CustomerLoyaltyTableTable,
+          CustomerLoyaltyData,
+          $$CustomerLoyaltyTableTableFilterComposer,
+          $$CustomerLoyaltyTableTableOrderingComposer,
+          $$CustomerLoyaltyTableTableAnnotationComposer,
+          $$CustomerLoyaltyTableTableCreateCompanionBuilder,
+          $$CustomerLoyaltyTableTableUpdateCompanionBuilder,
+          (CustomerLoyaltyData, $$CustomerLoyaltyTableTableReferences),
+          CustomerLoyaltyData,
+          PrefetchHooks Function({bool customerId})
+        > {
+  $$CustomerLoyaltyTableTableTableManager(
+    _$CoozyDatabase db,
+    $CustomerLoyaltyTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CustomerLoyaltyTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CustomerLoyaltyTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$CustomerLoyaltyTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<int> customerId = const Value.absent(),
+                Value<int> pointsBalance = const Value.absent(),
+                Value<int> lifetimePointsEarned = const Value.absent(),
+                Value<int> lifetimePointsRedeemed = const Value.absent(),
+                Value<String> tier = const Value.absent(),
+                Value<double> totalSpent = const Value.absent(),
+                Value<int> totalVisits = const Value.absent(),
+                Value<String?> lastVisitDate = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> modifiedAt = const Value.absent(),
+              }) => CustomerLoyaltyTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                customerId: customerId,
+                pointsBalance: pointsBalance,
+                lifetimePointsEarned: lifetimePointsEarned,
+                lifetimePointsRedeemed: lifetimePointsRedeemed,
+                tier: tier,
+                totalSpent: totalSpent,
+                totalVisits: totalVisits,
+                lastVisitDate: lastVisitDate,
+                createdAt: createdAt,
+                modifiedAt: modifiedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required int customerId,
+                Value<int> pointsBalance = const Value.absent(),
+                Value<int> lifetimePointsEarned = const Value.absent(),
+                Value<int> lifetimePointsRedeemed = const Value.absent(),
+                Value<String> tier = const Value.absent(),
+                Value<double> totalSpent = const Value.absent(),
+                Value<int> totalVisits = const Value.absent(),
+                Value<String?> lastVisitDate = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> modifiedAt = const Value.absent(),
+              }) => CustomerLoyaltyTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                customerId: customerId,
+                pointsBalance: pointsBalance,
+                lifetimePointsEarned: lifetimePointsEarned,
+                lifetimePointsRedeemed: lifetimePointsRedeemed,
+                tier: tier,
+                totalSpent: totalSpent,
+                totalVisits: totalVisits,
+                lastVisitDate: lastVisitDate,
+                createdAt: createdAt,
+                modifiedAt: modifiedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CustomerLoyaltyTableTable, CustomerLoyaltyData>(
+                    table,
+                  ),
+                  $$CustomerLoyaltyTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({customerId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (customerId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.customerId,
+                        referencedTable: $$CustomerLoyaltyTableTableReferences
+                            ._customerIdTable(db),
+                        referencedColumn: $$CustomerLoyaltyTableTableReferences
+                            ._customerIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CustomerLoyaltyTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $CustomerLoyaltyTableTable,
+      CustomerLoyaltyData,
+      $$CustomerLoyaltyTableTableFilterComposer,
+      $$CustomerLoyaltyTableTableOrderingComposer,
+      $$CustomerLoyaltyTableTableAnnotationComposer,
+      $$CustomerLoyaltyTableTableCreateCompanionBuilder,
+      $$CustomerLoyaltyTableTableUpdateCompanionBuilder,
+      (CustomerLoyaltyData, $$CustomerLoyaltyTableTableReferences),
+      CustomerLoyaltyData,
+      PrefetchHooks Function({bool customerId})
+    >;
+typedef $$LoyaltyTransactionsTableTableCreateCompanionBuilder =
+    LoyaltyTransactionsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required int customerId,
+      Value<int?> orderId,
+      Value<int?> invoiceId,
+      required String transactionType,
+      required int points,
+      Value<double?> billAmount,
+      Value<String?> notes,
+      Value<String> createdDate,
+    });
+typedef $$LoyaltyTransactionsTableTableUpdateCompanionBuilder =
+    LoyaltyTransactionsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<int> customerId,
+      Value<int?> orderId,
+      Value<int?> invoiceId,
+      Value<String> transactionType,
+      Value<int> points,
+      Value<double?> billAmount,
+      Value<String?> notes,
+      Value<String> createdDate,
+    });
+
+final class $$LoyaltyTransactionsTableTableReferences
+    extends
+        BaseReferences<
+          _$CoozyDatabase,
+          $LoyaltyTransactionsTableTable,
+          LoyaltyTransactionData
+        > {
+  $$LoyaltyTransactionsTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CustomersTableTable _customerIdTable(_$CoozyDatabase db) => db
+      .customersTable
+      .createAlias('loyalty_transactions__customer_id__customers__id');
+
+  $$CustomersTableTableProcessedTableManager get customerId {
+    final $_column = $_itemColumn<int>('customer_id')!;
+
+    final manager = $$CustomersTableTableTableManager(
+      $_db,
+      $_db.customersTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_customerIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $OrdersTableTable _orderIdTable(_$CoozyDatabase db) =>
+      db.ordersTable.createAlias('loyalty_transactions__order_id__orders__id');
+
+  $$OrdersTableTableProcessedTableManager? get orderId {
+    final $_column = $_itemColumn<int>('order_id');
+    if ($_column == null) return null;
+    final manager = $$OrdersTableTableTableManager(
+      $_db,
+      $_db.ordersTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_orderIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $InvoicesTableTable _invoiceIdTable(_$CoozyDatabase db) => db
+      .invoicesTable
+      .createAlias('loyalty_transactions__invoice_id__invoices__id');
+
+  $$InvoicesTableTableProcessedTableManager? get invoiceId {
+    final $_column = $_itemColumn<int>('invoice_id');
+    if ($_column == null) return null;
+    final manager = $$InvoicesTableTableTableManager(
+      $_db,
+      $_db.invoicesTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_invoiceIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$LoyaltyTransactionsTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $LoyaltyTransactionsTableTable> {
+  $$LoyaltyTransactionsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get transactionType => $composableBuilder(
+    column: $table.transactionType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get points => $composableBuilder(
+    column: $table.points,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get billAmount => $composableBuilder(
+    column: $table.billAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CustomersTableTableFilterComposer get customerId {
+    final $$CustomersTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.customerId,
+      referencedTable: $db.customersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomersTableTableFilterComposer(
+            $db: $db,
+            $table: $db.customersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrdersTableTableFilterComposer get orderId {
+    final $$OrdersTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.ordersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableTableFilterComposer(
+            $db: $db,
+            $table: $db.ordersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$InvoicesTableTableFilterComposer get invoiceId {
+    final $$InvoicesTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.invoiceId,
+      referencedTable: $db.invoicesTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InvoicesTableTableFilterComposer(
+            $db: $db,
+            $table: $db.invoicesTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LoyaltyTransactionsTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $LoyaltyTransactionsTableTable> {
+  $$LoyaltyTransactionsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get transactionType => $composableBuilder(
+    column: $table.transactionType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get points => $composableBuilder(
+    column: $table.points,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get billAmount => $composableBuilder(
+    column: $table.billAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CustomersTableTableOrderingComposer get customerId {
+    final $$CustomersTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.customerId,
+      referencedTable: $db.customersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomersTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.customersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrdersTableTableOrderingComposer get orderId {
+    final $$OrdersTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.ordersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.ordersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$InvoicesTableTableOrderingComposer get invoiceId {
+    final $$InvoicesTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.invoiceId,
+      referencedTable: $db.invoicesTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InvoicesTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.invoicesTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LoyaltyTransactionsTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $LoyaltyTransactionsTableTable> {
+  $$LoyaltyTransactionsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get transactionType => $composableBuilder(
+    column: $table.transactionType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get points =>
+      $composableBuilder(column: $table.points, builder: (column) => column);
+
+  GeneratedColumn<double> get billAmount => $composableBuilder(
+    column: $table.billAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => column,
+  );
+
+  $$CustomersTableTableAnnotationComposer get customerId {
+    final $$CustomersTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.customerId,
+      referencedTable: $db.customersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CustomersTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.customersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$OrdersTableTableAnnotationComposer get orderId {
+    final $$OrdersTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.orderId,
+      referencedTable: $db.ordersTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$OrdersTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.ordersTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$InvoicesTableTableAnnotationComposer get invoiceId {
+    final $$InvoicesTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.invoiceId,
+      referencedTable: $db.invoicesTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InvoicesTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.invoicesTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$LoyaltyTransactionsTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $LoyaltyTransactionsTableTable,
+          LoyaltyTransactionData,
+          $$LoyaltyTransactionsTableTableFilterComposer,
+          $$LoyaltyTransactionsTableTableOrderingComposer,
+          $$LoyaltyTransactionsTableTableAnnotationComposer,
+          $$LoyaltyTransactionsTableTableCreateCompanionBuilder,
+          $$LoyaltyTransactionsTableTableUpdateCompanionBuilder,
+          (LoyaltyTransactionData, $$LoyaltyTransactionsTableTableReferences),
+          LoyaltyTransactionData,
+          PrefetchHooks Function({
+            bool customerId,
+            bool orderId,
+            bool invoiceId,
+          })
+        > {
+  $$LoyaltyTransactionsTableTableTableManager(
+    _$CoozyDatabase db,
+    $LoyaltyTransactionsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$LoyaltyTransactionsTableTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$LoyaltyTransactionsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$LoyaltyTransactionsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<int> customerId = const Value.absent(),
+                Value<int?> orderId = const Value.absent(),
+                Value<int?> invoiceId = const Value.absent(),
+                Value<String> transactionType = const Value.absent(),
+                Value<int> points = const Value.absent(),
+                Value<double?> billAmount = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String> createdDate = const Value.absent(),
+              }) => LoyaltyTransactionsTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                customerId: customerId,
+                orderId: orderId,
+                invoiceId: invoiceId,
+                transactionType: transactionType,
+                points: points,
+                billAmount: billAmount,
+                notes: notes,
+                createdDate: createdDate,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required int customerId,
+                Value<int?> orderId = const Value.absent(),
+                Value<int?> invoiceId = const Value.absent(),
+                required String transactionType,
+                required int points,
+                Value<double?> billAmount = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String> createdDate = const Value.absent(),
+              }) => LoyaltyTransactionsTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                customerId: customerId,
+                orderId: orderId,
+                invoiceId: invoiceId,
+                transactionType: transactionType,
+                points: points,
+                billAmount: billAmount,
+                notes: notes,
+                createdDate: createdDate,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<
+                    $LoyaltyTransactionsTableTable,
+                    LoyaltyTransactionData
+                  >(table),
+                  $$LoyaltyTransactionsTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({customerId = false, orderId = false, invoiceId = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (customerId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.customerId,
+                            referencedTable:
+                                $$LoyaltyTransactionsTableTableReferences
+                                    ._customerIdTable(db),
+                            referencedColumn:
+                                $$LoyaltyTransactionsTableTableReferences
+                                    ._customerIdTable(db)
+                                    .id,
+                          ) as T;
+                        }
+                        if (orderId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.orderId,
+                            referencedTable:
+                                $$LoyaltyTransactionsTableTableReferences
+                                    ._orderIdTable(db),
+                            referencedColumn:
+                                $$LoyaltyTransactionsTableTableReferences
+                                    ._orderIdTable(db)
+                                    .id,
+                          ) as T;
+                        }
+                        if (invoiceId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.invoiceId,
+                            referencedTable:
+                                $$LoyaltyTransactionsTableTableReferences
+                                    ._invoiceIdTable(db),
+                            referencedColumn:
+                                $$LoyaltyTransactionsTableTableReferences
+                                    ._invoiceIdTable(db)
+                                    .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$LoyaltyTransactionsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $LoyaltyTransactionsTableTable,
+      LoyaltyTransactionData,
+      $$LoyaltyTransactionsTableTableFilterComposer,
+      $$LoyaltyTransactionsTableTableOrderingComposer,
+      $$LoyaltyTransactionsTableTableAnnotationComposer,
+      $$LoyaltyTransactionsTableTableCreateCompanionBuilder,
+      $$LoyaltyTransactionsTableTableUpdateCompanionBuilder,
+      (LoyaltyTransactionData, $$LoyaltyTransactionsTableTableReferences),
+      LoyaltyTransactionData,
+      PrefetchHooks Function({bool customerId, bool orderId, bool invoiceId})
+    >;
 
 class $CoozyDatabaseManager {
   final _$CoozyDatabase _db;
@@ -41023,4 +44176,11 @@ class $CoozyDatabaseManager {
       );
   $$ExpendituresTableTableTableManager get expendituresTable =>
       $$ExpendituresTableTableTableManager(_db, _db.expendituresTable);
+  $$CustomerLoyaltyTableTableTableManager get customerLoyaltyTable =>
+      $$CustomerLoyaltyTableTableTableManager(_db, _db.customerLoyaltyTable);
+  $$LoyaltyTransactionsTableTableTableManager get loyaltyTransactionsTable =>
+      $$LoyaltyTransactionsTableTableTableManager(
+        _db,
+        _db.loyaltyTransactionsTable,
+      );
 }

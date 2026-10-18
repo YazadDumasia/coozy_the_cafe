@@ -1121,6 +1121,57 @@ abstract class LocaleKeys {
       'settings_thermal_printers_network_tab';
   static const String settingsThermalPrintersBluetoothTab =
       'settings_thermal_printers_bluetooth_tab';
+  static const String settingsLocalP2pSyncBtn = 'settings_local_p2p_sync_btn';
+  static const String settingsLocalP2pSyncDialogTitle =
+      'settings_local_p2p_sync_dialog_title';
+  static const String settingsLocalP2pSyncEnableLabel =
+      'settings_local_p2p_sync_enable_label';
+  static const String settingsLocalP2pSyncEnableSubtitle =
+      'settings_local_p2p_sync_enable_subtitle';
+  static const String settingsLocalP2pSyncRoleSection =
+      'settings_local_p2p_sync_role_section';
+  static const String settingsLocalP2pSyncHubTitle =
+      'settings_local_p2p_sync_hub_title';
+  static const String settingsLocalP2pSyncHubDesc =
+      'settings_local_p2p_sync_hub_desc';
+  static const String settingsLocalP2pSyncClientTitle =
+      'settings_local_p2p_sync_client_title';
+  static const String settingsLocalP2pSyncClientDesc =
+      'settings_local_p2p_sync_client_desc';
+  static const String settingsLocalP2pSyncTerminalName =
+      'settings_local_p2p_sync_terminal_name';
+  static const String settingsLocalP2pSyncTerminalHint =
+      'settings_local_p2p_sync_terminal_hint';
+  static const String settingsLocalP2pSyncQrTitle =
+      'settings_local_p2p_sync_qr_title';
+  static const String settingsLocalP2pSyncQrDesc =
+      'settings_local_p2p_sync_qr_desc';
+  static const String settingsLocalP2pSyncAutoDiscoverLabel =
+      'settings_local_p2p_sync_auto_discover_label';
+  static const String settingsLocalP2pSyncAutoDiscoverSubtitle =
+      'settings_local_p2p_sync_auto_discover_subtitle';
+  static const String settingsLocalP2pSyncHubIpLabel =
+      'settings_local_p2p_sync_hub_ip_label';
+  static const String settingsLocalP2pSyncPortLabel =
+      'settings_local_p2p_sync_port_label';
+  static const String settingsLocalP2pSyncRestartBtn =
+      'settings_local_p2p_sync_restart_btn';
+  static const String settingsLocalP2pSyncSaveBtn =
+      'settings_local_p2p_sync_save_btn';
+  static const String settingsLocalP2pSyncStatusHosting =
+      'settings_local_p2p_sync_status_hosting';
+  static const String settingsLocalP2pSyncStatusConnected =
+      'settings_local_p2p_sync_status_connected';
+  static const String settingsLocalP2pSyncStatusDiscovering =
+      'settings_local_p2p_sync_status_discovering';
+  static const String settingsLocalP2pSyncStatusConnecting =
+      'settings_local_p2p_sync_status_connecting';
+  static const String settingsLocalP2pSyncStatusError =
+      'settings_local_p2p_sync_status_error';
+  static const String settingsLocalP2pSyncStatusIdle =
+      'settings_local_p2p_sync_status_idle';
+  static const String settingsLocalP2pSyncStatusDisabled =
+      'settings_local_p2p_sync_status_disabled';
   static const String settingsChangePasswordLabel =
       'settings_change_password_label';
   static const String settingsChangePasswordSubtitle =
@@ -1158,6 +1209,10 @@ abstract class LocaleKeys {
   static const String settingsDarkThemeEnabled = 'settings_dark_theme_enabled';
   static const String settingsDarkThemeDisabled =
       'settings_dark_theme_disabled';
+  static const String settingsEnableCustomerLoyaltyLabel =
+      'settings_enable_customer_loyalty_label';
+  static const String settingsEnableCustomerLoyaltySubtitle =
+      'settings_enable_customer_loyalty_subtitle';
   static const String settingsEnableQrScannerOrderPlacementLabel =
       'settings_enable_qr_scanner_order_placement_label';
   static const String settingsEnableQrScannerOrderPlacementSubtitle =

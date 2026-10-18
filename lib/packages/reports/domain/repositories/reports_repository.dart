@@ -9,6 +9,7 @@ import '../entities/inventory_stock_entry.dart';
 import '../entities/purchase_summary_entry.dart';
 import '../entities/expenditure_summary_entry.dart';
 import '../entities/stock_adjustment_entry.dart';
+import '../entities/demand_insights.dart';
 
 abstract class ReportsRepository {
   Future<List<SalesTrendEntry>> getSalesTrendsReport(
@@ -66,4 +67,10 @@ abstract class ReportsRepository {
     String endIso, {
     SalesPeriodFormat format = SalesPeriodFormat.daily,
   });
+
+  Future<AiDemandInsights> getAiDemandInsights({
+    required String startIso,
+    required String endIso,
+  });
 }
+

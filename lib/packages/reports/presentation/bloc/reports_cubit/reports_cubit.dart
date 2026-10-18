@@ -12,6 +12,7 @@ import '../../../domain/entities/purchase_summary_entry.dart';
 import '../../../domain/entities/expenditure_summary_entry.dart';
 import '../../../domain/entities/menu_item_sales_entry.dart';
 import '../../../domain/entities/stock_adjustment_entry.dart';
+import '../../../domain/entities/demand_insights.dart';
 import '../../../domain/entities/report_category.dart';
 import '../../../domain/usecases/reports_usecases.dart';
 
@@ -32,6 +33,7 @@ class ReportsCubit extends Cubit<ReportsState> {
     required this.getExpenditureSummaryReportUseCase,
     required this.getMenuItemSalesReportUseCase,
     required this.getStockAdjustmentsReportUseCase,
+    required this.getAiDemandInsightsUseCase,
   }) : super(ReportsInitial());
 
   final GetSalesTrendsReportUseCase getSalesTrendsReportUseCase;
@@ -45,6 +47,7 @@ class ReportsCubit extends Cubit<ReportsState> {
   final GetExpenditureSummaryReportUseCase getExpenditureSummaryReportUseCase;
   final GetMenuItemSalesReportUseCase getMenuItemSalesReportUseCase;
   final GetStockAdjustmentsReportUseCase getStockAdjustmentsReportUseCase;
+  final GetAiDemandInsightsUseCase getAiDemandInsightsUseCase;
 
   DateTimeRange _currentRange = DateTimeRange(
     start: DateUtil.startOfDay(
@@ -96,6 +99,8 @@ class ReportsCubit extends Cubit<ReportsState> {
         _loadMenuItemSales();
       case ReportType.stockAdjustments:
         _loadStockAdjustments();
+      case ReportType.aiDemandInsights:
+        _loadAiDemandInsights();
     }
   }
 
@@ -225,4 +230,18 @@ class ReportsCubit extends Cubit<ReportsState> {
       emit(ReportsError(e.toString()));
     }
   }
+
+  Future<void> _loadAiDemandInsights() async {
+    emit(ReportsLoading());
+    try {
+      final insights = await getAiDemandInsightsUseCase(
+        _startIso(),
+        _endIso(),
+      );
+      emit(ReportsAiInsightsLoaded(insights, _currentPeriodFormat));
+    } catch (e) {
+      emit(ReportsError(e.toString()));
+    }
+  }
 }
+

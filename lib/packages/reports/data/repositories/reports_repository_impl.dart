@@ -9,6 +9,8 @@ import '../../domain/entities/inventory_stock_entry.dart';
 import '../../domain/entities/purchase_summary_entry.dart';
 import '../../domain/entities/expenditure_summary_entry.dart';
 import '../../domain/entities/stock_adjustment_entry.dart';
+import '../../domain/entities/demand_insights.dart';
+import '../../domain/utils/offline_forecasting_engine.dart';
 import '../../domain/repositories/reports_repository.dart';
 import '../datasources/reports_local_data_source.dart';
 
@@ -144,4 +146,83 @@ class ReportsRepositoryImpl implements ReportsRepository {
     );
     return maps.map(StockAdjustmentEntry.fromMap).toList();
   }
+
+  @override
+  Future<AiDemandInsights> getAiDemandInsights({
+    required String startIso,
+    required String endIso,
+  }) async {
+    const engine = OfflineForecastingEngine();
+
+    // 1. Fetch historical sales & orders for trend forecasting
+    final salesHistory =
+        await localDataSource.getDailySalesHistoryForForecast(
+          startIso: startIso,
+          endIso: endIso,
+        );
+
+    // 2. Fetch hourly orders distribution
+    final hourlyDistribution =
+        await localDataSource.getHourlyOrderDistribution(
+          startIso: startIso,
+          endIso: endIso,
+        );
+
+    // 3. Fetch current inventory & consumption rates
+    final currentInventory = await localDataSource.getInventoryStockReport();
+    final recentConsumption =
+        await localDataSource.getRecentInventoryConsumption(
+          startIso: startIso,
+          endIso: endIso,
+        );
+
+    // 4. Fetch menu engineering popularity vs margin raw data
+    final menuRawData = await localDataSource.getMenuEngineeringRawData(
+      startIso: startIso,
+      endIso: endIso,
+    );
+
+    // Compute forecasting & predictions
+    final salesForecasts = engine.predictSales(salesHistory, forecastDays: 7);
+    final hourlyDemands = engine.analyzeHourlyDemand(hourlyDistribution);
+    final depletionForecasts = engine.forecastDepletion(
+      currentInventory: currentInventory,
+      recentConsumption: recentConsumption,
+    );
+    final menuMatrix = engine.computeMenuEngineering(menuRawData);
+
+    final expectedTomorrow =
+        salesForecasts.isNotEmpty ? salesForecasts.first.predictedSales : 0.0;
+
+    double growthTrend = 0.0;
+    if (salesHistory.length >= 2) {
+      final firstHalf = salesHistory.take(salesHistory.length ~/ 2);
+      final secondHalf = salesHistory.skip(salesHistory.length ~/ 2);
+      final firstAvg =
+          firstHalf.fold<double>(
+            0.0,
+            (acc, el) => acc + (el['sales'] as num).toDouble(),
+          ) /
+          firstHalf.length;
+      final secondAvg =
+          secondHalf.fold<double>(
+            0.0,
+            (acc, el) => acc + (el['sales'] as num).toDouble(),
+          ) /
+          secondHalf.length;
+      if (firstAvg > 0) {
+        growthTrend = ((secondAvg - firstAvg) / firstAvg) * 100;
+      }
+    }
+
+    return AiDemandInsights(
+      salesForecasts: salesForecasts,
+      hourlyDemands: hourlyDemands,
+      depletionForecasts: depletionForecasts,
+      menuMatrixItems: menuMatrix,
+      expectedTomorrowSales: double.parse(expectedTomorrow.toStringAsFixed(2)),
+      growthTrendPercentage: double.parse(growthTrend.toStringAsFixed(1)),
+    );
+  }
 }
+

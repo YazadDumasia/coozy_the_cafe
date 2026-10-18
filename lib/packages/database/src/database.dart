@@ -62,6 +62,8 @@ part 'database.g.dart';
     PaymentMethodsTable,
     ExpenditureCategoriesTable,
     ExpendituresTable,
+    CustomerLoyaltyTable,
+    LoyaltyTransactionsTable,
   ],
   daos: [
     CategoriesDao,
@@ -165,6 +167,49 @@ class CoozyDatabase extends _$CoozyDatabase {
       ''');
       await customStatement(
         'CREATE INDEX IF NOT EXISTS idx_expenditures_date ON expenditures (date DESC, id DESC);',
+      );
+      await customStatement('''
+        CREATE TABLE IF NOT EXISTS customer_loyalty (
+          created_by INTEGER,
+          updated_by INTEGER,
+          id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          hash_id TEXT NOT NULL UNIQUE,
+          customer_id INTEGER NOT NULL UNIQUE REFERENCES customers (id) ON DELETE CASCADE,
+          points_balance INTEGER NOT NULL DEFAULT 0,
+          lifetime_points_earned INTEGER NOT NULL DEFAULT 0,
+          lifetime_points_redeemed INTEGER NOT NULL DEFAULT 0,
+          tier TEXT NOT NULL DEFAULT 'Bronze',
+          total_spent REAL NOT NULL DEFAULT 0.0,
+          total_visits INTEGER NOT NULL DEFAULT 0,
+          last_visit_date TEXT,
+          created_at TEXT NOT NULL,
+          modified_at TEXT NOT NULL
+        );
+      ''');
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_loyalty_customer_id ON customer_loyalty (customer_id);',
+      );
+      await customStatement('''
+        CREATE TABLE IF NOT EXISTS loyalty_transactions (
+          created_by INTEGER,
+          updated_by INTEGER,
+          id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          hash_id TEXT NOT NULL UNIQUE,
+          customer_id INTEGER NOT NULL REFERENCES customers (id) ON DELETE CASCADE,
+          order_id INTEGER REFERENCES orders (id),
+          invoice_id INTEGER REFERENCES invoices (id),
+          transaction_type TEXT NOT NULL,
+          points INTEGER NOT NULL,
+          bill_amount REAL,
+          notes TEXT,
+          created_date TEXT NOT NULL
+        );
+      ''');
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_loyalty_tx_customer_id ON loyalty_transactions (customer_id);',
+      );
+      await customStatement(
+        'CREATE INDEX IF NOT EXISTS idx_loyalty_tx_date ON loyalty_transactions (created_date);',
       );
       await batch((batch) {
         for (final p in db_constants.DbConstants.allPermissions) {
