@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/sign_up_page/cubit/sign_up_cubit.dart';
 
-// Assuming RadioGroup is a custom widget provided by the project or a library.
-// If it's not found, it might be a part of a generic implementation.
-// Note: In the original file, it was used with a child containing Radio buttons.
+// Gender selection field utilizing a responsive radio group.
 
 class SignUpGenderField extends StatelessWidget {
   const SignUpGenderField({

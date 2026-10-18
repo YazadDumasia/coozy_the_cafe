@@ -162,7 +162,7 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
         return;
       }
 
-      // Step 1: Authenticate the user
+      // Authenticate credentials
       final user = await loginUseCase(email: email, password: password);
       if (isClosed) return;
       if (user == null) {
@@ -172,7 +172,7 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
         return;
       }
 
-      // Step 2: Log IP address and build information
+      // Record environment and client details for audit logging
       PlatformUtils.debugLog(LoginScreenCubit, '=== POST-LOGIN INFO ===');
       PlatformUtils.debugLog(
         LoginScreenCubit,
@@ -185,7 +185,7 @@ class LoginScreenCubit extends Cubit<LoginScreenState> {
         'Platform: $_platform, Build Mode: $_buildMode',
       );
 
-      // Step 3: Register user as superuser with all privileges in local DB
+      // Persist superuser record in local database
       final firstName = email.split('@').first;
       await registerSuperUserUseCase(
         email: email,

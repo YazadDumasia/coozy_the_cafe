@@ -78,7 +78,7 @@ class RecipesFullListCubit extends Cubit<RecipesFullListState> {
       uniqueIngredients = <String>[];
       ingredientFilterOptionsList = <FilterItemModel>[];
 
-      // Step 1: Initialize/Seed Recipes if first time
+      // Seed default recipes if not already initialized
       await initializeRecipesUseCase(
         onProgress: (current, total) {
           emit(
@@ -91,7 +91,7 @@ class RecipesFullListCubit extends Cubit<RecipesFullListState> {
         },
       );
 
-      // Step 2: Fetch raw Recipes
+      // Load all recipes from storage
       final data = await getRecipesUseCase();
       recipeList = data;
       currentFilteredList = data;

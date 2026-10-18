@@ -84,13 +84,12 @@ class CategoriesDao extends DatabaseAccessor<CoozyDatabase>
     return transaction(() async {
       final int sortRecordIndexToDelete = model.position ?? 0;
 
-      // Step 1: Delete the item from the database
+      // Remove category row
       final int rowsAffected = await (delete(
         categoriesTable,
       )..where((t) => t.id.equals(model.id))).go();
 
-      // Step 2: Update sortOrderIndex for items with a higher index in batches
-      // We can use customUpdate to efficiently run the UPDATE query.
+      // Shift higher positions down by one to close gap
       await customUpdate(
         'UPDATE ${categoriesTable.actualTableName} SET position = position - 1 WHERE position > ?',
         variables: [Variable.withInt(sortRecordIndexToDelete)],

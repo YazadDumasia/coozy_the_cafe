@@ -190,8 +190,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       _isUserNameAvailable.sink.add(null);
       return;
     }
-    // Simulate checking username availability.
-    // Replace with real API validation if available.
+    // Local length check placeholder until backend username verification is hooked up
     if (userName.length >= 4) {
       _isUserNameAvailable.sink.add(true);
     } else if (userName.isEmpty) {
@@ -341,7 +340,7 @@ class SignUpCubit extends Cubit<SignUpState> {
   }) async {
     updateButtonLoading(true);
     try {
-      // Simulate API call/delay
+      // Mock network roundtrip delay
       await Future.delayed(const Duration(seconds: 2));
       updateButtonLoading(false);
       onSuccess?.call();

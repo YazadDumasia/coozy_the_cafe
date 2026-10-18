@@ -9,7 +9,9 @@ import '../../../domain/entities/customer_entity.dart';
 import '../../bloc/customer_bloc.dart';
 import '../../widgets/add_edit_customer/add_edit_customer_bottom_sheet.dart';
 
+/// UI and dialog action handlers for the Customer list screen.
 class CustomerListScreenActions {
+  /// Infinite scrolling listener that loads the next page when reaching 90% scroll depth.
   static void onScroll(
     BuildContext context,
     ScrollController scrollController,
@@ -22,12 +24,14 @@ class CustomerListScreenActions {
     }
   }
 
+  /// Triggers a search query filter across customers, resetting pagination.
   static void onSearchChanged(BuildContext context, String query) {
     context.read<CustomerBloc>().add(
       LoadCustomers(isRefresh: true, searchQuery: query),
     );
   }
 
+  /// Opens the bottom sheet modal to create a new customer or update [customer].
   static void showAddEditForm(
     BuildContext context, [
     CustomerEntity? customer,
@@ -42,6 +46,7 @@ class CustomerListScreenActions {
     );
   }
 
+  /// Shows confirmation dialog and deletes customer by [id] on approval.
   static void deleteCustomer(BuildContext context, int id) {
     showDialog(
       context: context,

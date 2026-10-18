@@ -8,7 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as share;
 import 'package:coozy_the_cafe/packages/auth/presentation/pages/login_page/cubit/login_screen_cubit.dart';
 
+/// Navigation and event handlers for the user login page.
 class LoginPageActions {
+  /// Confirms application exit when user initiates a back navigation from login root.
   static Future<void> handlePopAction(
     BuildContext context,
     bool didPop,
@@ -64,6 +66,7 @@ class LoginPageActions {
     }
   }
 
+  /// Validates form inputs and executes the authentication workflow via [LoginScreenCubit].
   static Future<void> callLoginApi(
     BuildContext context,
     GlobalKey<FormState> formKey,
@@ -115,6 +118,7 @@ class LoginPageActions {
     }
   }
 
+  /// Navigates to the account registration screen.
   static void onGoToRegisterPage(BuildContext context) {
     context.go(core.AppRoutePath.registrationRoute);
   }
