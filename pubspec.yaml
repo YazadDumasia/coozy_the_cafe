@@ -23,7 +23,7 @@ dependencies:
   material_ui: ^1.7.0
   cupertino_ui: ^1.1.3
 #  database
-#  Note: After updating drift or sqlite3 versions, sync web assets with:
+#  Note: After updating drift and sqlite3 versions, sync web assets with:
 #  dart run scripts/sync_drift_web_assets.dart
   synchronized: ^3.5.0
   drift: ^2.35.2
