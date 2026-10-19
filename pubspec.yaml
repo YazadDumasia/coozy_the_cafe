@@ -152,8 +152,8 @@ dependencies:
   flutter_slidable: ^4.0.0
   flutter_localizations:
     sdk: flutter
-  world_countries: ^4.4.0
-  open_filex: ^4.7.0
+  world_countries: ^4.6.0
+  open_filex: ^5.0.0
   timelines_plus: ^2.0.1
   # MCP Support for testing
   marionette_flutter: ^0.7.0
