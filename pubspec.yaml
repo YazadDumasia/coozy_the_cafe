@@ -9,6 +9,7 @@ version: 1.0.0+1
 # flutter build web --wasm --release --tree-shake-icons --base-href /coozy_the_cafe/
 # flutter build apk --release --tree-shake-icons
 # flutter pub upgrade --major-versions
+# dart run scripts/sync_drift_web_assets.dart
 
 environment:
   sdk: ^3.13.4
@@ -22,6 +23,8 @@ dependencies:
   material_ui: ^1.7.0
   cupertino_ui: ^1.1.3
 #  database
+#  Note: After updating drift or sqlite3 versions, sync web assets with:
+#  dart run scripts/sync_drift_web_assets.dart
   synchronized: ^3.5.0
   drift: ^2.35.2
   drift_flutter: ^0.3.1
