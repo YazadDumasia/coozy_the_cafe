@@ -337,10 +337,8 @@ class _OrderListScreenState extends State<OrderListScreen> {
                           children: [
                             Icon(
                               Icons.receipt_long_outlined,
-                              size: 64,
-                              color: colorScheme.onSurfaceVariant.withAlpha(
-                                120,
-                              ),
+                              size: 120,
+                              color: colorScheme.primary.withValues(alpha: 0.5),
                             ),
                             const SizedBox(height: 16),
                             Text(

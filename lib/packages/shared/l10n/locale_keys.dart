@@ -1213,6 +1213,12 @@ abstract class LocaleKeys {
       'settings_enable_customer_loyalty_label';
   static const String settingsEnableCustomerLoyaltySubtitle =
       'settings_enable_customer_loyalty_subtitle';
+  static const String settingsLoyaltyExchangeRateLabel =
+      'settings_loyalty_exchange_rate_label';
+  static const String settingsLoyaltyExchangeRateSubtitle =
+      'settings_loyalty_exchange_rate_subtitle';
+  static const String settingsLoyaltyExchangeRateHelper =
+      'settings_loyalty_exchange_rate_helper';
   static const String settingsEnableQrScannerOrderPlacementLabel =
       'settings_enable_qr_scanner_order_placement_label';
   static const String settingsEnableQrScannerOrderPlacementSubtitle =
@@ -1645,6 +1651,7 @@ abstract class LocaleKeys {
   static const String reportPageColumnType = 'report_page_column_type';
   static const String reportPageColumnUnit = 'report_page_column_unit';
   static const String reportPageEmptyData = 'report_page_empty_data';
+  static const String reportPageEmptySubtitle = 'report_page_empty_subtitle';
   static const String reportPageExportAsCsv = 'report_page_export_as_csv';
   static const String reportPageExportAsExcel = 'report_page_export_as_excel';
   static const String reportPageExportAsPdf = 'report_page_export_as_pdf';

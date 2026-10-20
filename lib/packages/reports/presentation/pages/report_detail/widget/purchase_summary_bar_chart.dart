@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-
+import 'report_empty_view.dart';
 import '../../../../domain/entities/purchase_summary_entry.dart';
 
 class PurchaseSummaryBarChart extends StatelessWidget {
@@ -10,16 +10,14 @@ class PurchaseSummaryBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     if (entries.isEmpty) {
-      return Center(
-        child: Text(
-          'No purchases recorded in this date range',
-          style: Theme.of(context).textTheme.bodyMedium
-              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
-        ),
+      return const ReportEmptyView(
+        icon: Icons.shopping_bag_outlined,
+        title: 'No Purchases Recorded',
+        subtitle: 'No purchase or procurement entries found for the selected date range.',
       );
     }
+    final scheme = Theme.of(context).colorScheme;
     final Map<String, PurchaseSummaryEntry> aggregated = {};
     for (final e in entries) {
       if (aggregated.containsKey(e.itemName)) {

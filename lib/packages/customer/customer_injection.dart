@@ -28,6 +28,7 @@ void registerCustomerDependencies(GetIt sl) {
   sl.registerLazySingleton(() => AddLoyaltyPointsUseCase(sl()));
   sl.registerLazySingleton(() => RedeemLoyaltyPointsUseCase(sl()));
   sl.registerLazySingleton(() => GetLoyaltyTransactionsUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateCustomerTierUseCase(sl()));
 
   // BLoC
   sl.registerFactory(

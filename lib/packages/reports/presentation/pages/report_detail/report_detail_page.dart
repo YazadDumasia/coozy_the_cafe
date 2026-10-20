@@ -21,6 +21,7 @@ import 'widget/sales_period_format_selector.dart';
 import 'widget/sales_trends_chart.dart';
 import 'widget/report_data_table.dart';
 import 'widget/insights_dashboard_view.dart';
+import 'widget/report_empty_view.dart';
 
 class ReportDetailPage extends StatefulWidget {
   const ReportDetailPage({super.key, required this.category});
@@ -999,7 +1000,9 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                     if (isTableView) {
                       final exportData = _extractExportData(state, context);
                       if (exportData == null || exportData.rows.isEmpty) {
-                        return const _EmptyChart();
+                        return ReportEmptyView(
+                          onAction: () => _refreshReport(),
+                        );
                       }
                       return ReportDataTable(
                         headers: exportData.headers,
@@ -1014,6 +1017,24 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
           ),
         ],
       ),
+    );
+  }
+
+  void _refreshReport() {
+    if (_range != null) {
+      context.read<ReportsCubit>().loadReport(
+        widget.category.type,
+        _range!,
+        itemName: widget.category.filterItemName,
+      );
+    } else {
+      context.read<ReportsCubit>().refresh(widget.category.type);
+    }
+  }
+
+  Widget _buildEmptyState() {
+    return ReportEmptyView(
+      onAction: () => _refreshReport(),
     );
   }
 
@@ -1032,7 +1053,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                   format: state.format,
                 ),
               )
-            : const _EmptyChart(),
+            : _buildEmptyState(),
       ReportType.dailySales =>
         state is ReportsSalesTrendsLoaded
             ? Padding(
@@ -1047,7 +1068,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                       padding: const EdgeInsets.all(16),
                       child: SalesLineChart(entries: state.entries),
                     )
-                  : const _EmptyChart()),
+                  : _buildEmptyState()),
       ReportType.monthlySales =>
         state is ReportsSalesTrendsLoaded
             ? Padding(
@@ -1062,14 +1083,14 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                       padding: const EdgeInsets.all(16),
                       child: MonthlyBarChart(entries: state.entries),
                     )
-                  : const _EmptyChart()),
+                  : _buildEmptyState()),
       ReportType.topSellingItems =>
         state is ReportsTopItemsLoaded
             ? Padding(
                 padding: const EdgeInsets.all(16),
                 child: TopItemsBarChart(items: state.items),
               )
-            : const _EmptyChart(),
+            : _buildEmptyState(),
       ReportType.menuItemSales =>
         state is ReportsMenuItemSalesLoaded
             ? Padding(
@@ -1079,73 +1100,63 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
                   format: state.format,
                 ),
               )
-            : const _EmptyChart(),
+            : _buildEmptyState(),
       ReportType.paymentModes =>
         state is ReportsPaymentModesLoaded
             ? Padding(
                 padding: const EdgeInsets.all(16),
                 child: PaymentModePieChart(entries: state.entries),
               )
-            : const _EmptyChart(),
+            : _buildEmptyState(),
       ReportType.salesDashboard =>
         state is ReportsDashboardLoaded
-            ? SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: DashboardKpiCard(dashboard: state.dashboard),
-              )
-            : const _EmptyChart(),
+            ? (state.dashboard.totalInvoices == 0 && state.dashboard.totalSales == 0)
+                ? _buildEmptyState()
+                : SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: DashboardKpiCard(dashboard: state.dashboard),
+                  )
+            : _buildEmptyState(),
       ReportType.inventoryStock =>
         state is ReportsInventoryStockLoaded
-            ? Padding(
-                padding: const EdgeInsets.all(16),
-                child: InventoryStockBarChart(entries: state.entries),
-              )
-            : const _EmptyChart(),
+            ? (state.entries.isEmpty
+                ? _buildEmptyState()
+                : Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: InventoryStockBarChart(entries: state.entries),
+                  ))
+            : _buildEmptyState(),
       ReportType.purchases =>
         state is ReportsPurchasesLoaded
-            ? Padding(
-                padding: const EdgeInsets.all(16),
-                child: PurchaseSummaryBarChart(entries: state.entries),
-              )
-            : const _EmptyChart(),
+            ? (state.entries.isEmpty
+                ? _buildEmptyState()
+                : Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: PurchaseSummaryBarChart(entries: state.entries),
+                  ))
+            : _buildEmptyState(),
       ReportType.expenditure =>
         state is ReportsExpenditureLoaded
-            ? Padding(
-                padding: const EdgeInsets.all(16),
-                child: ExpenditureSummaryPieChart(entries: state.entries),
-              )
-            : const _EmptyChart(),
+            ? (state.entries.isEmpty
+                ? _buildEmptyState()
+                : Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: ExpenditureSummaryPieChart(entries: state.entries),
+                  ))
+            : _buildEmptyState(),
       ReportType.stockAdjustments =>
         state is ReportsStockAdjustmentsLoaded
-            ? Padding(
-                padding: const EdgeInsets.all(16),
-                child: StockAdjustmentsBarChart(entries: state.entries),
-              )
-            : const _EmptyChart(),
+            ? (state.entries.isEmpty
+                ? _buildEmptyState()
+                : Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: StockAdjustmentsBarChart(entries: state.entries),
+                  ))
+            : _buildEmptyState(),
       ReportType.aiDemandInsights =>
         state is ReportsAiInsightsLoaded
             ? InsightsDashboardView(insights: state.insights)
-            : const _EmptyChart(),
+            : _buildEmptyState(),
     };
-  }
-}
-
-class _EmptyChart extends StatelessWidget {
-  const _EmptyChart();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        context.tr(
-              shared.LocaleKeys.reportPageEmptyData,
-              track: shared.TrackConstants.reportPageTrack,
-            ) ??
-            'No data found for the selected range',
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-        ),
-      ),
-    );
   }
 }

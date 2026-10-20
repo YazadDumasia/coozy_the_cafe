@@ -65,6 +65,7 @@ class AddLoyaltyPointsUseCase {
     required double billAmount,
     int? orderId,
     int? invoiceId,
+    String? notes,
   }) async {
     await repository.addLoyaltyPoints(
       customerId: customerId,
@@ -72,6 +73,7 @@ class AddLoyaltyPointsUseCase {
       billAmount: billAmount,
       orderId: orderId,
       invoiceId: invoiceId,
+      notes: notes,
     );
   }
 }
@@ -101,6 +103,18 @@ class GetLoyaltyTransactionsUseCase {
 
   Future<List<Map<String, dynamic>>> call(int customerId) async {
     return await repository.getLoyaltyTransactions(customerId);
+  }
+}
+
+class UpdateCustomerTierUseCase {
+  final CustomerRepository repository;
+  UpdateCustomerTierUseCase(this.repository);
+
+  Future<void> call({
+    required int customerId,
+    required String tier,
+  }) async {
+    await repository.updateCustomerTier(customerId: customerId, tier: tier);
   }
 }
 

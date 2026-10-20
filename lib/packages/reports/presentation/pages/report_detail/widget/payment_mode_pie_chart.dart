@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:syncfusion_flutter_charts/charts.dart';
-
+import 'report_empty_view.dart';
 import '../../../../domain/entities/payment_mode_entry.dart';
 
 class PaymentModePieChart extends StatelessWidget {
@@ -10,19 +9,8 @@ class PaymentModePieChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     if (entries.isEmpty) {
-      return Center(
-        child: Text(
-          context.tr(
-                shared.LocaleKeys.reportPageEmptyData,
-                track: shared.TrackConstants.reportPageTrack,
-              ) ??
-              'No data found for the selected range',
-          style: Theme.of(context).textTheme.bodyMedium
-              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
-        ),
-      );
+      return const ReportEmptyView();
     }
     final total = entries.fold<double>(0, (s, e) => s + e.totalAmount);
     return SfCircularChart(

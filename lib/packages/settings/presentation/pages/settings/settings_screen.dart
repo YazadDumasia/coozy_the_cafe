@@ -11,6 +11,8 @@ import '../../../../kitchen_management/presentation/widgets/thermal_kitchen_slip
 import 'widget/thermal_printer_config_dialog.dart';
 import 'widget/invoice_share_config_dialog.dart';
 import 'widget/local_p2p_sync_config_dialog.dart';
+import 'widget/loyalty_tier_setup_dialog.dart';
+import '../../../../customer/domain/entities/loyalty_tier_config.dart';
 import '../../../../core/coozy_core.dart' as core;
 import '../../../../shared/coozy_shared.dart' as shared;
 
@@ -38,6 +40,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ValueNotifier(false);
   final ValueNotifier<bool> _enableCustomerLoyaltyNotifier =
       ValueNotifier(false);
+  final ValueNotifier<double> _loyaltyExchangeRateNotifier =
+      ValueNotifier(0.50);
+  late final TextEditingController _loyaltyExchangeRateController;
+  late final FocusNode _loyaltyExchangeRateFocusNode;
+
+  final ValueNotifier<bool> _enableLoyaltyTiersNotifier = ValueNotifier(true);
+  final ValueNotifier<List<LoyaltyTierConfig>> _loyaltyTierConfigsNotifier =
+      ValueNotifier(LoyaltyTierConfig.defaultPrebuiltList());
+  final ValueNotifier<List<String>> _loyaltyTiersListNotifier = ValueNotifier([
+    'Bronze',
+    'Silver',
+    'Gold',
+    'VIP',
+  ]);
+  final ValueNotifier<String> _loyaltyDefaultTierNotifier = ValueNotifier('Bronze');
   final ValueNotifier<String> _selectedCurrencySymbolNotifier = ValueNotifier(
     '₹',
   );
@@ -62,6 +79,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    _loyaltyExchangeRateController = TextEditingController(text: '0.50');
+    _loyaltyExchangeRateFocusNode = FocusNode();
     _scrollController.addListener(_onScroll);
     _loadSettings();
   }
@@ -86,6 +105,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   void dispose() {
+    _loyaltyExchangeRateController.dispose();
+    _loyaltyExchangeRateFocusNode.dispose();
+    _loyaltyExchangeRateNotifier.dispose();
+    _enableLoyaltyTiersNotifier.dispose();
+    _loyaltyTierConfigsNotifier.dispose();
+    _loyaltyTiersListNotifier.dispose();
+    _loyaltyDefaultTierNotifier.dispose();
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     _showScrollToTopNotifier.dispose();
@@ -132,6 +158,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
         .getBoolValue(
           key: shared.PreferencesKeys.enableCustomerLoyalty,
         );
+    final savedExchangeRate = shared.LocalManager.instance
+            .getDoubleValue(
+              key: shared.PreferencesKeys.loyaltyPointsExchangeRate,
+            ) ??
+        0.50;
+    _loyaltyExchangeRateNotifier.value = savedExchangeRate;
+    _loyaltyExchangeRateController.text =
+        savedExchangeRate.toStringAsFixed(2);
+
+    final tiersEnabled = shared.LocalManager.instance.getBoolValue(
+          key: shared.PreferencesKeys.enableLoyaltyTiers,
+        );
+    _enableLoyaltyTiersNotifier.value = tiersEnabled;
+
+    final savedConfigsJson = shared.LocalManager.instance.getLocaleKeys(
+      key: shared.PreferencesKeys.loyaltyTierThresholds,
+    );
+    final loadedConfigs = LoyaltyTierConfig.decodeList(savedConfigsJson);
+    _loyaltyTierConfigsNotifier.value = loadedConfigs;
+
+    final savedTiers = shared.LocalManager.instance.getStringList(
+      key: shared.PreferencesKeys.loyaltyTiersList,
+    );
+    if (savedTiers != null && savedTiers.isNotEmpty) {
+      _loyaltyTiersListNotifier.value = savedTiers;
+    } else {
+      _loyaltyTiersListNotifier.value = loadedConfigs.map((e) => e.name).toList();
+    }
+
+    final savedDefaultTier = shared.LocalManager.instance.getLocaleKeys(
+      key: shared.PreferencesKeys.loyaltyDefaultTier,
+    );
+    _loyaltyDefaultTierNotifier.value = (savedDefaultTier != null && savedDefaultTier.isNotEmpty)
+        ? savedDefaultTier
+        : (loadedConfigs.firstOrNull?.name ?? 'Bronze');
 
     // Load saved currency preferences
     final savedPrimarySymbol = prefs.getString(
@@ -1454,20 +1515,432 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   value: enabled,
                                   activeThumbColor: theme.primaryColor,
                                   onChanged: (value) async {
+                                    if (value) {
+                                      final config = await LoyaltyTierSetupDialog.show(
+                                        context,
+                                        initialTiersEnabled:
+                                            _enableLoyaltyTiersNotifier.value,
+                                        initialTierConfigs:
+                                            _loyaltyTierConfigsNotifier.value,
+                                        initialDefaultTier:
+                                            _loyaltyDefaultTierNotifier.value,
+                                      );
+
+                                      if (config != null) {
+                                        final tiersEnabled =
+                                            config['tiersEnabled'] as bool? ??
+                                                false;
+                                        final tierConfigs =
+                                            (config['tierConfigs'] as List?)
+                                                    ?.cast<LoyaltyTierConfig>() ??
+                                                _loyaltyTierConfigsNotifier.value;
+                                        final tiers = (config['tiers'] as List?)
+                                                ?.cast<String>() ??
+                                            tierConfigs.map((e) => e.name).toList();
+                                        final defaultTier =
+                                            config['defaultTier'] as String? ??
+                                                'Bronze';
+
+                                        _enableLoyaltyTiersNotifier.value =
+                                            tiersEnabled;
+                                        _loyaltyTierConfigsNotifier.value =
+                                            tierConfigs;
+                                        _loyaltyTiersListNotifier.value = tiers;
+                                        _loyaltyDefaultTierNotifier.value =
+                                            defaultTier;
+
+                                        await shared.LocalManager.instance
+                                            .setBoolValue(
+                                          key: shared.PreferencesKeys
+                                              .enableLoyaltyTiers,
+                                          value: tiersEnabled,
+                                        );
+                                        await shared.LocalManager.instance
+                                            .setStringList(
+                                          key: shared.PreferencesKeys
+                                              .loyaltyTiersList,
+                                          value: tiers,
+                                        );
+                                        await shared.LocalManager.instance
+                                            .setLocaleKeys(
+                                          key: shared.PreferencesKeys
+                                              .loyaltyTierThresholds,
+                                          value: LoyaltyTierConfig.encodeList(
+                                            tierConfigs,
+                                          ),
+                                        );
+                                        await shared.LocalManager.instance
+                                            .setLocaleKeys(
+                                          key: shared.PreferencesKeys
+                                              .loyaltyDefaultTier,
+                                          value: defaultTier,
+                                        );
+                                      }
+                                    }
+
                                     _enableCustomerLoyaltyNotifier.value =
                                         value;
                                     await shared.LocalManager.instance
                                         .setBoolValue(
-                                          key: shared
-                                              .PreferencesKeys
-                                              .enableCustomerLoyalty,
-                                          value: value,
-                                        );
+                                      key: shared.PreferencesKeys
+                                          .enableCustomerLoyalty,
+                                      value: value,
+                                    );
                                   },
                                 );
                               },
                             ),
                           ],
+                        ),
+                        ValueListenableBuilder<bool>(
+                          valueListenable: _enableCustomerLoyaltyNotifier,
+                          builder: (context, isLoyaltyEnabled, _) {
+                            if (!isLoyaltyEnabled) return const SizedBox.shrink();
+                            return Column(
+                              children: [
+                                const SizedBox(height: 12),
+                                Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: theme.primaryColor.withValues(alpha: 0.05),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: theme.primaryColor.withValues(alpha: 0.15),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.currency_exchange_rounded,
+                                            size: 20,
+                                            color: theme.primaryColor,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Expanded(
+                                            child: Text(
+                                              _tr(
+                                                context,
+                                                shared
+                                                    .LocaleKeys
+                                                    .settingsLoyaltyExchangeRateLabel,
+                                                'Points Exchange Rate (Value per 1 Point)',
+                                              ),
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        _tr(
+                                          context,
+                                          shared
+                                              .LocaleKeys
+                                              .settingsLoyaltyExchangeRateSubtitle,
+                                          'Specify how much money each loyalty point is worth when redeemed during checkout',
+                                        ),
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: theme.textTheme.bodySmall?.color
+                                              ?.withValues(alpha: 0.7),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Row(
+                                        children: [
+                                          SizedBox(
+                                            width: 140,
+                                            child: ValueListenableBuilder<String>(
+                                              valueListenable:
+                                                  _selectedCurrencySymbolNotifier,
+                                              builder: (context, currencySymbol, _) {
+                                                return TextFormField(
+                                                  controller:
+                                                      _loyaltyExchangeRateController,
+                                                  focusNode:
+                                                      _loyaltyExchangeRateFocusNode,
+                                                  keyboardType:
+                                                      const TextInputType.numberWithOptions(
+                                                    decimal: true,
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    prefixText: '$currencySymbol ',
+                                                    isDense: true,
+                                                    contentPadding:
+                                                        const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10,
+                                                    ),
+                                                    border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(8),
+                                                    ),
+                                                  ),
+                                                  onChanged: (text) async {
+                                                    final val =
+                                                        double.tryParse(text.trim());
+                                                    if (val != null && val >= 0) {
+                                                      _loyaltyExchangeRateNotifier
+                                                          .value = val;
+                                                      await shared.LocalManager
+                                                          .instance
+                                                          .setDoubleValue(
+                                                        key: shared
+                                                            .PreferencesKeys
+                                                            .loyaltyPointsExchangeRate,
+                                                        value: val,
+                                                      );
+                                                    }
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: ValueListenableBuilder<double>(
+                                              valueListenable:
+                                                  _loyaltyExchangeRateNotifier,
+                                              builder: (context, rate, _) {
+                                                return ValueListenableBuilder<String>(
+                                                  valueListenable:
+                                                      _selectedCurrencySymbolNotifier,
+                                                  builder: (context, symbol, _) {
+                                                    return Text(
+                                                      '1 pt = $symbol${rate.toStringAsFixed(2)}',
+                                                      style: TextStyle(
+                                                        fontWeight: FontWeight.w600,
+                                                        color: theme.primaryColor,
+                                                        fontSize: 13,
+                                                      ),
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: theme.primaryColor.withValues(alpha: 0.05),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: theme.primaryColor.withValues(alpha: 0.15),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.military_tech_rounded,
+                                            size: 20,
+                                            color: theme.primaryColor,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          const Expanded(
+                                            child: Text(
+                                              'Customer Loyalty Tiers',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                          OutlinedButton.icon(
+                                            onPressed: () async {
+                                              final config = await LoyaltyTierSetupDialog.show(
+                                                context,
+                                                initialTiersEnabled:
+                                                    _enableLoyaltyTiersNotifier.value,
+                                                initialTierConfigs:
+                                                    _loyaltyTierConfigsNotifier.value,
+                                                initialDefaultTier:
+                                                    _loyaltyDefaultTierNotifier.value,
+                                              );
+                                              if (config != null) {
+                                                final tiersEnabled =
+                                                    config['tiersEnabled'] as bool? ??
+                                                        false;
+                                                final tierConfigs =
+                                                    (config['tierConfigs'] as List?)
+                                                            ?.cast<LoyaltyTierConfig>() ??
+                                                        _loyaltyTierConfigsNotifier.value;
+                                                final tiers = (config['tiers'] as List?)
+                                                        ?.cast<String>() ??
+                                                    tierConfigs.map((e) => e.name).toList();
+                                                final defaultTier =
+                                                    config['defaultTier'] as String? ??
+                                                        'Bronze';
+
+                                                _enableLoyaltyTiersNotifier.value =
+                                                    tiersEnabled;
+                                                _loyaltyTierConfigsNotifier.value =
+                                                    tierConfigs;
+                                                _loyaltyTiersListNotifier.value =
+                                                    tiers;
+                                                _loyaltyDefaultTierNotifier.value =
+                                                    defaultTier;
+
+                                                await shared.LocalManager.instance
+                                                    .setBoolValue(
+                                                  key: shared.PreferencesKeys
+                                                      .enableLoyaltyTiers,
+                                                  value: tiersEnabled,
+                                                );
+                                                await shared.LocalManager.instance
+                                                    .setStringList(
+                                                  key: shared.PreferencesKeys
+                                                      .loyaltyTiersList,
+                                                  value: tiers,
+                                                );
+                                                await shared.LocalManager.instance
+                                                    .setLocaleKeys(
+                                                  key: shared.PreferencesKeys
+                                                      .loyaltyTierThresholds,
+                                                  value: LoyaltyTierConfig.encodeList(
+                                                    tierConfigs,
+                                                  ),
+                                                );
+                                                await shared.LocalManager.instance
+                                                    .setLocaleKeys(
+                                                  key: shared.PreferencesKeys
+                                                      .loyaltyDefaultTier,
+                                                  value: defaultTier,
+                                                );
+                                              }
+                                            },
+                                            icon: const Icon(Icons.settings, size: 14),
+                                            label: const Text('Configure Tiers'),
+                                            style: OutlinedButton.styleFrom(
+                                              visualDensity: VisualDensity.compact,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 6),
+                                      ValueListenableBuilder<bool>(
+                                        valueListenable:
+                                            _enableLoyaltyTiersNotifier,
+                                        builder: (context, tiersEnabled, _) {
+                                          if (!tiersEnabled) {
+                                            return Text(
+                                              'Tiers are disabled. Customers earn & redeem points without status tiers.',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: theme.textTheme.bodySmall?.color
+                                                    ?.withValues(alpha: 0.7),
+                                              ),
+                                            );
+                                          }
+
+                                          return ValueListenableBuilder<List<LoyaltyTierConfig>>(
+                                            valueListenable:
+                                                _loyaltyTierConfigsNotifier,
+                                            builder: (context, configs, _) {
+                                              return ValueListenableBuilder<String>(
+                                                valueListenable:
+                                                    _loyaltyDefaultTierNotifier,
+                                                builder: (context, defaultTier, _) {
+                                                  return Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        "Active tiers (${configs.length}): Starting tier is \"$defaultTier\"",
+                                                        style: TextStyle(
+                                                          fontSize: 12,
+                                                          color: theme
+                                                              .textTheme
+                                                              .bodySmall
+                                                              ?.color
+                                                              ?.withValues(
+                                                                  alpha: 0.7),
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 8),
+                                                      Wrap(
+                                                        spacing: 6,
+                                                        runSpacing: 6,
+                                                        children: configs.map((tierConfig) {
+                                                          final isDefault =
+                                                              tierConfig.name.toLowerCase() ==
+                                                                  defaultTier
+                                                                      .toLowerCase();
+                                                          final tierColor = tierConfig.color;
+                                                          return Chip(
+                                                            avatar: Container(
+                                                              width: 14,
+                                                              height: 14,
+                                                              decoration: BoxDecoration(
+                                                                color: tierColor,
+                                                                shape: BoxShape.circle,
+                                                              ),
+                                                              child: Icon(
+                                                                isDefault
+                                                                    ? Icons.star
+                                                                    : Icons.military_tech,
+                                                                size: 10,
+                                                                color: Colors.white,
+                                                              ),
+                                                            ),
+                                                            label: Text(
+                                                              isDefault
+                                                                  ? "${tierConfig.name} (${tierConfig.minPoints}+ pts) [Default]"
+                                                                  : "${tierConfig.name} (${tierConfig.minPoints}+ pts)",
+                                                              style:
+                                                                  TextStyle(
+                                                                fontSize: 11,
+                                                                fontWeight:
+                                                                    FontWeight.bold,
+                                                                color: isDefault
+                                                                    ? theme.colorScheme.onPrimary
+                                                                    : tierColor,
+                                                              ),
+                                                            ),
+                                                            visualDensity:
+                                                                VisualDensity.compact,
+                                                            backgroundColor: isDefault
+                                                                ? theme.primaryColor
+                                                                : tierColor.withValues(alpha: 0.12),
+                                                            padding: const EdgeInsets.symmetric(
+                                                              horizontal: 6,
+                                                              vertical: 2,
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                         const Divider(height: 24),
                         Row(

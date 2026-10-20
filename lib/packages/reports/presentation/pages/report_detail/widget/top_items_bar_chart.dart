@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:syncfusion_flutter_charts/charts.dart';
-
+import 'report_empty_view.dart';
 import '../../../../domain/entities/top_item_entry.dart';
 
 class TopItemsBarChart extends StatelessWidget {
@@ -10,20 +9,10 @@ class TopItemsBarChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     if (items.isEmpty) {
-      return Center(
-        child: Text(
-          context.tr(
-                shared.LocaleKeys.reportPageEmptyData,
-                track: shared.TrackConstants.reportPageTrack,
-              ) ??
-              'No data found for the selected range',
-          style: Theme.of(context).textTheme.bodyMedium
-              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
-        ),
-      );
+      return const ReportEmptyView();
     }
+    final scheme = Theme.of(context).colorScheme;
     // Show top 10 items.
     // In BarSeries, reversing the list places the #1 best seller on top!
     final display = items.take(10).toList().reversed.toList();

@@ -18,6 +18,7 @@ abstract class CustomerRepository {
     required double billAmount,
     int? orderId,
     int? invoiceId,
+    String? notes,
   });
   Future<bool> redeemLoyaltyPoints({
     required int customerId,
@@ -26,5 +27,9 @@ abstract class CustomerRepository {
     int? invoiceId,
   });
   Future<List<Map<String, dynamic>>> getLoyaltyTransactions(int customerId);
+  Future<void> updateCustomerTier({
+    required int customerId,
+    required String tier,
+  });
 }
 

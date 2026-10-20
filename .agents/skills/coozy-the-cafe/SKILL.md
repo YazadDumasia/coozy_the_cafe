@@ -83,6 +83,8 @@ lib/packages/<feature_name>/
   - **Screen-Specific Widgets**: Sub-widgets used ONLY by a single screen must be placed inside `presentation/pages/<screen_name>/widget/`.
   - **Feature-Common Widgets**: Widgets shared across multiple screens in the SAME feature must be placed inside `presentation/widgets/<widget_name>/`.
   - **App-Wide Common Widgets**: Widgets shared across MULTIPLE features across the entire app must be placed inside `lib/packages/shared/widgets/<widget_name>/`.
+  - **Empty Views & Component Breakdown**: Always break down monolithic screens into modular sub-widgets in separate files (e.g. `<screen_name>_empty_view.dart`, charts, filters, tables). Empty states must never be inlined as raw text or ad-hoc widgets directly inside main screen or chart build methods.
+
 
 
 
@@ -209,6 +211,11 @@ All package registrations are called inside `lib/injection.dart` during app init
       - On **Tablet & Web/Desktop**: Use `Dialog` or `AlertDialog` with `BoxConstraints(maxWidth: isDesktop ? 900 : 650, maxHeight: ...)` and center content.
       - Use responsive split layouts: side-by-side (Row / Expanded) on desktop & web / tablet, stacked (Column / scrollable ListView) on mobile.
       - Provide keyboard traversal, scroll handling, and pointer/hover states for web browsers while ensuring adequate touch targets for mobile/tablet.
+11. **Empty Views & View Modularization (Separate Files & Component Breakdown)**:
+    - **Dedicated File for Empty Views**: Every screen, list, data table, or chart view displaying an empty or no-data state must have its empty view implemented in a dedicated, separate file (e.g. `<screen_name>_empty_view.dart`) inside the screen's `widget/` folder or `presentation/widgets/`. Do not inline raw, ad-hoc empty text, icon, or placeholder widgets directly within the main page or chart build methods.
+    - **Modularize Large Views**: Decompose monolithic page widgets into clean, focused sub-widgets in separate files (e.g., headers, filters, data tables, charts, cards, empty views) to keep individual files maintainable, readable, and easy to navigate.
+    - **Polish & Polish Standards**: Design empty views to look polished and intentional with dual-mode theme support (Light & Dark), visual iconography, localized title & descriptive subtitle, responsive layout handling, and optional actionable buttons (e.g., refresh, reset filters, or create record).
+
 
 
 

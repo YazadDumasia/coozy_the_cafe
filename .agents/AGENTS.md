@@ -70,5 +70,7 @@
   - Stack side-by-side components vertically on mobile and horizontally on tablet & web/desktop layouts.
   - Ensure interactive elements are keyboard and mouse friendly for web users (scrollbars, hover effects, tab navigation) while supporting touch targets on mobile and tablet.
 
-
-
+## 10. Empty Views & View Modularization (Separate Files & Component Breakdown)
+- **Separate File for Empty Views**: Every screen, list, table, or chart that presents an empty state MUST have its empty view defined in its own dedicated, standalone file (e.g., `<screen_or_feature>_empty_view.dart`) placed inside the screen's `widget/` folder or the feature's `presentation/widgets/` directory. Never inline raw, ad-hoc empty texts, icons, or placeholders directly inside screen or chart build methods.
+- **Break Down Large Views**: Decompose monolithic page widgets and complex views into focused, modular sub-widgets across separate files (e.g., headers, filters, data lists, tables, charts, and empty views) to keep individual screen files maintainable, readable, and clean.
+- **Empty View Standard & Polish**: Design empty views with dual-theme compatibility (Light & Dark), visual iconography, clear headline and descriptive subtitle from localization, responsive padding, and actionable buttons (e.g. Refresh, Clear Filters, or Add New Item) where applicable.

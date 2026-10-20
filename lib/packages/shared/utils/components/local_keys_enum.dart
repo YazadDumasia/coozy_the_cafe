@@ -25,4 +25,9 @@ enum PreferencesKeys {
   invoiceShareCustomLink,
   p2pSyncConfig,
   enableCustomerLoyalty,
+  loyaltyPointsExchangeRate,
+  enableLoyaltyTiers,
+  loyaltyTiersList,
+  loyaltyDefaultTier,
+  loyaltyTierThresholds,
 }

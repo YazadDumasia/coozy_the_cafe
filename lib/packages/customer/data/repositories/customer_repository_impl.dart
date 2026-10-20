@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:coozy_the_cafe/packages/database/src/database.dart';
 import 'package:coozy_the_cafe/packages/database/src/database_dao/customers_dao.dart';
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 import '../../domain/entities/customer_entity.dart';
 import '../../domain/entities/customer_loyalty_entity.dart';
@@ -81,7 +82,10 @@ class CustomerRepositoryImpl implements CustomerRepository {
   Future<CustomerLoyaltyEntity?> getCustomerLoyalty(int customerId) async {
     final map = await _customersDao.getCustomerLoyalty(customerId);
     if (map == null) return null;
-    return CustomerLoyaltyEntity.fromMap(map);
+    final rate = shared.LocalManager.instance
+            .getDoubleValue(key: shared.PreferencesKeys.loyaltyPointsExchangeRate) ??
+        0.50;
+    return CustomerLoyaltyEntity.fromMap(map, exchangeRate: rate);
   }
 
   @override
@@ -91,13 +95,20 @@ class CustomerRepositoryImpl implements CustomerRepository {
     required double billAmount,
     int? orderId,
     int? invoiceId,
+    String? notes,
   }) async {
+    final defaultTier = shared.LocalManager.instance.getLocaleKeys(
+          key: shared.PreferencesKeys.loyaltyDefaultTier,
+        ) ??
+        'Bronze';
     await _customersDao.addLoyaltyPoints(
       customerId: customerId,
       points: points,
       billAmount: billAmount,
       orderId: orderId,
       invoiceId: invoiceId,
+      notes: notes,
+      defaultTier: defaultTier.isNotEmpty ? defaultTier : 'Bronze',
     );
   }
 
@@ -119,5 +130,13 @@ class CustomerRepositoryImpl implements CustomerRepository {
   @override
   Future<List<Map<String, dynamic>>> getLoyaltyTransactions(int customerId) async {
     return await _customersDao.getLoyaltyTransactions(customerId);
+  }
+
+  @override
+  Future<void> updateCustomerTier({
+    required int customerId,
+    required String tier,
+  }) async {
+    await _customersDao.updateCustomerTier(customerId: customerId, tier: tier);
   }
 }

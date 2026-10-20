@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:uuid/uuid.dart';
 
 import '../database.dart';
 import '../tables.dart';
@@ -218,15 +219,18 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
   }
 
   /// Ensure customer loyalty record exists or initialize it
-  Future<void> ensureCustomerLoyaltyRecord(int customerId) async {
+  Future<void> ensureCustomerLoyaltyRecord(
+    int customerId, {
+    String defaultTier = 'Bronze',
+  }) async {
     await customStatement(
       '''
       INSERT OR IGNORE INTO customer_loyalty (
-        customer_id, points_balance, lifetime_points_earned, lifetime_points_redeemed,
+        hash_id, customer_id, points_balance, lifetime_points_earned, lifetime_points_redeemed,
         tier, total_spent, total_visits, created_at, modified_at
-      ) VALUES (?, 0, 0, 0, 'Bronze', 0.0, 0, datetime('now'), datetime('now'));
+      ) VALUES (?, ?, 0, 0, 0, ?, 0.0, 0, datetime('now'), datetime('now'));
       ''',
-      [customerId],
+      [const Uuid().v8(), customerId, defaultTier],
     );
   }
 
@@ -238,34 +242,26 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
     int? orderId,
     int? invoiceId,
     String? notes,
+    String defaultTier = 'Bronze',
   }) async {
     await transaction(() async {
-      await ensureCustomerLoyaltyRecord(customerId);
+      await ensureCustomerLoyaltyRecord(customerId, defaultTier: defaultTier);
 
       // 1. Insert transaction log
+      final hashId = const Uuid().v8();
       await customStatement(
         '''
         INSERT INTO loyalty_transactions (
-          customer_id, order_id, invoice_id, transaction_type,
+          hash_id, customer_id, order_id, invoice_id, transaction_type,
           points, bill_amount, notes, created_date
-        ) VALUES (?, ?, ?, 'EARNED', ?, ?, ?, datetime('now'));
+        ) VALUES (?, ?, ?, ?, 'EARNED', ?, ?, ?, datetime('now'));
         ''',
-        [customerId, orderId, invoiceId, points, billAmount, notes ?? 'Order reward'],
+        [hashId, customerId, orderId, invoiceId, points, billAmount, notes ?? 'Order reward'],
       );
 
-      // 2. Update loyalty balance, spend, visits, and recalculate Tier
+      // 2. Update loyalty balance, spend, visits (keep existing tier set by user)
       final loyalty = await getCustomerLoyalty(customerId);
-      final currentLifetimeEarned = (loyalty?['lifetime_points_earned'] as num?)?.toInt() ?? 0;
-      final newLifetimeEarned = currentLifetimeEarned + points;
-
-      String newTier = 'Bronze';
-      if (newLifetimeEarned >= 2000) {
-        newTier = 'VIP';
-      } else if (newLifetimeEarned >= 1000) {
-        newTier = 'Gold';
-      } else if (newLifetimeEarned >= 500) {
-        newTier = 'Silver';
-      }
+      final currentTier = (loyalty?['tier'] as String?) ?? 'Bronze';
 
       await customStatement(
         '''
@@ -279,7 +275,7 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
             modified_at = datetime('now')
         WHERE customer_id = ?;
         ''',
-        [points, points, billAmount, newTier, customerId],
+        [points, points, billAmount, currentTier, customerId],
       );
     });
   }
@@ -300,14 +296,15 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
       if (currentBalance < pointsToRedeem) return false;
 
       // 1. Insert transaction log
+      final hashId = const Uuid().v8();
       await customStatement(
         '''
         INSERT INTO loyalty_transactions (
-          customer_id, order_id, invoice_id, transaction_type,
+          hash_id, customer_id, order_id, invoice_id, transaction_type,
           points, notes, created_date
-        ) VALUES (?, ?, ?, 'REDEEMED', ?, ?, datetime('now'));
+        ) VALUES (?, ?, ?, ?, 'REDEEMED', ?, ?, datetime('now'));
         ''',
-        [customerId, orderId, invoiceId, pointsToRedeem, notes ?? 'Points redemption discount'],
+        [hashId, customerId, orderId, invoiceId, pointsToRedeem, notes ?? 'Points redemption discount'],
       );
 
       // 2. Deduct from balance
@@ -339,5 +336,22 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
     ).get();
 
     return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
+  }
+
+  /// Manually update customer loyalty tier
+  Future<void> updateCustomerTier({
+    required int customerId,
+    required String tier,
+  }) async {
+    await ensureCustomerLoyaltyRecord(customerId);
+    await customStatement(
+      '''
+      UPDATE customer_loyalty
+      SET tier = ?,
+          modified_at = datetime('now')
+      WHERE customer_id = ?;
+      ''',
+      [tier, customerId],
+    );
   }
 }

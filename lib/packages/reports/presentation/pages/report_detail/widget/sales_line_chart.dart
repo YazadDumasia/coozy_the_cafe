@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import 'report_empty_view.dart';
 import '../../../../domain/entities/daily_sales_entry.dart';
 
 class SalesLineChart extends StatelessWidget {
@@ -11,20 +11,10 @@ class SalesLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     if (entries.isEmpty) {
-      return Center(
-        child: Text(
-          context.tr(
-                shared.LocaleKeys.reportPageEmptyData,
-                track: shared.TrackConstants.reportPageTrack,
-              ) ??
-              'No data found for the selected range',
-          style: Theme.of(context).textTheme.bodyMedium
-              ?.copyWith(color: scheme.onSurface.withValues(alpha: 0.5)),
-        ),
-      );
+      return const ReportEmptyView();
     }
+    final scheme = Theme.of(context).colorScheme;
     // Reverse so oldest date appears on the left
     final ordered = entries.reversed.toList();
     return SfCartesianChart(

@@ -88,6 +88,16 @@ class LocalManager {
   bool getBoolValue({required PreferencesKeys? key}) =>
       _preferences?.getBool(key.toString()) ?? false;
 
+  Future<void> setStringList({
+    required PreferencesKeys key,
+    required List<String> value,
+  }) async {
+    await _preferences!.setStringList(key.toString(), value);
+  }
+
+  List<String>? getStringList({required PreferencesKeys key}) =>
+      _preferences?.getStringList(key.toString());
+
   bool get isLoggedIn => getBoolValue(key: PreferencesKeys.isLoggedIn);
 
   set isLoggedIn(bool value) =>

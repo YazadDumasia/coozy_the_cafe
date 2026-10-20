@@ -55,6 +55,9 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -168,12 +171,41 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                   Expanded(
                     child: invoices.isEmpty
                         ? Center(
-                            child: Text(
-                              context.tr(
-                                    shared.LocaleKeys.commonNoDataFoundMsg,
-                                    track: shared.TrackConstants.commonTrack,
-                                  ) ??
-                                  'No Receipts Found',
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.all(24.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.receipt_long_outlined,
+                                    size: 120,
+                                    color: colorScheme.primary.withValues(
+                                      alpha: 0.5,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    context.tr(
+                                          shared.LocaleKeys.commonNoDataFoundMsg,
+                                          track:
+                                              shared.TrackConstants.commonTrack,
+                                        ) ??
+                                        'No Receipts Found',
+                                    textAlign: TextAlign.center,
+                                    style: theme.textTheme.titleMedium
+                                        ?.copyWith(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    'Try adjusting your date range or filters.',
+                                    textAlign: TextAlign.center,
+                                    style: theme.textTheme.bodyMedium
+                                        ?.copyWith(
+                                          color: colorScheme.onSurfaceVariant,
+                                        ),
+                                  ),
+                                ],
+                              ),
                             ),
                           )
                         : ListView.builder(
