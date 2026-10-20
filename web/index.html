@@ -35,7 +35,8 @@
 
   <style>
     /* Reset & full viewport setup */
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       width: 100%;
@@ -137,10 +138,13 @@
     }
 
     @keyframes pulseGlow {
-      0%, 100% {
+
+      0%,
+      100% {
         transform: scale(0.9);
         opacity: 0.6;
       }
+
       50% {
         transform: scale(1.15);
         opacity: 1;
@@ -148,9 +152,12 @@
     }
 
     @keyframes floatLogo {
-      0%, 100% {
+
+      0%,
+      100% {
         transform: translateY(0);
       }
+
       50% {
         transform: translateY(-6px);
       }
@@ -161,10 +168,12 @@
         left: -40%;
         width: 40%;
       }
+
       50% {
         left: 25%;
         width: 60%;
       }
+
       100% {
         left: 100%;
         width: 30%;
@@ -172,6 +181,7 @@
     }
   </style>
 </head>
+
 <body>
   <!-- Pre-Flutter web initialization loader -->
   <div id="app-loading-indicator">
@@ -187,12 +197,12 @@
   </div>
 
   <!-- PDF.js library required for syncfusion_flutter_pdfviewer on Flutter Web -->
-  <script type="module">
+  <script type="module" async>
     import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.min.mjs';
     pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs";
   </script>
   <script>
-    {{flutter_bootstrap_js}}
+    { { flutter_bootstrap_js } }
   </script>
   <script>
     window.addEventListener('load', function () {
