@@ -27,9 +27,19 @@ class _SplashScreenDesktopLayoutState extends State<SplashScreenDesktopLayout> {
       width: 250,
       height: 250,
     );
+    final cafeParticlePalette = <Color>[
+      const Color(0xffff8a5c), // Primary bright coral/peach
+      const Color(0xfff59e0b), // Warm caramel amber
+      const Color(0xfffbbf24), // Amber gold
+      const Color(0xffffb59c), // Light peach
+      const Color(0xffdebfa8), // Warm latte
+      const Color(0xffe7bdb2), // Creamy mocha
+      const Color(0xffcb4a00), // Roasted cinnamon
+      const Color(0xffffffff), // Soft white highlight
+    ];
     for (int i = 0; i < 50; i++) {
       listParticleColor.add(
-        Color(Random().nextInt(0xffffffff)).withAlpha(0xff),
+        cafeParticlePalette[Random().nextInt(cafeParticlePalette.length)],
       );
     }
     super.initState();
@@ -41,19 +51,17 @@ class _SplashScreenDesktopLayoutState extends State<SplashScreenDesktopLayout> {
     orientation = MediaQuery.of(context).orientation;
     return AnimateGradient(
       primaryBegin: Alignment.topLeft,
-      primaryEnd: Alignment.bottomLeft,
+      primaryEnd: Alignment.bottomRight,
       secondaryBegin: Alignment.bottomLeft,
       secondaryEnd: Alignment.topRight,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 4),
       primaryColors: const <Color>[
-        Color.fromRGBO(225, 109, 245, 1),
-        Color.fromRGBO(78, 248, 231, 1),
-        // Color.fromRGBO(99, 251, 215, 1),
-        // Color.fromRGBO(83, 138, 214, 1)
+        Color(0xff1c110c),
+        Color(0xff291811),
       ],
       secondaryColors: const <Color>[
-        Color.fromRGBO(5, 222, 250, 1),
-        Color.fromRGBO(134, 231, 214, 1),
+        Color(0xff24140d),
+        Color(0xff120a06),
       ],
       child: SizedBox(
         key: UniqueKey(),
@@ -68,7 +76,7 @@ class _SplashScreenDesktopLayoutState extends State<SplashScreenDesktopLayout> {
               width: size!.width,
               height: size!.height,
               onTapAnimation: true,
-              particleColor: Colors.white.withAlpha(150),
+              particleColor: const Color(0xffffb59c).withValues(alpha: 0.5),
               awayAnimationDuration: const Duration(milliseconds: 600),
               maxParticleSize: 8,
               isRandSize: true,
@@ -76,7 +84,7 @@ class _SplashScreenDesktopLayoutState extends State<SplashScreenDesktopLayout> {
               randColorList: listParticleColor,
               awayAnimationCurve: Curves.easeInOutBack,
               enableHover: true,
-              hoverColor: Colors.white,
+              hoverColor: const Color(0xffff8a5c),
               hoverRadius: 90,
               connectDots: false, //not recommended
             ),
@@ -87,51 +95,45 @@ class _SplashScreenDesktopLayoutState extends State<SplashScreenDesktopLayout> {
               end: 0,
               child: OrientationBuilder(
                 builder: (context, orientation) {
-                  if (orientation == Orientation.landscape) {
-                    return Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Card(
-                            elevation: 2,
-                            margin: EdgeInsets.only(left: 30, right: 30),
-                            child: PulseAnimation(
-                              maxScale: 1.0,
-                              minScale: 0.8,
-                              child: Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: appLogoLight,
-                              ),
-                            ),
+                  return Center(
+                    child: PulseAnimation(
+                      maxScale: 1.0,
+                      minScale: 0.9,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        padding: const EdgeInsets.all(28.0),
+                        decoration: BoxDecoration(
+                          color:
+                              const Color(0xff241712).withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(36),
+                          border: Border.all(
+                            color: const Color(0xffffb49a)
+                                .withValues(alpha: 0.25),
+                            width: 1.5,
                           ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Card(
-                            elevation: 2,
-                            margin: EdgeInsets.only(left: 30, right: 30),
-                            child: PulseAnimation(
-                              maxScale: 1.0,
-                              minScale: 0.8,
-                              child: Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: appLogoLight,
-                              ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xff000000)
+                                  .withValues(alpha: 0.45),
+                              blurRadius: 36,
+                              offset: const Offset(0, 14),
                             ),
-                          ),
-                        ],
+                            BoxShadow(
+                              color: const Color(0xffff8a5c)
+                                  .withValues(alpha: 0.12),
+                              blurRadius: 45,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: SizedBox(
+                          width: 220,
+                          height: 220,
+                          child: appLogoLight,
+                        ),
                       ),
-                    );
-                  }
+                    ),
+                  );
                 },
               ),
             ),

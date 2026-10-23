@@ -27,9 +27,19 @@ class _SplashScreenMobileLayoutState extends State<SplashScreenMobileLayout>
       width: 150,
       height: 150,
     );
+    final cafeParticlePalette = <Color>[
+      const Color(0xffff8a5c), // Primary bright coral/peach
+      const Color(0xfff59e0b), // Warm caramel amber
+      const Color(0xfffbbf24), // Amber gold
+      const Color(0xffffb59c), // Light peach
+      const Color(0xffdebfa8), // Warm latte
+      const Color(0xffe7bdb2), // Creamy mocha
+      const Color(0xffcb4a00), // Roasted cinnamon
+      const Color(0xffffffff), // Soft white highlight
+    ];
     for (int i = 0; i < 50; i++) {
       listParticleColor.add(
-        Color(Random().nextInt(0xffffffff)).withAlpha(0xff),
+        cafeParticlePalette[Random().nextInt(cafeParticlePalette.length)],
       );
     }
     super.initState();
@@ -42,19 +52,17 @@ class _SplashScreenMobileLayoutState extends State<SplashScreenMobileLayout>
 
     return AnimateGradient(
       primaryBegin: Alignment.topLeft,
-      primaryEnd: Alignment.bottomLeft,
+      primaryEnd: Alignment.bottomRight,
       secondaryBegin: Alignment.bottomLeft,
       secondaryEnd: Alignment.topRight,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 4),
       primaryColors: const <Color>[
-        Color.fromRGBO(225, 109, 245, 1),
-        Color.fromRGBO(78, 248, 231, 1),
-        // Color.fromRGBO(99, 251, 215, 1),
-        // Color.fromRGBO(83, 138, 214, 1)
+        Color(0xff1c110c),
+        Color(0xff291811),
       ],
       secondaryColors: const <Color>[
-        Color.fromRGBO(5, 222, 250, 1),
-        Color.fromRGBO(134, 231, 214, 1),
+        Color(0xff24140d),
+        Color(0xff120a06),
       ],
       child: SizedBox(
         key: UniqueKey(),
@@ -69,7 +77,7 @@ class _SplashScreenMobileLayoutState extends State<SplashScreenMobileLayout>
               width: size!.width,
               height: size!.height,
               onTapAnimation: true,
-              particleColor: Colors.white.withAlpha(150),
+              particleColor: const Color(0xffffb59c).withValues(alpha: 0.5),
               awayAnimationDuration: const Duration(milliseconds: 600),
               maxParticleSize: 8,
               isRandSize: true,
@@ -77,7 +85,7 @@ class _SplashScreenMobileLayoutState extends State<SplashScreenMobileLayout>
               randColorList: listParticleColor,
               awayAnimationCurve: Curves.easeInOutBack,
               enableHover: true,
-              hoverColor: Colors.white,
+              hoverColor: const Color(0xffff8a5c),
               hoverRadius: 90,
               connectDots: false, //not recommended
             ),
@@ -88,55 +96,49 @@ class _SplashScreenMobileLayoutState extends State<SplashScreenMobileLayout>
               end: 0,
               child: OrientationBuilder(
                 builder: (context, orientation) {
-                  if (orientation == Orientation.landscape) {
-                    return Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Card(
-                            elevation: 2,
-                            margin: EdgeInsets.only(left: 30, right: 30),
-                            child: PulseAnimation(
-                              maxScale: 1.0,
-                              minScale: 0.8,
-                              child: Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * .25,
-                                  child: appLogoLight,
-                                ),
-                              ),
-                            ),
+                  final isLandscape = orientation == Orientation.landscape;
+                  final logoSize = isLandscape
+                      ? MediaQuery.sizeOf(context).width * 0.22
+                      : 130.0;
+                  return Center(
+                    child: PulseAnimation(
+                      maxScale: 1.0,
+                      minScale: 0.88,
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 30),
+                        padding: const EdgeInsets.all(20.0),
+                        decoration: BoxDecoration(
+                          color:
+                              const Color(0xff241712).withValues(alpha: 0.85),
+                          borderRadius: BorderRadius.circular(28),
+                          border: Border.all(
+                            color: const Color(0xffffb49a)
+                                .withValues(alpha: 0.25),
+                            width: 1.5,
                           ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Card(
-                            elevation: 2,
-                            margin: EdgeInsets.only(left: 30, right: 30),
-                            child: PulseAnimation(
-                              maxScale: 1.0,
-                              minScale: 0.8,
-                              child: Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: appLogoLight,
-                              ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xff000000)
+                                  .withValues(alpha: 0.45),
+                              blurRadius: 28,
+                              offset: const Offset(0, 10),
                             ),
-                          ),
-                        ],
+                            BoxShadow(
+                              color: const Color(0xffff8a5c)
+                                  .withValues(alpha: 0.12),
+                              blurRadius: 35,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: SizedBox(
+                          width: logoSize,
+                          height: logoSize,
+                          child: appLogoLight,
+                        ),
                       ),
-                    );
-                  }
+                    ),
+                  );
                 },
               ),
             ),

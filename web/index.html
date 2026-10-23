@@ -33,10 +33,10 @@
   <title>Coozy The Cafe</title>
   <link rel="manifest" href="manifest.json">
 
-  <!-- Google Font: Outfit for a warm, modern cafe brand feel -->
+  <!-- Google Fonts: Outfit for brand, Caveat for realistic cursive neon sign -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <meta name="theme-color" content="#1c110c">
 
@@ -141,15 +141,53 @@
       text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
     }
 
-    /* App subtitle / cafe tagline */
+    /* Neon sign tagline: Sip.Savor.Relax (Blue Neon) */
     .loading-tagline {
-      margin-top: 4px;
-      color: var(--primary-bright);
-      font-size: 0.8rem;
-      font-weight: 500;
+      margin-top: 8px;
+      font-family: 'Caveat', cursive, sans-serif;
+      font-size: 1.45rem;
+      font-weight: 700;
       letter-spacing: 1.5px;
-      text-transform: uppercase;
-      opacity: 0.9;
+      color: #ffffff;
+      text-transform: none;
+      /* Realistic multi-layer cyan/ice-blue neon glow */
+      text-shadow:
+        0 0 2px #ffffff,
+        0 0 5px #e0f7ff,
+        0 0 10px #70d6ff,
+        0 0 20px #00b4d8,
+        0 0 35px #0077b6,
+        0 0 50px rgba(0, 180, 216, 0.6);
+      /* Subtle clear acrylic backing illusion */
+      padding: 2px 14px;
+      border-radius: 999px;
+      background: rgba(0, 180, 216, 0.06);
+      border: 1px solid rgba(112, 214, 255, 0.18);
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.15), inset 0 0 10px rgba(0, 180, 216, 0.08);
+      animation: neonGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes neonGlow {
+      0%, 100% {
+        opacity: 0.96;
+        text-shadow:
+          0 0 2px #ffffff,
+          0 0 5px #e0f7ff,
+          0 0 10px #70d6ff,
+          0 0 20px #00b4d8,
+          0 0 35px #0077b6,
+          0 0 50px rgba(0, 180, 216, 0.55);
+      }
+      50% {
+        opacity: 1;
+        text-shadow:
+          0 0 3px #ffffff,
+          0 0 7px #e0f7ff,
+          0 0 14px #70d6ff,
+          0 0 26px #00b4d8,
+          0 0 45px #0096c7,
+          0 0 65px rgba(0, 180, 216, 0.75);
+      }
     }
 
     /* Loading status text */
@@ -257,7 +295,7 @@
   </script>
 
   <script>
-    { { flutter_bootstrap_js } }
+    {{flutter_bootstrap_js}}
   </script>
   <script>
     window.addEventListener('load', function () {

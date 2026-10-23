@@ -169,6 +169,7 @@ class OtpVerificationPageState extends State<OtpVerificationPage>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final gradientColors = shared.AnimateGradientColors.of(context);
 
     return SafeArea(
       child: PopScope(
@@ -179,25 +180,50 @@ class OtpVerificationPageState extends State<OtpVerificationPage>
         },
         child: Scaffold(
           resizeToAvoidBottomInset: true,
-          body: shared.AnimateGradient(
-            primaryBegin: Alignment.topLeft,
-            primaryEnd: Alignment.bottomLeft,
-            secondaryBegin: Alignment.bottomLeft,
-            secondaryEnd: Alignment.topRight,
-            duration: const Duration(seconds: 3),
-            primaryColors: const <Color>[
-              Color.fromRGBO(225, 109, 245, 1),
-              Color.fromRGBO(78, 248, 231, 1),
-            ],
-            secondaryColors: const <Color>[
-              Color.fromRGBO(5, 222, 250, 1),
-              Color.fromRGBO(134, 231, 214, 1),
-            ],
-            child: shared.ResponsiveLayout(
-              mobile: _buildMobileLayout(size),
-              tablet: _buildTabletLayout(size),
-              desktop: _buildDesktopLayout(size),
-            ),
+          body: Builder(
+            builder: (context) {
+              final particleColors = shared.AnimateGradientColors.getCafeParticlePalette(context);
+              final isDark = Theme.of(context).brightness == Brightness.dark;
+
+              return shared.AnimateGradient(
+                primaryBegin: Alignment.topLeft,
+                primaryEnd: Alignment.bottomRight,
+                secondaryBegin: Alignment.bottomLeft,
+                secondaryEnd: Alignment.topRight,
+                duration: const Duration(seconds: 4),
+                primaryColors: gradientColors.primaryColors,
+                secondaryColors: gradientColors.secondaryColors,
+                child: Stack(
+                  children: [
+                    shared.CircularParticle(
+                      width: size.width,
+                      height: size.height,
+                      awayRadius: 60,
+                      numberOfParticles: 90,
+                      speedOfParticles: 1.2,
+                      maxParticleSize: 7,
+                      particleColor: (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
+                          .withValues(alpha: 0.4),
+                      isRandSize: true,
+                      isRandomColor: true,
+                      randColorList: particleColors,
+                      awayAnimationDuration: const Duration(milliseconds: 600),
+                      awayAnimationCurve: Curves.easeInOutBack,
+                      enableHover: true,
+                      hoverColor: const Color(0xffff8a5c),
+                      hoverRadius: 80,
+                      onTapAnimation: true,
+                      connectDots: false,
+                    ),
+                    shared.ResponsiveLayout(
+                      mobile: _buildMobileLayout(size),
+                      tablet: _buildTabletLayout(size),
+                      desktop: _buildDesktopLayout(size),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),

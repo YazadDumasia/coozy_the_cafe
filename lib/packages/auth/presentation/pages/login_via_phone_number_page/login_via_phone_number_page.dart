@@ -131,30 +131,51 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
           _loginWithPhoneCubit?.updateCountryIosCode(null);
           return const LoadingPage();
         } else if (state is LoginWithPhoneLoadedState) {
+          final gradientColors = AnimateGradientColors.of(context);
+          final particleColors = AnimateGradientColors.getCafeParticlePalette(context);
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final screenSize = MediaQuery.sizeOf(context);
+
           return Theme(
             data: Theme.of(context),
             child: AnimateGradient(
               primaryBegin: Alignment.topLeft,
-              primaryEnd: Alignment.bottomLeft,
+              primaryEnd: Alignment.bottomRight,
               secondaryBegin: Alignment.bottomLeft,
               secondaryEnd: Alignment.topRight,
-              duration: const Duration(seconds: 2),
-              primaryColors: const <Color>[
-                Color.fromRGBO(225, 109, 245, 1),
-                Color.fromRGBO(78, 248, 231, 1),
-              ],
-              secondaryColors: const <Color>[
-                Color.fromRGBO(5, 222, 250, 1),
-                Color.fromRGBO(134, 231, 214, 0.8117647058823529),
-              ],
+              duration: const Duration(seconds: 4),
+              primaryColors: gradientColors.primaryColors,
+              secondaryColors: gradientColors.secondaryColors,
               child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Stack(
-                      children: <Widget>[
+                width: screenSize.width,
+                height: screenSize.height,
+                child: Stack(
+                  children: [
+                    CircularParticle(
+                      width: screenSize.width,
+                      height: screenSize.height,
+                      awayRadius: 60,
+                      numberOfParticles: 90,
+                      speedOfParticles: 1.2,
+                      maxParticleSize: 7,
+                      particleColor: (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
+                          .withValues(alpha: 0.4),
+                      isRandSize: true,
+                      isRandomColor: true,
+                      randColorList: particleColors,
+                      awayAnimationDuration: const Duration(milliseconds: 600),
+                      awayAnimationCurve: Curves.easeInOutBack,
+                      enableHover: true,
+                      hoverColor: const Color(0xffff8a5c),
+                      hoverRadius: 80,
+                      onTapAnimation: true,
+                      connectDots: false,
+                    ),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Stack(
+                          children: <Widget>[
                         PositionedDirectional(
                           start: 20,
                           top: 0,
@@ -326,9 +347,11 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          );
+          ),
+        ),
+      );
         } else if (state is LoginWithPhoneNoInternetState) {
           return NoInternetPage(
             onPressedRetryButton: () async {
@@ -352,29 +375,48 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
             state is LoginWithPhoneInitial) {
           return const LoadingPage();
         } else if (state is LoginWithPhoneLoadedState) {
+          final gradientColors = AnimateGradientColors.of(context);
+          final particleColors = AnimateGradientColors.getCafeParticlePalette(context);
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final screenSize = MediaQuery.sizeOf(context);
+
           return AnimateGradient(
             primaryBegin: Alignment.topLeft,
-            primaryEnd: Alignment.bottomLeft,
+            primaryEnd: Alignment.bottomRight,
             secondaryBegin: Alignment.bottomLeft,
             secondaryEnd: Alignment.topRight,
-            duration: const Duration(seconds: 2),
-            primaryColors: const <Color>[
-              Color.fromRGBO(225, 109, 245, 1),
-              Color.fromRGBO(78, 248, 231, 1),
-              // Color.fromRGBO(99, 251, 215, 1),
-              // Color.fromRGBO(83, 138, 214, 1)
-            ],
-            secondaryColors: const <Color>[
-              Color.fromRGBO(5, 222, 250, 1),
-              Color.fromRGBO(134, 231, 214, 1),
-            ],
+            duration: const Duration(seconds: 4),
+            primaryColors: gradientColors.primaryColors,
+            secondaryColors: gradientColors.secondaryColors,
             child: SizedBox(
               key: UniqueKey(),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              width: screenSize.width,
+              height: screenSize.height,
+              child: Stack(
+                children: [
+                  CircularParticle(
+                    width: screenSize.width,
+                    height: screenSize.height,
+                    awayRadius: 60,
+                    numberOfParticles: 90,
+                    speedOfParticles: 1.2,
+                    maxParticleSize: 7,
+                    particleColor: (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
+                        .withValues(alpha: 0.4),
+                    isRandSize: true,
+                    isRandomColor: true,
+                    randColorList: particleColors,
+                    awayAnimationDuration: const Duration(milliseconds: 600),
+                    awayAnimationCurve: Curves.easeInOutBack,
+                    enableHover: true,
+                    hoverColor: const Color(0xffff8a5c),
+                    hoverRadius: 80,
+                    onTapAnimation: true,
+                    connectDots: false,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Expanded(
                     child: SignUpCarouselWidget(
@@ -661,8 +703,10 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                   ),
                 ],
               ),
-            ),
-          );
+            ],
+          ),
+        ),
+      );
         } else if (state is LoginWithPhoneNoInternetState) {
           return NoInternetPage(
             onPressedRetryButton: () async {

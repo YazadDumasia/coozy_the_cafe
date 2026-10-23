@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as share;
@@ -57,17 +55,6 @@ class _LoginPageState extends State<LoginPage> {
     passwordTextEditingController = TextEditingController(text: 'Admin@123456');
     emailFocusNode = FocusNode();
     passwordFocusNode = FocusNode();
-    for (int i = 0; i < 30; i++) {
-      listParticleColor.add(
-        Color(math.Random().nextInt(0xffffffff)).withAlpha(0xff),
-      );
-    }
-    // _googleSignIn.onCurrentUserChanged
-    //     .listen((GoogleSignInAccount? account) async {
-    //   _currentUser = account;
-    //   navigationRoutes.navigateToHomePage();
-    // });
-
     super.initState();
 
     // appLogoLight = Image.asset(

@@ -20,15 +20,15 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   cupertino_icons: ^2.0.0
-  material_ui: ^1.7.0
-  cupertino_ui: ^1.1.3
+  material_ui: ^1.8.0
+  cupertino_ui: ^1.1.4
 #  database
 #  Note: After updating drift and sqlite3 versions, sync web assets with:
 #  dart run scripts/sync_drift_web_assets.dart
   synchronized: ^3.5.0
-  drift: ^2.35.2
+  drift: ^2.35.3
   drift_flutter: ^0.3.1
-  sqlite3: ^3.7.1
+  sqlite3: ^3.8.0
   path_provider: ^2.1.6
   path: ^1.9.1
 #
@@ -174,7 +174,7 @@ dev_dependencies:
   #  flutter packages pub run build_runner build
   #  flutter pub run build_runner build
   #  flutter packages pub run build_runner build --delete-conflicting-outputs
-  drift_dev: ^2.35.1
+  drift_dev: ^2.35.2
   build_runner: ^2.16.1
   flutter_gen: ^5.15.0
   flutter_gen_runner: ^5.15.0

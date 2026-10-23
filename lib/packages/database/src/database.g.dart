@@ -26515,10 +26515,11 @@ class $$TableInfoTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (reservationsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           TableInfoData,
                           $TableInfoTableTable,
-                          Reservation
+                          Reservation,
+                          $ReservationsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$TableInfoTableTableReferences
@@ -26529,17 +26530,16 @@ class $$TableInfoTableTableTableManager
                                 table,
                                 p0,
                               ).reservationsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.tableId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'table_id',
                           typedResults: items,
                         ),
                       if (ordersTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           TableInfoData,
                           $TableInfoTableTable,
-                          Order
+                          Order,
+                          $OrdersTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$TableInfoTableTableReferences
@@ -26550,10 +26550,8 @@ class $$TableInfoTableTableTableManager
                                 table,
                                 p0,
                               ).ordersTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.tableInfoId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'table_info_id',
                           typedResults: items,
                         ),
                     ];
@@ -26904,10 +26902,11 @@ class $$CategoriesTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (subcategoriesTableRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       Category,
                       $CategoriesTableTable,
-                      Subcategory
+                      Subcategory,
+                      $SubcategoriesTableTable
                     >(
                       currentTable: table,
                       referencedTable: $$CategoriesTableTableReferences
@@ -26918,8 +26917,8 @@ class $$CategoriesTableTableTableManager
                             table,
                             p0,
                           ).subcategoriesTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.categoryId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'category_id',
                       typedResults: items,
                     ),
                 ];
@@ -28072,10 +28071,11 @@ class $$MenuItemsTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (menuItemVariationsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           MenuItem,
                           $MenuItemsTableTable,
-                          MenuItemVariation
+                          MenuItemVariation,
+                          $MenuItemVariationsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$MenuItemsTableTableReferences
@@ -28086,17 +28086,16 @@ class $$MenuItemsTableTableTableManager
                                 table,
                                 p0,
                               ).menuItemVariationsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.menuItemId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'menu_item_id',
                           typedResults: items,
                         ),
                       if (orderItemsByItemId)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           MenuItem,
                           $MenuItemsTableTable,
-                          OrderItem
+                          OrderItem,
+                          $OrderItemsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$MenuItemsTableTableReferences
@@ -28107,17 +28106,16 @@ class $$MenuItemsTableTableTableManager
                                 table,
                                 p0,
                               ).orderItemsByItemId,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.itemId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'item_id',
                           typedResults: items,
                         ),
                       if (orderItemsByMenuItemId)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           MenuItem,
                           $MenuItemsTableTable,
-                          OrderItem
+                          OrderItem,
+                          $OrderItemsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$MenuItemsTableTableReferences
@@ -28128,10 +28126,8 @@ class $$MenuItemsTableTableTableManager
                                 table,
                                 p0,
                               ).orderItemsByMenuItemId,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.menuItemId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'menu_item_id',
                           typedResults: items,
                         ),
                     ];
@@ -28753,10 +28749,11 @@ class $$MenuItemVariationsTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (orderItemsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           MenuItemVariation,
                           $MenuItemVariationsTableTable,
-                          OrderItem
+                          OrderItem,
+                          $OrderItemsTableTable
                         >(
                           currentTable: table,
                           referencedTable:
@@ -28768,10 +28765,8 @@ class $$MenuItemVariationsTableTableTableManager
                                 table,
                                 p0,
                               ).orderItemsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.selectedVariationId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'selected_variation_id',
                           typedResults: items,
                         ),
                     ];
@@ -29560,10 +29555,11 @@ class $$InventoryTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (inventoryStockAdjustmentsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           InventoryItem,
                           $InventoryTableTable,
-                          InventoryStockAdjustment
+                          InventoryStockAdjustment,
+                          $InventoryStockAdjustmentsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$InventoryTableTableReferences
@@ -29574,17 +29570,16 @@ class $$InventoryTableTableTableManager
                                 table,
                                 p0,
                               ).inventoryStockAdjustmentsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.inventoryId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'inventory_id',
                           typedResults: items,
                         ),
                       if (purchaseTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           InventoryItem,
                           $InventoryTableTable,
-                          PurchaseRecord
+                          PurchaseRecord,
+                          $PurchaseTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$InventoryTableTableReferences
@@ -29595,10 +29590,8 @@ class $$InventoryTableTableTableManager
                                 table,
                                 p0,
                               ).purchaseTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.inventoryId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'inventory_id',
                           typedResults: items,
                         ),
                     ];
@@ -31208,10 +31201,11 @@ class $$CustomersTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (reservationsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Customer,
                           $CustomersTableTable,
-                          Reservation
+                          Reservation,
+                          $ReservationsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$CustomersTableTableReferences
@@ -31222,17 +31216,16 @@ class $$CustomersTableTableTableManager
                                 table,
                                 p0,
                               ).reservationsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.customerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'customer_id',
                           typedResults: items,
                         ),
                       if (ordersTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Customer,
                           $CustomersTableTable,
-                          Order
+                          Order,
+                          $OrdersTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$CustomersTableTableReferences
@@ -31243,17 +31236,16 @@ class $$CustomersTableTableTableManager
                                 table,
                                 p0,
                               ).ordersTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.customerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'customer_id',
                           typedResults: items,
                         ),
                       if (invoicesTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Customer,
                           $CustomersTableTable,
-                          Invoice
+                          Invoice,
+                          $InvoicesTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$CustomersTableTableReferences
@@ -31264,17 +31256,16 @@ class $$CustomersTableTableTableManager
                                 table,
                                 p0,
                               ).invoicesTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.customerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'customer_id',
                           typedResults: items,
                         ),
                       if (customerLoyaltyTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Customer,
                           $CustomersTableTable,
-                          CustomerLoyaltyData
+                          CustomerLoyaltyData,
+                          $CustomerLoyaltyTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$CustomersTableTableReferences
@@ -31285,17 +31276,16 @@ class $$CustomersTableTableTableManager
                                 table,
                                 p0,
                               ).customerLoyaltyTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.customerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'customer_id',
                           typedResults: items,
                         ),
                       if (loyaltyTransactionsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Customer,
                           $CustomersTableTable,
-                          LoyaltyTransactionData
+                          LoyaltyTransactionData,
+                          $LoyaltyTransactionsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$CustomersTableTableReferences
@@ -31306,10 +31296,8 @@ class $$CustomersTableTableTableManager
                                 table,
                                 p0,
                               ).loyaltyTransactionsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.customerId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'customer_id',
                           typedResults: items,
                         ),
                     ];
@@ -32040,10 +32028,11 @@ class $$ReservationsTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (ordersTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Reservation,
                           $ReservationsTableTable,
-                          Order
+                          Order,
+                          $OrdersTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$ReservationsTableTableReferences
@@ -32054,10 +32043,8 @@ class $$ReservationsTableTableTableManager
                                 table,
                                 p0,
                               ).ordersTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.reservationId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'reservation_id',
                           typedResults: items,
                         ),
                     ];
@@ -33309,10 +33296,11 @@ class $$OrdersTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (orderItemsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Order,
                           $OrdersTableTable,
-                          OrderItem
+                          OrderItem,
+                          $OrderItemsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$OrdersTableTableReferences
@@ -33323,17 +33311,16 @@ class $$OrdersTableTableTableManager
                                 table,
                                 p0,
                               ).orderItemsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.orderId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'order_id',
                           typedResults: items,
                         ),
                       if (invoicesTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Order,
                           $OrdersTableTable,
-                          Invoice
+                          Invoice,
+                          $InvoicesTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$OrdersTableTableReferences
@@ -33344,17 +33331,16 @@ class $$OrdersTableTableTableManager
                                 table,
                                 p0,
                               ).invoicesTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.orderId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'order_id',
                           typedResults: items,
                         ),
                       if (loyaltyTransactionsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Order,
                           $OrdersTableTable,
-                          LoyaltyTransactionData
+                          LoyaltyTransactionData,
+                          $LoyaltyTransactionsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$OrdersTableTableReferences
@@ -33365,10 +33351,8 @@ class $$OrdersTableTableTableManager
                                 table,
                                 p0,
                               ).loyaltyTransactionsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.orderId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'order_id',
                           typedResults: items,
                         ),
                     ];
@@ -34621,10 +34605,11 @@ class $$PaymentModesTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (invoicesTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           PaymentMode,
                           $PaymentModesTableTable,
-                          Invoice
+                          Invoice,
+                          $InvoicesTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$PaymentModesTableTableReferences
@@ -34635,17 +34620,16 @@ class $$PaymentModesTableTableTableManager
                                 table,
                                 p0,
                               ).invoicesTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.paymentModeId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'payment_mode_id',
                           typedResults: items,
                         ),
                       if (paymentTransactionsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           PaymentMode,
                           $PaymentModesTableTable,
-                          PaymentTransaction
+                          PaymentTransaction,
+                          $PaymentTransactionsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$PaymentModesTableTableReferences
@@ -34656,10 +34640,8 @@ class $$PaymentModesTableTableTableManager
                                 table,
                                 p0,
                               ).paymentTransactionsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.paymentModeId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'payment_mode_id',
                           typedResults: items,
                         ),
                     ];
@@ -35811,10 +35793,11 @@ class $$InvoicesTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (invoiceItemsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Invoice,
                           $InvoicesTableTable,
-                          InvoiceItem
+                          InvoiceItem,
+                          $InvoiceItemsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$InvoicesTableTableReferences
@@ -35825,17 +35808,16 @@ class $$InvoicesTableTableTableManager
                                 table,
                                 p0,
                               ).invoiceItemsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.invoiceId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'invoice_id',
                           typedResults: items,
                         ),
                       if (paymentTransactionsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Invoice,
                           $InvoicesTableTable,
-                          PaymentTransaction
+                          PaymentTransaction,
+                          $PaymentTransactionsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$InvoicesTableTableReferences
@@ -35846,17 +35828,16 @@ class $$InvoicesTableTableTableManager
                                 table,
                                 p0,
                               ).paymentTransactionsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.invoiceId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'invoice_id',
                           typedResults: items,
                         ),
                       if (loyaltyTransactionsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Invoice,
                           $InvoicesTableTable,
-                          LoyaltyTransactionData
+                          LoyaltyTransactionData,
+                          $LoyaltyTransactionsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$InvoicesTableTableReferences
@@ -35867,10 +35848,8 @@ class $$InvoicesTableTableTableManager
                                 table,
                                 p0,
                               ).loyaltyTransactionsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.invoiceId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'invoice_id',
                           typedResults: items,
                         ),
                     ];
@@ -38162,10 +38141,11 @@ class $$EmployeesTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (attendanceTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Employee,
                           $EmployeesTableTable,
-                          AttendanceRecord
+                          AttendanceRecord,
+                          $AttendanceTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$EmployeesTableTableReferences
@@ -38176,17 +38156,16 @@ class $$EmployeesTableTableTableManager
                                 table,
                                 p0,
                               ).attendanceTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.employeeId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'employee_id',
                           typedResults: items,
                         ),
                       if (leavesTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           Employee,
                           $EmployeesTableTable,
-                          LeaveRecord
+                          LeaveRecord,
+                          $LeavesTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$EmployeesTableTableReferences
@@ -38197,10 +38176,8 @@ class $$EmployeesTableTableTableManager
                                 table,
                                 p0,
                               ).leavesTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.employeeId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'employee_id',
                           typedResults: items,
                         ),
                     ];
@@ -39542,10 +39519,11 @@ class $$RolesTableTableTableManager
                   getPrefetchedDataCallback: (items) async {
                     return [
                       if (userLoginsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           UserRole,
                           $RolesTableTable,
-                          UserLogin
+                          UserLogin,
+                          $UserLoginsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$RolesTableTableReferences
@@ -39556,17 +39534,16 @@ class $$RolesTableTableTableManager
                                 table,
                                 p0,
                               ).userLoginsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.roleId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'role_id',
                           typedResults: items,
                         ),
                       if (rolePermissionsTableRefs)
-                        await $_getPrefetchedData<
+                        await $_getPrefetchedDataByColumns<
                           UserRole,
                           $RolesTableTable,
-                          RolePermission
+                          RolePermission,
+                          $RolePermissionsTableTable
                         >(
                           currentTable: table,
                           referencedTable: $$RolesTableTableReferences
@@ -39577,10 +39554,8 @@ class $$RolesTableTableTableManager
                                 table,
                                 p0,
                               ).rolePermissionsTableRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.roleId == item.id,
-                              ),
+                          currentColumn: 'id',
+                          referencedColumn: 'role_id',
                           typedResults: items,
                         ),
                     ];
@@ -40354,10 +40329,11 @@ class $$PermissionsTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (rolePermissionsTableRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       UserPermission,
                       $PermissionsTableTable,
-                      RolePermission
+                      RolePermission,
+                      $RolePermissionsTableTable
                     >(
                       currentTable: table,
                       referencedTable: $$PermissionsTableTableReferences
@@ -40368,10 +40344,8 @@ class $$PermissionsTableTableTableManager
                             table,
                             p0,
                           ).rolePermissionsTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where(
-                            (e) => e.permissionId == item.id,
-                          ),
+                      currentColumn: 'id',
+                      referencedColumn: 'permission_id',
                       typedResults: items,
                     ),
                 ];
@@ -42317,10 +42291,11 @@ class $$ExpenditureCategoriesTableTableTableManager
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (expendituresTableRefs)
-                    await $_getPrefetchedData<
+                    await $_getPrefetchedDataByColumns<
                       ExpenditureCategoryTableData,
                       $ExpenditureCategoriesTableTable,
-                      ExpenditureTableData
+                      ExpenditureTableData,
+                      $ExpendituresTableTable
                     >(
                       currentTable: table,
                       referencedTable:
@@ -42332,8 +42307,8 @@ class $$ExpenditureCategoriesTableTableTableManager
                             table,
                             p0,
                           ).expendituresTableRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.categoryId == item.id),
+                      currentColumn: 'id',
+                      referencedColumn: 'category_id',
                       typedResults: items,
                     ),
                 ];

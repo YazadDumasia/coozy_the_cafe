@@ -19,20 +19,19 @@ class _LoginBackgroundWidgetState extends State<LoginBackgroundWidget> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+    final gradientColors = shared.AnimateGradientColors.of(context);
+    final defaultParticleColors =
+        shared.AnimateGradientColors.getCafeParticlePalette(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return shared.AnimateGradient(
       primaryBegin: Alignment.topLeft,
-      primaryEnd: Alignment.bottomLeft,
+      primaryEnd: Alignment.bottomRight,
       secondaryBegin: Alignment.bottomLeft,
       secondaryEnd: Alignment.topRight,
-      duration: const Duration(seconds: 2),
-      primaryColors: const <Color>[
-        Color.fromRGBO(225, 109, 245, 1),
-        Color.fromRGBO(78, 248, 231, 1),
-      ],
-      secondaryColors: const <Color>[
-        Color.fromRGBO(5, 222, 250, 1),
-        Color.fromRGBO(134, 231, 214, 1),
-      ],
+      duration: const Duration(seconds: 4),
+      primaryColors: gradientColors.primaryColors,
+      secondaryColors: gradientColors.secondaryColors,
       child: SizedBox(
         key: UniqueKey(),
         width: size.width,
@@ -41,21 +40,25 @@ class _LoginBackgroundWidgetState extends State<LoginBackgroundWidget> {
           children: <Widget>[
             shared.CircularParticle(
               awayRadius: 100,
-              numberOfParticles: 250,
+              numberOfParticles: 200,
               connectDots: false,
               enableHover: false,
-              hoverColor: Theme.of(context).colorScheme.secondary,
+              hoverColor: Theme.of(context).colorScheme.primary,
               hoverRadius: 50,
               speedOfParticles: 1.3,
               width: size.width,
               height: size.height,
               onTapAnimation: true,
-              particleColor: Colors.white.withAlpha(150),
+              particleColor: isDark
+                  ? const Color(0xffffb59c).withValues(alpha: 0.4)
+                  : const Color(0xffa43c12).withValues(alpha: 0.3),
               awayAnimationDuration: const Duration(milliseconds: 600),
               maxParticleSize: 8,
               isRandSize: true,
               isRandomColor: true,
-              randColorList: widget.listParticleColor ?? [],
+              randColorList: widget.listParticleColor?.isNotEmpty == true
+                  ? widget.listParticleColor!
+                  : defaultParticleColors,
               awayAnimationCurve: Curves.easeInOutBack,
             ),
             PositionedDirectional(

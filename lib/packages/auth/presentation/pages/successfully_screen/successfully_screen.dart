@@ -37,59 +37,78 @@ class _SuccessfullyScreenState extends State<SuccessfullyScreen>
         ? Assets.lottie.successDark
         : Assets.lottie.successLight;
 
+    final gradientColors = AnimateGradientColors.of(context);
+    final particleColors = AnimateGradientColors.getCafeParticlePalette(context);
+    final size = MediaQuery.sizeOf(context);
+
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
-
         body: AnimateGradient(
           primaryBegin: Alignment.topLeft,
-          primaryEnd: Alignment.bottomLeft,
+          primaryEnd: Alignment.bottomRight,
           secondaryBegin: Alignment.bottomLeft,
           secondaryEnd: Alignment.topRight,
-          duration: const Duration(seconds: 2),
-          primaryColors: const <Color>[
-            Color.fromRGBO(225, 109, 245, 1),
-            Color.fromRGBO(78, 248, 231, 1),
-            // Color.fromRGBO(99, 251, 215, 1),
-            // Color.fromRGBO(83, 138, 214, 1)
-          ],
-          secondaryColors: const <Color>[
-            Color.fromRGBO(5, 222, 250, 1),
-            Color.fromRGBO(134, 231, 214, 1),
-          ],
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Lottie.asset(
-                  lottieAsset,
-                  controller: _controller,
-                  onLoaded: (composition) {
-                    _controller
-                      ..duration = composition.duration
-                      ..forward().whenComplete(() {
-                        // Navigate to home screen after animation completes
-                        if (mounted) {
-                          context.go(widget.redirectPath);
-                        }
-                      });
-                  },
-                  width: lottieDimension,
-                  height: lottieDimension,
-                  repeat: false,
+          duration: const Duration(seconds: 4),
+          primaryColors: gradientColors.primaryColors,
+          secondaryColors: gradientColors.secondaryColors,
+          child: Stack(
+            children: [
+              CircularParticle(
+                width: size.width,
+                height: size.height,
+                awayRadius: 60,
+                numberOfParticles: 90,
+                speedOfParticles: 1.2,
+                maxParticleSize: 7,
+                particleColor: (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
+                    .withValues(alpha: 0.4),
+                isRandSize: true,
+                isRandomColor: true,
+                randColorList: particleColors,
+                awayAnimationDuration: const Duration(milliseconds: 600),
+                awayAnimationCurve: Curves.easeInOutBack,
+                enableHover: true,
+                hoverColor: const Color(0xffff8a5c),
+                hoverRadius: 80,
+                onTapAnimation: true,
+                connectDots: false,
+              ),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Lottie.asset(
+                      lottieAsset,
+                      controller: _controller,
+                      onLoaded: (composition) {
+                        _controller
+                          ..duration = composition.duration
+                          ..forward().whenComplete(() {
+                            // Navigate to home screen after animation completes
+                            if (mounted) {
+                              context.go(widget.redirectPath);
+                            }
+                          });
+                      },
+                      width: lottieDimension,
+                      height: lottieDimension,
+                      repeat: false,
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      context.tr(
+                            LocaleKeys.successfullyScreenSuccessfullyVerified,
+                            track: TrackConstants.successfullyScreenTrack,
+                          ) ??
+                          'Successfully Verified!',
+                      style: Theme.of(context).textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                Text(
-                  context.tr(
-                        LocaleKeys.successfullyScreenSuccessfullyVerified,
-                        track: TrackConstants.successfullyScreenTrack,
-                      ) ??
-                      'Successfully Verified!',
-                  style: Theme.of(context).textTheme.headlineSmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

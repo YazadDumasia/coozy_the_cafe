@@ -118,3 +118,68 @@ TextTheme createTextTheme(
   );
   return textTheme;
 }
+
+class AnimateGradientColors {
+  final List<Color> primaryColors;
+  final List<Color> secondaryColors;
+
+  const AnimateGradientColors({
+    required this.primaryColors,
+    required this.secondaryColors,
+  });
+
+  /// Resolves theme-aware primary and secondary gradient colors for [AnimateGradient]
+  /// consistent with the Coozy The Cafe warm palette in both Light and Dark modes.
+  factory AnimateGradientColors.of(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isDark) {
+      return const AnimateGradientColors(
+        primaryColors: <Color>[
+          Color(0xff1c110c),
+          Color(0xff291811),
+        ],
+        secondaryColors: <Color>[
+          Color(0xff24140d),
+          Color(0xff120a06),
+        ],
+      );
+    } else {
+      return const AnimateGradientColors(
+        primaryColors: <Color>[
+          Color(0xffffe9e3),
+          Color(0xffffdbcf),
+        ],
+        secondaryColors: <Color>[
+          Color(0xffffd2c2),
+          Color(0xfffae4dd),
+        ],
+      );
+    }
+  }
+
+  /// Curated warm cafe particle colors adapting to theme
+  static List<Color> getCafeParticlePalette(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    if (isDark) {
+      return const <Color>[
+        Color(0xffff8a5c), // Primary bright coral/peach
+        Color(0xfff59e0b), // Warm caramel amber
+        Color(0xfffbbf24), // Amber gold
+        Color(0xffffb59c), // Light peach
+        Color(0xffdebfa8), // Warm latte
+        Color(0xffe7bdb2), // Creamy mocha
+        Color(0xffcb4a00), // Roasted cinnamon
+        Color(0xffffffff), // Soft white highlight
+      ];
+    } else {
+      return const <Color>[
+        Color(0xffa43c12), // Rich espresso terracotta
+        Color(0xffcb4a00), // Cinnamon
+        Color(0xffd97706), // Deep amber
+        Color(0xff8f4c34), // Warm mocha
+        Color(0xffff8a5c), // Peach coral
+        Color(0xffb45309), // Roasted caramel
+      ];
+    }
+  }
+}
