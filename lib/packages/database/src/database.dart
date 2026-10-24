@@ -27,6 +27,10 @@ import 'database_dao/reports_dao.dart';
 import 'database_dao/reservations_dao.dart';
 import 'database_dao/user_logins_dao.dart';
 
+import 'package:flutter/foundation.dart';
+
+import 'utils/database_json_export_service.dart';
+
 part 'database.g.dart';
 
 @DriftDatabase(
@@ -301,6 +305,7 @@ class CoozyDatabase extends _$CoozyDatabase {
   final sync.Lock _dbLock = sync.Lock();
 
   Future<String> getDbPath() async {
+    if (kIsWeb) return 'coozy_the_cafe.db';
     final dbDir = await path_provider.getApplicationDocumentsDirectory();
     return path.join(dbDir.path, 'coozy_the_cafe.db');
   }
@@ -308,10 +313,12 @@ class CoozyDatabase extends _$CoozyDatabase {
   Future<void> wipeDatabase() async {
     await _dbLock.synchronized(() async {
       await close();
-      final path = await getDbPath();
-      final file = File(path);
-      if (await file.exists()) {
-        await file.delete();
+      if (!kIsWeb) {
+        final path = await getDbPath();
+        final file = File(path);
+        if (await file.exists()) {
+          await file.delete();
+        }
       }
     });
   }
@@ -320,6 +327,12 @@ class CoozyDatabase extends _$CoozyDatabase {
     bool encryptBackup = true,
     void Function(double progress, String status)? onProgress,
   }) async {
+    if (kIsWeb) {
+      onProgress?.call(0.05, 'Starting Web Database backup...');
+      final exportService = DatabaseJsonExportService(this);
+      return await exportService.exportToFile(onProgress: onProgress);
+    }
+
     onProgress?.call(0.0, 'Requesting permissions...');
     await _requestPermissions();
     final sourcePath = await getDbPath();
@@ -368,6 +381,19 @@ class CoozyDatabase extends _$CoozyDatabase {
     String backupFilePath, {
     void Function(double progress, String status)? onProgress,
   }) async {
+    if (kIsWeb) {
+      onProgress?.call(0.05, 'Restoring Web Database from JSON...');
+      final exportService = DatabaseJsonExportService(this);
+      String jsonContent = backupFilePath;
+      // If it looks like a path or not starting with JSON brackets, try to handle or parse directly
+      await exportService.importFromJsonString(
+        jsonContent,
+        onProgress: onProgress,
+      );
+      onProgress?.call(1.0, 'Restore complete!');
+      return;
+    }
+
     onProgress?.call(0.0, 'Requesting permissions...');
     await _requestPermissions();
     final backupFile = File(backupFilePath);
@@ -454,7 +480,7 @@ class CoozyDatabase extends _$CoozyDatabase {
   }
 
   Future<Directory> _getBackupDirectory() async {
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       final dir = Directory('/storage/emulated/0/Download');
       if (await dir.exists()) return dir;
       return await path_provider.getExternalStorageDirectory() ??
@@ -464,7 +490,7 @@ class CoozyDatabase extends _$CoozyDatabase {
   }
 
   Future<void> _requestPermissions() async {
-    if (Platform.isAndroid) {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       await permission_handler.Permission.storage.request();
       if (await permission_handler.Permission.storage.isDenied) {
         await permission_handler.Permission.manageExternalStorage.request();

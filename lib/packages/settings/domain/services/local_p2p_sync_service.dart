@@ -42,6 +42,10 @@ class LocalP2pSyncService {
   RawDatagramSocket? _udpBeaconSocket;
   RawDatagramSocket? _udpDiscoverySocket;
   Timer? _beaconTimer;
+  Timer? _heartbeatTimer;
+
+  // Offline queue for storing mutations while disconnected
+  final List<String> _offlineOutbox = [];
 
   final ValueNotifier<SyncConnectionStatus> statusNotifier =
       ValueNotifier<SyncConnectionStatus>(SyncConnectionStatus.idle);
@@ -49,6 +53,7 @@ class LocalP2pSyncService {
   final ValueNotifier<String> localIpNotifier = ValueNotifier<String>('');
   final ValueNotifier<String?> lastSyncMessageNotifier =
       ValueNotifier<String?>(null);
+  final ValueNotifier<int> pendingOutboxCountNotifier = ValueNotifier<int>(0);
 
   P2pSyncConfig _currentConfig = const P2pSyncConfig();
   CoozyDatabase? _database;
@@ -133,6 +138,9 @@ class LocalP2pSyncService {
   Future<void> stopSync() async {
     _beaconTimer?.cancel();
     _beaconTimer = null;
+
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
 
     try {
       _udpBeaconSocket?.close();
@@ -281,6 +289,13 @@ class LocalP2pSyncService {
       final json = jsonDecode(rawData as String) as Map<String, dynamic>;
       final type = json['type'] as String?;
 
+      if (type == 'PING') {
+        try {
+          sender.add(jsonEncode({'type': 'PONG', 'timestamp': DateTime.now().millisecondsSinceEpoch}));
+        } catch (_) {}
+        return;
+      }
+
       if (type == 'PUSH_ORDER' && _database != null) {
         final orderData = json['order'] as Map<String, dynamic>;
         final itemsData =
@@ -396,23 +411,59 @@ class LocalP2pSyncService {
       statusNotifier.value = SyncConnectionStatus.connected;
       lastSyncMessageNotifier.value = 'Connected to POS Hub ($hubIp:$hubPort)';
 
+      // Start client heartbeat ping (every 10s)
+      _heartbeatTimer?.cancel();
+      _heartbeatTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+        if (_clientSocket != null) {
+          try {
+            _clientSocket!.add(jsonEncode({'type': 'PING', 'timestamp': DateTime.now().millisecondsSinceEpoch}));
+          } catch (_) {
+            _handleClientDisconnect();
+          }
+        }
+      });
+
+      // Flush any queued offline mutations
+      _flushOfflineOutbox();
+
       _clientSocket!.listen(
         (data) {
           _onClientReceivedMessage(data);
         },
         onDone: () {
-          statusNotifier.value = SyncConnectionStatus.disconnected;
-          _scheduleReconnect();
+          _handleClientDisconnect();
         },
         onError: (e) {
-          statusNotifier.value = SyncConnectionStatus.error;
-          _scheduleReconnect();
+          _handleClientDisconnect(isError: true);
         },
       );
     } catch (e) {
-      statusNotifier.value = SyncConnectionStatus.disconnected;
-      _scheduleReconnect();
+      _handleClientDisconnect();
     }
+  }
+
+  void _handleClientDisconnect({bool isError = false}) {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = null;
+    statusNotifier.value =
+        isError ? SyncConnectionStatus.error : SyncConnectionStatus.disconnected;
+    _scheduleReconnect();
+  }
+
+  void _flushOfflineOutbox() {
+    if (_clientSocket == null || _offlineOutbox.isEmpty) return;
+    final toSend = List<String>.from(_offlineOutbox);
+    _offlineOutbox.clear();
+    pendingOutboxCountNotifier.value = 0;
+
+    for (final payload in toSend) {
+      try {
+        _clientSocket!.add(payload);
+      } catch (e) {
+        _offlineOutbox.add(payload);
+      }
+    }
+    pendingOutboxCountNotifier.value = _offlineOutbox.length;
   }
 
   void _scheduleReconnect() {
@@ -478,9 +529,17 @@ class LocalP2pSyncService {
         } catch (_) {}
       }
     } else if (_currentConfig.role == DeviceSyncRole.clientTerminal) {
-      try {
-        _clientSocket?.add(payload);
-      } catch (_) {}
+      if (_clientSocket != null) {
+        try {
+          _clientSocket!.add(payload);
+        } catch (_) {
+          _offlineOutbox.add(payload);
+          pendingOutboxCountNotifier.value = _offlineOutbox.length;
+        }
+      } else {
+        _offlineOutbox.add(payload);
+        pendingOutboxCountNotifier.value = _offlineOutbox.length;
+      }
     }
   }
 
@@ -504,9 +563,17 @@ class LocalP2pSyncService {
         } catch (_) {}
       }
     } else if (_currentConfig.role == DeviceSyncRole.clientTerminal) {
-      try {
-        _clientSocket?.add(payload);
-      } catch (_) {}
+      if (_clientSocket != null) {
+        try {
+          _clientSocket!.add(payload);
+        } catch (_) {
+          _offlineOutbox.add(payload);
+          pendingOutboxCountNotifier.value = _offlineOutbox.length;
+        }
+      } else {
+        _offlineOutbox.add(payload);
+        pendingOutboxCountNotifier.value = _offlineOutbox.length;
+      }
     }
   }
 

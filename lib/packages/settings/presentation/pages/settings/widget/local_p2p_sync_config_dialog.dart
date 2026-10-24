@@ -422,6 +422,31 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                       : 'Connecting to local Wi-Fi...',
                   style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
                 ),
+                ValueListenableBuilder<int>(
+                  valueListenable:
+                      LocalP2pSyncService.instance.pendingOutboxCountNotifier,
+                  builder: (context, pendingCount, _) {
+                    if (pendingCount <= 0) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Row(
+                        children: [
+                          Icon(Icons.cloud_upload_outlined,
+                              size: 14, color: Colors.orange.shade700),
+                          const SizedBox(width: 4),
+                          Text(
+                            '$pendingCount changes queued offline',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.orange.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),

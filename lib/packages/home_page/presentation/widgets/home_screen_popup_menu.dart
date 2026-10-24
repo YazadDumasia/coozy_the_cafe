@@ -1,3 +1,4 @@
+import 'package:coozy_the_cafe/packages/home_page/presentation/widgets/database_backup_helper.dart';
 import 'package:coozy_the_cafe/packages/shared/config/app_extensions.dart';
 import 'package:coozy_the_cafe/packages/shared/l10n/locale_keys.dart';
 import 'package:coozy_the_cafe/packages/shared/l10n/track_constants.dart';
@@ -15,10 +16,13 @@ class HomeScreenPopupMenu extends StatelessWidget {
         onSelected: (value) async {
           switch (value) {
             case 'backup_db':
+              await DatabaseBackupHelper.showBackupDialog(context);
               break;
             case 'export_db':
+              await DatabaseBackupHelper.showExportDialog(context);
               break;
             case 'restore_db':
+              await DatabaseBackupHelper.showRestoreOptionsDialog(context);
               break;
             case 'clear_data':
               await LocalManager.instance.clearAll();

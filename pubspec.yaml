@@ -159,6 +159,8 @@ dependencies:
   marionette_flutter: ^0.7.0
   marionette_mcp: ^0.7.0
   marionette_logging: ^0.7.0
+  file_picker: ^13.2.0
+  desktop_drop: ^0.8.4
 
 
 #dependency_overrides:

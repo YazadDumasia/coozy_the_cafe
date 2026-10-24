@@ -13,6 +13,7 @@ import 'widget/invoice_share_config_dialog.dart';
 import 'widget/local_p2p_sync_config_dialog.dart';
 import 'widget/loyalty_tier_setup_dialog.dart';
 import '../../../../customer/domain/entities/loyalty_tier_config.dart';
+import '../../../../home_page/presentation/widgets/database_backup_helper.dart';
 import '../../../../core/coozy_core.dart' as core;
 import '../../../../shared/coozy_shared.dart' as shared;
 
@@ -2688,6 +2689,133 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onTap: () {
                       context.push(core.AppRoutePath.changePasswordRoute);
                     },
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Database Management Section
+                Text(
+                  _tr(
+                    context,
+                    shared.LocaleKeys.settingsDatabaseSection,
+                    'Database Management',
+                  ),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ) ??
+                      TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                ),
+                const SizedBox(height: 8),
+
+                // Backup Database Card
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.backup_rounded,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                    title: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsDatabaseBackupLabel,
+                        'Backup Database',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsDatabaseBackupSubtitle,
+                        'Create an offline backup file of the SQLite database',
+                      ),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                    ),
+                    onTap: () => DatabaseBackupHelper.showBackupDialog(context),
+                  ),
+                ),
+                const SizedBox(height: 8),
+
+                // Restore Database Card
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.settings_backup_restore_rounded,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                    title: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsDatabaseRestoreLabel,
+                        'Restore Database',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsDatabaseRestoreSubtitle,
+                        'Restore local application data from a previous database backup',
+                      ),
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                    ),
+                    onTap: () =>
+                        DatabaseBackupHelper.showRestoreOptionsDialog(context),
                   ),
                 ),
 

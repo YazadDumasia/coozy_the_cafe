@@ -22,3 +22,4 @@ export 'src/database_dao/user_logins_dao.dart';
 
 // src/utils
 export 'src/utils/fake_data_helper.dart';
+export 'src/utils/database_json_export_service.dart';
