@@ -12,7 +12,9 @@ void registerBusinessProfileDependencies(GetIt sl) {
   // Data Source
   sl.registerLazySingleton<BusinessProfileLocalDataSource>(
     () => BusinessProfileLocalDataSourceImpl(
-      sharedPreferences: sl<SharedPreferences>(),
+      sharedPreferences: sl.isRegistered<SharedPreferences>()
+          ? sl<SharedPreferences>()
+          : null,
     ),
   );
 

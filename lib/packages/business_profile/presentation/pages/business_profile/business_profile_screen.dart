@@ -221,13 +221,12 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
           }
         },
         builder: (context, state) {
-          if (state is BusinessProfileLoading) {
+          if (state is BusinessProfileInitial ||
+              state is BusinessProfileLoading) {
             return const shared.LoadingPage();
           }
 
-          if (state is BusinessProfileError &&
-              state is! BusinessProfileLoaded &&
-              state is! BusinessProfileSavedSuccess) {
+          if (state is BusinessProfileError) {
             return BusinessProfileEmptyView(
               onRetry: () =>
                   context.read<BusinessProfileCubit>().loadProfile(),
@@ -314,8 +313,13 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
                               controller: _addressController,
                               focusNode: _addressFocusNode,
                               maxLines: 3,
-                              textInputAction: TextInputAction.next,
+                              textInputAction: TextInputAction.newline,
                               decoration: InputDecoration(
+                                alignLabelWithHint: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 16.0,
+                                ),
                                 labelText:
                                     context.tr(
                                       shared
@@ -332,7 +336,10 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
                                       track: shared.TrackConstants.settingTrack,
                                     ) ??
                                     'Enter full street address, city, postal code',
-                                prefixIcon: const Icon(Icons.location_on_rounded),
+                                prefixIcon: const Padding(
+                                  padding: EdgeInsets.only(bottom: 40.0),
+                                  child: Icon(Icons.location_on_rounded),
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -622,6 +629,11 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
                               maxLines: 2,
                               textInputAction: TextInputAction.done,
                               decoration: InputDecoration(
+                                alignLabelWithHint: true,
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 16.0,
+                                ),
                                 labelText:
                                     context.tr(
                                       shared
@@ -638,7 +650,10 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
                                       track: shared.TrackConstants.settingTrack,
                                     ) ??
                                     'e.g. Thank you for dining with us! Please visit again.',
-                                prefixIcon: const Icon(Icons.chat_bubble_outline_rounded),
+                                prefixIcon: const Padding(
+                                  padding: EdgeInsets.only(bottom: 24.0),
+                                  child: Icon(Icons.chat_bubble_outline_rounded),
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),

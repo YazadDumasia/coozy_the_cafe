@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 
 class BusinessProfileEntity extends Equatable {
@@ -30,12 +31,11 @@ class BusinessProfileEntity extends Equatable {
     return const BusinessProfileEntity(
       cafeName: 'Coozy The Cafe',
       logoPath: null,
-      address:
-          'G-24, Marvella business hub, Adajan pal, Pal RTO BRTS Rd, Surat, Gujarat 394510',
+      address: 'G-24, Marvella business hub, Adajan pal, Pal RTO BRTS Rd, Surat, Gujarat 394510',
       phone: '+91 9974776639',
-      secondaryPhone: '+91 9725002491',
-      email: 'contact@coozythecafe.com',
-      googleMapsUrl: 'https://maps.app.goo.gl/coozythecafe',
+      secondaryPhone: null,
+      email: null,
+      googleMapsUrl: 'https://maps.app.goo.gl/SSTDtwdkYbL1YP2r8',
       websiteUrl: 'https://coozythecafe.com',
       instagramUrl: 'https://instagram.com/coozy_the_cafe',
       receiptFooterMessage:
@@ -89,9 +89,7 @@ class BusinessProfileEntity extends Equatable {
     return BusinessProfileEntity(
       cafeName: map['cafeName'] as String? ?? 'Coozy The Cafe',
       logoPath: map['logoPath'] as String?,
-      address:
-          map['address'] as String? ??
-          'G-24, Marvella business hub, Adajan pal, Pal RTO BRTS Rd, Surat, Gujarat 394510',
+      address: map['address'] as String? ?? 'G-24, Marvella business hub, Adajan pal, Pal RTO BRTS Rd, Surat, Gujarat 394510',
       phone: map['phone'] as String? ?? '+91 9974776639',
       secondaryPhone: map['secondaryPhone'] as String?,
       email: map['email'] as String?,

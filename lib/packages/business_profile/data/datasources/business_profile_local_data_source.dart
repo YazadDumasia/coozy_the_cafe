@@ -1,5 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../domain/entities/business_profile_entity.dart';
 
 abstract class BusinessProfileLocalDataSource {
@@ -9,13 +10,18 @@ abstract class BusinessProfileLocalDataSource {
 
 class BusinessProfileLocalDataSourceImpl
     implements BusinessProfileLocalDataSource {
-  final SharedPreferences sharedPreferences;
+  final SharedPreferences? sharedPreferences;
 
-  BusinessProfileLocalDataSourceImpl({required this.sharedPreferences});
+  BusinessProfileLocalDataSourceImpl({this.sharedPreferences});
+
+  Future<SharedPreferences> _getPrefs() async {
+    return sharedPreferences ?? await SharedPreferences.getInstance();
+  }
 
   @override
   Future<BusinessProfileEntity> getBusinessProfile() async {
-    final jsonStr = sharedPreferences.getString(
+    final prefs = await _getPrefs();
+    final jsonStr = prefs.getString(
       shared.PreferencesKeys.businessProfileInfo.name,
     );
     if (jsonStr != null && jsonStr.isNotEmpty) {
@@ -26,7 +32,8 @@ class BusinessProfileLocalDataSourceImpl
 
   @override
   Future<void> saveBusinessProfile(BusinessProfileEntity profile) async {
-    await sharedPreferences.setString(
+    final prefs = await _getPrefs();
+    await prefs.setString(
       shared.PreferencesKeys.businessProfileInfo.name,
       profile.toJson(),
     );
