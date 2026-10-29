@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/navigation/app_routes.dart';
 import '../pages/currency_exchange/currency_exchange_screen.dart';
+import '../pages/developer/developer_screen.dart';
 import '../pages/settings/settings_screen.dart';
 
 class SettingsRoutes {
@@ -16,7 +17,14 @@ class SettingsRoutes {
           name: AppRouteName.currencyExchange,
           builder: (context, state) => const CurrencyExchangeScreen(),
         ),
+        GoRoute(
+          path: 'developer',
+          name: AppRouteName.developer,
+          builder: (context, state) => const DeveloperScreen(),
+        ),
       ],
     ),
   ];
 }
+
+

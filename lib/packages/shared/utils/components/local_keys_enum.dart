@@ -30,4 +30,5 @@ enum PreferencesKeys {
   loyaltyTiersList,
   loyaltyDefaultTier,
   loyaltyTierThresholds,
+  businessProfileInfo,
 }

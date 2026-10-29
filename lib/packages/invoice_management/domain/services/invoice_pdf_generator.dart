@@ -18,6 +18,10 @@ class _InvoicePdfComputeParams {
   final Uint8List? logoBytes;
   final bool isA4Format;
   final bool is58mm;
+  final String? cafeName;
+  final String? cafeAddress;
+  final String? cafePhone;
+  final String? footerMessage;
 
   _InvoicePdfComputeParams({
     required this.invoice,
@@ -28,6 +32,10 @@ class _InvoicePdfComputeParams {
     this.logoBytes,
     this.isA4Format = false,
     this.is58mm = false,
+    this.cafeName,
+    this.cafeAddress,
+    this.cafePhone,
+    this.footerMessage,
   });
 }
 
@@ -40,6 +48,10 @@ class InvoicePdfGenerator {
     required InvoiceDetailsEntity details,
     bool isA4Format = false,
     bool is58mm = false,
+    String? cafeName,
+    String? cafeAddress,
+    String? cafePhone,
+    String? footerMessage,
   }) async {
     // 1. Pre-load fonts and logo bytes asynchronously
     Uint8List? fontBytes;
@@ -75,6 +87,10 @@ class InvoicePdfGenerator {
       logoBytes: logoBytes,
       isA4Format: isA4Format,
       is58mm: is58mm,
+      cafeName: cafeName,
+      cafeAddress: cafeAddress,
+      cafePhone: cafePhone,
+      footerMessage: footerMessage,
     );
 
     // On web, run directly to avoid web worker postMessage serialization hang; on native, use compute!
@@ -185,8 +201,21 @@ class InvoicePdfGenerator {
     }
 
     // 2. Cafe Title & Header
+    final resolvedCafeName =
+        (params.cafeName != null && params.cafeName!.trim().isNotEmpty)
+            ? params.cafeName!.trim().toUpperCase()
+            : 'COOZY THE CAFE';
+    final resolvedAddress =
+        (params.cafeAddress != null && params.cafeAddress!.trim().isNotEmpty)
+            ? params.cafeAddress!.trim()
+            : 'Shop 24, Marvella business hub, pal adajan';
+    final resolvedPhone =
+        (params.cafePhone != null && params.cafePhone!.trim().isNotEmpty)
+            ? params.cafePhone!.trim()
+            : '+919725002491';
+
     graphics.drawString(
-      'COOZY THE CAFE',
+      resolvedCafeName,
       boldFont(12),
       brush: PdfBrushes.black,
       bounds: Rect.fromLTWH(0, currentY, clientSize.width, 16),
@@ -195,7 +224,7 @@ class InvoicePdfGenerator {
     currentY += 16;
 
     graphics.drawString(
-      'Shop 24, Marvella business hub, pal adajan',
+      resolvedAddress,
       regularFont(7.5),
       brush: greyBrush,
       bounds: Rect.fromLTWH(0, currentY, clientSize.width, 12),
@@ -204,7 +233,7 @@ class InvoicePdfGenerator {
     currentY += 12;
 
     graphics.drawString(
-      '+919725002491',
+      resolvedPhone,
       regularFont(7.5),
       brush: greyBrush,
       bounds: Rect.fromLTWH(0, currentY, clientSize.width, 12),
@@ -464,8 +493,13 @@ class InvoicePdfGenerator {
 
     // 8. Footer Message
     currentY += 8;
+    final resolvedFooter = (params.footerMessage != null &&
+            params.footerMessage!.trim().isNotEmpty)
+        ? params.footerMessage!.trim()
+        : 'Thank you for visiting Coozy The Cafe!';
+
     graphics.drawString(
-      'Thank you for visiting Coozy The Cafe!',
+      resolvedFooter,
       boldFont(7.5),
       brush: PdfBrushes.black,
       bounds: Rect.fromLTWH(0, currentY, clientSize.width, 12),
@@ -473,13 +507,15 @@ class InvoicePdfGenerator {
     );
     currentY += 12;
 
-    graphics.drawString(
-      'Have a wonderful day!',
-      regularFont(7.0),
-      brush: greyBrush,
-      bounds: Rect.fromLTWH(0, currentY, clientSize.width, 12),
-      format: PdfStringFormat(alignment: PdfTextAlignment.center),
-    );
+    if (params.footerMessage == null || params.footerMessage!.trim().isEmpty) {
+      graphics.drawString(
+        'Have a wonderful day!',
+        regularFont(7.0),
+        brush: greyBrush,
+        bounds: Rect.fromLTWH(0, currentY, clientSize.width, 12),
+        format: PdfStringFormat(alignment: PdfTextAlignment.center),
+      );
+    }
 
     final bytes = Uint8List.fromList(document.saveSync());
     document.dispose();

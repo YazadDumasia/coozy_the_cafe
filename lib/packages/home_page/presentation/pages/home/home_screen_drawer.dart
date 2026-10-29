@@ -439,6 +439,25 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                     ),
                     _buildDrawerItem(
                       context,
+                      icon: Icons.code_rounded,
+                      title:
+                          context.tr(
+                            shared.LocaleKeys.settingsDeveloperTitle,
+                            track: shared.TrackConstants.settingTrack,
+                          ) ??
+                          'Developer & Contributors',
+                      isSelected: _isRouteActive(
+                        currentLocation,
+                        core.AppRoutePath.developerScreenRoute,
+                      ),
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.developerScreenRoute,
+                      ),
+                    ),
+                    _buildDrawerItem(
+                      context,
                       icon: Icons.workspace_premium,
                       title:
                           context.tr(

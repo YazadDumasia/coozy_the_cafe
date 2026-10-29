@@ -43,6 +43,10 @@ class AppRoutePath {
   static const String settingsScreenRoute = '/settings';
   static const String currencyExchangeScreenRoute =
       '/settings/currency-exchange';
+  static const String businessProfileScreenRoute =
+      '/settings/business-profile';
+  static const String developerScreenRoute =
+      '/settings/developer';
   static const String waiterOrderPlacementScreenRoute =
       '/waiter-order-placement';
   static const String kitchenScreenRoute = '/kitchen';
@@ -267,11 +271,17 @@ class AppRouteName {
 
   static const String settings = 'settings';
   static const String currencyExchange = 'currency-exchange';
+  static const String businessProfile = 'business-profile';
+  static const String developer = 'developer';
   static const String kitchen = 'kitchen';
   static const String orders = 'orders';
 
   static String getTitleForRouteName(String? name) {
     switch (name) {
+      case businessProfile:
+        return 'Business Profile';
+      case developer:
+        return 'Developer & Contributors';
       case orders:
         return 'Orders';
       case kitchen:

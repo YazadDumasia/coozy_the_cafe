@@ -15,10 +15,15 @@ class EscPosTicketBuilder {
   static Future<List<int>> buildCustomerReceiptBytes({
     required InvoiceDetailsEntity details,
     required ThermalPaperSize paperSize,
-    String cafeName = 'Coozy The Cafe',
-    String? cafeAddress = 'G-24,Marvella business hub, Adajan pal, Pal RTO BRTS Rd, Surat, Gujarat 394510',
-    String? cafePhone = '+91 9974776639',
+    String? cafeName,
+    String? cafeAddress,
+    String? cafePhone,
+    String? footerMessage,
   }) async {
+    final finalCafeName = cafeName ?? 'Coozy The Cafe';
+    final finalCafeAddress = cafeAddress ??
+        'G-24, Marvella business hub, Adajan pal, Pal RTO BRTS Rd, Surat, Gujarat 394510';
+    final finalCafePhone = cafePhone ?? '+91 9974776639';
     final paper = paperSize == ThermalPaperSize.mm58
         ? PaperSize.mm58
         : PaperSize.mm80;
@@ -30,7 +35,7 @@ class EscPosTicketBuilder {
 
     // 1. Header
     bytes += generator.text(
-      cafeName,
+      finalCafeName,
       styles: const PosStyles(
         align: PosAlign.center,
         height: PosTextSize.size2,
@@ -38,15 +43,15 @@ class EscPosTicketBuilder {
         bold: true,
       ),
     );
-    if (cafeAddress != null && cafeAddress.isNotEmpty) {
+    if (finalCafeAddress.isNotEmpty) {
       bytes += generator.text(
-        cafeAddress,
+        finalCafeAddress,
         styles: const PosStyles(align: PosAlign.center),
       );
     }
-    if (cafePhone != null && cafePhone.isNotEmpty) {
+    if (finalCafePhone.isNotEmpty) {
       bytes += generator.text(
-        'Tel: $cafePhone',
+        'Tel: $finalCafePhone',
         styles: const PosStyles(align: PosAlign.center),
       );
     }
@@ -200,14 +205,21 @@ class EscPosTicketBuilder {
 
     bytes += generator.hr();
     bytes += generator.feed(1);
-    bytes += generator.text(
-      'Thank you for visiting!',
-      styles: const PosStyles(align: PosAlign.center, bold: true),
-    );
-    bytes += generator.text(
-      'Please visit again',
-      styles: const PosStyles(align: PosAlign.center),
-    );
+    if (footerMessage != null && footerMessage.trim().isNotEmpty) {
+      bytes += generator.text(
+        footerMessage.trim(),
+        styles: const PosStyles(align: PosAlign.center, bold: true),
+      );
+    } else {
+      bytes += generator.text(
+        'Thank you for visiting!',
+        styles: const PosStyles(align: PosAlign.center, bold: true),
+      );
+      bytes += generator.text(
+        'Please visit again',
+        styles: const PosStyles(align: PosAlign.center),
+      );
+    }
     bytes += generator.feed(2);
     bytes += generator.cut();
 

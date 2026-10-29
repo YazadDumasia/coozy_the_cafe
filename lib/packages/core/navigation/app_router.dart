@@ -23,6 +23,7 @@ import '../../order_management/presentation/navigation/order_management_routes.d
 import '../../invoice_management/presentation/navigation/invoice_management_routes.dart';
 import '../../expenditure/presentation/navigation/expenditure_routes.dart';
 import '../../reports/presentation/navigation/reports_routes.dart';
+import '../../business_profile/presentation/navigation/business_profile_routes.dart';
 import 'app_routes.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = shared.navigatorKey;
@@ -82,6 +83,7 @@ class AppRouter {
       ...InvoiceManagementRoutes.routes,
       ...ExpenditureRoutes.routes,
       ...ReportsRoutes.routes,
+      ...BusinessProfileRoutes.routes,
     ],
 
     errorBuilder: (context, state) => Scaffold(

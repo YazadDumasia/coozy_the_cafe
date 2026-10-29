@@ -2692,6 +2692,116 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
 
+                const SizedBox(height: 12),
+
+                // Cafe Profile & Branding Navigation Card
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.storefront_rounded,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                    title: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsBusinessProfileBtn,
+                        'Cafe Profile & Branding',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsBusinessProfileDesc,
+                        'Manage cafe name, logo, contact details, Google Maps location, and receipt notes',
+                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                    ),
+                    onTap: () {
+                      context.push(
+                        core.AppRoutePath.businessProfileScreenRoute,
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+
+                // Developer & Contributors Navigation Card
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 4,
+                    ),
+                    leading: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.secondary.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.code_rounded,
+                        color: theme.colorScheme.secondary,
+                      ),
+                    ),
+                    title: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsDeveloperBtn,
+                        'Developer & Contributors',
+                      ),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Text(
+                      _tr(
+                        context,
+                        shared.LocaleKeys.settingsDeveloperDesc,
+                        'Meet the creators, explore open-source contributions, repositories, and licenses',
+                      ),
+                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                    ),
+                    trailing: const Icon(
+                      Icons.arrow_forward_ios_rounded,
+                      size: 16,
+                    ),
+                    onTap: () {
+                      context.push(
+                        core.AppRoutePath.developerScreenRoute,
+                      );
+                    },
+                  ),
+                ),
+
                 const SizedBox(height: 20),
 
                 // Database Management Section

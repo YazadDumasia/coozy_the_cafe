@@ -1087,6 +1087,97 @@ abstract class LocaleKeys {
   // settings page
   static const String settingsTitle = 'settings_title';
   static const String settingsAppearanceSection = 'settings_appearance_section';
+  static const String settingsBusinessProfileTitle =
+      'settings_business_profile_title';
+  static const String settingsBusinessProfileBtn =
+      'settings_business_profile_btn';
+  static const String settingsBusinessProfileDesc =
+      'settings_business_profile_desc';
+  static const String settingsBusinessProfileInfoSection =
+      'settings_business_profile_info_section';
+  static const String settingsBusinessProfileOnlineSection =
+      'settings_business_profile_online_section';
+  static const String settingsBusinessProfileReceiptSection =
+      'settings_business_profile_receipt_section';
+  static const String settingsBusinessProfileLogoLabel =
+      'settings_business_profile_logo_label';
+  static const String settingsBusinessProfileLogoSubtitle =
+      'settings_business_profile_logo_subtitle';
+  static const String settingsBusinessProfileChangeLogo =
+      'settings_business_profile_change_logo';
+  static const String settingsBusinessProfileRemoveLogo =
+      'settings_business_profile_remove_logo';
+  static const String settingsBusinessProfileNameLabel =
+      'settings_business_profile_name_label';
+  static const String settingsBusinessProfileNameHint =
+      'settings_business_profile_name_hint';
+  static const String settingsBusinessProfileAddressLabel =
+      'settings_business_profile_address_label';
+  static const String settingsBusinessProfileAddressHint =
+      'settings_business_profile_address_hint';
+  static const String settingsBusinessProfilePhoneLabel =
+      'settings_business_profile_phone_label';
+  static const String settingsBusinessProfilePhoneHint =
+      'settings_business_profile_phone_hint';
+  static const String settingsBusinessProfileSecondaryPhoneLabel =
+      'settings_business_profile_secondary_phone_label';
+  static const String settingsBusinessProfileSecondaryPhoneHint =
+      'settings_business_profile_secondary_phone_hint';
+  static const String settingsBusinessProfileEmailLabel =
+      'settings_business_profile_email_label';
+  static const String settingsBusinessProfileEmailHint =
+      'settings_business_profile_email_hint';
+  static const String settingsBusinessProfileMapsLabel =
+      'settings_business_profile_maps_label';
+  static const String settingsBusinessProfileMapsHint =
+      'settings_business_profile_maps_hint';
+  static const String settingsBusinessProfileOpenMaps =
+      'settings_business_profile_open_maps';
+  static const String settingsBusinessProfileWebsiteLabel =
+      'settings_business_profile_website_label';
+  static const String settingsBusinessProfileWebsiteHint =
+      'settings_business_profile_website_hint';
+  static const String settingsBusinessProfileInstagramLabel =
+      'settings_business_profile_instagram_label';
+  static const String settingsBusinessProfileInstagramHint =
+      'settings_business_profile_instagram_hint';
+  static const String settingsBusinessProfileFooterLabel =
+      'settings_business_profile_footer_label';
+  static const String settingsBusinessProfileFooterHint =
+      'settings_business_profile_footer_hint';
+  static const String settingsBusinessProfileSavedSuccess =
+      'settings_business_profile_saved_success';
+  static const String settingsDeveloperTitle = 'settings_developer_title';
+  static const String settingsDeveloperBtn = 'settings_developer_btn';
+  static const String settingsDeveloperDesc = 'settings_developer_desc';
+  static const String settingsDeveloperAboutSection =
+      'settings_developer_about_section';
+  static const String settingsDeveloperAboutAppDesc =
+      'settings_developer_about_app_desc';
+  static const String settingsDeveloperLeadTitle =
+      'settings_developer_lead_title';
+  static const String settingsDeveloperLeadName =
+      'settings_developer_lead_name';
+  static const String settingsDeveloperLeadRole =
+      'settings_developer_lead_role';
+  static const String settingsDeveloperLeadBio =
+      'settings_developer_lead_bio';
+  static const String settingsDeveloperCommunitySection =
+      'settings_developer_community_section';
+  static const String settingsDeveloperGithubBtn =
+      'settings_developer_github_btn';
+  static const String settingsDeveloperContributeBtn =
+      'settings_developer_contribute_btn';
+  static const String settingsDeveloperContributeSubtitle =
+      'settings_developer_contribute_subtitle';
+  static const String settingsDeveloperPackagesTitle =
+      'settings_developer_packages_title';
+  static const String settingsDeveloperContributorsSection =
+      'settings_developer_contributors_section';
+  static const String settingsDeveloperContributorsSubtitle =
+      'settings_developer_contributors_subtitle';
+  static const String settingsDeveloperLicensesBtn =
+      'settings_developer_licenses_btn';
   static const String settingsKitchenPrintingSection =
       'settings_kitchen_printing_section';
   static const String settingsAutoPrintKitchenSlipLabel =
