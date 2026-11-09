@@ -109,7 +109,8 @@ class CoozyDatabase extends _$CoozyDatabase {
           await m.createTable(entity);
         } else if (entity is Index) {
           // Use CREATE INDEX IF NOT EXISTS to prevent duplicates across migrations or re-runs
-          final stmt = entity.createStatementsByDialect[SqlDialect.sqlite] ??
+          final stmt =
+              entity.createStatementsByDialect[SqlDialect.sqlite] ??
               entity.createStatementsByDialect.values.first;
           final safeStmt = stmt.replaceFirst(
             'CREATE INDEX ',
