@@ -32,4 +32,3 @@ abstract class CustomerRepository {
     required String tier,
   });
 }
-

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/core/di/injection_container.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/business_profile_entity.dart';
 import 'business_profile_actions.dart';
 import 'cubit/business_profile_cubit.dart';
@@ -228,8 +229,7 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
 
           if (state is BusinessProfileError) {
             return BusinessProfileEmptyView(
-              onRetry: () =>
-                  context.read<BusinessProfileCubit>().loadProfile(),
+              onRetry: () => context.read<BusinessProfileCubit>().loadProfile(),
             );
           }
 
@@ -409,7 +409,9 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
                                       track: shared.TrackConstants.settingTrack,
                                     ) ??
                                     'e.g. +91 9725002491 (Optional)',
-                                prefixIcon: const Icon(Icons.phone_iphone_rounded),
+                                prefixIcon: const Icon(
+                                  Icons.phone_iphone_rounded,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -579,7 +581,9 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
                                       track: shared.TrackConstants.settingTrack,
                                     ) ??
                                     'e.g. https://instagram.com/coozy_the_cafe',
-                                prefixIcon: const Icon(Icons.camera_alt_outlined),
+                                prefixIcon: const Icon(
+                                  Icons.camera_alt_outlined,
+                                ),
                                 suffixIcon: IconButton(
                                   tooltip: 'Open Instagram',
                                   icon: const Icon(Icons.open_in_new_rounded),
@@ -652,7 +656,9 @@ class _BusinessProfileViewState extends State<_BusinessProfileView> {
                                     'e.g. Thank you for dining with us! Please visit again.',
                                 prefixIcon: const Padding(
                                   padding: EdgeInsets.only(bottom: 24.0),
-                                  child: Icon(Icons.chat_bubble_outline_rounded),
+                                  child: Icon(
+                                    Icons.chat_bubble_outline_rounded,
+                                  ),
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),

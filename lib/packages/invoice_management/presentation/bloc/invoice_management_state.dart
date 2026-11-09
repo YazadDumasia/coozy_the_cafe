@@ -28,6 +28,9 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
   final String? errorMessage;
   final List<PaymentMode> paymentModes;
   final List<String> selectedPaymentMethods;
+  final Uint8List? prebuiltThermalBytes;
+  final Uint8List? prebuiltA4Bytes;
+  final bool isGeneratingPdf;
 
   const InvoiceManagementLoadedState({
     required this.invoices,
@@ -42,6 +45,9 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
     this.errorMessage,
     this.paymentModes = const [],
     this.selectedPaymentMethods = const [],
+    this.prebuiltThermalBytes,
+    this.prebuiltA4Bytes,
+    this.isGeneratingPdf = false,
   });
 
   InvoiceManagementLoadedState copyWith({
@@ -57,6 +63,9 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
     String? errorMessage,
     List<PaymentMode>? paymentModes,
     List<String>? selectedPaymentMethods,
+    Uint8List? prebuiltThermalBytes,
+    Uint8List? prebuiltA4Bytes,
+    bool? isGeneratingPdf,
   }) {
     return InvoiceManagementLoadedState(
       invoices: invoices ?? this.invoices,
@@ -73,6 +82,9 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
       paymentModes: paymentModes ?? this.paymentModes,
       selectedPaymentMethods:
           selectedPaymentMethods ?? this.selectedPaymentMethods,
+      prebuiltThermalBytes: prebuiltThermalBytes ?? this.prebuiltThermalBytes,
+      prebuiltA4Bytes: prebuiltA4Bytes ?? this.prebuiltA4Bytes,
+      isGeneratingPdf: isGeneratingPdf ?? this.isGeneratingPdf,
     );
   }
 
@@ -90,6 +102,9 @@ class InvoiceManagementLoadedState extends InvoiceManagementState {
     errorMessage,
     paymentModes,
     selectedPaymentMethods,
+    prebuiltThermalBytes,
+    prebuiltA4Bytes,
+    isGeneratingPdf,
   ];
 }
 

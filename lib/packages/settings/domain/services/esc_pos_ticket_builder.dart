@@ -21,7 +21,8 @@ class EscPosTicketBuilder {
     String? footerMessage,
   }) async {
     final finalCafeName = cafeName ?? 'Coozy The Cafe';
-    final finalCafeAddress = cafeAddress ??
+    final finalCafeAddress =
+        cafeAddress ??
         'G-24, Marvella business hub, Adajan pal, Pal RTO BRTS Rd, Surat, Gujarat 394510';
     final finalCafePhone = cafePhone ?? '+91 9974776639';
     final paper = paperSize == ThermalPaperSize.mm58

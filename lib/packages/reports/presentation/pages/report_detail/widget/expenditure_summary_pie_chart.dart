@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+
 import 'report_empty_view.dart';
 import '../../../../domain/entities/expenditure_summary_entry.dart';
 

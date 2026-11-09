@@ -20,11 +20,15 @@ enum InvoicePreviewFormat { thermal80mm, a4Invoice }
 class InvoicePdfPreviewDialog extends StatefulWidget {
   final InvoiceDetailsEntity details;
   final String? filePath;
+  final Uint8List? prebuiltThermalBytes;
+  final Uint8List? prebuiltA4Bytes;
 
   const InvoicePdfPreviewDialog({
     super.key,
     required this.details,
     this.filePath,
+    this.prebuiltThermalBytes,
+    this.prebuiltA4Bytes,
   });
 
   @override
@@ -69,6 +73,17 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
       });
     });
 
+    // If prebuilt bytes are provided from the parent screen, use them immediately
+    if (widget.prebuiltThermalBytes != null) {
+      _thermalBytes = widget.prebuiltThermalBytes;
+      _isThermalLoaded = true;
+      _isLoading = false;
+    }
+    if (widget.prebuiltA4Bytes != null) {
+      _a4Bytes = widget.prebuiltA4Bytes;
+      _isA4Loaded = true;
+    }
+
     _preloadAllFormats();
   }
 
@@ -85,9 +100,7 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
     // 1. Preload Thermal 80mm
     final thermalFuture = () async {
       try {
-        if (!kIsWeb &&
-            widget.filePath != null &&
-            widget.filePath!.isNotEmpty) {
+        if (!kIsWeb && widget.filePath != null && widget.filePath!.isNotEmpty) {
           final file = File(widget.filePath!);
           if (await file.exists()) {
             final bytes = await file.readAsBytes();
@@ -95,14 +108,20 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
           }
         }
 
-        final bytes = await InvoicePdfGenerator.generatePdf(
-          details: widget.details,
-          isA4Format: false,
-          is58mm: false,
-        );
+        // If prebuilt thermal bytes were supplied and no file path override exists, use them and write temp file if needed
+        final bytes =
+            widget.prebuiltThermalBytes ??
+            await InvoicePdfGenerator.generatePdf(
+              details: widget.details,
+              isA4Format: false,
+              is58mm: false,
+            );
 
         if (!kIsWeb) {
-          final tempFile = await _writeTempPdf(bytes: bytes, formatSuffix: 'thermal80');
+          final tempFile = await _writeTempPdf(
+            bytes: bytes,
+            formatSuffix: 'thermal80',
+          );
           return (bytes: bytes, path: tempFile.path, tempFile: tempFile);
         } else {
           return (bytes: bytes, path: null as String?, tempFile: null as File?);
@@ -119,14 +138,19 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
     // 2. Preload A4 in the background
     final a4Future = () async {
       try {
-        final bytes = await InvoicePdfGenerator.generatePdf(
-          details: widget.details,
-          isA4Format: true,
-          is58mm: false,
-        );
+        final bytes =
+            widget.prebuiltA4Bytes ??
+            await InvoicePdfGenerator.generatePdf(
+              details: widget.details,
+              isA4Format: true,
+              is58mm: false,
+            );
 
         if (!kIsWeb) {
-          final tempFile = await _writeTempPdf(bytes: bytes, formatSuffix: 'a4');
+          final tempFile = await _writeTempPdf(
+            bytes: bytes,
+            formatSuffix: 'a4',
+          );
           return (bytes: bytes, path: tempFile.path, tempFile: tempFile);
         } else {
           return (bytes: bytes, path: null as String?, tempFile: null as File?);
@@ -195,7 +219,8 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
       _selectedFormat = format;
       if (format == InvoicePreviewFormat.a4Invoice && !_isA4Loaded) {
         _isLoading = true;
-      } else if (format == InvoicePreviewFormat.thermal80mm && !_isThermalLoaded) {
+      } else if (format == InvoicePreviewFormat.thermal80mm &&
+          !_isThermalLoaded) {
         _isLoading = true;
       } else {
         _isLoading = false;
@@ -258,7 +283,9 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
   }
 
   Future<void> _copySummary() async {
-    final summary = await InvoiceShareService.instance.buildShareMessage(widget.details);
+    final summary = await InvoiceShareService.instance.buildShareMessage(
+      widget.details,
+    );
     await Clipboard.setData(ClipboardData(text: summary));
     if (mounted) {
       shared.SnackBarUtils.showSuccess(
@@ -353,7 +380,8 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
     final activeFilePath = _selectedFormat == InvoicePreviewFormat.thermal80mm
         ? _thermalFilePath
         : _a4FilePath;
-    final isCurrentFormatLoaded = _selectedFormat == InvoicePreviewFormat.thermal80mm
+    final isCurrentFormatLoaded =
+        _selectedFormat == InvoicePreviewFormat.thermal80mm
         ? _isThermalLoaded
         : _isA4Loaded;
 
@@ -397,7 +425,9 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
                   width: 44,
                   height: 44,
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(alpha: isDark ? 0.4 : 0.8),
+                    color: colorScheme.primaryContainer.withValues(
+                      alpha: isDark ? 0.4 : 0.8,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                     border: Border.all(
                       color: colorScheme.primary.withValues(alpha: 0.25),
@@ -407,7 +437,9 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
                   child: Center(
                     child: Icon(
                       Icons.receipt_long_rounded,
-                      color: isDark ? colorScheme.primary : colorScheme.onPrimaryContainer,
+                      color: isDark
+                          ? colorScheme.primary
+                          : colorScheme.onPrimaryContainer,
                       size: 22,
                     ),
                   ),
@@ -553,7 +585,10 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
               color: isDark
                   ? colorScheme.surfaceContainerLowest
                   : const Color(0xFFF3F5F8),
-              child: (_isLoading || !isCurrentFormatLoaded || !_isDialogTransitionCompleted)
+              child:
+                  (_isLoading ||
+                      !isCurrentFormatLoaded ||
+                      !_isDialogTransitionCompleted)
                   ? const Center(child: shared.LoadingPage(isEmbedded: true))
                   : _errorMessage != null
                   ? Center(

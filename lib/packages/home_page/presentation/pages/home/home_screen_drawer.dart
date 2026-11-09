@@ -181,6 +181,20 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         core.AppRoutePath.menuItemFullListScreenRoute,
                       ),
                     ),
+                    _buildDrawerItem(
+                      context,
+                      icon: Icons.fastfood_rounded,
+                      title: 'Combos & Promotions',
+                      isSelected: _isRouteActive(
+                        currentLocation,
+                        core.AppRoutePath.combosScreenRoute,
+                      ),
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.combosScreenRoute,
+                      ),
+                    ),
 
                     _buildDrawerItem(
                       context,
@@ -218,6 +232,20 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                         context,
                         currentLocation,
                         core.AppRoutePath.purchaseListScreenRoute,
+                      ),
+                    ),
+                    _buildDrawerItem(
+                      context,
+                      icon: Icons.notification_important_outlined,
+                      title: 'Stock Deficit & Reorder',
+                      isSelected: _isRouteActive(
+                        currentLocation,
+                        core.AppRoutePath.stockAlertsScreenRoute,
+                      ),
+                      onTap: () => _navigateToRoute(
+                        context,
+                        currentLocation,
+                        core.AppRoutePath.stockAlertsScreenRoute,
                       ),
                     ),
                     _buildDrawerItem(

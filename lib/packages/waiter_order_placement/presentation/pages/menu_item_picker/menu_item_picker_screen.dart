@@ -6,9 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../bloc/menu_item_picker_bloc.dart';
+import '../../../domain/entities/order_cart_item.dart';
 import 'menu_item_picker_screen_actions.dart';
 import 'widget/category_dropdown_app_bar_title.dart';
 import 'widget/category_menu_items_tab_view.dart';
+import 'widget/combo_picker_modal.dart';
 import 'widget/current_order_tab_view.dart';
 
 class MenuItemPickerScreen extends StatefulWidget {
@@ -246,6 +248,38 @@ class _MenuItemPickerScreenState extends State<MenuItemPickerScreen>
                       ),
                     ),
                   ],
+
+                  // Combos & Promotions Button
+                  IconButton(
+                    tooltip: 'Combos & Promotions',
+                    icon: Icon(
+                      Icons.local_offer_rounded,
+                      color: appBarFgColor,
+                      size: 22,
+                    ),
+                    onPressed: () {
+                      ComboPickerModal.show(
+                        context,
+                        onAddCombo: (combo) {
+                          context.read<MenuItemPickerBloc>().add(
+                            AddCustomCartItemEvent(
+                              OrderCartItem(
+                                menuItemId: combo.id ?? 999999,
+                                name: '[Combo] ${combo.name}',
+                                price: combo.sellingPrice,
+                                quantity: 1,
+                                remarks: combo.description,
+                              ),
+                            ),
+                          );
+                          shared.SnackBarUtils.showSuccess(
+                            context,
+                            message: '${combo.name} added to cart!',
+                          );
+                        },
+                      );
+                    },
+                  ),
 
                   // Fast Forward / Order Summary Action Button (>> icon)
                   IconButton(

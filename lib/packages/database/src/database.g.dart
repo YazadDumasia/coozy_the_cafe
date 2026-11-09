@@ -3014,6 +3014,17 @@ class $MenuItemVariationsTableTable extends MenuItemVariationsTable
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _durationMeta = const VerificationMeta(
+    'duration',
+  );
+  @override
+  late final GeneratedColumn<int> duration = GeneratedColumn<int>(
+    'duration',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _creationDateMeta = const VerificationMeta(
     'creationDate',
   );
@@ -3051,6 +3062,7 @@ class $MenuItemVariationsTableTable extends MenuItemVariationsTable
     sellingPrice,
     stockQuantity,
     sortOrderIndex,
+    duration,
     creationDate,
     modificationDate,
   ];
@@ -3159,6 +3171,12 @@ class $MenuItemVariationsTableTable extends MenuItemVariationsTable
         ),
       );
     }
+    if (data.containsKey('duration')) {
+      context.handle(
+        _durationMeta,
+        duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
+      );
+    }
     if (data.containsKey('creation_date')) {
       context.handle(
         _creationDateMeta,
@@ -3238,6 +3256,10 @@ class $MenuItemVariationsTableTable extends MenuItemVariationsTable
         DriftSqlType.int,
         data['${effectivePrefix}sort_order_index'],
       ),
+      duration: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration'],
+      ),
       creationDate: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}creation_date'],
@@ -3270,6 +3292,7 @@ class MenuItemVariation extends DataClass
   final double? sellingPrice;
   final int? stockQuantity;
   final int? sortOrderIndex;
+  final int? duration;
   final String? creationDate;
   final String? modificationDate;
   const MenuItemVariation({
@@ -3286,6 +3309,7 @@ class MenuItemVariation extends DataClass
     this.sellingPrice,
     this.stockQuantity,
     this.sortOrderIndex,
+    this.duration,
     this.creationDate,
     this.modificationDate,
   });
@@ -3326,6 +3350,9 @@ class MenuItemVariation extends DataClass
     }
     if (!nullToAbsent || sortOrderIndex != null) {
       map['sort_order_index'] = Variable<int>(sortOrderIndex);
+    }
+    if (!nullToAbsent || duration != null) {
+      map['duration'] = Variable<int>(duration);
     }
     if (!nullToAbsent || creationDate != null) {
       map['creation_date'] = Variable<String>(creationDate);
@@ -3371,6 +3398,9 @@ class MenuItemVariation extends DataClass
       sortOrderIndex: sortOrderIndex == null && nullToAbsent
           ? const Value.absent()
           : Value(sortOrderIndex),
+      duration: duration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(duration),
       creationDate: creationDate == null && nullToAbsent
           ? const Value.absent()
           : Value(creationDate),
@@ -3399,6 +3429,7 @@ class MenuItemVariation extends DataClass
       sellingPrice: serializer.fromJson<double?>(json['sellingPrice']),
       stockQuantity: serializer.fromJson<int?>(json['stockQuantity']),
       sortOrderIndex: serializer.fromJson<int?>(json['sortOrderIndex']),
+      duration: serializer.fromJson<int?>(json['duration']),
       creationDate: serializer.fromJson<String?>(json['creationDate']),
       modificationDate: serializer.fromJson<String?>(json['modificationDate']),
     );
@@ -3420,6 +3451,7 @@ class MenuItemVariation extends DataClass
       'sellingPrice': serializer.toJson<double?>(sellingPrice),
       'stockQuantity': serializer.toJson<int?>(stockQuantity),
       'sortOrderIndex': serializer.toJson<int?>(sortOrderIndex),
+      'duration': serializer.toJson<int?>(duration),
       'creationDate': serializer.toJson<String?>(creationDate),
       'modificationDate': serializer.toJson<String?>(modificationDate),
     };
@@ -3439,6 +3471,7 @@ class MenuItemVariation extends DataClass
     Value<double?> sellingPrice = const Value.absent(),
     Value<int?> stockQuantity = const Value.absent(),
     Value<int?> sortOrderIndex = const Value.absent(),
+    Value<int?> duration = const Value.absent(),
     Value<String?> creationDate = const Value.absent(),
     Value<String?> modificationDate = const Value.absent(),
   }) => MenuItemVariation(
@@ -3461,6 +3494,7 @@ class MenuItemVariation extends DataClass
     sortOrderIndex: sortOrderIndex.present
         ? sortOrderIndex.value
         : this.sortOrderIndex,
+    duration: duration.present ? duration.value : this.duration,
     creationDate: creationDate.present ? creationDate.value : this.creationDate,
     modificationDate: modificationDate.present
         ? modificationDate.value
@@ -3493,6 +3527,7 @@ class MenuItemVariation extends DataClass
       sortOrderIndex: data.sortOrderIndex.present
           ? data.sortOrderIndex.value
           : this.sortOrderIndex,
+      duration: data.duration.present ? data.duration.value : this.duration,
       creationDate: data.creationDate.present
           ? data.creationDate.value
           : this.creationDate,
@@ -3518,6 +3553,7 @@ class MenuItemVariation extends DataClass
           ..write('sellingPrice: $sellingPrice, ')
           ..write('stockQuantity: $stockQuantity, ')
           ..write('sortOrderIndex: $sortOrderIndex, ')
+          ..write('duration: $duration, ')
           ..write('creationDate: $creationDate, ')
           ..write('modificationDate: $modificationDate')
           ..write(')'))
@@ -3539,6 +3575,7 @@ class MenuItemVariation extends DataClass
     sellingPrice,
     stockQuantity,
     sortOrderIndex,
+    duration,
     creationDate,
     modificationDate,
   );
@@ -3559,6 +3596,7 @@ class MenuItemVariation extends DataClass
           other.sellingPrice == this.sellingPrice &&
           other.stockQuantity == this.stockQuantity &&
           other.sortOrderIndex == this.sortOrderIndex &&
+          other.duration == this.duration &&
           other.creationDate == this.creationDate &&
           other.modificationDate == this.modificationDate);
 }
@@ -3578,6 +3616,7 @@ class MenuItemVariationsTableCompanion
   final Value<double?> sellingPrice;
   final Value<int?> stockQuantity;
   final Value<int?> sortOrderIndex;
+  final Value<int?> duration;
   final Value<String?> creationDate;
   final Value<String?> modificationDate;
   const MenuItemVariationsTableCompanion({
@@ -3594,6 +3633,7 @@ class MenuItemVariationsTableCompanion
     this.sellingPrice = const Value.absent(),
     this.stockQuantity = const Value.absent(),
     this.sortOrderIndex = const Value.absent(),
+    this.duration = const Value.absent(),
     this.creationDate = const Value.absent(),
     this.modificationDate = const Value.absent(),
   });
@@ -3611,6 +3651,7 @@ class MenuItemVariationsTableCompanion
     this.sellingPrice = const Value.absent(),
     this.stockQuantity = const Value.absent(),
     this.sortOrderIndex = const Value.absent(),
+    this.duration = const Value.absent(),
     this.creationDate = const Value.absent(),
     this.modificationDate = const Value.absent(),
   });
@@ -3628,6 +3669,7 @@ class MenuItemVariationsTableCompanion
     Expression<double>? sellingPrice,
     Expression<int>? stockQuantity,
     Expression<int>? sortOrderIndex,
+    Expression<int>? duration,
     Expression<String>? creationDate,
     Expression<String>? modificationDate,
   }) {
@@ -3645,6 +3687,7 @@ class MenuItemVariationsTableCompanion
       if (sellingPrice != null) 'selling_price': sellingPrice,
       if (stockQuantity != null) 'stock_quantity': stockQuantity,
       if (sortOrderIndex != null) 'sort_order_index': sortOrderIndex,
+      if (duration != null) 'duration': duration,
       if (creationDate != null) 'creation_date': creationDate,
       if (modificationDate != null) 'modification_date': modificationDate,
     });
@@ -3664,6 +3707,7 @@ class MenuItemVariationsTableCompanion
     Value<double?>? sellingPrice,
     Value<int?>? stockQuantity,
     Value<int?>? sortOrderIndex,
+    Value<int?>? duration,
     Value<String?>? creationDate,
     Value<String?>? modificationDate,
   }) {
@@ -3681,6 +3725,7 @@ class MenuItemVariationsTableCompanion
       sellingPrice: sellingPrice ?? this.sellingPrice,
       stockQuantity: stockQuantity ?? this.stockQuantity,
       sortOrderIndex: sortOrderIndex ?? this.sortOrderIndex,
+      duration: duration ?? this.duration,
       creationDate: creationDate ?? this.creationDate,
       modificationDate: modificationDate ?? this.modificationDate,
     );
@@ -3728,6 +3773,9 @@ class MenuItemVariationsTableCompanion
     if (sortOrderIndex.present) {
       map['sort_order_index'] = Variable<int>(sortOrderIndex.value);
     }
+    if (duration.present) {
+      map['duration'] = Variable<int>(duration.value);
+    }
     if (creationDate.present) {
       map['creation_date'] = Variable<String>(creationDate.value);
     }
@@ -3753,6 +3801,7 @@ class MenuItemVariationsTableCompanion
           ..write('sellingPrice: $sellingPrice, ')
           ..write('stockQuantity: $stockQuantity, ')
           ..write('sortOrderIndex: $sortOrderIndex, ')
+          ..write('duration: $duration, ')
           ..write('creationDate: $creationDate, ')
           ..write('modificationDate: $modificationDate')
           ..write(')'))
@@ -25394,6 +25443,2878 @@ class LoyaltyTransactionsTableCompanion
   }
 }
 
+class $CombosTableTable extends CombosTable
+    with TableInfo<$CombosTableTable, ComboData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CombosTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _originalPriceMeta = const VerificationMeta(
+    'originalPrice',
+  );
+  @override
+  late final GeneratedColumn<double> originalPrice = GeneratedColumn<double>(
+    'original_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _sellingPriceMeta = const VerificationMeta(
+    'sellingPrice',
+  );
+  @override
+  late final GeneratedColumn<double> sellingPrice = GeneratedColumn<double>(
+    'selling_price',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _durationMeta = const VerificationMeta(
+    'duration',
+  );
+  @override
+  late final GeneratedColumn<int> duration = GeneratedColumn<int>(
+    'duration',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _sortOrderIndexMeta = const VerificationMeta(
+    'sortOrderIndex',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrderIndex = GeneratedColumn<int>(
+    'sort_order_index',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _creationDateMeta = const VerificationMeta(
+    'creationDate',
+  );
+  @override
+  late final GeneratedColumn<String> creationDate = GeneratedColumn<String>(
+    'creation_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _modificationDateMeta = const VerificationMeta(
+    'modificationDate',
+  );
+  @override
+  late final GeneratedColumn<String> modificationDate = GeneratedColumn<String>(
+    'modification_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    description,
+    originalPrice,
+    sellingPrice,
+    duration,
+    isActive,
+    sortOrderIndex,
+    creationDate,
+    modificationDate,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'combos';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ComboData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('original_price')) {
+      context.handle(
+        _originalPriceMeta,
+        originalPrice.isAcceptableOrUnknown(
+          data['original_price']!,
+          _originalPriceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('selling_price')) {
+      context.handle(
+        _sellingPriceMeta,
+        sellingPrice.isAcceptableOrUnknown(
+          data['selling_price']!,
+          _sellingPriceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('duration')) {
+      context.handle(
+        _durationMeta,
+        duration.isAcceptableOrUnknown(data['duration']!, _durationMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('sort_order_index')) {
+      context.handle(
+        _sortOrderIndexMeta,
+        sortOrderIndex.isAcceptableOrUnknown(
+          data['sort_order_index']!,
+          _sortOrderIndexMeta,
+        ),
+      );
+    }
+    if (data.containsKey('creation_date')) {
+      context.handle(
+        _creationDateMeta,
+        creationDate.isAcceptableOrUnknown(
+          data['creation_date']!,
+          _creationDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('modification_date')) {
+      context.handle(
+        _modificationDateMeta,
+        modificationDate.isAcceptableOrUnknown(
+          data['modification_date']!,
+          _modificationDateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ComboData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ComboData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      originalPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}original_price'],
+      )!,
+      sellingPrice: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}selling_price'],
+      )!,
+      duration: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration'],
+      ),
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      sortOrderIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order_index'],
+      ),
+      creationDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}creation_date'],
+      ),
+      modificationDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}modification_date'],
+      ),
+    );
+  }
+
+  @override
+  $CombosTableTable createAlias(String alias) {
+    return $CombosTableTable(attachedDatabase, alias);
+  }
+}
+
+class ComboData extends DataClass implements Insertable<ComboData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final String name;
+  final String? description;
+  final double originalPrice;
+  final double sellingPrice;
+  final int? duration;
+  final bool isActive;
+  final int? sortOrderIndex;
+  final String? creationDate;
+  final String? modificationDate;
+  const ComboData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.name,
+    this.description,
+    required this.originalPrice,
+    required this.sellingPrice,
+    this.duration,
+    required this.isActive,
+    this.sortOrderIndex,
+    this.creationDate,
+    this.modificationDate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['original_price'] = Variable<double>(originalPrice);
+    map['selling_price'] = Variable<double>(sellingPrice);
+    if (!nullToAbsent || duration != null) {
+      map['duration'] = Variable<int>(duration);
+    }
+    map['is_active'] = Variable<bool>(isActive);
+    if (!nullToAbsent || sortOrderIndex != null) {
+      map['sort_order_index'] = Variable<int>(sortOrderIndex);
+    }
+    if (!nullToAbsent || creationDate != null) {
+      map['creation_date'] = Variable<String>(creationDate);
+    }
+    if (!nullToAbsent || modificationDate != null) {
+      map['modification_date'] = Variable<String>(modificationDate);
+    }
+    return map;
+  }
+
+  CombosTableCompanion toCompanion(bool nullToAbsent) {
+    return CombosTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      name: Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      originalPrice: Value(originalPrice),
+      sellingPrice: Value(sellingPrice),
+      duration: duration == null && nullToAbsent
+          ? const Value.absent()
+          : Value(duration),
+      isActive: Value(isActive),
+      sortOrderIndex: sortOrderIndex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sortOrderIndex),
+      creationDate: creationDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(creationDate),
+      modificationDate: modificationDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(modificationDate),
+    );
+  }
+
+  factory ComboData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ComboData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String?>(json['description']),
+      originalPrice: serializer.fromJson<double>(json['originalPrice']),
+      sellingPrice: serializer.fromJson<double>(json['sellingPrice']),
+      duration: serializer.fromJson<int?>(json['duration']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      sortOrderIndex: serializer.fromJson<int?>(json['sortOrderIndex']),
+      creationDate: serializer.fromJson<String?>(json['creationDate']),
+      modificationDate: serializer.fromJson<String?>(json['modificationDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String?>(description),
+      'originalPrice': serializer.toJson<double>(originalPrice),
+      'sellingPrice': serializer.toJson<double>(sellingPrice),
+      'duration': serializer.toJson<int?>(duration),
+      'isActive': serializer.toJson<bool>(isActive),
+      'sortOrderIndex': serializer.toJson<int?>(sortOrderIndex),
+      'creationDate': serializer.toJson<String?>(creationDate),
+      'modificationDate': serializer.toJson<String?>(modificationDate),
+    };
+  }
+
+  ComboData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    String? name,
+    Value<String?> description = const Value.absent(),
+    double? originalPrice,
+    double? sellingPrice,
+    Value<int?> duration = const Value.absent(),
+    bool? isActive,
+    Value<int?> sortOrderIndex = const Value.absent(),
+    Value<String?> creationDate = const Value.absent(),
+    Value<String?> modificationDate = const Value.absent(),
+  }) => ComboData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    name: name ?? this.name,
+    description: description.present ? description.value : this.description,
+    originalPrice: originalPrice ?? this.originalPrice,
+    sellingPrice: sellingPrice ?? this.sellingPrice,
+    duration: duration.present ? duration.value : this.duration,
+    isActive: isActive ?? this.isActive,
+    sortOrderIndex: sortOrderIndex.present
+        ? sortOrderIndex.value
+        : this.sortOrderIndex,
+    creationDate: creationDate.present ? creationDate.value : this.creationDate,
+    modificationDate: modificationDate.present
+        ? modificationDate.value
+        : this.modificationDate,
+  );
+  ComboData copyWithCompanion(CombosTableCompanion data) {
+    return ComboData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      originalPrice: data.originalPrice.present
+          ? data.originalPrice.value
+          : this.originalPrice,
+      sellingPrice: data.sellingPrice.present
+          ? data.sellingPrice.value
+          : this.sellingPrice,
+      duration: data.duration.present ? data.duration.value : this.duration,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      sortOrderIndex: data.sortOrderIndex.present
+          ? data.sortOrderIndex.value
+          : this.sortOrderIndex,
+      creationDate: data.creationDate.present
+          ? data.creationDate.value
+          : this.creationDate,
+      modificationDate: data.modificationDate.present
+          ? data.modificationDate.value
+          : this.modificationDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ComboData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('originalPrice: $originalPrice, ')
+          ..write('sellingPrice: $sellingPrice, ')
+          ..write('duration: $duration, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrderIndex: $sortOrderIndex, ')
+          ..write('creationDate: $creationDate, ')
+          ..write('modificationDate: $modificationDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    name,
+    description,
+    originalPrice,
+    sellingPrice,
+    duration,
+    isActive,
+    sortOrderIndex,
+    creationDate,
+    modificationDate,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ComboData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.originalPrice == this.originalPrice &&
+          other.sellingPrice == this.sellingPrice &&
+          other.duration == this.duration &&
+          other.isActive == this.isActive &&
+          other.sortOrderIndex == this.sortOrderIndex &&
+          other.creationDate == this.creationDate &&
+          other.modificationDate == this.modificationDate);
+}
+
+class CombosTableCompanion extends UpdateCompanion<ComboData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<String> name;
+  final Value<String?> description;
+  final Value<double> originalPrice;
+  final Value<double> sellingPrice;
+  final Value<int?> duration;
+  final Value<bool> isActive;
+  final Value<int?> sortOrderIndex;
+  final Value<String?> creationDate;
+  final Value<String?> modificationDate;
+  const CombosTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.originalPrice = const Value.absent(),
+    this.sellingPrice = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrderIndex = const Value.absent(),
+    this.creationDate = const Value.absent(),
+    this.modificationDate = const Value.absent(),
+  });
+  CombosTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required String name,
+    this.description = const Value.absent(),
+    this.originalPrice = const Value.absent(),
+    this.sellingPrice = const Value.absent(),
+    this.duration = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.sortOrderIndex = const Value.absent(),
+    this.creationDate = const Value.absent(),
+    this.modificationDate = const Value.absent(),
+  }) : name = Value(name);
+  static Insertable<ComboData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<double>? originalPrice,
+    Expression<double>? sellingPrice,
+    Expression<int>? duration,
+    Expression<bool>? isActive,
+    Expression<int>? sortOrderIndex,
+    Expression<String>? creationDate,
+    Expression<String>? modificationDate,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (originalPrice != null) 'original_price': originalPrice,
+      if (sellingPrice != null) 'selling_price': sellingPrice,
+      if (duration != null) 'duration': duration,
+      if (isActive != null) 'is_active': isActive,
+      if (sortOrderIndex != null) 'sort_order_index': sortOrderIndex,
+      if (creationDate != null) 'creation_date': creationDate,
+      if (modificationDate != null) 'modification_date': modificationDate,
+    });
+  }
+
+  CombosTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<String>? name,
+    Value<String?>? description,
+    Value<double>? originalPrice,
+    Value<double>? sellingPrice,
+    Value<int?>? duration,
+    Value<bool>? isActive,
+    Value<int?>? sortOrderIndex,
+    Value<String?>? creationDate,
+    Value<String?>? modificationDate,
+  }) {
+    return CombosTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      originalPrice: originalPrice ?? this.originalPrice,
+      sellingPrice: sellingPrice ?? this.sellingPrice,
+      duration: duration ?? this.duration,
+      isActive: isActive ?? this.isActive,
+      sortOrderIndex: sortOrderIndex ?? this.sortOrderIndex,
+      creationDate: creationDate ?? this.creationDate,
+      modificationDate: modificationDate ?? this.modificationDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (originalPrice.present) {
+      map['original_price'] = Variable<double>(originalPrice.value);
+    }
+    if (sellingPrice.present) {
+      map['selling_price'] = Variable<double>(sellingPrice.value);
+    }
+    if (duration.present) {
+      map['duration'] = Variable<int>(duration.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (sortOrderIndex.present) {
+      map['sort_order_index'] = Variable<int>(sortOrderIndex.value);
+    }
+    if (creationDate.present) {
+      map['creation_date'] = Variable<String>(creationDate.value);
+    }
+    if (modificationDate.present) {
+      map['modification_date'] = Variable<String>(modificationDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CombosTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('originalPrice: $originalPrice, ')
+          ..write('sellingPrice: $sellingPrice, ')
+          ..write('duration: $duration, ')
+          ..write('isActive: $isActive, ')
+          ..write('sortOrderIndex: $sortOrderIndex, ')
+          ..write('creationDate: $creationDate, ')
+          ..write('modificationDate: $modificationDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ComboItemsTableTable extends ComboItemsTable
+    with TableInfo<$ComboItemsTableTable, ComboItemData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ComboItemsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _comboIdMeta = const VerificationMeta(
+    'comboId',
+  );
+  @override
+  late final GeneratedColumn<int> comboId = GeneratedColumn<int>(
+    'combo_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES combos (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _menuItemIdMeta = const VerificationMeta(
+    'menuItemId',
+  );
+  @override
+  late final GeneratedColumn<int> menuItemId = GeneratedColumn<int>(
+    'menu_item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES menu_items (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _variationIdMeta = const VerificationMeta(
+    'variationId',
+  );
+  @override
+  late final GeneratedColumn<int> variationId = GeneratedColumn<int>(
+    'variation_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES menu_item_variations (id) ON DELETE SET NULL',
+    ),
+  );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    comboId,
+    menuItemId,
+    variationId,
+    quantity,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'combo_items';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ComboItemData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('combo_id')) {
+      context.handle(
+        _comboIdMeta,
+        comboId.isAcceptableOrUnknown(data['combo_id']!, _comboIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_comboIdMeta);
+    }
+    if (data.containsKey('menu_item_id')) {
+      context.handle(
+        _menuItemIdMeta,
+        menuItemId.isAcceptableOrUnknown(
+          data['menu_item_id']!,
+          _menuItemIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_menuItemIdMeta);
+    }
+    if (data.containsKey('variation_id')) {
+      context.handle(
+        _variationIdMeta,
+        variationId.isAcceptableOrUnknown(
+          data['variation_id']!,
+          _variationIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ComboItemData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ComboItemData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      comboId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}combo_id'],
+      )!,
+      menuItemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}menu_item_id'],
+      )!,
+      variationId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}variation_id'],
+      ),
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity'],
+      )!,
+    );
+  }
+
+  @override
+  $ComboItemsTableTable createAlias(String alias) {
+    return $ComboItemsTableTable(attachedDatabase, alias);
+  }
+}
+
+class ComboItemData extends DataClass implements Insertable<ComboItemData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final int comboId;
+  final int menuItemId;
+  final int? variationId;
+  final int quantity;
+  const ComboItemData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.comboId,
+    required this.menuItemId,
+    this.variationId,
+    required this.quantity,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['combo_id'] = Variable<int>(comboId);
+    map['menu_item_id'] = Variable<int>(menuItemId);
+    if (!nullToAbsent || variationId != null) {
+      map['variation_id'] = Variable<int>(variationId);
+    }
+    map['quantity'] = Variable<int>(quantity);
+    return map;
+  }
+
+  ComboItemsTableCompanion toCompanion(bool nullToAbsent) {
+    return ComboItemsTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      comboId: Value(comboId),
+      menuItemId: Value(menuItemId),
+      variationId: variationId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(variationId),
+      quantity: Value(quantity),
+    );
+  }
+
+  factory ComboItemData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ComboItemData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      comboId: serializer.fromJson<int>(json['comboId']),
+      menuItemId: serializer.fromJson<int>(json['menuItemId']),
+      variationId: serializer.fromJson<int?>(json['variationId']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'comboId': serializer.toJson<int>(comboId),
+      'menuItemId': serializer.toJson<int>(menuItemId),
+      'variationId': serializer.toJson<int?>(variationId),
+      'quantity': serializer.toJson<int>(quantity),
+    };
+  }
+
+  ComboItemData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    int? comboId,
+    int? menuItemId,
+    Value<int?> variationId = const Value.absent(),
+    int? quantity,
+  }) => ComboItemData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    comboId: comboId ?? this.comboId,
+    menuItemId: menuItemId ?? this.menuItemId,
+    variationId: variationId.present ? variationId.value : this.variationId,
+    quantity: quantity ?? this.quantity,
+  );
+  ComboItemData copyWithCompanion(ComboItemsTableCompanion data) {
+    return ComboItemData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      comboId: data.comboId.present ? data.comboId.value : this.comboId,
+      menuItemId: data.menuItemId.present
+          ? data.menuItemId.value
+          : this.menuItemId,
+      variationId: data.variationId.present
+          ? data.variationId.value
+          : this.variationId,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ComboItemData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('comboId: $comboId, ')
+          ..write('menuItemId: $menuItemId, ')
+          ..write('variationId: $variationId, ')
+          ..write('quantity: $quantity')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    comboId,
+    menuItemId,
+    variationId,
+    quantity,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ComboItemData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.comboId == this.comboId &&
+          other.menuItemId == this.menuItemId &&
+          other.variationId == this.variationId &&
+          other.quantity == this.quantity);
+}
+
+class ComboItemsTableCompanion extends UpdateCompanion<ComboItemData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<int> comboId;
+  final Value<int> menuItemId;
+  final Value<int?> variationId;
+  final Value<int> quantity;
+  const ComboItemsTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.comboId = const Value.absent(),
+    this.menuItemId = const Value.absent(),
+    this.variationId = const Value.absent(),
+    this.quantity = const Value.absent(),
+  });
+  ComboItemsTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required int comboId,
+    required int menuItemId,
+    this.variationId = const Value.absent(),
+    this.quantity = const Value.absent(),
+  }) : comboId = Value(comboId),
+       menuItemId = Value(menuItemId);
+  static Insertable<ComboItemData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<int>? comboId,
+    Expression<int>? menuItemId,
+    Expression<int>? variationId,
+    Expression<int>? quantity,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (comboId != null) 'combo_id': comboId,
+      if (menuItemId != null) 'menu_item_id': menuItemId,
+      if (variationId != null) 'variation_id': variationId,
+      if (quantity != null) 'quantity': quantity,
+    });
+  }
+
+  ComboItemsTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<int>? comboId,
+    Value<int>? menuItemId,
+    Value<int?>? variationId,
+    Value<int>? quantity,
+  }) {
+    return ComboItemsTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      comboId: comboId ?? this.comboId,
+      menuItemId: menuItemId ?? this.menuItemId,
+      variationId: variationId ?? this.variationId,
+      quantity: quantity ?? this.quantity,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (comboId.present) {
+      map['combo_id'] = Variable<int>(comboId.value);
+    }
+    if (menuItemId.present) {
+      map['menu_item_id'] = Variable<int>(menuItemId.value);
+    }
+    if (variationId.present) {
+      map['variation_id'] = Variable<int>(variationId.value);
+    }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ComboItemsTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('comboId: $comboId, ')
+          ..write('menuItemId: $menuItemId, ')
+          ..write('variationId: $variationId, ')
+          ..write('quantity: $quantity')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StockThresholdsTableTable extends StockThresholdsTable
+    with TableInfo<$StockThresholdsTableTable, StockThresholdData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StockThresholdsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _inventoryIdMeta = const VerificationMeta(
+    'inventoryId',
+  );
+  @override
+  late final GeneratedColumn<int> inventoryId = GeneratedColumn<int>(
+    'inventory_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'UNIQUE REFERENCES inventory (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _minThresholdMeta = const VerificationMeta(
+    'minThreshold',
+  );
+  @override
+  late final GeneratedColumn<double> minThreshold = GeneratedColumn<double>(
+    'min_threshold',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(5.0),
+  );
+  static const VerificationMeta _reorderQuantityMeta = const VerificationMeta(
+    'reorderQuantity',
+  );
+  @override
+  late final GeneratedColumn<double> reorderQuantity = GeneratedColumn<double>(
+    'reorder_quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(20.0),
+  );
+  static const VerificationMeta _isAutoReorderEnabledMeta =
+      const VerificationMeta('isAutoReorderEnabled');
+  @override
+  late final GeneratedColumn<bool> isAutoReorderEnabled = GeneratedColumn<bool>(
+    'is_auto_reorder_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_auto_reorder_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _preferredSupplierMeta = const VerificationMeta(
+    'preferredSupplier',
+  );
+  @override
+  late final GeneratedColumn<String> preferredSupplier =
+      GeneratedColumn<String>(
+        'preferred_supplier',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _preferredUnitCostMeta = const VerificationMeta(
+    'preferredUnitCost',
+  );
+  @override
+  late final GeneratedColumn<double> preferredUnitCost =
+      GeneratedColumn<double>(
+        'preferred_unit_cost',
+        aliasedName,
+        true,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdDateMeta = const VerificationMeta(
+    'createdDate',
+  );
+  @override
+  late final GeneratedColumn<String> createdDate = GeneratedColumn<String>(
+    'created_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _modifiedDateMeta = const VerificationMeta(
+    'modifiedDate',
+  );
+  @override
+  late final GeneratedColumn<String> modifiedDate = GeneratedColumn<String>(
+    'modified_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    inventoryId,
+    minThreshold,
+    reorderQuantity,
+    isAutoReorderEnabled,
+    preferredSupplier,
+    preferredUnitCost,
+    createdDate,
+    modifiedDate,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'stock_thresholds';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StockThresholdData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('inventory_id')) {
+      context.handle(
+        _inventoryIdMeta,
+        inventoryId.isAcceptableOrUnknown(
+          data['inventory_id']!,
+          _inventoryIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_inventoryIdMeta);
+    }
+    if (data.containsKey('min_threshold')) {
+      context.handle(
+        _minThresholdMeta,
+        minThreshold.isAcceptableOrUnknown(
+          data['min_threshold']!,
+          _minThresholdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('reorder_quantity')) {
+      context.handle(
+        _reorderQuantityMeta,
+        reorderQuantity.isAcceptableOrUnknown(
+          data['reorder_quantity']!,
+          _reorderQuantityMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_auto_reorder_enabled')) {
+      context.handle(
+        _isAutoReorderEnabledMeta,
+        isAutoReorderEnabled.isAcceptableOrUnknown(
+          data['is_auto_reorder_enabled']!,
+          _isAutoReorderEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('preferred_supplier')) {
+      context.handle(
+        _preferredSupplierMeta,
+        preferredSupplier.isAcceptableOrUnknown(
+          data['preferred_supplier']!,
+          _preferredSupplierMeta,
+        ),
+      );
+    }
+    if (data.containsKey('preferred_unit_cost')) {
+      context.handle(
+        _preferredUnitCostMeta,
+        preferredUnitCost.isAcceptableOrUnknown(
+          data['preferred_unit_cost']!,
+          _preferredUnitCostMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(
+        _createdDateMeta,
+        createdDate.isAcceptableOrUnknown(
+          data['created_date']!,
+          _createdDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('modified_date')) {
+      context.handle(
+        _modifiedDateMeta,
+        modifiedDate.isAcceptableOrUnknown(
+          data['modified_date']!,
+          _modifiedDateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StockThresholdData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StockThresholdData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      inventoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}inventory_id'],
+      )!,
+      minThreshold: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}min_threshold'],
+      )!,
+      reorderQuantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}reorder_quantity'],
+      )!,
+      isAutoReorderEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_auto_reorder_enabled'],
+      )!,
+      preferredSupplier: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}preferred_supplier'],
+      ),
+      preferredUnitCost: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}preferred_unit_cost'],
+      ),
+      createdDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_date'],
+      ),
+      modifiedDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}modified_date'],
+      ),
+    );
+  }
+
+  @override
+  $StockThresholdsTableTable createAlias(String alias) {
+    return $StockThresholdsTableTable(attachedDatabase, alias);
+  }
+}
+
+class StockThresholdData extends DataClass
+    implements Insertable<StockThresholdData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final int inventoryId;
+  final double minThreshold;
+  final double reorderQuantity;
+  final bool isAutoReorderEnabled;
+  final String? preferredSupplier;
+  final double? preferredUnitCost;
+  final String? createdDate;
+  final String? modifiedDate;
+  const StockThresholdData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.inventoryId,
+    required this.minThreshold,
+    required this.reorderQuantity,
+    required this.isAutoReorderEnabled,
+    this.preferredSupplier,
+    this.preferredUnitCost,
+    this.createdDate,
+    this.modifiedDate,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['inventory_id'] = Variable<int>(inventoryId);
+    map['min_threshold'] = Variable<double>(minThreshold);
+    map['reorder_quantity'] = Variable<double>(reorderQuantity);
+    map['is_auto_reorder_enabled'] = Variable<bool>(isAutoReorderEnabled);
+    if (!nullToAbsent || preferredSupplier != null) {
+      map['preferred_supplier'] = Variable<String>(preferredSupplier);
+    }
+    if (!nullToAbsent || preferredUnitCost != null) {
+      map['preferred_unit_cost'] = Variable<double>(preferredUnitCost);
+    }
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<String>(createdDate);
+    }
+    if (!nullToAbsent || modifiedDate != null) {
+      map['modified_date'] = Variable<String>(modifiedDate);
+    }
+    return map;
+  }
+
+  StockThresholdsTableCompanion toCompanion(bool nullToAbsent) {
+    return StockThresholdsTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      inventoryId: Value(inventoryId),
+      minThreshold: Value(minThreshold),
+      reorderQuantity: Value(reorderQuantity),
+      isAutoReorderEnabled: Value(isAutoReorderEnabled),
+      preferredSupplier: preferredSupplier == null && nullToAbsent
+          ? const Value.absent()
+          : Value(preferredSupplier),
+      preferredUnitCost: preferredUnitCost == null && nullToAbsent
+          ? const Value.absent()
+          : Value(preferredUnitCost),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
+      modifiedDate: modifiedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(modifiedDate),
+    );
+  }
+
+  factory StockThresholdData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StockThresholdData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      inventoryId: serializer.fromJson<int>(json['inventoryId']),
+      minThreshold: serializer.fromJson<double>(json['minThreshold']),
+      reorderQuantity: serializer.fromJson<double>(json['reorderQuantity']),
+      isAutoReorderEnabled: serializer.fromJson<bool>(
+        json['isAutoReorderEnabled'],
+      ),
+      preferredSupplier: serializer.fromJson<String?>(
+        json['preferredSupplier'],
+      ),
+      preferredUnitCost: serializer.fromJson<double?>(
+        json['preferredUnitCost'],
+      ),
+      createdDate: serializer.fromJson<String?>(json['createdDate']),
+      modifiedDate: serializer.fromJson<String?>(json['modifiedDate']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'inventoryId': serializer.toJson<int>(inventoryId),
+      'minThreshold': serializer.toJson<double>(minThreshold),
+      'reorderQuantity': serializer.toJson<double>(reorderQuantity),
+      'isAutoReorderEnabled': serializer.toJson<bool>(isAutoReorderEnabled),
+      'preferredSupplier': serializer.toJson<String?>(preferredSupplier),
+      'preferredUnitCost': serializer.toJson<double?>(preferredUnitCost),
+      'createdDate': serializer.toJson<String?>(createdDate),
+      'modifiedDate': serializer.toJson<String?>(modifiedDate),
+    };
+  }
+
+  StockThresholdData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    int? inventoryId,
+    double? minThreshold,
+    double? reorderQuantity,
+    bool? isAutoReorderEnabled,
+    Value<String?> preferredSupplier = const Value.absent(),
+    Value<double?> preferredUnitCost = const Value.absent(),
+    Value<String?> createdDate = const Value.absent(),
+    Value<String?> modifiedDate = const Value.absent(),
+  }) => StockThresholdData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    inventoryId: inventoryId ?? this.inventoryId,
+    minThreshold: minThreshold ?? this.minThreshold,
+    reorderQuantity: reorderQuantity ?? this.reorderQuantity,
+    isAutoReorderEnabled: isAutoReorderEnabled ?? this.isAutoReorderEnabled,
+    preferredSupplier: preferredSupplier.present
+        ? preferredSupplier.value
+        : this.preferredSupplier,
+    preferredUnitCost: preferredUnitCost.present
+        ? preferredUnitCost.value
+        : this.preferredUnitCost,
+    createdDate: createdDate.present ? createdDate.value : this.createdDate,
+    modifiedDate: modifiedDate.present ? modifiedDate.value : this.modifiedDate,
+  );
+  StockThresholdData copyWithCompanion(StockThresholdsTableCompanion data) {
+    return StockThresholdData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      inventoryId: data.inventoryId.present
+          ? data.inventoryId.value
+          : this.inventoryId,
+      minThreshold: data.minThreshold.present
+          ? data.minThreshold.value
+          : this.minThreshold,
+      reorderQuantity: data.reorderQuantity.present
+          ? data.reorderQuantity.value
+          : this.reorderQuantity,
+      isAutoReorderEnabled: data.isAutoReorderEnabled.present
+          ? data.isAutoReorderEnabled.value
+          : this.isAutoReorderEnabled,
+      preferredSupplier: data.preferredSupplier.present
+          ? data.preferredSupplier.value
+          : this.preferredSupplier,
+      preferredUnitCost: data.preferredUnitCost.present
+          ? data.preferredUnitCost.value
+          : this.preferredUnitCost,
+      createdDate: data.createdDate.present
+          ? data.createdDate.value
+          : this.createdDate,
+      modifiedDate: data.modifiedDate.present
+          ? data.modifiedDate.value
+          : this.modifiedDate,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockThresholdData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('inventoryId: $inventoryId, ')
+          ..write('minThreshold: $minThreshold, ')
+          ..write('reorderQuantity: $reorderQuantity, ')
+          ..write('isAutoReorderEnabled: $isAutoReorderEnabled, ')
+          ..write('preferredSupplier: $preferredSupplier, ')
+          ..write('preferredUnitCost: $preferredUnitCost, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    inventoryId,
+    minThreshold,
+    reorderQuantity,
+    isAutoReorderEnabled,
+    preferredSupplier,
+    preferredUnitCost,
+    createdDate,
+    modifiedDate,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StockThresholdData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.inventoryId == this.inventoryId &&
+          other.minThreshold == this.minThreshold &&
+          other.reorderQuantity == this.reorderQuantity &&
+          other.isAutoReorderEnabled == this.isAutoReorderEnabled &&
+          other.preferredSupplier == this.preferredSupplier &&
+          other.preferredUnitCost == this.preferredUnitCost &&
+          other.createdDate == this.createdDate &&
+          other.modifiedDate == this.modifiedDate);
+}
+
+class StockThresholdsTableCompanion
+    extends UpdateCompanion<StockThresholdData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<int> inventoryId;
+  final Value<double> minThreshold;
+  final Value<double> reorderQuantity;
+  final Value<bool> isAutoReorderEnabled;
+  final Value<String?> preferredSupplier;
+  final Value<double?> preferredUnitCost;
+  final Value<String?> createdDate;
+  final Value<String?> modifiedDate;
+  const StockThresholdsTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.inventoryId = const Value.absent(),
+    this.minThreshold = const Value.absent(),
+    this.reorderQuantity = const Value.absent(),
+    this.isAutoReorderEnabled = const Value.absent(),
+    this.preferredSupplier = const Value.absent(),
+    this.preferredUnitCost = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+  });
+  StockThresholdsTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required int inventoryId,
+    this.minThreshold = const Value.absent(),
+    this.reorderQuantity = const Value.absent(),
+    this.isAutoReorderEnabled = const Value.absent(),
+    this.preferredSupplier = const Value.absent(),
+    this.preferredUnitCost = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.modifiedDate = const Value.absent(),
+  }) : inventoryId = Value(inventoryId);
+  static Insertable<StockThresholdData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<int>? inventoryId,
+    Expression<double>? minThreshold,
+    Expression<double>? reorderQuantity,
+    Expression<bool>? isAutoReorderEnabled,
+    Expression<String>? preferredSupplier,
+    Expression<double>? preferredUnitCost,
+    Expression<String>? createdDate,
+    Expression<String>? modifiedDate,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (inventoryId != null) 'inventory_id': inventoryId,
+      if (minThreshold != null) 'min_threshold': minThreshold,
+      if (reorderQuantity != null) 'reorder_quantity': reorderQuantity,
+      if (isAutoReorderEnabled != null)
+        'is_auto_reorder_enabled': isAutoReorderEnabled,
+      if (preferredSupplier != null) 'preferred_supplier': preferredSupplier,
+      if (preferredUnitCost != null) 'preferred_unit_cost': preferredUnitCost,
+      if (createdDate != null) 'created_date': createdDate,
+      if (modifiedDate != null) 'modified_date': modifiedDate,
+    });
+  }
+
+  StockThresholdsTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<int>? inventoryId,
+    Value<double>? minThreshold,
+    Value<double>? reorderQuantity,
+    Value<bool>? isAutoReorderEnabled,
+    Value<String?>? preferredSupplier,
+    Value<double?>? preferredUnitCost,
+    Value<String?>? createdDate,
+    Value<String?>? modifiedDate,
+  }) {
+    return StockThresholdsTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      inventoryId: inventoryId ?? this.inventoryId,
+      minThreshold: minThreshold ?? this.minThreshold,
+      reorderQuantity: reorderQuantity ?? this.reorderQuantity,
+      isAutoReorderEnabled: isAutoReorderEnabled ?? this.isAutoReorderEnabled,
+      preferredSupplier: preferredSupplier ?? this.preferredSupplier,
+      preferredUnitCost: preferredUnitCost ?? this.preferredUnitCost,
+      createdDate: createdDate ?? this.createdDate,
+      modifiedDate: modifiedDate ?? this.modifiedDate,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (inventoryId.present) {
+      map['inventory_id'] = Variable<int>(inventoryId.value);
+    }
+    if (minThreshold.present) {
+      map['min_threshold'] = Variable<double>(minThreshold.value);
+    }
+    if (reorderQuantity.present) {
+      map['reorder_quantity'] = Variable<double>(reorderQuantity.value);
+    }
+    if (isAutoReorderEnabled.present) {
+      map['is_auto_reorder_enabled'] = Variable<bool>(
+        isAutoReorderEnabled.value,
+      );
+    }
+    if (preferredSupplier.present) {
+      map['preferred_supplier'] = Variable<String>(preferredSupplier.value);
+    }
+    if (preferredUnitCost.present) {
+      map['preferred_unit_cost'] = Variable<double>(preferredUnitCost.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<String>(createdDate.value);
+    }
+    if (modifiedDate.present) {
+      map['modified_date'] = Variable<String>(modifiedDate.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockThresholdsTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('inventoryId: $inventoryId, ')
+          ..write('minThreshold: $minThreshold, ')
+          ..write('reorderQuantity: $reorderQuantity, ')
+          ..write('isAutoReorderEnabled: $isAutoReorderEnabled, ')
+          ..write('preferredSupplier: $preferredSupplier, ')
+          ..write('preferredUnitCost: $preferredUnitCost, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('modifiedDate: $modifiedDate')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $StockAlertsTableTable extends StockAlertsTable
+    with TableInfo<$StockAlertsTableTable, StockAlertData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $StockAlertsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<int> createdBy = GeneratedColumn<int>(
+    'created_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedByMeta = const VerificationMeta(
+    'updatedBy',
+  );
+  @override
+  late final GeneratedColumn<int> updatedBy = GeneratedColumn<int>(
+    'updated_by',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _hashIdMeta = const VerificationMeta('hashId');
+  @override
+  late final GeneratedColumn<String> hashId = GeneratedColumn<String>(
+    'hash_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+    clientDefault: () => const Uuid().v8(),
+  );
+  static const VerificationMeta _inventoryIdMeta = const VerificationMeta(
+    'inventoryId',
+  );
+  @override
+  late final GeneratedColumn<int> inventoryId = GeneratedColumn<int>(
+    'inventory_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES inventory (id) ON DELETE CASCADE',
+    ),
+  );
+  static const VerificationMeta _inventoryNameMeta = const VerificationMeta(
+    'inventoryName',
+  );
+  @override
+  late final GeneratedColumn<String> inventoryName = GeneratedColumn<String>(
+    'inventory_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currentStockMeta = const VerificationMeta(
+    'currentStock',
+  );
+  @override
+  late final GeneratedColumn<double> currentStock = GeneratedColumn<double>(
+    'current_stock',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _minThresholdMeta = const VerificationMeta(
+    'minThreshold',
+  );
+  @override
+  late final GeneratedColumn<double> minThreshold = GeneratedColumn<double>(
+    'min_threshold',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _purchaseUnitMeta = const VerificationMeta(
+    'purchaseUnit',
+  );
+  @override
+  late final GeneratedColumn<String> purchaseUnit = GeneratedColumn<String>(
+    'purchase_unit',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _severityMeta = const VerificationMeta(
+    'severity',
+  );
+  @override
+  late final GeneratedColumn<String> severity = GeneratedColumn<String>(
+    'severity',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('warning'),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('active'),
+  );
+  static const VerificationMeta _createdDateMeta = const VerificationMeta(
+    'createdDate',
+  );
+  @override
+  late final GeneratedColumn<String> createdDate = GeneratedColumn<String>(
+    'created_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _resolvedDateMeta = const VerificationMeta(
+    'resolvedDate',
+  );
+  @override
+  late final GeneratedColumn<String> resolvedDate = GeneratedColumn<String>(
+    'resolved_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _remarksMeta = const VerificationMeta(
+    'remarks',
+  );
+  @override
+  late final GeneratedColumn<String> remarks = GeneratedColumn<String>(
+    'remarks',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    inventoryId,
+    inventoryName,
+    currentStock,
+    minThreshold,
+    purchaseUnit,
+    severity,
+    status,
+    createdDate,
+    resolvedDate,
+    remarks,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'stock_alerts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<StockAlertData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    }
+    if (data.containsKey('updated_by')) {
+      context.handle(
+        _updatedByMeta,
+        updatedBy.isAcceptableOrUnknown(data['updated_by']!, _updatedByMeta),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('hash_id')) {
+      context.handle(
+        _hashIdMeta,
+        hashId.isAcceptableOrUnknown(data['hash_id']!, _hashIdMeta),
+      );
+    }
+    if (data.containsKey('inventory_id')) {
+      context.handle(
+        _inventoryIdMeta,
+        inventoryId.isAcceptableOrUnknown(
+          data['inventory_id']!,
+          _inventoryIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_inventoryIdMeta);
+    }
+    if (data.containsKey('inventory_name')) {
+      context.handle(
+        _inventoryNameMeta,
+        inventoryName.isAcceptableOrUnknown(
+          data['inventory_name']!,
+          _inventoryNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_inventoryNameMeta);
+    }
+    if (data.containsKey('current_stock')) {
+      context.handle(
+        _currentStockMeta,
+        currentStock.isAcceptableOrUnknown(
+          data['current_stock']!,
+          _currentStockMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_currentStockMeta);
+    }
+    if (data.containsKey('min_threshold')) {
+      context.handle(
+        _minThresholdMeta,
+        minThreshold.isAcceptableOrUnknown(
+          data['min_threshold']!,
+          _minThresholdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_minThresholdMeta);
+    }
+    if (data.containsKey('purchase_unit')) {
+      context.handle(
+        _purchaseUnitMeta,
+        purchaseUnit.isAcceptableOrUnknown(
+          data['purchase_unit']!,
+          _purchaseUnitMeta,
+        ),
+      );
+    }
+    if (data.containsKey('severity')) {
+      context.handle(
+        _severityMeta,
+        severity.isAcceptableOrUnknown(data['severity']!, _severityMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('created_date')) {
+      context.handle(
+        _createdDateMeta,
+        createdDate.isAcceptableOrUnknown(
+          data['created_date']!,
+          _createdDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('resolved_date')) {
+      context.handle(
+        _resolvedDateMeta,
+        resolvedDate.isAcceptableOrUnknown(
+          data['resolved_date']!,
+          _resolvedDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('remarks')) {
+      context.handle(
+        _remarksMeta,
+        remarks.isAcceptableOrUnknown(data['remarks']!, _remarksMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  StockAlertData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return StockAlertData(
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by'],
+      ),
+      updatedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_by'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      hashId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash_id'],
+      )!,
+      inventoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}inventory_id'],
+      )!,
+      inventoryName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}inventory_name'],
+      )!,
+      currentStock: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}current_stock'],
+      )!,
+      minThreshold: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}min_threshold'],
+      )!,
+      purchaseUnit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}purchase_unit'],
+      ),
+      severity: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}severity'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      createdDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_date'],
+      ),
+      resolvedDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}resolved_date'],
+      ),
+      remarks: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remarks'],
+      ),
+    );
+  }
+
+  @override
+  $StockAlertsTableTable createAlias(String alias) {
+    return $StockAlertsTableTable(attachedDatabase, alias);
+  }
+}
+
+class StockAlertData extends DataClass implements Insertable<StockAlertData> {
+  final int? createdBy;
+  final int? updatedBy;
+  final int id;
+  final String hashId;
+  final int inventoryId;
+  final String inventoryName;
+  final double currentStock;
+  final double minThreshold;
+  final String? purchaseUnit;
+  final String severity;
+  final String status;
+  final String? createdDate;
+  final String? resolvedDate;
+  final String? remarks;
+  const StockAlertData({
+    this.createdBy,
+    this.updatedBy,
+    required this.id,
+    required this.hashId,
+    required this.inventoryId,
+    required this.inventoryName,
+    required this.currentStock,
+    required this.minThreshold,
+    this.purchaseUnit,
+    required this.severity,
+    required this.status,
+    this.createdDate,
+    this.resolvedDate,
+    this.remarks,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || createdBy != null) {
+      map['created_by'] = Variable<int>(createdBy);
+    }
+    if (!nullToAbsent || updatedBy != null) {
+      map['updated_by'] = Variable<int>(updatedBy);
+    }
+    map['id'] = Variable<int>(id);
+    map['hash_id'] = Variable<String>(hashId);
+    map['inventory_id'] = Variable<int>(inventoryId);
+    map['inventory_name'] = Variable<String>(inventoryName);
+    map['current_stock'] = Variable<double>(currentStock);
+    map['min_threshold'] = Variable<double>(minThreshold);
+    if (!nullToAbsent || purchaseUnit != null) {
+      map['purchase_unit'] = Variable<String>(purchaseUnit);
+    }
+    map['severity'] = Variable<String>(severity);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || createdDate != null) {
+      map['created_date'] = Variable<String>(createdDate);
+    }
+    if (!nullToAbsent || resolvedDate != null) {
+      map['resolved_date'] = Variable<String>(resolvedDate);
+    }
+    if (!nullToAbsent || remarks != null) {
+      map['remarks'] = Variable<String>(remarks);
+    }
+    return map;
+  }
+
+  StockAlertsTableCompanion toCompanion(bool nullToAbsent) {
+    return StockAlertsTableCompanion(
+      createdBy: createdBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdBy),
+      updatedBy: updatedBy == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedBy),
+      id: Value(id),
+      hashId: Value(hashId),
+      inventoryId: Value(inventoryId),
+      inventoryName: Value(inventoryName),
+      currentStock: Value(currentStock),
+      minThreshold: Value(minThreshold),
+      purchaseUnit: purchaseUnit == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purchaseUnit),
+      severity: Value(severity),
+      status: Value(status),
+      createdDate: createdDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdDate),
+      resolvedDate: resolvedDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(resolvedDate),
+      remarks: remarks == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remarks),
+    );
+  }
+
+  factory StockAlertData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return StockAlertData(
+      createdBy: serializer.fromJson<int?>(json['createdBy']),
+      updatedBy: serializer.fromJson<int?>(json['updatedBy']),
+      id: serializer.fromJson<int>(json['id']),
+      hashId: serializer.fromJson<String>(json['hashId']),
+      inventoryId: serializer.fromJson<int>(json['inventoryId']),
+      inventoryName: serializer.fromJson<String>(json['inventoryName']),
+      currentStock: serializer.fromJson<double>(json['currentStock']),
+      minThreshold: serializer.fromJson<double>(json['minThreshold']),
+      purchaseUnit: serializer.fromJson<String?>(json['purchaseUnit']),
+      severity: serializer.fromJson<String>(json['severity']),
+      status: serializer.fromJson<String>(json['status']),
+      createdDate: serializer.fromJson<String?>(json['createdDate']),
+      resolvedDate: serializer.fromJson<String?>(json['resolvedDate']),
+      remarks: serializer.fromJson<String?>(json['remarks']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'createdBy': serializer.toJson<int?>(createdBy),
+      'updatedBy': serializer.toJson<int?>(updatedBy),
+      'id': serializer.toJson<int>(id),
+      'hashId': serializer.toJson<String>(hashId),
+      'inventoryId': serializer.toJson<int>(inventoryId),
+      'inventoryName': serializer.toJson<String>(inventoryName),
+      'currentStock': serializer.toJson<double>(currentStock),
+      'minThreshold': serializer.toJson<double>(minThreshold),
+      'purchaseUnit': serializer.toJson<String?>(purchaseUnit),
+      'severity': serializer.toJson<String>(severity),
+      'status': serializer.toJson<String>(status),
+      'createdDate': serializer.toJson<String?>(createdDate),
+      'resolvedDate': serializer.toJson<String?>(resolvedDate),
+      'remarks': serializer.toJson<String?>(remarks),
+    };
+  }
+
+  StockAlertData copyWith({
+    Value<int?> createdBy = const Value.absent(),
+    Value<int?> updatedBy = const Value.absent(),
+    int? id,
+    String? hashId,
+    int? inventoryId,
+    String? inventoryName,
+    double? currentStock,
+    double? minThreshold,
+    Value<String?> purchaseUnit = const Value.absent(),
+    String? severity,
+    String? status,
+    Value<String?> createdDate = const Value.absent(),
+    Value<String?> resolvedDate = const Value.absent(),
+    Value<String?> remarks = const Value.absent(),
+  }) => StockAlertData(
+    createdBy: createdBy.present ? createdBy.value : this.createdBy,
+    updatedBy: updatedBy.present ? updatedBy.value : this.updatedBy,
+    id: id ?? this.id,
+    hashId: hashId ?? this.hashId,
+    inventoryId: inventoryId ?? this.inventoryId,
+    inventoryName: inventoryName ?? this.inventoryName,
+    currentStock: currentStock ?? this.currentStock,
+    minThreshold: minThreshold ?? this.minThreshold,
+    purchaseUnit: purchaseUnit.present ? purchaseUnit.value : this.purchaseUnit,
+    severity: severity ?? this.severity,
+    status: status ?? this.status,
+    createdDate: createdDate.present ? createdDate.value : this.createdDate,
+    resolvedDate: resolvedDate.present ? resolvedDate.value : this.resolvedDate,
+    remarks: remarks.present ? remarks.value : this.remarks,
+  );
+  StockAlertData copyWithCompanion(StockAlertsTableCompanion data) {
+    return StockAlertData(
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      updatedBy: data.updatedBy.present ? data.updatedBy.value : this.updatedBy,
+      id: data.id.present ? data.id.value : this.id,
+      hashId: data.hashId.present ? data.hashId.value : this.hashId,
+      inventoryId: data.inventoryId.present
+          ? data.inventoryId.value
+          : this.inventoryId,
+      inventoryName: data.inventoryName.present
+          ? data.inventoryName.value
+          : this.inventoryName,
+      currentStock: data.currentStock.present
+          ? data.currentStock.value
+          : this.currentStock,
+      minThreshold: data.minThreshold.present
+          ? data.minThreshold.value
+          : this.minThreshold,
+      purchaseUnit: data.purchaseUnit.present
+          ? data.purchaseUnit.value
+          : this.purchaseUnit,
+      severity: data.severity.present ? data.severity.value : this.severity,
+      status: data.status.present ? data.status.value : this.status,
+      createdDate: data.createdDate.present
+          ? data.createdDate.value
+          : this.createdDate,
+      resolvedDate: data.resolvedDate.present
+          ? data.resolvedDate.value
+          : this.resolvedDate,
+      remarks: data.remarks.present ? data.remarks.value : this.remarks,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockAlertData(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('inventoryId: $inventoryId, ')
+          ..write('inventoryName: $inventoryName, ')
+          ..write('currentStock: $currentStock, ')
+          ..write('minThreshold: $minThreshold, ')
+          ..write('purchaseUnit: $purchaseUnit, ')
+          ..write('severity: $severity, ')
+          ..write('status: $status, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('resolvedDate: $resolvedDate, ')
+          ..write('remarks: $remarks')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    createdBy,
+    updatedBy,
+    id,
+    hashId,
+    inventoryId,
+    inventoryName,
+    currentStock,
+    minThreshold,
+    purchaseUnit,
+    severity,
+    status,
+    createdDate,
+    resolvedDate,
+    remarks,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is StockAlertData &&
+          other.createdBy == this.createdBy &&
+          other.updatedBy == this.updatedBy &&
+          other.id == this.id &&
+          other.hashId == this.hashId &&
+          other.inventoryId == this.inventoryId &&
+          other.inventoryName == this.inventoryName &&
+          other.currentStock == this.currentStock &&
+          other.minThreshold == this.minThreshold &&
+          other.purchaseUnit == this.purchaseUnit &&
+          other.severity == this.severity &&
+          other.status == this.status &&
+          other.createdDate == this.createdDate &&
+          other.resolvedDate == this.resolvedDate &&
+          other.remarks == this.remarks);
+}
+
+class StockAlertsTableCompanion extends UpdateCompanion<StockAlertData> {
+  final Value<int?> createdBy;
+  final Value<int?> updatedBy;
+  final Value<int> id;
+  final Value<String> hashId;
+  final Value<int> inventoryId;
+  final Value<String> inventoryName;
+  final Value<double> currentStock;
+  final Value<double> minThreshold;
+  final Value<String?> purchaseUnit;
+  final Value<String> severity;
+  final Value<String> status;
+  final Value<String?> createdDate;
+  final Value<String?> resolvedDate;
+  final Value<String?> remarks;
+  const StockAlertsTableCompanion({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    this.inventoryId = const Value.absent(),
+    this.inventoryName = const Value.absent(),
+    this.currentStock = const Value.absent(),
+    this.minThreshold = const Value.absent(),
+    this.purchaseUnit = const Value.absent(),
+    this.severity = const Value.absent(),
+    this.status = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.resolvedDate = const Value.absent(),
+    this.remarks = const Value.absent(),
+  });
+  StockAlertsTableCompanion.insert({
+    this.createdBy = const Value.absent(),
+    this.updatedBy = const Value.absent(),
+    this.id = const Value.absent(),
+    this.hashId = const Value.absent(),
+    required int inventoryId,
+    required String inventoryName,
+    required double currentStock,
+    required double minThreshold,
+    this.purchaseUnit = const Value.absent(),
+    this.severity = const Value.absent(),
+    this.status = const Value.absent(),
+    this.createdDate = const Value.absent(),
+    this.resolvedDate = const Value.absent(),
+    this.remarks = const Value.absent(),
+  }) : inventoryId = Value(inventoryId),
+       inventoryName = Value(inventoryName),
+       currentStock = Value(currentStock),
+       minThreshold = Value(minThreshold);
+  static Insertable<StockAlertData> custom({
+    Expression<int>? createdBy,
+    Expression<int>? updatedBy,
+    Expression<int>? id,
+    Expression<String>? hashId,
+    Expression<int>? inventoryId,
+    Expression<String>? inventoryName,
+    Expression<double>? currentStock,
+    Expression<double>? minThreshold,
+    Expression<String>? purchaseUnit,
+    Expression<String>? severity,
+    Expression<String>? status,
+    Expression<String>? createdDate,
+    Expression<String>? resolvedDate,
+    Expression<String>? remarks,
+  }) {
+    return RawValuesInsertable({
+      if (createdBy != null) 'created_by': createdBy,
+      if (updatedBy != null) 'updated_by': updatedBy,
+      if (id != null) 'id': id,
+      if (hashId != null) 'hash_id': hashId,
+      if (inventoryId != null) 'inventory_id': inventoryId,
+      if (inventoryName != null) 'inventory_name': inventoryName,
+      if (currentStock != null) 'current_stock': currentStock,
+      if (minThreshold != null) 'min_threshold': minThreshold,
+      if (purchaseUnit != null) 'purchase_unit': purchaseUnit,
+      if (severity != null) 'severity': severity,
+      if (status != null) 'status': status,
+      if (createdDate != null) 'created_date': createdDate,
+      if (resolvedDate != null) 'resolved_date': resolvedDate,
+      if (remarks != null) 'remarks': remarks,
+    });
+  }
+
+  StockAlertsTableCompanion copyWith({
+    Value<int?>? createdBy,
+    Value<int?>? updatedBy,
+    Value<int>? id,
+    Value<String>? hashId,
+    Value<int>? inventoryId,
+    Value<String>? inventoryName,
+    Value<double>? currentStock,
+    Value<double>? minThreshold,
+    Value<String?>? purchaseUnit,
+    Value<String>? severity,
+    Value<String>? status,
+    Value<String?>? createdDate,
+    Value<String?>? resolvedDate,
+    Value<String?>? remarks,
+  }) {
+    return StockAlertsTableCompanion(
+      createdBy: createdBy ?? this.createdBy,
+      updatedBy: updatedBy ?? this.updatedBy,
+      id: id ?? this.id,
+      hashId: hashId ?? this.hashId,
+      inventoryId: inventoryId ?? this.inventoryId,
+      inventoryName: inventoryName ?? this.inventoryName,
+      currentStock: currentStock ?? this.currentStock,
+      minThreshold: minThreshold ?? this.minThreshold,
+      purchaseUnit: purchaseUnit ?? this.purchaseUnit,
+      severity: severity ?? this.severity,
+      status: status ?? this.status,
+      createdDate: createdDate ?? this.createdDate,
+      resolvedDate: resolvedDate ?? this.resolvedDate,
+      remarks: remarks ?? this.remarks,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (createdBy.present) {
+      map['created_by'] = Variable<int>(createdBy.value);
+    }
+    if (updatedBy.present) {
+      map['updated_by'] = Variable<int>(updatedBy.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (hashId.present) {
+      map['hash_id'] = Variable<String>(hashId.value);
+    }
+    if (inventoryId.present) {
+      map['inventory_id'] = Variable<int>(inventoryId.value);
+    }
+    if (inventoryName.present) {
+      map['inventory_name'] = Variable<String>(inventoryName.value);
+    }
+    if (currentStock.present) {
+      map['current_stock'] = Variable<double>(currentStock.value);
+    }
+    if (minThreshold.present) {
+      map['min_threshold'] = Variable<double>(minThreshold.value);
+    }
+    if (purchaseUnit.present) {
+      map['purchase_unit'] = Variable<String>(purchaseUnit.value);
+    }
+    if (severity.present) {
+      map['severity'] = Variable<String>(severity.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (createdDate.present) {
+      map['created_date'] = Variable<String>(createdDate.value);
+    }
+    if (resolvedDate.present) {
+      map['resolved_date'] = Variable<String>(resolvedDate.value);
+    }
+    if (remarks.present) {
+      map['remarks'] = Variable<String>(remarks.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('StockAlertsTableCompanion(')
+          ..write('createdBy: $createdBy, ')
+          ..write('updatedBy: $updatedBy, ')
+          ..write('id: $id, ')
+          ..write('hashId: $hashId, ')
+          ..write('inventoryId: $inventoryId, ')
+          ..write('inventoryName: $inventoryName, ')
+          ..write('currentStock: $currentStock, ')
+          ..write('minThreshold: $minThreshold, ')
+          ..write('purchaseUnit: $purchaseUnit, ')
+          ..write('severity: $severity, ')
+          ..write('status: $status, ')
+          ..write('createdDate: $createdDate, ')
+          ..write('resolvedDate: $resolvedDate, ')
+          ..write('remarks: $remarks')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$CoozyDatabase extends GeneratedDatabase {
   _$CoozyDatabase(QueryExecutor e) : super(e);
   $CoozyDatabaseManager get managers => $CoozyDatabaseManager(this);
@@ -25455,6 +28376,15 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
       $CustomerLoyaltyTableTable(this);
   late final $LoyaltyTransactionsTableTable loyaltyTransactionsTable =
       $LoyaltyTransactionsTableTable(this);
+  late final $CombosTableTable combosTable = $CombosTableTable(this);
+  late final $ComboItemsTableTable comboItemsTable = $ComboItemsTableTable(
+    this,
+  );
+  late final $StockThresholdsTableTable stockThresholdsTable =
+      $StockThresholdsTableTable(this);
+  late final $StockAlertsTableTable stockAlertsTable = $StockAlertsTableTable(
+    this,
+  );
   late final Index idxTableInfoSortOrder = Index(
     'idx_table_info_sort_order',
     'CREATE INDEX idx_table_info_sort_order ON table_info (sort_order_index)',
@@ -25795,6 +28725,38 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     'idx_loyalty_tx_date',
     'CREATE INDEX idx_loyalty_tx_date ON loyalty_transactions (created_date)',
   );
+  late final Index idxCombosIsActive = Index(
+    'idx_combos_is_active',
+    'CREATE INDEX idx_combos_is_active ON combos (is_active)',
+  );
+  late final Index idxCombosSortOrder = Index(
+    'idx_combos_sort_order',
+    'CREATE INDEX idx_combos_sort_order ON combos (sort_order_index)',
+  );
+  late final Index idxComboItemsComboId = Index(
+    'idx_combo_items_combo_id',
+    'CREATE INDEX idx_combo_items_combo_id ON combo_items (combo_id)',
+  );
+  late final Index idxComboItemsMenuItemId = Index(
+    'idx_combo_items_menu_item_id',
+    'CREATE INDEX idx_combo_items_menu_item_id ON combo_items (menu_item_id)',
+  );
+  late final Index idxStockThresholdInventoryId = Index(
+    'idx_stock_threshold_inventory_id',
+    'CREATE INDEX idx_stock_threshold_inventory_id ON stock_thresholds (inventory_id)',
+  );
+  late final Index idxStockAlertInventoryId = Index(
+    'idx_stock_alert_inventory_id',
+    'CREATE INDEX idx_stock_alert_inventory_id ON stock_alerts (inventory_id)',
+  );
+  late final Index idxStockAlertStatus = Index(
+    'idx_stock_alert_status',
+    'CREATE INDEX idx_stock_alert_status ON stock_alerts (status)',
+  );
+  late final Index idxStockAlertCreatedDate = Index(
+    'idx_stock_alert_created_date',
+    'CREATE INDEX idx_stock_alert_created_date ON stock_alerts (created_date)',
+  );
   late final CategoriesDao categoriesDao = CategoriesDao(this as CoozyDatabase);
   late final CustomersDao customersDao = CustomersDao(this as CoozyDatabase);
   late final StaffManagementDao staffManagementDao = StaffManagementDao(
@@ -25814,6 +28776,10 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
   );
   late final UserLoginsDao userLoginsDao = UserLoginsDao(this as CoozyDatabase);
   late final ExpenditureDao expenditureDao = ExpenditureDao(
+    this as CoozyDatabase,
+  );
+  late final CombosDao combosDao = CombosDao(this as CoozyDatabase);
+  late final StockAlertsDao stockAlertsDao = StockAlertsDao(
     this as CoozyDatabase,
   );
   @override
@@ -25854,6 +28820,10 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     expendituresTable,
     customerLoyaltyTable,
     loyaltyTransactionsTable,
+    combosTable,
+    comboItemsTable,
+    stockThresholdsTable,
+    stockAlertsTable,
     idxTableInfoSortOrder,
     idxCategoriesPosition,
     idxCategoriesName,
@@ -25939,6 +28909,14 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
     idxLoyaltyCustomerId,
     idxLoyaltyTxCustomerId,
     idxLoyaltyTxDate,
+    idxCombosIsActive,
+    idxCombosSortOrder,
+    idxComboItemsComboId,
+    idxComboItemsMenuItemId,
+    idxStockThresholdInventoryId,
+    idxStockAlertInventoryId,
+    idxStockAlertStatus,
+    idxStockAlertCreatedDate,
   ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
@@ -26067,6 +29045,41 @@ abstract class _$CoozyDatabase extends GeneratedDatabase {
         limitUpdateKind: UpdateKind.delete,
       ),
       result: [TableUpdate('loyalty_transactions', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'combos',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('combo_items', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'menu_items',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('combo_items', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'menu_item_variations',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('combo_items', kind: UpdateKind.update)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'inventory',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('stock_thresholds', kind: UpdateKind.delete)],
+    ),
+    WritePropagation(
+      on: TableUpdateQuery.onTableName(
+        'inventory',
+        limitUpdateKind: UpdateKind.delete,
+      ),
+      result: [TableUpdate('stock_alerts', kind: UpdateKind.delete)],
     ),
   ]);
 }
@@ -27459,6 +30472,27 @@ final class $$MenuItemsTableTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<$ComboItemsTableTable, List<ComboItemData>>
+  _comboItemsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.comboItemsTable,
+        aliasName: 'menu_items__id__combo_items__menu_item_id',
+      );
+
+  $$ComboItemsTableTableProcessedTableManager get comboItemsTableRefs {
+    final manager = $$ComboItemsTableTableTableManager(
+      $_db,
+      $_db.comboItemsTable,
+    ).filter((f) => f.menuItemId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _comboItemsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$MenuItemsTableTableFilterComposer
@@ -27637,6 +30671,31 @@ class $$MenuItemsTableTableFilterComposer
           }) => $$OrderItemsTableTableFilterComposer(
             $db: $db,
             $table: $db.orderItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> comboItemsTableRefs(
+    Expression<bool> Function($$ComboItemsTableTableFilterComposer f) f,
+  ) {
+    final $$ComboItemsTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.comboItemsTable,
+      getReferencedColumn: (t) => t.menuItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ComboItemsTableTableFilterComposer(
+            $db: $db,
+            $table: $db.comboItemsTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -27924,6 +30983,31 @@ class $$MenuItemsTableTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> comboItemsTableRefs<T extends Object>(
+    Expression<T> Function($$ComboItemsTableTableAnnotationComposer a) f,
+  ) {
+    final $$ComboItemsTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.comboItemsTable,
+      getReferencedColumn: (t) => t.menuItemId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ComboItemsTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.comboItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MenuItemsTableTableTableManager
@@ -27943,6 +31027,7 @@ class $$MenuItemsTableTableTableManager
             bool menuItemVariationsTableRefs,
             bool orderItemsByItemId,
             bool orderItemsByMenuItemId,
+            bool comboItemsTableRefs,
           })
         > {
   $$MenuItemsTableTableTableManager(
@@ -28059,6 +31144,7 @@ class $$MenuItemsTableTableTableManager
                 menuItemVariationsTableRefs = false,
                 orderItemsByItemId = false,
                 orderItemsByMenuItemId = false,
+                comboItemsTableRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -28066,6 +31152,7 @@ class $$MenuItemsTableTableTableManager
                     if (menuItemVariationsTableRefs) db.menuItemVariationsTable,
                     if (orderItemsByItemId) db.orderItemsTable,
                     if (orderItemsByMenuItemId) db.orderItemsTable,
+                    if (comboItemsTableRefs) db.comboItemsTable,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -28130,6 +31217,26 @@ class $$MenuItemsTableTableTableManager
                           referencedColumn: 'menu_item_id',
                           typedResults: items,
                         ),
+                      if (comboItemsTableRefs)
+                        await $_getPrefetchedDataByColumns<
+                          MenuItem,
+                          $MenuItemsTableTable,
+                          ComboItemData,
+                          $ComboItemsTableTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$MenuItemsTableTableReferences
+                              ._comboItemsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MenuItemsTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).comboItemsTableRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'menu_item_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -28154,6 +31261,7 @@ typedef $$MenuItemsTableTableProcessedTableManager =
         bool menuItemVariationsTableRefs,
         bool orderItemsByItemId,
         bool orderItemsByMenuItemId,
+        bool comboItemsTableRefs,
       })
     >;
 typedef $$MenuItemVariationsTableTableCreateCompanionBuilder =
@@ -28171,6 +31279,7 @@ typedef $$MenuItemVariationsTableTableCreateCompanionBuilder =
       Value<double?> sellingPrice,
       Value<int?> stockQuantity,
       Value<int?> sortOrderIndex,
+      Value<int?> duration,
       Value<String?> creationDate,
       Value<String?> modificationDate,
     });
@@ -28189,6 +31298,7 @@ typedef $$MenuItemVariationsTableTableUpdateCompanionBuilder =
       Value<double?> sellingPrice,
       Value<int?> stockQuantity,
       Value<int?> sortOrderIndex,
+      Value<int?> duration,
       Value<String?> creationDate,
       Value<String?> modificationDate,
     });
@@ -28240,6 +31350,27 @@ final class $$MenuItemVariationsTableTableReferences
 
     final cache = $_typedResult.readTableOrNull(
       _orderItemsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$ComboItemsTableTable, List<ComboItemData>>
+  _comboItemsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.comboItemsTable,
+        aliasName: 'menu_item_variations__id__combo_items__variation_id',
+      );
+
+  $$ComboItemsTableTableProcessedTableManager get comboItemsTableRefs {
+    final manager = $$ComboItemsTableTableTableManager(
+      $_db,
+      $_db.comboItemsTable,
+    ).filter((f) => f.variationId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _comboItemsTableRefsTable($_db),
     );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
@@ -28316,6 +31447,11 @@ class $$MenuItemVariationsTableTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<int> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<String> get creationDate => $composableBuilder(
     column: $table.creationDate,
     builder: (column) => ColumnFilters(column),
@@ -28365,6 +31501,31 @@ class $$MenuItemVariationsTableTableFilterComposer
           }) => $$OrderItemsTableTableFilterComposer(
             $db: $db,
             $table: $db.orderItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> comboItemsTableRefs(
+    Expression<bool> Function($$ComboItemsTableTableFilterComposer f) f,
+  ) {
+    final $$ComboItemsTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.comboItemsTable,
+      getReferencedColumn: (t) => t.variationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ComboItemsTableTableFilterComposer(
+            $db: $db,
+            $table: $db.comboItemsTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -28441,6 +31602,11 @@ class $$MenuItemVariationsTableTableOrderingComposer
 
   ColumnOrderings<int> get sortOrderIndex => $composableBuilder(
     column: $table.sortOrderIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get duration => $composableBuilder(
+    column: $table.duration,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -28533,6 +31699,9 @@ class $$MenuItemVariationsTableTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<int> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => column);
+
   GeneratedColumn<String> get creationDate => $composableBuilder(
     column: $table.creationDate,
     builder: (column) => column,
@@ -28590,6 +31759,31 @@ class $$MenuItemVariationsTableTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> comboItemsTableRefs<T extends Object>(
+    Expression<T> Function($$ComboItemsTableTableAnnotationComposer a) f,
+  ) {
+    final $$ComboItemsTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.comboItemsTable,
+      getReferencedColumn: (t) => t.variationId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ComboItemsTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.comboItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$MenuItemVariationsTableTableTableManager
@@ -28605,7 +31799,11 @@ class $$MenuItemVariationsTableTableTableManager
           $$MenuItemVariationsTableTableUpdateCompanionBuilder,
           (MenuItemVariation, $$MenuItemVariationsTableTableReferences),
           MenuItemVariation,
-          PrefetchHooks Function({bool menuItemId, bool orderItemsTableRefs})
+          PrefetchHooks Function({
+            bool menuItemId,
+            bool orderItemsTableRefs,
+            bool comboItemsTableRefs,
+          })
         > {
   $$MenuItemVariationsTableTableTableManager(
     _$CoozyDatabase db,
@@ -28644,6 +31842,7 @@ class $$MenuItemVariationsTableTableTableManager
                 Value<double?> sellingPrice = const Value.absent(),
                 Value<int?> stockQuantity = const Value.absent(),
                 Value<int?> sortOrderIndex = const Value.absent(),
+                Value<int?> duration = const Value.absent(),
                 Value<String?> creationDate = const Value.absent(),
                 Value<String?> modificationDate = const Value.absent(),
               }) => MenuItemVariationsTableCompanion(
@@ -28660,6 +31859,7 @@ class $$MenuItemVariationsTableTableTableManager
                 sellingPrice: sellingPrice,
                 stockQuantity: stockQuantity,
                 sortOrderIndex: sortOrderIndex,
+                duration: duration,
                 creationDate: creationDate,
                 modificationDate: modificationDate,
               ),
@@ -28678,6 +31878,7 @@ class $$MenuItemVariationsTableTableTableManager
                 Value<double?> sellingPrice = const Value.absent(),
                 Value<int?> stockQuantity = const Value.absent(),
                 Value<int?> sortOrderIndex = const Value.absent(),
+                Value<int?> duration = const Value.absent(),
                 Value<String?> creationDate = const Value.absent(),
                 Value<String?> modificationDate = const Value.absent(),
               }) => MenuItemVariationsTableCompanion.insert(
@@ -28694,6 +31895,7 @@ class $$MenuItemVariationsTableTableTableManager
                 sellingPrice: sellingPrice,
                 stockQuantity: stockQuantity,
                 sortOrderIndex: sortOrderIndex,
+                duration: duration,
                 creationDate: creationDate,
                 modificationDate: modificationDate,
               ),
@@ -28708,11 +31910,16 @@ class $$MenuItemVariationsTableTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({menuItemId = false, orderItemsTableRefs = false}) {
+              ({
+                menuItemId = false,
+                orderItemsTableRefs = false,
+                comboItemsTableRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (orderItemsTableRefs) db.orderItemsTable,
+                    if (comboItemsTableRefs) db.comboItemsTable,
                   ],
                   addJoins:
                       <
@@ -28769,6 +31976,27 @@ class $$MenuItemVariationsTableTableTableManager
                           referencedColumn: 'selected_variation_id',
                           typedResults: items,
                         ),
+                      if (comboItemsTableRefs)
+                        await $_getPrefetchedDataByColumns<
+                          MenuItemVariation,
+                          $MenuItemVariationsTableTable,
+                          ComboItemData,
+                          $ComboItemsTableTable
+                        >(
+                          currentTable: table,
+                          referencedTable:
+                              $$MenuItemVariationsTableTableReferences
+                                  ._comboItemsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$MenuItemVariationsTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).comboItemsTableRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'variation_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -28789,7 +32017,11 @@ typedef $$MenuItemVariationsTableTableProcessedTableManager =
       $$MenuItemVariationsTableTableUpdateCompanionBuilder,
       (MenuItemVariation, $$MenuItemVariationsTableTableReferences),
       MenuItemVariation,
-      PrefetchHooks Function({bool menuItemId, bool orderItemsTableRefs})
+      PrefetchHooks Function({
+        bool menuItemId,
+        bool orderItemsTableRefs,
+        bool comboItemsTableRefs,
+      })
     >;
 typedef $$MenuItemReviewsTableTableCreateCompanionBuilder =
     MenuItemReviewsTableCompanion Function({
@@ -29155,6 +32387,52 @@ final class $$InventoryTableTableReferences
       manager.$state.copyWith(prefetchedData: cache),
     );
   }
+
+  static MultiTypedResultKey<
+    $StockThresholdsTableTable,
+    List<StockThresholdData>
+  >
+  _stockThresholdsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.stockThresholdsTable,
+        aliasName: 'inventory__id__stock_thresholds__inventory_id',
+      );
+
+  $$StockThresholdsTableTableProcessedTableManager
+  get stockThresholdsTableRefs {
+    final manager = $$StockThresholdsTableTableTableManager(
+      $_db,
+      $_db.stockThresholdsTable,
+    ).filter((f) => f.inventoryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _stockThresholdsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$StockAlertsTableTable, List<StockAlertData>>
+  _stockAlertsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.stockAlertsTable,
+        aliasName: 'inventory__id__stock_alerts__inventory_id',
+      );
+
+  $$StockAlertsTableTableProcessedTableManager get stockAlertsTableRefs {
+    final manager = $$StockAlertsTableTableTableManager(
+      $_db,
+      $_db.stockAlertsTable,
+    ).filter((f) => f.inventoryId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _stockAlertsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$InventoryTableTableFilterComposer
@@ -29266,6 +32544,56 @@ class $$InventoryTableTableFilterComposer
           }) => $$PurchaseTableTableFilterComposer(
             $db: $db,
             $table: $db.purchaseTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> stockThresholdsTableRefs(
+    Expression<bool> Function($$StockThresholdsTableTableFilterComposer f) f,
+  ) {
+    final $$StockThresholdsTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.stockThresholdsTable,
+      getReferencedColumn: (t) => t.inventoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockThresholdsTableTableFilterComposer(
+            $db: $db,
+            $table: $db.stockThresholdsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> stockAlertsTableRefs(
+    Expression<bool> Function($$StockAlertsTableTableFilterComposer f) f,
+  ) {
+    final $$StockAlertsTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.stockAlertsTable,
+      getReferencedColumn: (t) => t.inventoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockAlertsTableTableFilterComposer(
+            $db: $db,
+            $table: $db.stockAlertsTable,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -29446,6 +32774,57 @@ class $$InventoryTableTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> stockThresholdsTableRefs<T extends Object>(
+    Expression<T> Function($$StockThresholdsTableTableAnnotationComposer a) f,
+  ) {
+    final $$StockThresholdsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.id,
+          referencedTable: $db.stockThresholdsTable,
+          getReferencedColumn: (t) => t.inventoryId,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$StockThresholdsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.stockThresholdsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return f(composer);
+  }
+
+  Expression<T> stockAlertsTableRefs<T extends Object>(
+    Expression<T> Function($$StockAlertsTableTableAnnotationComposer a) f,
+  ) {
+    final $$StockAlertsTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.stockAlertsTable,
+      getReferencedColumn: (t) => t.inventoryId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$StockAlertsTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.stockAlertsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$InventoryTableTableTableManager
@@ -29464,6 +32843,8 @@ class $$InventoryTableTableTableManager
           PrefetchHooks Function({
             bool inventoryStockAdjustmentsTableRefs,
             bool purchaseTableRefs,
+            bool stockThresholdsTableRefs,
+            bool stockAlertsTableRefs,
           })
         > {
   $$InventoryTableTableTableManager(
@@ -29543,6 +32924,8 @@ class $$InventoryTableTableTableManager
               ({
                 inventoryStockAdjustmentsTableRefs = false,
                 purchaseTableRefs = false,
+                stockThresholdsTableRefs = false,
+                stockAlertsTableRefs = false,
               }) {
                 return PrefetchHooks(
                   db: db,
@@ -29550,6 +32933,8 @@ class $$InventoryTableTableTableManager
                     if (inventoryStockAdjustmentsTableRefs)
                       db.inventoryStockAdjustmentsTable,
                     if (purchaseTableRefs) db.purchaseTable,
+                    if (stockThresholdsTableRefs) db.stockThresholdsTable,
+                    if (stockAlertsTableRefs) db.stockAlertsTable,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -29594,6 +32979,46 @@ class $$InventoryTableTableTableManager
                           referencedColumn: 'inventory_id',
                           typedResults: items,
                         ),
+                      if (stockThresholdsTableRefs)
+                        await $_getPrefetchedDataByColumns<
+                          InventoryItem,
+                          $InventoryTableTable,
+                          StockThresholdData,
+                          $StockThresholdsTableTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$InventoryTableTableReferences
+                              ._stockThresholdsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$InventoryTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).stockThresholdsTableRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'inventory_id',
+                          typedResults: items,
+                        ),
+                      if (stockAlertsTableRefs)
+                        await $_getPrefetchedDataByColumns<
+                          InventoryItem,
+                          $InventoryTableTable,
+                          StockAlertData,
+                          $StockAlertsTableTable
+                        >(
+                          currentTable: table,
+                          referencedTable: $$InventoryTableTableReferences
+                              ._stockAlertsTableRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$InventoryTableTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).stockAlertsTableRefs,
+                          currentColumn: 'id',
+                          referencedColumn: 'inventory_id',
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -29617,6 +33042,8 @@ typedef $$InventoryTableTableProcessedTableManager =
       PrefetchHooks Function({
         bool inventoryStockAdjustmentsTableRefs,
         bool purchaseTableRefs,
+        bool stockThresholdsTableRefs,
+        bool stockAlertsTableRefs,
       })
     >;
 typedef $$InventoryStockAdjustmentsTableTableCreateCompanionBuilder =
@@ -44071,6 +47498,2003 @@ typedef $$LoyaltyTransactionsTableTableProcessedTableManager =
       LoyaltyTransactionData,
       PrefetchHooks Function({bool customerId, bool orderId, bool invoiceId})
     >;
+typedef $$CombosTableTableCreateCompanionBuilder =
+    CombosTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required String name,
+      Value<String?> description,
+      Value<double> originalPrice,
+      Value<double> sellingPrice,
+      Value<int?> duration,
+      Value<bool> isActive,
+      Value<int?> sortOrderIndex,
+      Value<String?> creationDate,
+      Value<String?> modificationDate,
+    });
+typedef $$CombosTableTableUpdateCompanionBuilder =
+    CombosTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<String> name,
+      Value<String?> description,
+      Value<double> originalPrice,
+      Value<double> sellingPrice,
+      Value<int?> duration,
+      Value<bool> isActive,
+      Value<int?> sortOrderIndex,
+      Value<String?> creationDate,
+      Value<String?> modificationDate,
+    });
+
+final class $$CombosTableTableReferences
+    extends BaseReferences<_$CoozyDatabase, $CombosTableTable, ComboData> {
+  $$CombosTableTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$ComboItemsTableTable, List<ComboItemData>>
+  _comboItemsTableRefsTable(_$CoozyDatabase db) =>
+      MultiTypedResultKey.fromTable(
+        db.comboItemsTable,
+        aliasName: 'combos__id__combo_items__combo_id',
+      );
+
+  $$ComboItemsTableTableProcessedTableManager get comboItemsTableRefs {
+    final manager = $$ComboItemsTableTableTableManager(
+      $_db,
+      $_db.comboItemsTable,
+    ).filter((f) => f.comboId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _comboItemsTableRefsTable($_db),
+    );
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+}
+
+class $$CombosTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $CombosTableTable> {
+  $$CombosTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get originalPrice => $composableBuilder(
+    column: $table.originalPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get sellingPrice => $composableBuilder(
+    column: $table.sellingPrice,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrderIndex => $composableBuilder(
+    column: $table.sortOrderIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get creationDate => $composableBuilder(
+    column: $table.creationDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modificationDate => $composableBuilder(
+    column: $table.modificationDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  Expression<bool> comboItemsTableRefs(
+    Expression<bool> Function($$ComboItemsTableTableFilterComposer f) f,
+  ) {
+    final $$ComboItemsTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.comboItemsTable,
+      getReferencedColumn: (t) => t.comboId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ComboItemsTableTableFilterComposer(
+            $db: $db,
+            $table: $db.comboItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$CombosTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $CombosTableTable> {
+  $$CombosTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get originalPrice => $composableBuilder(
+    column: $table.originalPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get sellingPrice => $composableBuilder(
+    column: $table.sellingPrice,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get duration => $composableBuilder(
+    column: $table.duration,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrderIndex => $composableBuilder(
+    column: $table.sortOrderIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get creationDate => $composableBuilder(
+    column: $table.creationDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modificationDate => $composableBuilder(
+    column: $table.modificationDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CombosTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $CombosTableTable> {
+  $$CombosTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get originalPrice => $composableBuilder(
+    column: $table.originalPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get sellingPrice => $composableBuilder(
+    column: $table.sellingPrice,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get duration =>
+      $composableBuilder(column: $table.duration, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get sortOrderIndex => $composableBuilder(
+    column: $table.sortOrderIndex,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get creationDate => $composableBuilder(
+    column: $table.creationDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get modificationDate => $composableBuilder(
+    column: $table.modificationDate,
+    builder: (column) => column,
+  );
+
+  Expression<T> comboItemsTableRefs<T extends Object>(
+    Expression<T> Function($$ComboItemsTableTableAnnotationComposer a) f,
+  ) {
+    final $$ComboItemsTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.comboItemsTable,
+      getReferencedColumn: (t) => t.comboId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$ComboItemsTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.comboItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+}
+
+class $$CombosTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $CombosTableTable,
+          ComboData,
+          $$CombosTableTableFilterComposer,
+          $$CombosTableTableOrderingComposer,
+          $$CombosTableTableAnnotationComposer,
+          $$CombosTableTableCreateCompanionBuilder,
+          $$CombosTableTableUpdateCompanionBuilder,
+          (ComboData, $$CombosTableTableReferences),
+          ComboData,
+          PrefetchHooks Function({bool comboItemsTableRefs})
+        > {
+  $$CombosTableTableTableManager(_$CoozyDatabase db, $CombosTableTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CombosTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CombosTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CombosTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<double> originalPrice = const Value.absent(),
+                Value<double> sellingPrice = const Value.absent(),
+                Value<int?> duration = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int?> sortOrderIndex = const Value.absent(),
+                Value<String?> creationDate = const Value.absent(),
+                Value<String?> modificationDate = const Value.absent(),
+              }) => CombosTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                description: description,
+                originalPrice: originalPrice,
+                sellingPrice: sellingPrice,
+                duration: duration,
+                isActive: isActive,
+                sortOrderIndex: sortOrderIndex,
+                creationDate: creationDate,
+                modificationDate: modificationDate,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required String name,
+                Value<String?> description = const Value.absent(),
+                Value<double> originalPrice = const Value.absent(),
+                Value<double> sellingPrice = const Value.absent(),
+                Value<int?> duration = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int?> sortOrderIndex = const Value.absent(),
+                Value<String?> creationDate = const Value.absent(),
+                Value<String?> modificationDate = const Value.absent(),
+              }) => CombosTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                name: name,
+                description: description,
+                originalPrice: originalPrice,
+                sellingPrice: sellingPrice,
+                duration: duration,
+                isActive: isActive,
+                sortOrderIndex: sortOrderIndex,
+                creationDate: creationDate,
+                modificationDate: modificationDate,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$CombosTableTable, ComboData>(table),
+                  $$CombosTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({comboItemsTableRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (comboItemsTableRefs) db.comboItemsTable,
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (comboItemsTableRefs)
+                    await $_getPrefetchedDataByColumns<
+                      ComboData,
+                      $CombosTableTable,
+                      ComboItemData,
+                      $ComboItemsTableTable
+                    >(
+                      currentTable: table,
+                      referencedTable: $$CombosTableTableReferences
+                          ._comboItemsTableRefsTable(db),
+                      managerFromTypedResult: (p0) =>
+                          $$CombosTableTableReferences(
+                            db,
+                            table,
+                            p0,
+                          ).comboItemsTableRefs,
+                      currentColumn: 'id',
+                      referencedColumn: 'combo_id',
+                      typedResults: items,
+                    ),
+                ];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$CombosTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $CombosTableTable,
+      ComboData,
+      $$CombosTableTableFilterComposer,
+      $$CombosTableTableOrderingComposer,
+      $$CombosTableTableAnnotationComposer,
+      $$CombosTableTableCreateCompanionBuilder,
+      $$CombosTableTableUpdateCompanionBuilder,
+      (ComboData, $$CombosTableTableReferences),
+      ComboData,
+      PrefetchHooks Function({bool comboItemsTableRefs})
+    >;
+typedef $$ComboItemsTableTableCreateCompanionBuilder =
+    ComboItemsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required int comboId,
+      required int menuItemId,
+      Value<int?> variationId,
+      Value<int> quantity,
+    });
+typedef $$ComboItemsTableTableUpdateCompanionBuilder =
+    ComboItemsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<int> comboId,
+      Value<int> menuItemId,
+      Value<int?> variationId,
+      Value<int> quantity,
+    });
+
+final class $$ComboItemsTableTableReferences
+    extends
+        BaseReferences<_$CoozyDatabase, $ComboItemsTableTable, ComboItemData> {
+  $$ComboItemsTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $CombosTableTable _comboIdTable(_$CoozyDatabase db) =>
+      db.combosTable.createAlias('combo_items__combo_id__combos__id');
+
+  $$CombosTableTableProcessedTableManager get comboId {
+    final $_column = $_itemColumn<int>('combo_id')!;
+
+    final manager = $$CombosTableTableTableManager(
+      $_db,
+      $_db.combosTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_comboIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $MenuItemsTableTable _menuItemIdTable(_$CoozyDatabase db) => db
+      .menuItemsTable
+      .createAlias('combo_items__menu_item_id__menu_items__id');
+
+  $$MenuItemsTableTableProcessedTableManager get menuItemId {
+    final $_column = $_itemColumn<int>('menu_item_id')!;
+
+    final manager = $$MenuItemsTableTableTableManager(
+      $_db,
+      $_db.menuItemsTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_menuItemIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $MenuItemVariationsTableTable _variationIdTable(_$CoozyDatabase db) =>
+      db.menuItemVariationsTable.createAlias(
+        'combo_items__variation_id__menu_item_variations__id',
+      );
+
+  $$MenuItemVariationsTableTableProcessedTableManager? get variationId {
+    final $_column = $_itemColumn<int>('variation_id');
+    if ($_column == null) return null;
+    final manager = $$MenuItemVariationsTableTableTableManager(
+      $_db,
+      $_db.menuItemVariationsTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_variationIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$ComboItemsTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $ComboItemsTableTable> {
+  $$ComboItemsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$CombosTableTableFilterComposer get comboId {
+    final $$CombosTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.comboId,
+      referencedTable: $db.combosTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CombosTableTableFilterComposer(
+            $db: $db,
+            $table: $db.combosTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemsTableTableFilterComposer get menuItemId {
+    final $$MenuItemsTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItemsTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableTableFilterComposer(
+            $db: $db,
+            $table: $db.menuItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemVariationsTableTableFilterComposer get variationId {
+    final $$MenuItemVariationsTableTableFilterComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.variationId,
+          referencedTable: $db.menuItemVariationsTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MenuItemVariationsTableTableFilterComposer(
+                $db: $db,
+                $table: $db.menuItemVariationsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$ComboItemsTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $ComboItemsTableTable> {
+  $$ComboItemsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$CombosTableTableOrderingComposer get comboId {
+    final $$CombosTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.comboId,
+      referencedTable: $db.combosTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CombosTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.combosTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemsTableTableOrderingComposer get menuItemId {
+    final $$MenuItemsTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItemsTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.menuItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemVariationsTableTableOrderingComposer get variationId {
+    final $$MenuItemVariationsTableTableOrderingComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.variationId,
+          referencedTable: $db.menuItemVariationsTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MenuItemVariationsTableTableOrderingComposer(
+                $db: $db,
+                $table: $db.menuItemVariationsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$ComboItemsTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $ComboItemsTableTable> {
+  $$ComboItemsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<int> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  $$CombosTableTableAnnotationComposer get comboId {
+    final $$CombosTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.comboId,
+      referencedTable: $db.combosTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$CombosTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.combosTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemsTableTableAnnotationComposer get menuItemId {
+    final $$MenuItemsTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.menuItemId,
+      referencedTable: $db.menuItemsTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$MenuItemsTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.menuItemsTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+
+  $$MenuItemVariationsTableTableAnnotationComposer get variationId {
+    final $$MenuItemVariationsTableTableAnnotationComposer composer =
+        $composerBuilder(
+          composer: this,
+          getCurrentColumn: (t) => t.variationId,
+          referencedTable: $db.menuItemVariationsTable,
+          getReferencedColumn: (t) => t.id,
+          builder:
+              (
+                joinBuilder, {
+                $addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer,
+              }) => $$MenuItemVariationsTableTableAnnotationComposer(
+                $db: $db,
+                $table: $db.menuItemVariationsTable,
+                $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                joinBuilder: joinBuilder,
+                $removeJoinBuilderFromRootComposer:
+                    $removeJoinBuilderFromRootComposer,
+              ),
+        );
+    return composer;
+  }
+}
+
+class $$ComboItemsTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $ComboItemsTableTable,
+          ComboItemData,
+          $$ComboItemsTableTableFilterComposer,
+          $$ComboItemsTableTableOrderingComposer,
+          $$ComboItemsTableTableAnnotationComposer,
+          $$ComboItemsTableTableCreateCompanionBuilder,
+          $$ComboItemsTableTableUpdateCompanionBuilder,
+          (ComboItemData, $$ComboItemsTableTableReferences),
+          ComboItemData,
+          PrefetchHooks Function({
+            bool comboId,
+            bool menuItemId,
+            bool variationId,
+          })
+        > {
+  $$ComboItemsTableTableTableManager(
+    _$CoozyDatabase db,
+    $ComboItemsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ComboItemsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ComboItemsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ComboItemsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<int> comboId = const Value.absent(),
+                Value<int> menuItemId = const Value.absent(),
+                Value<int?> variationId = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+              }) => ComboItemsTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                comboId: comboId,
+                menuItemId: menuItemId,
+                variationId: variationId,
+                quantity: quantity,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required int comboId,
+                required int menuItemId,
+                Value<int?> variationId = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+              }) => ComboItemsTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                comboId: comboId,
+                menuItemId: menuItemId,
+                variationId: variationId,
+                quantity: quantity,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ComboItemsTableTable, ComboItemData>(table),
+                  $$ComboItemsTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback:
+              ({comboId = false, menuItemId = false, variationId = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [],
+                  addJoins:
+                      <
+                        T extends TableManagerState<
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic,
+                          dynamic
+                        >
+                      >(state) {
+                        if (comboId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.comboId,
+                            referencedTable: $$ComboItemsTableTableReferences
+                                ._comboIdTable(db),
+                            referencedColumn: $$ComboItemsTableTableReferences
+                                ._comboIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (menuItemId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.menuItemId,
+                            referencedTable: $$ComboItemsTableTableReferences
+                                ._menuItemIdTable(db),
+                            referencedColumn: $$ComboItemsTableTableReferences
+                                ._menuItemIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+                        if (variationId) {
+                          state = state.withJoin(
+                            currentTable: table,
+                            currentColumn: table.variationId,
+                            referencedTable: $$ComboItemsTableTableReferences
+                                ._variationIdTable(db),
+                            referencedColumn: $$ComboItemsTableTableReferences
+                                ._variationIdTable(db)
+                                .id,
+                          ) as T;
+                        }
+
+                        return state;
+                      },
+                  getPrefetchedDataCallback: (items) async {
+                    return [];
+                  },
+                );
+              },
+        ),
+      );
+}
+
+typedef $$ComboItemsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $ComboItemsTableTable,
+      ComboItemData,
+      $$ComboItemsTableTableFilterComposer,
+      $$ComboItemsTableTableOrderingComposer,
+      $$ComboItemsTableTableAnnotationComposer,
+      $$ComboItemsTableTableCreateCompanionBuilder,
+      $$ComboItemsTableTableUpdateCompanionBuilder,
+      (ComboItemData, $$ComboItemsTableTableReferences),
+      ComboItemData,
+      PrefetchHooks Function({bool comboId, bool menuItemId, bool variationId})
+    >;
+typedef $$StockThresholdsTableTableCreateCompanionBuilder =
+    StockThresholdsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required int inventoryId,
+      Value<double> minThreshold,
+      Value<double> reorderQuantity,
+      Value<bool> isAutoReorderEnabled,
+      Value<String?> preferredSupplier,
+      Value<double?> preferredUnitCost,
+      Value<String?> createdDate,
+      Value<String?> modifiedDate,
+    });
+typedef $$StockThresholdsTableTableUpdateCompanionBuilder =
+    StockThresholdsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<int> inventoryId,
+      Value<double> minThreshold,
+      Value<double> reorderQuantity,
+      Value<bool> isAutoReorderEnabled,
+      Value<String?> preferredSupplier,
+      Value<double?> preferredUnitCost,
+      Value<String?> createdDate,
+      Value<String?> modifiedDate,
+    });
+
+final class $$StockThresholdsTableTableReferences
+    extends
+        BaseReferences<
+          _$CoozyDatabase,
+          $StockThresholdsTableTable,
+          StockThresholdData
+        > {
+  $$StockThresholdsTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $InventoryTableTable _inventoryIdTable(_$CoozyDatabase db) => db
+      .inventoryTable
+      .createAlias('stock_thresholds__inventory_id__inventory__id');
+
+  $$InventoryTableTableProcessedTableManager get inventoryId {
+    final $_column = $_itemColumn<int>('inventory_id')!;
+
+    final manager = $$InventoryTableTableTableManager(
+      $_db,
+      $_db.inventoryTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_inventoryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$StockThresholdsTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $StockThresholdsTableTable> {
+  $$StockThresholdsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get minThreshold => $composableBuilder(
+    column: $table.minThreshold,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get reorderQuantity => $composableBuilder(
+    column: $table.reorderQuantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isAutoReorderEnabled => $composableBuilder(
+    column: $table.isAutoReorderEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get preferredSupplier => $composableBuilder(
+    column: $table.preferredSupplier,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get preferredUnitCost => $composableBuilder(
+    column: $table.preferredUnitCost,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get modifiedDate => $composableBuilder(
+    column: $table.modifiedDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$InventoryTableTableFilterComposer get inventoryId {
+    final $$InventoryTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableFilterComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockThresholdsTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $StockThresholdsTableTable> {
+  $$StockThresholdsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get minThreshold => $composableBuilder(
+    column: $table.minThreshold,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get reorderQuantity => $composableBuilder(
+    column: $table.reorderQuantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isAutoReorderEnabled => $composableBuilder(
+    column: $table.isAutoReorderEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get preferredSupplier => $composableBuilder(
+    column: $table.preferredSupplier,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get preferredUnitCost => $composableBuilder(
+    column: $table.preferredUnitCost,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get modifiedDate => $composableBuilder(
+    column: $table.modifiedDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$InventoryTableTableOrderingComposer get inventoryId {
+    final $$InventoryTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockThresholdsTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $StockThresholdsTableTable> {
+  $$StockThresholdsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<double> get minThreshold => $composableBuilder(
+    column: $table.minThreshold,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get reorderQuantity => $composableBuilder(
+    column: $table.reorderQuantity,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isAutoReorderEnabled => $composableBuilder(
+    column: $table.isAutoReorderEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get preferredSupplier => $composableBuilder(
+    column: $table.preferredSupplier,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get preferredUnitCost => $composableBuilder(
+    column: $table.preferredUnitCost,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get modifiedDate => $composableBuilder(
+    column: $table.modifiedDate,
+    builder: (column) => column,
+  );
+
+  $$InventoryTableTableAnnotationComposer get inventoryId {
+    final $$InventoryTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockThresholdsTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $StockThresholdsTableTable,
+          StockThresholdData,
+          $$StockThresholdsTableTableFilterComposer,
+          $$StockThresholdsTableTableOrderingComposer,
+          $$StockThresholdsTableTableAnnotationComposer,
+          $$StockThresholdsTableTableCreateCompanionBuilder,
+          $$StockThresholdsTableTableUpdateCompanionBuilder,
+          (StockThresholdData, $$StockThresholdsTableTableReferences),
+          StockThresholdData,
+          PrefetchHooks Function({bool inventoryId})
+        > {
+  $$StockThresholdsTableTableTableManager(
+    _$CoozyDatabase db,
+    $StockThresholdsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StockThresholdsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StockThresholdsTableTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$StockThresholdsTableTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<int> inventoryId = const Value.absent(),
+                Value<double> minThreshold = const Value.absent(),
+                Value<double> reorderQuantity = const Value.absent(),
+                Value<bool> isAutoReorderEnabled = const Value.absent(),
+                Value<String?> preferredSupplier = const Value.absent(),
+                Value<double?> preferredUnitCost = const Value.absent(),
+                Value<String?> createdDate = const Value.absent(),
+                Value<String?> modifiedDate = const Value.absent(),
+              }) => StockThresholdsTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                inventoryId: inventoryId,
+                minThreshold: minThreshold,
+                reorderQuantity: reorderQuantity,
+                isAutoReorderEnabled: isAutoReorderEnabled,
+                preferredSupplier: preferredSupplier,
+                preferredUnitCost: preferredUnitCost,
+                createdDate: createdDate,
+                modifiedDate: modifiedDate,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required int inventoryId,
+                Value<double> minThreshold = const Value.absent(),
+                Value<double> reorderQuantity = const Value.absent(),
+                Value<bool> isAutoReorderEnabled = const Value.absent(),
+                Value<String?> preferredSupplier = const Value.absent(),
+                Value<double?> preferredUnitCost = const Value.absent(),
+                Value<String?> createdDate = const Value.absent(),
+                Value<String?> modifiedDate = const Value.absent(),
+              }) => StockThresholdsTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                inventoryId: inventoryId,
+                minThreshold: minThreshold,
+                reorderQuantity: reorderQuantity,
+                isAutoReorderEnabled: isAutoReorderEnabled,
+                preferredSupplier: preferredSupplier,
+                preferredUnitCost: preferredUnitCost,
+                createdDate: createdDate,
+                modifiedDate: modifiedDate,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$StockThresholdsTableTable, StockThresholdData>(
+                    table,
+                  ),
+                  $$StockThresholdsTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({inventoryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (inventoryId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.inventoryId,
+                        referencedTable: $$StockThresholdsTableTableReferences
+                            ._inventoryIdTable(db),
+                        referencedColumn: $$StockThresholdsTableTableReferences
+                            ._inventoryIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$StockThresholdsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $StockThresholdsTableTable,
+      StockThresholdData,
+      $$StockThresholdsTableTableFilterComposer,
+      $$StockThresholdsTableTableOrderingComposer,
+      $$StockThresholdsTableTableAnnotationComposer,
+      $$StockThresholdsTableTableCreateCompanionBuilder,
+      $$StockThresholdsTableTableUpdateCompanionBuilder,
+      (StockThresholdData, $$StockThresholdsTableTableReferences),
+      StockThresholdData,
+      PrefetchHooks Function({bool inventoryId})
+    >;
+typedef $$StockAlertsTableTableCreateCompanionBuilder =
+    StockAlertsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      required int inventoryId,
+      required String inventoryName,
+      required double currentStock,
+      required double minThreshold,
+      Value<String?> purchaseUnit,
+      Value<String> severity,
+      Value<String> status,
+      Value<String?> createdDate,
+      Value<String?> resolvedDate,
+      Value<String?> remarks,
+    });
+typedef $$StockAlertsTableTableUpdateCompanionBuilder =
+    StockAlertsTableCompanion Function({
+      Value<int?> createdBy,
+      Value<int?> updatedBy,
+      Value<int> id,
+      Value<String> hashId,
+      Value<int> inventoryId,
+      Value<String> inventoryName,
+      Value<double> currentStock,
+      Value<double> minThreshold,
+      Value<String?> purchaseUnit,
+      Value<String> severity,
+      Value<String> status,
+      Value<String?> createdDate,
+      Value<String?> resolvedDate,
+      Value<String?> remarks,
+    });
+
+final class $$StockAlertsTableTableReferences
+    extends
+        BaseReferences<
+          _$CoozyDatabase,
+          $StockAlertsTableTable,
+          StockAlertData
+        > {
+  $$StockAlertsTableTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $InventoryTableTable _inventoryIdTable(_$CoozyDatabase db) => db
+      .inventoryTable
+      .createAlias('stock_alerts__inventory_id__inventory__id');
+
+  $$InventoryTableTableProcessedTableManager get inventoryId {
+    final $_column = $_itemColumn<int>('inventory_id')!;
+
+    final manager = $$InventoryTableTableTableManager(
+      $_db,
+      $_db.inventoryTable,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_inventoryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$StockAlertsTableTableFilterComposer
+    extends Composer<_$CoozyDatabase, $StockAlertsTableTable> {
+  $$StockAlertsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get inventoryName => $composableBuilder(
+    column: $table.inventoryName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get currentStock => $composableBuilder(
+    column: $table.currentStock,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get minThreshold => $composableBuilder(
+    column: $table.minThreshold,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get purchaseUnit => $composableBuilder(
+    column: $table.purchaseUnit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get severity => $composableBuilder(
+    column: $table.severity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get resolvedDate => $composableBuilder(
+    column: $table.resolvedDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remarks => $composableBuilder(
+    column: $table.remarks,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$InventoryTableTableFilterComposer get inventoryId {
+    final $$InventoryTableTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableFilterComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockAlertsTableTableOrderingComposer
+    extends Composer<_$CoozyDatabase, $StockAlertsTableTable> {
+  $$StockAlertsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedBy => $composableBuilder(
+    column: $table.updatedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get hashId => $composableBuilder(
+    column: $table.hashId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get inventoryName => $composableBuilder(
+    column: $table.inventoryName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get currentStock => $composableBuilder(
+    column: $table.currentStock,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get minThreshold => $composableBuilder(
+    column: $table.minThreshold,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get purchaseUnit => $composableBuilder(
+    column: $table.purchaseUnit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get severity => $composableBuilder(
+    column: $table.severity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get resolvedDate => $composableBuilder(
+    column: $table.resolvedDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remarks => $composableBuilder(
+    column: $table.remarks,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$InventoryTableTableOrderingComposer get inventoryId {
+    final $$InventoryTableTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableOrderingComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockAlertsTableTableAnnotationComposer
+    extends Composer<_$CoozyDatabase, $StockAlertsTableTable> {
+  $$StockAlertsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedBy =>
+      $composableBuilder(column: $table.updatedBy, builder: (column) => column);
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get hashId =>
+      $composableBuilder(column: $table.hashId, builder: (column) => column);
+
+  GeneratedColumn<String> get inventoryName => $composableBuilder(
+    column: $table.inventoryName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get currentStock => $composableBuilder(
+    column: $table.currentStock,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get minThreshold => $composableBuilder(
+    column: $table.minThreshold,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get purchaseUnit => $composableBuilder(
+    column: $table.purchaseUnit,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get severity =>
+      $composableBuilder(column: $table.severity, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get createdDate => $composableBuilder(
+    column: $table.createdDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get resolvedDate => $composableBuilder(
+    column: $table.resolvedDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get remarks =>
+      $composableBuilder(column: $table.remarks, builder: (column) => column);
+
+  $$InventoryTableTableAnnotationComposer get inventoryId {
+    final $$InventoryTableTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.inventoryId,
+      referencedTable: $db.inventoryTable,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InventoryTableTableAnnotationComposer(
+            $db: $db,
+            $table: $db.inventoryTable,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$StockAlertsTableTableTableManager
+    extends
+        RootTableManager<
+          _$CoozyDatabase,
+          $StockAlertsTableTable,
+          StockAlertData,
+          $$StockAlertsTableTableFilterComposer,
+          $$StockAlertsTableTableOrderingComposer,
+          $$StockAlertsTableTableAnnotationComposer,
+          $$StockAlertsTableTableCreateCompanionBuilder,
+          $$StockAlertsTableTableUpdateCompanionBuilder,
+          (StockAlertData, $$StockAlertsTableTableReferences),
+          StockAlertData,
+          PrefetchHooks Function({bool inventoryId})
+        > {
+  $$StockAlertsTableTableTableManager(
+    _$CoozyDatabase db,
+    $StockAlertsTableTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$StockAlertsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$StockAlertsTableTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$StockAlertsTableTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                Value<int> inventoryId = const Value.absent(),
+                Value<String> inventoryName = const Value.absent(),
+                Value<double> currentStock = const Value.absent(),
+                Value<double> minThreshold = const Value.absent(),
+                Value<String?> purchaseUnit = const Value.absent(),
+                Value<String> severity = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> createdDate = const Value.absent(),
+                Value<String?> resolvedDate = const Value.absent(),
+                Value<String?> remarks = const Value.absent(),
+              }) => StockAlertsTableCompanion(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                inventoryId: inventoryId,
+                inventoryName: inventoryName,
+                currentStock: currentStock,
+                minThreshold: minThreshold,
+                purchaseUnit: purchaseUnit,
+                severity: severity,
+                status: status,
+                createdDate: createdDate,
+                resolvedDate: resolvedDate,
+                remarks: remarks,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int?> createdBy = const Value.absent(),
+                Value<int?> updatedBy = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> hashId = const Value.absent(),
+                required int inventoryId,
+                required String inventoryName,
+                required double currentStock,
+                required double minThreshold,
+                Value<String?> purchaseUnit = const Value.absent(),
+                Value<String> severity = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> createdDate = const Value.absent(),
+                Value<String?> resolvedDate = const Value.absent(),
+                Value<String?> remarks = const Value.absent(),
+              }) => StockAlertsTableCompanion.insert(
+                createdBy: createdBy,
+                updatedBy: updatedBy,
+                id: id,
+                hashId: hashId,
+                inventoryId: inventoryId,
+                inventoryName: inventoryName,
+                currentStock: currentStock,
+                minThreshold: minThreshold,
+                purchaseUnit: purchaseUnit,
+                severity: severity,
+                status: status,
+                createdDate: createdDate,
+                resolvedDate: resolvedDate,
+                remarks: remarks,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$StockAlertsTableTable, StockAlertData>(table),
+                  $$StockAlertsTableTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({inventoryId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (inventoryId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.inventoryId,
+                        referencedTable: $$StockAlertsTableTableReferences
+                            ._inventoryIdTable(db),
+                        referencedColumn: $$StockAlertsTableTableReferences
+                            ._inventoryIdTable(db)
+                            .id,
+                      ) as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$StockAlertsTableTableProcessedTableManager =
+    ProcessedTableManager<
+      _$CoozyDatabase,
+      $StockAlertsTableTable,
+      StockAlertData,
+      $$StockAlertsTableTableFilterComposer,
+      $$StockAlertsTableTableOrderingComposer,
+      $$StockAlertsTableTableAnnotationComposer,
+      $$StockAlertsTableTableCreateCompanionBuilder,
+      $$StockAlertsTableTableUpdateCompanionBuilder,
+      (StockAlertData, $$StockAlertsTableTableReferences),
+      StockAlertData,
+      PrefetchHooks Function({bool inventoryId})
+    >;
 
 class $CoozyDatabaseManager {
   final _$CoozyDatabase _db;
@@ -44158,4 +49582,12 @@ class $CoozyDatabaseManager {
         _db,
         _db.loyaltyTransactionsTable,
       );
+  $$CombosTableTableTableManager get combosTable =>
+      $$CombosTableTableTableManager(_db, _db.combosTable);
+  $$ComboItemsTableTableTableManager get comboItemsTable =>
+      $$ComboItemsTableTableTableManager(_db, _db.comboItemsTable);
+  $$StockThresholdsTableTableTableManager get stockThresholdsTable =>
+      $$StockThresholdsTableTableTableManager(_db, _db.stockThresholdsTable);
+  $$StockAlertsTableTableTableManager get stockAlertsTable =>
+      $$StockAlertsTableTableTableManager(_db, _db.stockAlertsTable);
 }

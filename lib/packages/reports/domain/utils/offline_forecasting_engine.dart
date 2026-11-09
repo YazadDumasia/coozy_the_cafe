@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import '../entities/demand_insights.dart';
 
 /// Pure offline forecasting analytics using Double Exponential Smoothing (Holt's Linear Trend)
@@ -34,16 +35,18 @@ class OfflineForecastingEngine {
       ..sort((a, b) => (a['date'] as String).compareTo(b['date'] as String));
 
     final series = sorted.map((e) => (e['sales'] as num).toDouble()).toList();
-    final orderSeries =
-        sorted.map((e) => (e['orders'] as num).toDouble()).toList();
+    final orderSeries = sorted
+        .map((e) => (e['orders'] as num).toDouble())
+        .toList();
 
     // Holt's linear trend initial values
     double level = series.first;
     double trend = series.length > 1 ? series[1] - series[0] : 0.0;
 
     double orderLevel = orderSeries.first;
-    double orderTrend =
-        orderSeries.length > 1 ? orderSeries[1] - orderSeries[0] : 0.0;
+    double orderTrend = orderSeries.length > 1
+        ? orderSeries[1] - orderSeries[0]
+        : 0.0;
 
     // Standard deviation for confidence interval
     double varianceSum = 0.0;
@@ -58,14 +61,16 @@ class OfflineForecastingEngine {
       final prevOrderLevel = orderLevel;
       orderLevel =
           alpha * orderVal + (1 - alpha) * (prevOrderLevel + orderTrend);
-      orderTrend = beta * (orderLevel - prevOrderLevel) + (1 - beta) * orderTrend;
+      orderTrend =
+          beta * (orderLevel - prevOrderLevel) + (1 - beta) * orderTrend;
 
       final diff = val - (prevLevel + trend);
       varianceSum += diff * diff;
     }
 
-    final stdDev =
-        series.length > 1 ? math.sqrt(varianceSum / (series.length - 1)) : 0.0;
+    final stdDev = series.length > 1
+        ? math.sqrt(varianceSum / (series.length - 1))
+        : 0.0;
 
     // Generate forecast points
     final lastDateStr = sorted.last['date'] as String;
@@ -78,7 +83,10 @@ class OfflineForecastingEngine {
           '${futureDate.year}-${futureDate.month.toString().padLeft(2, '0')}-${futureDate.day.toString().padLeft(2, '0')}';
 
       final projectedSales = math.max(0.0, level + m * trend);
-      final projectedOrders = math.max(0, (orderLevel + m * orderTrend).round());
+      final projectedOrders = math.max(
+        0,
+        (orderLevel + m * orderTrend).round(),
+      );
 
       // Margin of error expands into the future (confidence interval 80%)
       final errorMargin = 1.28 * stdDev * math.sqrt(m.toDouble());
@@ -162,8 +170,9 @@ class OfflineForecastingEngine {
       final totalConsumed = consumptionMap[id] ?? 0.0;
       final dailyRate = totalConsumed / math.max(1, daysAnalyzed);
 
-      final daysRemaining =
-          dailyRate > 0 ? stock / dailyRate : (stock > 0 ? 999.0 : 0.0);
+      final daysRemaining = dailyRate > 0
+          ? stock / dailyRate
+          : (stock > 0 ? 999.0 : 0.0);
 
       results.add(
         StockDepletionForecast(

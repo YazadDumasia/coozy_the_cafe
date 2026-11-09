@@ -205,9 +205,9 @@ class WaiterOrderPlacementLocalDataSourceImpl
 
       // Broadcast order to local Wi-Fi peer tablets (POS Hub or KDS)
       try {
-        final orderRecord = await (db.select(db.ordersTable)
-              ..where((t) => t.id.equals(targetOrderId)))
-            .getSingleOrNull();
+        final orderRecord = await (db.select(
+          db.ordersTable,
+        )..where((t) => t.id.equals(targetOrderId))).getSingleOrNull();
 
         if (orderRecord != null) {
           final itemsList = cartItems

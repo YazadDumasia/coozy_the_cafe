@@ -56,14 +56,8 @@ class _SplashScreenMobileLayoutState extends State<SplashScreenMobileLayout>
       secondaryBegin: Alignment.bottomLeft,
       secondaryEnd: Alignment.topRight,
       duration: const Duration(seconds: 4),
-      primaryColors: const <Color>[
-        Color(0xff1c110c),
-        Color(0xff291811),
-      ],
-      secondaryColors: const <Color>[
-        Color(0xff24140d),
-        Color(0xff120a06),
-      ],
+      primaryColors: const <Color>[Color(0xff1c110c), Color(0xff291811)],
+      secondaryColors: const <Color>[Color(0xff24140d), Color(0xff120a06)],
       child: SizedBox(
         key: UniqueKey(),
         width: size!.width,
@@ -108,8 +102,8 @@ class _SplashScreenMobileLayoutState extends State<SplashScreenMobileLayout>
                         margin: const EdgeInsets.symmetric(horizontal: 30),
                         padding: const EdgeInsets.all(20.0),
                         decoration: BoxDecoration(
-                          color:
-                              const Color(0xff241712).withValues(alpha: 0.85),
+                          color: const Color(0xff241712)
+                              .withValues(alpha: 0.85),
                           borderRadius: BorderRadius.circular(28),
                           border: Border.all(
                             color: const Color(0xffffb49a)

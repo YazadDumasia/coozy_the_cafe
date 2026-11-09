@@ -110,11 +110,7 @@ class UpdateCustomerTierUseCase {
   final CustomerRepository repository;
   UpdateCustomerTierUseCase(this.repository);
 
-  Future<void> call({
-    required int customerId,
-    required String tier,
-  }) async {
+  Future<void> call({required int customerId, required String tier}) async {
     await repository.updateCustomerTier(customerId: customerId, tier: tier);
   }
 }
-

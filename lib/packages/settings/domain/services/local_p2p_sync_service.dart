@@ -51,8 +51,9 @@ class LocalP2pSyncService {
       ValueNotifier<SyncConnectionStatus>(SyncConnectionStatus.idle);
   final ValueNotifier<int> clientCountNotifier = ValueNotifier<int>(0);
   final ValueNotifier<String> localIpNotifier = ValueNotifier<String>('');
-  final ValueNotifier<String?> lastSyncMessageNotifier =
-      ValueNotifier<String?>(null);
+  final ValueNotifier<String?> lastSyncMessageNotifier = ValueNotifier<String?>(
+    null,
+  );
   final ValueNotifier<int> pendingOutboxCountNotifier = ValueNotifier<int>(0);
 
   P2pSyncConfig _currentConfig = const P2pSyncConfig();
@@ -291,7 +292,12 @@ class LocalP2pSyncService {
 
       if (type == 'PING') {
         try {
-          sender.add(jsonEncode({'type': 'PONG', 'timestamp': DateTime.now().millisecondsSinceEpoch}));
+          sender.add(
+            jsonEncode({
+              'type': 'PONG',
+              'timestamp': DateTime.now().millisecondsSinceEpoch,
+            }),
+          );
         } catch (_) {}
         return;
       }
@@ -404,9 +410,8 @@ class LocalP2pSyncService {
     try {
       statusNotifier.value = SyncConnectionStatus.connecting;
       final uri = Uri.parse('ws://$hubIp:$hubPort');
-      _clientSocket = await WebSocket.connect(uri.toString()).timeout(
-        const Duration(seconds: 5),
-      );
+      _clientSocket = await WebSocket.connect(uri.toString())
+          .timeout(const Duration(seconds: 5));
 
       statusNotifier.value = SyncConnectionStatus.connected;
       lastSyncMessageNotifier.value = 'Connected to POS Hub ($hubIp:$hubPort)';
@@ -416,7 +421,12 @@ class LocalP2pSyncService {
       _heartbeatTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
         if (_clientSocket != null) {
           try {
-            _clientSocket!.add(jsonEncode({'type': 'PING', 'timestamp': DateTime.now().millisecondsSinceEpoch}));
+            _clientSocket!.add(
+              jsonEncode({
+                'type': 'PING',
+                'timestamp': DateTime.now().millisecondsSinceEpoch,
+              }),
+            );
           } catch (_) {
             _handleClientDisconnect();
           }
@@ -445,8 +455,9 @@ class LocalP2pSyncService {
   void _handleClientDisconnect({bool isError = false}) {
     _heartbeatTimer?.cancel();
     _heartbeatTimer = null;
-    statusNotifier.value =
-        isError ? SyncConnectionStatus.error : SyncConnectionStatus.disconnected;
+    statusNotifier.value = isError
+        ? SyncConnectionStatus.error
+        : SyncConnectionStatus.disconnected;
     _scheduleReconnect();
   }
 
@@ -622,7 +633,9 @@ class LocalP2pSyncService {
             tableInfoId: drift.Value(orderMap['tableInfoId'] as int?),
             tableNameText: drift.Value(orderMap['tableNameText'] as String?),
             status: drift.Value(orderMap['status'] as String? ?? 'newOrder'),
-            orderType: drift.Value(orderMap['orderType'] as String? ?? 'Dine-In'),
+            orderType: drift.Value(
+              orderMap['orderType'] as String? ?? 'Dine-In',
+            ),
             customerName: drift.Value(orderMap['customerName'] as String?),
             phoneNumber: drift.Value(orderMap['phoneNumber'] as String?),
             subtotalAmount: drift.Value(
@@ -644,11 +657,11 @@ class LocalP2pSyncService {
           final itemId = item['itemId'] as int?;
           if (itemId == null) continue;
 
-          final existingItem = await (_database!.select(
-            _database!.orderItemsTable,
-          )..where(
-            (t) => t.orderId.equals(orderId) & t.itemId.equals(itemId),
-          )).getSingleOrNull();
+          final existingItem =
+              await (_database!.select(_database!.orderItemsTable)..where(
+                    (t) => t.orderId.equals(orderId) & t.itemId.equals(itemId),
+                  ))
+                  .getSingleOrNull();
 
           if (existingItem != null) {
             await (_database!.update(
@@ -661,25 +674,28 @@ class LocalP2pSyncService {
               ),
             );
           } else {
-            await _database!.into(_database!.orderItemsTable).insert(
-              OrderItemsTableCompanion(
-                orderId: drift.Value(orderId),
-                itemId: drift.Value(itemId),
-                quantity: drift.Value(item['quantity'] as int? ?? 1),
-                sellingPrice: drift.Value(
-                  (item['sellingPrice'] as num?)?.toDouble() ?? 0.0,
-                ),
-                status: drift.Value(item['status'] as String? ?? 'pending'),
-                remarks: drift.Value(item['remarks'] as String?),
-                creationDate: drift.Value(nowUtc),
-                placedAt: drift.Value(nowUtc),
-              ),
-            );
+            await _database!
+                .into(_database!.orderItemsTable)
+                .insert(
+                  OrderItemsTableCompanion(
+                    orderId: drift.Value(orderId),
+                    itemId: drift.Value(itemId),
+                    quantity: drift.Value(item['quantity'] as int? ?? 1),
+                    sellingPrice: drift.Value(
+                      (item['sellingPrice'] as num?)?.toDouble() ?? 0.0,
+                    ),
+                    status: drift.Value(item['status'] as String? ?? 'pending'),
+                    remarks: drift.Value(item['remarks'] as String?),
+                    creationDate: drift.Value(nowUtc),
+                    placedAt: drift.Value(nowUtc),
+                  ),
+                );
           }
         }
       });
 
-      lastSyncMessageNotifier.value = 'Order synced: Table ${orderMap['tableNameText']}';
+      lastSyncMessageNotifier.value =
+          'Order synced: Table ${orderMap['tableNameText']}';
     } catch (e) {
       core.PlatformUtils.debugLog(
         LocalP2pSyncService,

@@ -203,16 +203,16 @@ class InvoicePdfGenerator {
     // 2. Cafe Title & Header
     final resolvedCafeName =
         (params.cafeName != null && params.cafeName!.trim().isNotEmpty)
-            ? params.cafeName!.trim().toUpperCase()
-            : 'COOZY THE CAFE';
+        ? params.cafeName!.trim().toUpperCase()
+        : 'COOZY THE CAFE';
     final resolvedAddress =
         (params.cafeAddress != null && params.cafeAddress!.trim().isNotEmpty)
-            ? params.cafeAddress!.trim()
-            : 'Shop 24, Marvella business hub, pal adajan';
+        ? params.cafeAddress!.trim()
+        : 'Shop 24, Marvella business hub, pal adajan';
     final resolvedPhone =
         (params.cafePhone != null && params.cafePhone!.trim().isNotEmpty)
-            ? params.cafePhone!.trim()
-            : '+919725002491';
+        ? params.cafePhone!.trim()
+        : '+919725002491';
 
     graphics.drawString(
       resolvedCafeName,
@@ -493,7 +493,8 @@ class InvoicePdfGenerator {
 
     // 8. Footer Message
     currentY += 8;
-    final resolvedFooter = (params.footerMessage != null &&
+    final resolvedFooter =
+        (params.footerMessage != null &&
             params.footerMessage!.trim().isNotEmpty)
         ? params.footerMessage!.trim()
         : 'Thank you for visiting Coozy The Cafe!';

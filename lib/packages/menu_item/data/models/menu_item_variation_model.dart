@@ -16,6 +16,7 @@ class MenuItemVariationModel extends MenuItemVariation {
     super.costPrice,
     super.sellingPrice,
     super.stockQuantity,
+    super.duration,
     super.sortOrderIndex,
     super.creationDate,
     super.modificationDate,
@@ -33,6 +34,7 @@ class MenuItemVariationModel extends MenuItemVariation {
       costPrice: entity.costPrice,
       sellingPrice: entity.sellingPrice,
       stockQuantity: entity.stockQuantity,
+      duration: entity.duration,
       sortOrderIndex: entity.sortOrderIndex,
       creationDate: entity.creationDate,
       modificationDate: entity.modificationDate,
@@ -51,6 +53,7 @@ class MenuItemVariationModel extends MenuItemVariation {
       costPrice: data.costPrice,
       sellingPrice: data.sellingPrice,
       stockQuantity: data.stockQuantity,
+      duration: data.duration,
       sortOrderIndex: data.sortOrderIndex,
       creationDate: data.creationDate,
       modificationDate: data.modificationDate,
@@ -79,6 +82,7 @@ class MenuItemVariationModel extends MenuItemVariation {
       stockQuantity: stockQuantity == null
           ? const Value.absent()
           : Value(stockQuantity!),
+      duration: duration == null ? const Value.absent() : Value(duration),
       sortOrderIndex: sortOrderIndex == null
           ? const Value.absent()
           : Value(sortOrderIndex!),

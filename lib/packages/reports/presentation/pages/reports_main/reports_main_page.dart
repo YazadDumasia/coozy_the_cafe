@@ -169,8 +169,7 @@ class ReportsMainPage extends StatelessWidget {
       ReportCategory(
         id: 'ai_demand_insights',
         title: 'Insights & Demand Forecasting',
-        subtitle:
-            'Predict rush hours, 7-day sales trends, stockouts & BCG menu matrix',
+        subtitle: 'Predict rush hours, 7-day sales trends, stockouts & BCG menu matrix',
         type: ReportType.aiDemandInsights,
         icon: Icons.insights_rounded,
       ),

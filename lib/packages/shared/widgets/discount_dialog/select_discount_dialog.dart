@@ -58,7 +58,7 @@ class SelectDiscountDialog extends StatelessWidget {
     try {
       final db = sl<CoozyDatabase>();
       final rows = await db.select(db.discountsTable).get();
-      return rows
+      final discounts = rows
           .map(
             (r) => Discount(
               id: r.id.toString(),
@@ -69,6 +69,30 @@ class SelectDiscountDialog extends StatelessWidget {
             ),
           )
           .toList();
+
+      // Query active promotions and combos with discounts
+      try {
+        final activeCombos = await db.combosDao.getCombos(onlyActive: true);
+        for (final comboWithItems in activeCombos) {
+          final c = comboWithItems.combo;
+          final orig = c.originalPrice;
+          final sell = c.sellingPrice;
+          if (orig > sell && orig > 0) {
+            final discountValue = orig - sell;
+            discounts.add(
+              Discount(
+                id: 'combo_${c.id}',
+                name: 'Promo: ${c.name}',
+                value: discountValue,
+                isPercentage: false,
+                isDefaultAdd: false,
+              ),
+            );
+          }
+        }
+      } catch (_) {}
+
+      return discounts;
     } catch (_) {
       return [];
     }

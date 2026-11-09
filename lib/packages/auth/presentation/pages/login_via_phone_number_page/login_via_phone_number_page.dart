@@ -132,7 +132,9 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
           return const LoadingPage();
         } else if (state is LoginWithPhoneLoadedState) {
           final gradientColors = AnimateGradientColors.of(context);
-          final particleColors = AnimateGradientColors.getCafeParticlePalette(context);
+          final particleColors = AnimateGradientColors.getCafeParticlePalette(
+            context,
+          );
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final screenSize = MediaQuery.sizeOf(context);
 
@@ -158,8 +160,11 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                       numberOfParticles: 90,
                       speedOfParticles: 1.2,
                       maxParticleSize: 7,
-                      particleColor: (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
-                          .withValues(alpha: 0.4),
+                      particleColor:
+                          (isDark
+                                  ? const Color(0xffffb59c)
+                                  : const Color(0xff8c5338))
+                              .withValues(alpha: 0.4),
                       isRandSize: true,
                       isRandomColor: true,
                       randColorList: particleColors,
@@ -174,269 +179,6 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                     Center(
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
-                        child: Stack(
-                          children: <Widget>[
-                        PositionedDirectional(
-                          start: 20,
-                          top: 0,
-                          end: 20,
-                          child: CircleAvatar(
-                            radius: 55.0,
-                            backgroundColor: Theme.of(context)
-                                .colorScheme
-                                .secondaryContainer,
-                          ),
-                        ),
-                        PositionedDirectional(
-                          start: 0,
-                          top: 310 + 30,
-                          end: 0,
-                          child: CircleAvatar(
-                            radius: 33.0,
-                            backgroundColor: Theme.of(context)
-                                .colorScheme
-                                .secondaryContainer,
-                          ),
-                        ),
-                        Card(
-                          margin: const EdgeInsets.only(top: 60.0, bottom: 45),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: const BorderRadius.only(
-                              bottomRight: Radius.circular(10),
-                              topRight: Radius.circular(10),
-                              bottomLeft: Radius.circular(10),
-                              topLeft: Radius.circular(10),
-                            ),
-                            side: BorderSide(
-                              width: 5,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .secondaryContainer,
-                            ),
-                          ),
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            margin: const EdgeInsets.all(5),
-                            padding: const EdgeInsets.only(top: 45, bottom: 10),
-                            height: 310,
-                            child: Form(
-                              key: _formKey,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Text(
-                                          textAlign: TextAlign.center,
-                                          context.tr(
-                                                LocaleKeys
-                                                    .loginViaPhoneNumberPageOtpVerificationTitle,
-                                                track: TrackConstants
-                                                    .loginViaPhoneNumberPageTrack,
-                                              ) ??
-                                              'OTP Verification',
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headlineSmall!,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                            10,
-                                            10,
-                                            10,
-                                            0,
-                                          ),
-                                          child: Text(
-                                            textAlign: TextAlign.start,
-                                            context.tr(
-                                                  LocaleKeys
-                                                      .loginViaPhoneNumberPageOtpVerificationSubtitle,
-                                                  track: TrackConstants
-                                                      .loginViaPhoneNumberPageTrack,
-                                                ) ??
-                                                'We will send you a One Time Password on your phone number.',
-                                            softWrap: true,
-                                            maxLines: 5,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleSmall,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  phoneNumberWidget(),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        PositionedDirectional(
-                          top: 5.0,
-                          start: 5.0,
-                          end: 5.0,
-                          child: Center(
-                            child: CircleAvatar(
-                              backgroundColor: Colors.grey.shade300,
-                              radius: 50.0,
-                              child: Icon(
-                                CustomIcon.password,
-                                size: 65,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                            ),
-                          ),
-                        ),
-                        PositionedDirectional(
-                          top: 310 + 30,
-                          start: 5.0,
-                          end: 5.0,
-                          child: Center(
-                            child: CircleAvatar(
-                              backgroundColor: Colors.grey.shade300,
-                              radius: 30.0,
-                              child: StreamBuilder(
-                                stream:
-                                    _loginWithPhoneCubit?.buttonLoadingStream,
-                                builder: (context, snapshot) {
-                                  return ProgressButton(
-                                    onPressed: (controller) async {
-                                      this.controller = controller;
-                                      submitData();
-                                    },
-                                    borderRadius: const BorderRadius.all(
-                                      Radius.circular(30),
-                                    ),
-                                    strokeWidth: 4,
-                                    color: Colors.grey.shade300,
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.navigate_next_rounded,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        size: 40,
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-        } else if (state is LoginWithPhoneNoInternetState) {
-          return NoInternetPage(
-            onPressedRetryButton: () async {
-              _loginWithPhoneCubit?.fetchInitialInfo();
-            },
-          );
-        } else if (state is LoginWithPhoneErrorState) {
-          return Container();
-        } else {
-          return Container();
-        }
-      },
-    );
-  }
-
-  Widget tabletWidget() {
-    return BlocConsumer<LoginWithPhoneCubit, LoginWithPhoneState>(
-      listener: (context, state) {},
-      builder: (context, state) {
-        if (state is LoginWithPhoneLoadingState ||
-            state is LoginWithPhoneInitial) {
-          return const LoadingPage();
-        } else if (state is LoginWithPhoneLoadedState) {
-          final gradientColors = AnimateGradientColors.of(context);
-          final particleColors = AnimateGradientColors.getCafeParticlePalette(context);
-          final isDark = Theme.of(context).brightness == Brightness.dark;
-          final screenSize = MediaQuery.sizeOf(context);
-
-          return AnimateGradient(
-            primaryBegin: Alignment.topLeft,
-            primaryEnd: Alignment.bottomRight,
-            secondaryBegin: Alignment.bottomLeft,
-            secondaryEnd: Alignment.topRight,
-            duration: const Duration(seconds: 4),
-            primaryColors: gradientColors.primaryColors,
-            secondaryColors: gradientColors.secondaryColors,
-            child: SizedBox(
-              key: UniqueKey(),
-              width: screenSize.width,
-              height: screenSize.height,
-              child: Stack(
-                children: [
-                  CircularParticle(
-                    width: screenSize.width,
-                    height: screenSize.height,
-                    awayRadius: 60,
-                    numberOfParticles: 90,
-                    speedOfParticles: 1.2,
-                    maxParticleSize: 7,
-                    particleColor: (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
-                        .withValues(alpha: 0.4),
-                    isRandSize: true,
-                    isRandomColor: true,
-                    randColorList: particleColors,
-                    awayAnimationDuration: const Duration(milliseconds: 600),
-                    awayAnimationCurve: Curves.easeInOutBack,
-                    enableHover: true,
-                    hoverColor: const Color(0xffff8a5c),
-                    hoverRadius: 80,
-                    onTapAnimation: true,
-                    connectDots: false,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Expanded(
-                    child: SignUpCarouselWidget(
-                      size: Size(
-                        MediaQuery.of(context).size.width / 2,
-                        MediaQuery.of(context).size.height,
-                      ),
-                      images: images,
-                      appLogoLight: appLogoLight,
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 5.0,
-                        top: 5,
-                        bottom: 5,
-                        right: 5.0,
-                      ),
-                      child: Center(
                         child: Stack(
                           children: <Widget>[
                             PositionedDirectional(
@@ -558,7 +300,289 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                         ],
                                       ),
                                       phoneNumberWidget(),
-                                      /*     Row(
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            PositionedDirectional(
+                              top: 5.0,
+                              start: 5.0,
+                              end: 5.0,
+                              child: Center(
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey.shade300,
+                                  radius: 50.0,
+                                  child: Icon(
+                                    CustomIcon.password,
+                                    size: 65,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            PositionedDirectional(
+                              top: 310 + 30,
+                              start: 5.0,
+                              end: 5.0,
+                              child: Center(
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey.shade300,
+                                  radius: 30.0,
+                                  child: StreamBuilder(
+                                    stream: _loginWithPhoneCubit
+                                        ?.buttonLoadingStream,
+                                    builder: (context, snapshot) {
+                                      return ProgressButton(
+                                        onPressed: (controller) async {
+                                          this.controller = controller;
+                                          submitData();
+                                        },
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(30),
+                                        ),
+                                        strokeWidth: 4,
+                                        color: Colors.grey.shade300,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.navigate_next_rounded,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                            size: 40,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else if (state is LoginWithPhoneNoInternetState) {
+          return NoInternetPage(
+            onPressedRetryButton: () async {
+              _loginWithPhoneCubit?.fetchInitialInfo();
+            },
+          );
+        } else if (state is LoginWithPhoneErrorState) {
+          return Container();
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+
+  Widget tabletWidget() {
+    return BlocConsumer<LoginWithPhoneCubit, LoginWithPhoneState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state is LoginWithPhoneLoadingState ||
+            state is LoginWithPhoneInitial) {
+          return const LoadingPage();
+        } else if (state is LoginWithPhoneLoadedState) {
+          final gradientColors = AnimateGradientColors.of(context);
+          final particleColors = AnimateGradientColors.getCafeParticlePalette(
+            context,
+          );
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final screenSize = MediaQuery.sizeOf(context);
+
+          return AnimateGradient(
+            primaryBegin: Alignment.topLeft,
+            primaryEnd: Alignment.bottomRight,
+            secondaryBegin: Alignment.bottomLeft,
+            secondaryEnd: Alignment.topRight,
+            duration: const Duration(seconds: 4),
+            primaryColors: gradientColors.primaryColors,
+            secondaryColors: gradientColors.secondaryColors,
+            child: SizedBox(
+              key: UniqueKey(),
+              width: screenSize.width,
+              height: screenSize.height,
+              child: Stack(
+                children: [
+                  CircularParticle(
+                    width: screenSize.width,
+                    height: screenSize.height,
+                    awayRadius: 60,
+                    numberOfParticles: 90,
+                    speedOfParticles: 1.2,
+                    maxParticleSize: 7,
+                    particleColor:
+                        (isDark
+                                ? const Color(0xffffb59c)
+                                : const Color(0xff8c5338))
+                            .withValues(alpha: 0.4),
+                    isRandSize: true,
+                    isRandomColor: true,
+                    randColorList: particleColors,
+                    awayAnimationDuration: const Duration(milliseconds: 600),
+                    awayAnimationCurve: Curves.easeInOutBack,
+                    enableHover: true,
+                    hoverColor: const Color(0xffff8a5c),
+                    hoverRadius: 80,
+                    onTapAnimation: true,
+                    connectDots: false,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Expanded(
+                        child: SignUpCarouselWidget(
+                          size: Size(
+                            MediaQuery.of(context).size.width / 2,
+                            MediaQuery.of(context).size.height,
+                          ),
+                          images: images,
+                          appLogoLight: appLogoLight,
+                        ),
+                      ),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 5.0,
+                            top: 5,
+                            bottom: 5,
+                            right: 5.0,
+                          ),
+                          child: Center(
+                            child: Stack(
+                              children: <Widget>[
+                                PositionedDirectional(
+                                  start: 20,
+                                  top: 0,
+                                  end: 20,
+                                  child: CircleAvatar(
+                                    radius: 55.0,
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryContainer,
+                                  ),
+                                ),
+                                PositionedDirectional(
+                                  start: 0,
+                                  top: 310 + 30,
+                                  end: 0,
+                                  child: CircleAvatar(
+                                    radius: 33.0,
+                                    backgroundColor: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryContainer,
+                                  ),
+                                ),
+                                Card(
+                                  margin: const EdgeInsets.only(
+                                    top: 60.0,
+                                    bottom: 45,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: const BorderRadius.only(
+                                      bottomRight: Radius.circular(10),
+                                      topRight: Radius.circular(10),
+                                      bottomLeft: Radius.circular(10),
+                                      topLeft: Radius.circular(10),
+                                    ),
+                                    side: BorderSide(
+                                      width: 5,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondaryContainer,
+                                    ),
+                                  ),
+                                  child: Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    margin: const EdgeInsets.all(5),
+                                    padding: const EdgeInsets.only(
+                                      top: 45,
+                                      bottom: 10,
+                                    ),
+                                    height: 310,
+                                    child: Form(
+                                      key: _formKey,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Text(
+                                                  textAlign: TextAlign.center,
+                                                  context.tr(
+                                                        LocaleKeys
+                                                            .loginViaPhoneNumberPageOtpVerificationTitle,
+                                                        track: TrackConstants
+                                                            .loginViaPhoneNumberPageTrack,
+                                                      ) ??
+                                                      'OTP Verification',
+                                                  softWrap: true,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headlineSmall!,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                        10,
+                                                        10,
+                                                        10,
+                                                        0,
+                                                      ),
+                                                  child: Text(
+                                                    textAlign: TextAlign.start,
+                                                    context.tr(
+                                                          LocaleKeys
+                                                              .loginViaPhoneNumberPageOtpVerificationSubtitle,
+                                                          track: TrackConstants
+                                                              .loginViaPhoneNumberPageTrack,
+                                                        ) ??
+                                                        'We will send you a One Time Password on your phone number.',
+                                                    softWrap: true,
+                                                    maxLines: 5,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .titleSmall,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          phoneNumberWidget(),
+                                          /*     Row(
                                     children: [
                                       Expanded(
                                         child: Padding(
@@ -638,75 +662,76 @@ class _LoginViaPhoneNumberPageState extends State<LoginViaPhoneNumberPage> {
                                       ),
                                     ],
                                   ),*/
-                                    ],
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            PositionedDirectional(
-                              top: 5.0,
-                              start: 5.0,
-                              end: 5.0,
-                              child: Center(
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.grey.shade300,
-                                  radius: 50.0,
-                                  child: Icon(
-                                    CustomIcon.password,
-                                    size: 65,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .primary,
+                                PositionedDirectional(
+                                  top: 5.0,
+                                  start: 5.0,
+                                  end: 5.0,
+                                  child: Center(
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.grey.shade300,
+                                      radius: 50.0,
+                                      child: Icon(
+                                        CustomIcon.password,
+                                        size: 65,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            PositionedDirectional(
-                              top: 310 + 30,
-                              start: 5.0,
-                              end: 5.0,
-                              child: Center(
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.grey.shade300,
-                                  radius: 30.0,
-                                  child: StreamBuilder(
-                                    stream: _loginWithPhoneCubit
-                                        ?.buttonLoadingStream,
-                                    builder: (context, snapshot) {
-                                      return ProgressButton(
-                                        onPressed: (controller) async {
-                                          this.controller = controller;
-                                          submitData();
+                                PositionedDirectional(
+                                  top: 310 + 30,
+                                  start: 5.0,
+                                  end: 5.0,
+                                  child: Center(
+                                    child: CircleAvatar(
+                                      backgroundColor: Colors.grey.shade300,
+                                      radius: 30.0,
+                                      child: StreamBuilder(
+                                        stream: _loginWithPhoneCubit
+                                            ?.buttonLoadingStream,
+                                        builder: (context, snapshot) {
+                                          return ProgressButton(
+                                            onPressed: (controller) async {
+                                              this.controller = controller;
+                                              submitData();
+                                            },
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                  Radius.circular(30),
+                                                ),
+                                            strokeWidth: 4,
+                                            color: Colors.grey.shade300,
+                                            child: const Center(
+                                              child: Icon(
+                                                Icons.navigate_next_rounded,
+                                                color: Colors.white,
+                                                size: 35,
+                                              ),
+                                            ),
+                                          );
                                         },
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(30),
-                                        ),
-                                        strokeWidth: 4,
-                                        color: Colors.grey.shade300,
-                                        child: const Center(
-                                          child: Icon(
-                                            Icons.navigate_next_rounded,
-                                            color: Colors.white,
-                                            size: 35,
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
-      );
+            ),
+          );
         } else if (state is LoginWithPhoneNoInternetState) {
           return NoInternetPage(
             onPressedRetryButton: () async {

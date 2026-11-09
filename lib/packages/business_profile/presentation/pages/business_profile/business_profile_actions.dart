@@ -32,7 +32,10 @@ class BusinessProfileActions {
     }
   }
 
-  static Future<void> launchExternalUrl(BuildContext context, String url) async {
+  static Future<void> launchExternalUrl(
+    BuildContext context,
+    String url,
+  ) async {
     final trimmed = url.trim();
     if (trimmed.isEmpty) return;
 

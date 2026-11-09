@@ -154,10 +154,12 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
   }
 
   Future<void> _onResetToDefault() async {
-    final resetTitle = _tr(shared.LocaleKeys.settingsInvoiceShareResetTitle).isNotEmpty
+    final resetTitle =
+        _tr(shared.LocaleKeys.settingsInvoiceShareResetTitle).isNotEmpty
         ? _tr(shared.LocaleKeys.settingsInvoiceShareResetTitle)
         : 'Reset to Default Template?';
-    final resetContent = _tr(shared.LocaleKeys.settingsInvoiceShareResetContent).isNotEmpty
+    final resetContent =
+        _tr(shared.LocaleKeys.settingsInvoiceShareResetContent).isNotEmpty
         ? _tr(shared.LocaleKeys.settingsInvoiceShareResetContent)
         : 'This will revert your SMS and WhatsApp receipt message back to the original format and clear the custom link.';
 
@@ -182,7 +184,8 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
     if (mounted) {
       shared.SnackBarUtils.showInfo(
         context,
-        message: _tr(shared.LocaleKeys.settingsInvoiceShareResetSuccess).isNotEmpty
+        message:
+            _tr(shared.LocaleKeys.settingsInvoiceShareResetSuccess).isNotEmpty
             ? _tr(shared.LocaleKeys.settingsInvoiceShareResetSuccess)
             : 'Template reset to default layout.',
       );
@@ -222,7 +225,8 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: isDesktop ? 980 : (isTablet ? 760 : double.infinity),
-          maxHeight: screenSize.height * (isMobile ? 0.94 : (isTablet ? 0.88 : 0.85)),
+          maxHeight:
+              screenSize.height * (isMobile ? 0.94 : (isTablet ? 0.88 : 0.85)),
         ),
         child: ValueListenableBuilder<bool>(
           valueListenable: _isLoadingNotifier,
@@ -235,7 +239,9 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
             }
 
             return Padding(
-              padding: EdgeInsets.all(isMobile ? 14.0 : (isTablet ? 18.0 : 22.0)),
+              padding: EdgeInsets.all(
+                isMobile ? 14.0 : (isTablet ? 18.0 : 22.0),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -262,23 +268,40 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _tr(shared.LocaleKeys.settingsInvoiceShareDialogTitle).isNotEmpty
-                                  ? _tr(shared.LocaleKeys.settingsInvoiceShareDialogTitle)
+                              _tr(
+                                    shared
+                                        .LocaleKeys
+                                        .settingsInvoiceShareDialogTitle,
+                                  ).isNotEmpty
+                                  ? _tr(
+                                      shared
+                                          .LocaleKeys
+                                          .settingsInvoiceShareDialogTitle,
+                                    )
                                   : 'Digital Receipt & Share Message',
-                              style: (isMobile
-                                      ? theme.textTheme.titleSmall
-                                      : theme.textTheme.titleMedium)
-                                  ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style:
+                                  (isMobile
+                                          ? theme.textTheme.titleSmall
+                                          : theme.textTheme.titleMedium)
+                                      ?.copyWith(fontWeight: FontWeight.bold),
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              _tr(shared.LocaleKeys.settingsInvoiceShareDialogSubtitle).isNotEmpty
-                                  ? _tr(shared.LocaleKeys.settingsInvoiceShareDialogSubtitle)
+                              _tr(
+                                    shared
+                                        .LocaleKeys
+                                        .settingsInvoiceShareDialogSubtitle,
+                                  ).isNotEmpty
+                                  ? _tr(
+                                      shared
+                                          .LocaleKeys
+                                          .settingsInvoiceShareDialogSubtitle,
+                                    )
                                   : 'Customize the message sent via WhatsApp & SMS. Keep the default or customize anytime.',
                               style: theme.textTheme.bodySmall?.copyWith(
-                                color: isDark ? Colors.grey[400] : Colors.grey[600],
+                                color: isDark
+                                    ? Colors.grey[400]
+                                    : Colors.grey[600],
                                 fontSize: isMobile ? 11 : 12,
                               ),
                             ),
@@ -306,8 +329,16 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                         children: [
                           // Custom Link Field
                           Text(
-                            _tr(shared.LocaleKeys.settingsInvoiceShareCustomLinkLabel).isNotEmpty
-                                ? _tr(shared.LocaleKeys.settingsInvoiceShareCustomLinkLabel)
+                            _tr(
+                                  shared
+                                      .LocaleKeys
+                                      .settingsInvoiceShareCustomLinkLabel,
+                                ).isNotEmpty
+                                ? _tr(
+                                    shared
+                                        .LocaleKeys
+                                        .settingsInvoiceShareCustomLinkLabel,
+                                  )
                                 : 'Website / Review / Feedback Link (Optional)',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w600,
@@ -319,10 +350,22 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                             controller: _linkController,
                             focusNode: _linkFocusNode,
                             decoration: InputDecoration(
-                              hintText: _tr(shared.LocaleKeys.settingsInvoiceShareCustomLinkHint).isNotEmpty
-                                  ? _tr(shared.LocaleKeys.settingsInvoiceShareCustomLinkHint)
+                              hintText:
+                                  _tr(
+                                    shared
+                                        .LocaleKeys
+                                        .settingsInvoiceShareCustomLinkHint,
+                                  ).isNotEmpty
+                                  ? _tr(
+                                      shared
+                                          .LocaleKeys
+                                          .settingsInvoiceShareCustomLinkHint,
+                                    )
                                   : 'e.g. https://maps.app.goo.gl/... or cafe website',
-                              prefixIcon: const Icon(Icons.link_rounded, size: 20),
+                              prefixIcon: const Icon(
+                                Icons.link_rounded,
+                                size: 20,
+                              ),
                               suffixIcon: IconButton(
                                 icon: const Icon(Icons.clear_rounded, size: 18),
                                 onPressed: _linkController.clear,
@@ -341,8 +384,16 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
 
                           // Dynamic Placeholders Chips
                           Text(
-                            _tr(shared.LocaleKeys.settingsInvoiceShareTokensTitle).isNotEmpty
-                                ? _tr(shared.LocaleKeys.settingsInvoiceShareTokensTitle)
+                            _tr(
+                                  shared
+                                      .LocaleKeys
+                                      .settingsInvoiceShareTokensTitle,
+                                ).isNotEmpty
+                                ? _tr(
+                                    shared
+                                        .LocaleKeys
+                                        .settingsInvoiceShareTokensTitle,
+                                  )
                                 : 'Click token to insert into template:',
                             style: theme.textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w600,
@@ -353,7 +404,9 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                           Wrap(
                             spacing: 6,
                             runSpacing: 6,
-                            children: InvoiceShareService.supportedTokens.map((tokenInfo) {
+                            children: InvoiceShareService.supportedTokens.map((
+                              tokenInfo,
+                            ) {
                               final token = tokenInfo['token']!;
                               final label = tokenInfo['label']!;
                               return ActionChip(
@@ -364,7 +417,10 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                                     color: theme.colorScheme.onSurfaceVariant,
                                   ),
                                 ),
-                                avatar: const Icon(Icons.add_circle_outline, size: 14),
+                                avatar: const Icon(
+                                  Icons.add_circle_outline,
+                                  size: 14,
+                                ),
                                 visualDensity: VisualDensity.compact,
                                 backgroundColor: isDark
                                     ? theme.colorScheme.surfaceContainerHighest
@@ -431,7 +487,9 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                                     ),
                                   )
                                 : const Icon(Icons.check_rounded, size: 18),
-                            label: Text(isSaving ? 'Saving...' : 'Save Template'),
+                            label: Text(
+                              isSaving ? 'Saving...' : 'Save Template',
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.primaryColor,
                               foregroundColor: Colors.white,
@@ -476,8 +534,11 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle).isNotEmpty
-                        ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle)
+                    _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle)
+                            .isNotEmpty
+                        ? _tr(
+                            shared.LocaleKeys.settingsInvoiceShareTemplateTitle,
+                          )
                         : 'Message Template',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w600,
@@ -486,7 +547,8 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                   TextButton.icon(
                     icon: const Icon(Icons.restore_rounded, size: 16),
                     label: Text(
-                      _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn).isNotEmpty
+                      _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn)
+                              .isNotEmpty
                           ? _tr(shared.LocaleKeys.settingsInvoiceShareResetBtn)
                           : 'Reset to Default',
                       style: const TextStyle(fontSize: 12),
@@ -500,12 +562,11 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                 controller: _templateController,
                 focusNode: _templateFocusNode,
                 maxLines: editorMaxLines,
-                style: const TextStyle(
-                  fontFamily: 'monospace',
-                  fontSize: 12.5,
-                ),
+                style: const TextStyle(fontFamily: 'monospace', fontSize: 12.5),
                 decoration: InputDecoration(
-                  hintText: _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint).isNotEmpty
+                  hintText:
+                      _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint)
+                          .isNotEmpty
                       ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint)
                       : 'Enter your custom invoice share message template...',
                   border: OutlineInputBorder(
@@ -527,8 +588,13 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Text(
-                  _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle).isNotEmpty
-                      ? _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle)
+                  _tr(shared.LocaleKeys.settingsInvoiceShareLivePreviewTitle)
+                          .isNotEmpty
+                      ? _tr(
+                          shared
+                              .LocaleKeys
+                              .settingsInvoiceShareLivePreviewTitle,
+                        )
                       : 'Live Preview (with sample invoice):',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w600,
@@ -541,7 +607,9 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
                   color: isDark
-                      ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                      ? theme.colorScheme.surfaceContainerHighest.withValues(
+                          alpha: 0.5,
+                        )
                       : const Color(0xFFF7F8FA),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
@@ -578,7 +646,8 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle).isNotEmpty
+              _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle)
+                      .isNotEmpty
                   ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateTitle)
                   : 'Message Template',
               style: theme.textTheme.bodyMedium?.copyWith(
@@ -603,17 +672,14 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
           controller: _templateController,
           focusNode: _templateFocusNode,
           maxLines: 7,
-          style: const TextStyle(
-            fontFamily: 'monospace',
-            fontSize: 12,
-          ),
+          style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
           decoration: InputDecoration(
-            hintText: _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint).isNotEmpty
+            hintText:
+                _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint)
+                    .isNotEmpty
                 ? _tr(shared.LocaleKeys.settingsInvoiceShareTemplateHint)
                 : 'Enter your custom invoice share message template...',
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
             contentPadding: const EdgeInsets.all(10),
           ),
         ),
@@ -633,7 +699,9 @@ class _InvoiceShareConfigDialogState extends State<InvoiceShareConfigDialog> {
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
             color: isDark
-                ? theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.5)
+                ? theme.colorScheme.surfaceContainerHighest.withValues(
+                    alpha: 0.5,
+                  )
                 : const Color(0xFFF7F8FA),
             borderRadius: BorderRadius.circular(10),
             border: Border.all(

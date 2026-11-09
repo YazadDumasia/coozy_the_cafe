@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -155,10 +156,15 @@ class BusinessLogoPickerCard extends StatelessWidget {
                           ),
                         ),
                         onPressed: () => _pickLogo(context),
-                        icon: const Icon(Icons.photo_library_outlined, size: 16),
+                        icon: const Icon(
+                          Icons.photo_library_outlined,
+                          size: 16,
+                        ),
                         label: Text(
                           context.tr(
-                                shared.LocaleKeys.settingsBusinessProfileChangeLogo,
+                                shared
+                                    .LocaleKeys
+                                    .settingsBusinessProfileChangeLogo,
                                 track: shared.TrackConstants.settingTrack,
                               ) ??
                               'Change Logo',
@@ -180,7 +186,10 @@ class BusinessLogoPickerCard extends StatelessWidget {
                               ),
                             ),
                             onPressed: () => onLogoChanged(null),
-                            icon: const Icon(Icons.restart_alt_rounded, size: 16),
+                            icon: const Icon(
+                              Icons.restart_alt_rounded,
+                              size: 16,
+                            ),
                             label: Text(
                               context.tr(
                                     shared

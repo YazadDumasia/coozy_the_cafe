@@ -1,4 +1,3 @@
-
 import '../../waiter_order_placement/domain/entities/order_cart_item.dart'
     as cart;
 import '../../core/coozy_core.dart' as core;

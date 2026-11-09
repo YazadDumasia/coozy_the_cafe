@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/customer_entity.dart';
 import '../../../domain/entities/customer_loyalty_entity.dart';
 import '../../../domain/entities/loyalty_tier_config.dart';
@@ -77,18 +78,23 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
     }
   }
 
-  Future<void> _changeTierDialog(BuildContext ctx, CustomerLoyaltyEntity loyalty) async {
+  Future<void> _changeTierDialog(
+    BuildContext ctx,
+    CustomerLoyaltyEntity loyalty,
+  ) async {
     final messenger = ScaffoldMessenger.of(ctx);
     final currentTier = loyalty.tier;
-    final savedConfigsJson = shared.LocalManager.instance
-        .getLocaleKeys(key: shared.PreferencesKeys.loyaltyTierThresholds);
+    final savedConfigsJson = shared.LocalManager.instance.getLocaleKeys(
+      key: shared.PreferencesKeys.loyaltyTierThresholds,
+    );
     final tierConfigs = LoyaltyTierConfig.decodeList(savedConfigsJson);
 
     final textController = TextEditingController();
     final textFocusNode = FocusNode();
 
-    bool isCustom = !tierConfigs
-        .any((t) => t.name.toLowerCase() == currentTier.toLowerCase());
+    bool isCustom = !tierConfigs.any(
+      (t) => t.name.toLowerCase() == currentTier.toLowerCase(),
+    );
     if (isCustom) {
       textController.text = currentTier;
     }
@@ -138,8 +144,10 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                         runSpacing: 8,
                         children: [
                           ...tierConfigs.map((cfg) {
-                            final isSelected = !isCustom &&
-                                tempSelected.toLowerCase() == cfg.name.toLowerCase();
+                            final isSelected =
+                                !isCustom &&
+                                tempSelected.toLowerCase() ==
+                                    cfg.name.toLowerCase();
                             final tierColor = cfg.color;
 
                             return ChoiceChip(
@@ -150,12 +158,18 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                   color: tierColor,
                                   shape: BoxShape.circle,
                                 ),
-                                child: const Icon(Icons.star, size: 9, color: Colors.white),
+                                child: const Icon(
+                                  Icons.star,
+                                  size: 9,
+                                  color: Colors.white,
+                                ),
                               ),
                               label: Text(
                                 '${cfg.name} (${cfg.minPoints}+ pts)',
                                 style: TextStyle(
-                                  color: isSelected ? scheme.onPrimary : tierColor,
+                                  color: isSelected
+                                      ? scheme.onPrimary
+                                      : tierColor,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 12,
                                 ),
@@ -177,12 +191,16 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                             avatar: Icon(
                               Icons.edit_note_rounded,
                               size: 16,
-                              color: isCustom ? scheme.onPrimary : scheme.primary,
+                              color: isCustom
+                                  ? scheme.onPrimary
+                                  : scheme.primary,
                             ),
                             label: Text(
                               'Custom',
                               style: TextStyle(
-                                color: isCustom ? scheme.onPrimary : scheme.primary,
+                                color: isCustom
+                                    ? scheme.onPrimary
+                                    : scheme.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -222,7 +240,10 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                             prefixIcon: const Icon(Icons.star_outline_rounded),
                             suffixIcon: textController.text.isNotEmpty
                                 ? IconButton(
-                                    icon: const Icon(Icons.clear_rounded, size: 20),
+                                    icon: const Icon(
+                                      Icons.clear_rounded,
+                                      size: 20,
+                                    ),
                                     onPressed: () {
                                       setDialogState(() {
                                         textController.clear();
@@ -241,7 +262,8 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                             });
                           },
                           validator: (val) {
-                            if (isCustom && (val == null || val.trim().isEmpty)) {
+                            if (isCustom &&
+                                (val == null || val.trim().isEmpty)) {
                               return 'Please enter a custom tier name';
                             }
                             return null;
@@ -252,38 +274,50 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                           children: [
                             Text(
                               'Badge Color: ',
-                              style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                             const SizedBox(width: 8),
                             Wrap(
                               spacing: 6,
-                              children: [
-                                ...LoyaltyTierConfig.selectableColors.take(5),
-                                LoyaltyTierConfig.defaultCustomTierColor,
-                              ].map((c) {
-                                final isSelected = customColor.toARGB32() == c.toARGB32();
-                                return InkWell(
-                                  onTap: () {
-                                    setDialogState(() => customColor = c);
-                                  },
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: Container(
-                                    width: 24,
-                                    height: 24,
-                                    decoration: BoxDecoration(
-                                      color: c,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: isSelected ? scheme.onSurface : Colors.transparent,
-                                        width: 2,
-                                      ),
+                              children:
+                                  [
+                                    ...LoyaltyTierConfig.selectableColors.take(
+                                      5,
                                     ),
-                                    child: isSelected
-                                        ? const Icon(Icons.check, size: 14, color: Colors.white)
-                                        : null,
-                                  ),
-                                );
-                              }).toList(),
+                                    LoyaltyTierConfig.defaultCustomTierColor,
+                                  ].map((c) {
+                                    final isSelected =
+                                        customColor.toARGB32() == c.toARGB32();
+                                    return InkWell(
+                                      onTap: () {
+                                        setDialogState(() => customColor = c);
+                                      },
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                          color: c,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: isSelected
+                                                ? scheme.onSurface
+                                                : Colors.transparent,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: isSelected
+                                            ? const Icon(
+                                                Icons.check,
+                                                size: 14,
+                                                color: Colors.white,
+                                              )
+                                            : null,
+                                      ),
+                                    );
+                                  }).toList(),
                             ),
                             const SizedBox(width: 6),
                             Tooltip(
@@ -305,7 +339,10 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                       ),
                                       title: Row(
                                         children: [
-                                          Icon(Icons.palette_rounded, color: scheme.primary),
+                                          Icon(
+                                            Icons.palette_rounded,
+                                            color: scheme.primary,
+                                          ),
                                           const SizedBox(width: 8),
                                           const Text('Select Badge Color'),
                                         ],
@@ -318,32 +355,55 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                             children: [
                                               ColorPicker(
                                                 pickerColor: tempC,
-                                                onColorChanged: (newC) => tempC = newC,
+                                                onColorChanged: (newC) =>
+                                                    tempC = newC,
                                                 enableAlpha: false,
                                                 displayThumbColor: true,
                                                 pickerAreaHeightPercent: 0.65,
-                                                paletteType: PaletteType.hsvWithHue,
+                                                paletteType:
+                                                    PaletteType.hsvWithHue,
                                                 hexInputController: hexCtrl,
                                                 portraitOnly: true,
-                                                labelTypes: const <ColorLabelType>[],
+                                                labelTypes:
+                                                    const <ColorLabelType>[],
                                               ),
                                               const SizedBox(height: 12),
                                               Row(
                                                 children: [
-                                                  const Text('HEX: #', style: TextStyle(fontWeight: FontWeight.bold)),
+                                                  const Text(
+                                                    'HEX: #',
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
                                                   const SizedBox(width: 6),
                                                   Expanded(
                                                     child: TextField(
                                                       controller: hexCtrl,
-                                                      textCapitalization: TextCapitalization.characters,
+                                                      textCapitalization:
+                                                          TextCapitalization
+                                                              .characters,
                                                       decoration: InputDecoration(
                                                         hintText: 'RRGGBB',
                                                         isDense: true,
-                                                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                                                        contentPadding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 10,
+                                                              vertical: 8,
+                                                            ),
+                                                        border: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                8,
+                                                              ),
+                                                        ),
                                                       ),
                                                       onChanged: (hex) {
-                                                        final parsed = LoyaltyTierConfig.hexToColor(hex);
+                                                        final parsed =
+                                                            LoyaltyTierConfig.hexToColor(
+                                                              hex,
+                                                            );
                                                         tempC = parsed;
                                                       },
                                                     ),
@@ -356,11 +416,13 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                       ),
                                       actions: [
                                         TextButton(
-                                          onPressed: () => Navigator.of(cCtx).pop(null),
+                                          onPressed: () =>
+                                              Navigator.of(cCtx).pop(null),
                                           child: const Text('Cancel'),
                                         ),
                                         ElevatedButton(
-                                          onPressed: () => Navigator.of(cCtx).pop(tempC),
+                                          onPressed: () =>
+                                              Navigator.of(cCtx).pop(tempC),
                                           child: const Text('Select Color'),
                                         ),
                                       ],
@@ -378,7 +440,9 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                     color: scheme.surfaceContainerHighest,
                                     shape: BoxShape.circle,
                                     border: Border.all(
-                                      color: scheme.outline.withValues(alpha: 0.5),
+                                      color: scheme.outline.withValues(
+                                        alpha: 0.5,
+                                      ),
                                       width: 2,
                                     ),
                                   ),
@@ -409,7 +473,8 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                             final customVal = textController.text.trim();
                             if (customVal.isEmpty) {
                               setDialogState(() {
-                                customErrorText = 'Please enter a custom tier name';
+                                customErrorText =
+                                    'Please enter a custom tier name';
                               });
                               return;
                             }
@@ -438,7 +503,9 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
         if (isCustom) {
           // If custom tier name is configured, persist it with its custom color to tierConfigs
           final existing = List<LoyaltyTierConfig>.from(tierConfigs);
-          final existingIdx = existing.indexWhere((t) => t.name.toLowerCase() == selectedTier.toLowerCase());
+          final existingIdx = existing.indexWhere(
+            (t) => t.name.toLowerCase() == selectedTier.toLowerCase(),
+          );
           final newConfig = LoyaltyTierConfig(
             name: selectedTier,
             minPoints: loyalty.pointsBalance,
@@ -572,19 +639,28 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                           totalVisits: 0,
                         );
 
-                    final isTiersEnabled = shared.LocalManager.instance.getBoolValue(
-                      key: shared.PreferencesKeys.enableLoyaltyTiers,
-                    );
+                    final isTiersEnabled = shared.LocalManager.instance
+                        .getBoolValue(
+                          key: shared.PreferencesKeys.enableLoyaltyTiers,
+                        );
 
                     Color tierColor;
                     IconData tierIcon;
                     if (isTiersEnabled) {
                       final savedConfigsJson = shared.LocalManager.instance
-                          .getLocaleKeys(key: shared.PreferencesKeys.loyaltyTierThresholds);
-                      final tierConfigs = LoyaltyTierConfig.decodeList(savedConfigsJson);
-                      final matchedConfig = tierConfigs.where(
-                        (c) => c.name.toLowerCase() == loyalty.tier.toLowerCase(),
-                      ).firstOrNull;
+                          .getLocaleKeys(
+                            key: shared.PreferencesKeys.loyaltyTierThresholds,
+                          );
+                      final tierConfigs = LoyaltyTierConfig.decodeList(
+                        savedConfigsJson,
+                      );
+                      final matchedConfig = tierConfigs
+                          .where(
+                            (c) =>
+                                c.name.toLowerCase() ==
+                                loyalty.tier.toLowerCase(),
+                          )
+                          .firstOrNull;
 
                       if (matchedConfig != null) {
                         tierColor = matchedConfig.color;
@@ -666,22 +742,36 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                     ),
                                     const SizedBox(width: 8),
                                     InkWell(
-                                      onTap: () => _changeTierDialog(context, loyalty),
+                                      onTap: () =>
+                                          _changeTierDialog(context, loyalty),
                                       borderRadius: BorderRadius.circular(6),
                                       child: Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 3,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: tierColor.withValues(alpha: 0.2),
-                                          borderRadius: BorderRadius.circular(6),
+                                          color: tierColor.withValues(
+                                            alpha: 0.2,
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
                                           border: Border.all(
-                                            color: tierColor.withValues(alpha: 0.5),
+                                            color: tierColor.withValues(
+                                              alpha: 0.5,
+                                            ),
                                             width: 0.8,
                                           ),
                                         ),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Icon(Icons.edit, size: 12, color: tierColor),
+                                            Icon(
+                                              Icons.edit,
+                                              size: 12,
+                                              color: tierColor,
+                                            ),
                                             const SizedBox(width: 4),
                                             Text(
                                               'Edit Tier',
@@ -708,11 +798,11 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                   const Spacer(),
                                   Text(
                                     '${loyalty.pointsBalance} Pts',
-                                    style:
-                                        theme.textTheme.headlineSmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: tierColor,
-                                    ),
+                                    style: theme.textTheme.headlineSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: tierColor,
+                                        ),
                                   ),
                                 ],
                               ),
@@ -804,7 +894,8 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                           key: ValueKey('tx_$refreshKey'),
                           future: widget.customer.id != null
                               ? GetIt.I<GetLoyaltyTransactionsUseCase>()(
-                                  widget.customer.id!)
+                                  widget.customer.id!,
+                                )
                               : Future.value([]),
                           builder: (context, txSnapshot) {
                             if (txSnapshot.connectionState ==
@@ -816,7 +907,8 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                     width: 20,
                                     height: 20,
                                     child: CircularProgressIndicator(
-                                        strokeWidth: 2),
+                                      strokeWidth: 2,
+                                    ),
                                   ),
                                 ),
                               );
@@ -825,8 +917,9 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                             if (txList.isEmpty) {
                               return Container(
                                 width: double.infinity,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 decoration: BoxDecoration(
                                   color: isDark
                                       ? Colors.white.withValues(alpha: 0.03)
@@ -854,14 +947,15 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                     const Divider(height: 1),
                                 itemBuilder: (context, index) {
                                   final tx = txList[index];
-                                  final isEarned = (tx['transaction_type']
-                                          as String?) ==
+                                  final isEarned =
+                                      (tx['transaction_type'] as String?) ==
                                       'EARNED';
                                   final pts =
                                       (tx['points'] as num?)?.toInt() ?? 0;
                                   final date =
                                       (tx['created_date'] as String?) ?? '';
-                                  final notes = (tx['notes'] as String?) ??
+                                  final notes =
+                                      (tx['notes'] as String?) ??
                                       (isEarned ? 'Earned' : 'Redeemed');
 
                                   return ListTile(
@@ -871,8 +965,9 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                       radius: 14,
                                       backgroundColor: isEarned
                                           ? Colors.green.withValues(alpha: 0.15)
-                                          : Colors.orange
-                                              .withValues(alpha: 0.15),
+                                          : Colors.orange.withValues(
+                                              alpha: 0.15,
+                                            ),
                                       child: Icon(
                                         isEarned ? Icons.add : Icons.remove,
                                         size: 14,
@@ -884,15 +979,16 @@ class _CustomerLoyaltyModalState extends State<CustomerLoyaltyModal> {
                                     title: Text(
                                       notes,
                                       style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 13),
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13,
+                                      ),
                                     ),
                                     subtitle: Text(
                                       date,
                                       style: TextStyle(
                                         fontSize: 11,
                                         color: theme.textTheme.bodySmall?.color
-                                          ?.withValues(alpha: 0.6),
+                                            ?.withValues(alpha: 0.6),
                                       ),
                                     ),
                                     trailing: Text(

@@ -49,7 +49,8 @@ class DeveloperActions {
             ),
           ),
         ),
-        applicationLegalese: '© ${DateTime.now().year} Coozy The Cafe. Open-Source under MIT License.',
+        applicationLegalese:
+            '© ${DateTime.now().year} Coozy The Cafe. Open-Source under MIT License.',
         applicationVersion: packageInfo.version,
         useRootNavigator: true,
       );

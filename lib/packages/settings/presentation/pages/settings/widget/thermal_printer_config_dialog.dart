@@ -204,7 +204,9 @@ class _ThermalPrinterConfigDialogState extends State<ThermalPrinterConfigDialog>
                       labelColor: theme.colorScheme.primary,
                       unselectedLabelColor: theme.colorScheme.onSurfaceVariant,
                       isScrollable: isMobile,
-                      tabAlignment: isMobile ? TabAlignment.start : TabAlignment.fill,
+                      tabAlignment: isMobile
+                          ? TabAlignment.start
+                          : TabAlignment.fill,
                       tabs: [
                         Tab(
                           icon: const Icon(
@@ -608,8 +610,7 @@ class _ThermalPrinterConfigDialogState extends State<ThermalPrinterConfigDialog>
                             } else {
                               shared.SnackBarUtils.showError(
                                 context,
-                                message:
-                                    'Failed to send test print. Please check network/Bluetooth connection.',
+                                message: 'Failed to send test print. Please check network/Bluetooth connection.',
                               );
                             }
                           } finally {
@@ -658,7 +659,11 @@ class _ThermalPrinterConfigDialogState extends State<ThermalPrinterConfigDialog>
         (ThermalPrinterType.network, 'Network', Icons.wifi_rounded),
         (ThermalPrinterType.bluetooth, 'Bluetooth', Icons.bluetooth_rounded),
         (ThermalPrinterType.usb, 'USB', Icons.usb_rounded),
-        (ThermalPrinterType.systemSpooler, 'Spooler', Icons.picture_as_pdf_rounded),
+        (
+          ThermalPrinterType.systemSpooler,
+          'Spooler',
+          Icons.picture_as_pdf_rounded,
+        ),
       ];
 
       return Wrap(
@@ -882,8 +887,9 @@ class _ThermalPrinterConfigDialogState extends State<ThermalPrinterConfigDialog>
             }).toList(),
             onChanged: (selectedMac) {
               if (selectedMac != null) {
-                final matched = loadedState.pairedBluetoothDevices
-                    .firstWhere((d) => d.macAdress == selectedMac);
+                final matched = loadedState.pairedBluetoothDevices.firstWhere(
+                  (d) => d.macAdress == selectedMac,
+                );
                 final updated = config.copyWith(
                   bluetoothAddress: selectedMac,
                   bluetoothName: matched.name,

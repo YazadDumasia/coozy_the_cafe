@@ -96,3 +96,18 @@ class DeleteInvoiceEvent extends InvoiceManagementEvent {
   @override
   List<Object?> get props => [invoiceId];
 }
+
+class InvoicePdfPrebuiltCompletedEvent extends InvoiceManagementEvent {
+  final int invoiceId;
+  final Uint8List? thermalBytes;
+  final Uint8List? a4Bytes;
+
+  const InvoicePdfPrebuiltCompletedEvent({
+    required this.invoiceId,
+    this.thermalBytes,
+    this.a4Bytes,
+  });
+
+  @override
+  List<Object?> get props => [invoiceId, thermalBytes, a4Bytes];
+}

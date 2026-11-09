@@ -132,4 +132,3 @@ class GetAiDemandInsightsUseCase {
   Future<AiDemandInsights> call(String startIso, String endIso) =>
       repository.getAiDemandInsights(startIso: startIso, endIso: endIso);
 }
-

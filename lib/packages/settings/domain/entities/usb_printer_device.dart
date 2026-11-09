@@ -7,11 +7,7 @@ class UsbPrinterDevice extends Equatable {
   final String? vendorId;
   final String? productId;
 
-  const UsbPrinterDevice({
-    this.name,
-    this.vendorId,
-    this.productId,
-  });
+  const UsbPrinterDevice({this.name, this.vendorId, this.productId});
 
   @override
   List<Object?> get props => [name, vendorId, productId];

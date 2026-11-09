@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../../../domain/entities/usb_printer_device.dart';
+
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
@@ -26,8 +28,7 @@ class ThermalPrinterSettingsCubit extends Cubit<ThermalPrinterSettingsState> {
         stationKey: shared.PreferencesKeys.kitchenStationPrinterConfig,
       );
 
-      final hasPermission =
-          await printerService.requestBluetoothPermissions();
+      final hasPermission = await printerService.requestBluetoothPermissions();
       final isBtEnabled = await printerService.isBluetoothEnabled();
       final bluetoothDevices = isBtEnabled
           ? await printerService.getPairedBluetoothDevices()
@@ -54,8 +55,7 @@ class ThermalPrinterSettingsCubit extends Cubit<ThermalPrinterSettingsState> {
     final currentState = state as ThermalPrinterSettingsLoaded;
     emit(currentState.copyWith(isScanningBluetooth: true));
     try {
-      final hasPermission =
-          await printerService.requestBluetoothPermissions();
+      final hasPermission = await printerService.requestBluetoothPermissions();
       final isBtEnabled = await printerService.isBluetoothEnabled();
       final devices = isBtEnabled
           ? await printerService.getPairedBluetoothDevices()

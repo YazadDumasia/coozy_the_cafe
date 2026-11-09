@@ -174,8 +174,7 @@ class DatabaseBackupHelper {
                                   await SharePlus.instance.share(
                                     ShareParams(
                                       files: [xFile],
-                                      subject:
-                                          'Coozy Cafe Encrypted Database Backup',
+                                      subject: 'Coozy Cafe Encrypted Database Backup',
                                     ),
                                   );
                                 }
@@ -480,7 +479,9 @@ class DatabaseBackupHelper {
               ),
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxWidth: isDesktop ? 600 : (isTablet ? 500 : double.infinity),
+                  maxWidth: isDesktop
+                      ? 600
+                      : (isTablet ? 500 : double.infinity),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
@@ -539,8 +540,9 @@ class DatabaseBackupHelper {
                               decoration: BoxDecoration(
                                 color: isDragging
                                     ? scheme.primary.withValues(alpha: 0.12)
-                                    : scheme.surfaceContainerHighest
-                                        .withValues(alpha: 0.5),
+                                    : scheme.surfaceContainerHighest.withValues(
+                                        alpha: 0.5,
+                                      ),
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
                                   color: isDragging
@@ -570,9 +572,7 @@ class DatabaseBackupHelper {
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
-                                    kIsWeb
-                                        ? 'Supports (.json) backup files'
-                                        : 'Supports (.db, .enc, .json) backup files',
+                                    kIsWeb ? 'Supports (.json) backup files' : 'Supports (.db, .enc, .json) backup files',
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: scheme.onSurfaceVariant,
@@ -581,7 +581,10 @@ class DatabaseBackupHelper {
                                   const SizedBox(height: 12),
                                   OutlinedButton.icon(
                                     onPressed: pickFile,
-                                    icon: const Icon(Icons.folder_open_rounded, size: 18),
+                                    icon: const Icon(
+                                      Icons.folder_open_rounded,
+                                      size: 18,
+                                    ),
                                     label: const Text('Browse File'),
                                     style: OutlinedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(

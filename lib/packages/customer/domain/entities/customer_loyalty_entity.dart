@@ -13,7 +13,10 @@ class CustomerLoyaltyEntity extends Equatable {
     this.exchangeRate = 0.50,
   });
 
-  factory CustomerLoyaltyEntity.fromMap(Map<String, dynamic> map, {double exchangeRate = 0.50}) {
+  factory CustomerLoyaltyEntity.fromMap(
+    Map<String, dynamic> map, {
+    double exchangeRate = 0.50,
+  }) {
     return CustomerLoyaltyEntity(
       customerId: (map['customer_id'] as num).toInt(),
       pointsBalance: (map['points_balance'] as num?)?.toInt() ?? 0,

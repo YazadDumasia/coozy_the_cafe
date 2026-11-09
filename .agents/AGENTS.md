@@ -18,6 +18,7 @@
 ## 3. State Management & Navigation
 - **Avoid `setState`**: Do NOT use `setState` for state management in UI widgets. Use `flutter_bloc` (`Bloc` or `Cubit`) with `Equatable` for feature state, or `ValueNotifier` / `ValueListenableBuilder` for lightweight UI-only state.
 - **BLoC & Cubit Structure**: Every BLoC or Cubit must not import its event or state files via `import`. Instead, use `part '<name>_event.dart';` and/or `part '<name>_state.dart';` in the main file and `part of '<name>_bloc.dart';` (or `_cubit.dart`) in the event/state files. Use `sealed class` instead of `abstract class` for main/base event and state classes.
+- **BLoC State `copyWith` for Nullable Filters**: When a state field is nullable and `null` represents a valid state (such as `null` representing "All" / no filter selected), using standard `value ?? this.value` prevents resetting the filter back to `null`. Always provide an explicit clearing flag (e.g., `bool clearFilter = false`). Type filter state fields as Enums rather than raw strings to prevent string casing/mismatch bugs. Preserve active search queries and other filters when emitting new filter state in BLoC/Cubit.
 - App routes are managed using `go_router` in `package:coozy_the_cafe/packages/core/coozy_core.dart`.
 
 ## 4. Localization (i18n)

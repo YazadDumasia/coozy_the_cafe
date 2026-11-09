@@ -38,7 +38,9 @@ class _SuccessfullyScreenState extends State<SuccessfullyScreen>
         : Assets.lottie.successLight;
 
     final gradientColors = AnimateGradientColors.of(context);
-    final particleColors = AnimateGradientColors.getCafeParticlePalette(context);
+    final particleColors = AnimateGradientColors.getCafeParticlePalette(
+      context,
+    );
     final size = MediaQuery.sizeOf(context);
 
     return SafeArea(
@@ -61,8 +63,9 @@ class _SuccessfullyScreenState extends State<SuccessfullyScreen>
                 numberOfParticles: 90,
                 speedOfParticles: 1.2,
                 maxParticleSize: 7,
-                particleColor: (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
-                    .withValues(alpha: 0.4),
+                particleColor:
+                    (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
+                        .withValues(alpha: 0.4),
                 isRandSize: true,
                 isRandomColor: true,
                 randColorList: particleColors,

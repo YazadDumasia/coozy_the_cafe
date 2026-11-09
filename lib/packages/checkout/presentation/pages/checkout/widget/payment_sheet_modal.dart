@@ -167,10 +167,9 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
   }
 
   Future<void> _fetchCustomerLoyalty(int? customerId) async {
-    final isLoyaltyEnabled = shared.LocalManager.instance
-            .getBoolValue(
-              key: shared.PreferencesKeys.enableCustomerLoyalty,
-            );
+    final isLoyaltyEnabled = shared.LocalManager.instance.getBoolValue(
+      key: shared.PreferencesKeys.enableCustomerLoyalty,
+    );
     if (!isLoyaltyEnabled || customerId == null) {
       if (mounted) {
         setState(() {
@@ -389,11 +388,12 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
               paperSize: printerConfig.paperSize,
             );
 
-        final success = await settings.ThermalPrinterService.instance.printBytes(
-          stationKey: shared.PreferencesKeys.customerReceiptPrinterConfig,
-          bytes: bytes,
-          jobName: 'Receipt $invoiceHash',
-        );
+        final success = await settings.ThermalPrinterService.instance
+            .printBytes(
+              stationKey: shared.PreferencesKeys.customerReceiptPrinterConfig,
+              bytes: bytes,
+              jobName: 'Receipt $invoiceHash',
+            );
 
         core.PlatformUtils.debugLog(
           PaymentSheetModal,
@@ -723,8 +723,14 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                     children: [
                       CircleAvatar(
                         radius: 18,
-                        backgroundColor: theme.colorScheme.primary.withValues(alpha: 0.15),
-                        child: Icon(Icons.stars_rounded, color: theme.colorScheme.primary, size: 20),
+                        backgroundColor: theme.colorScheme.primary.withValues(
+                          alpha: 0.15,
+                        ),
+                        child: Icon(
+                          Icons.stars_rounded,
+                          color: theme.colorScheme.primary,
+                          size: 20,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -743,9 +749,14 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                                 ),
                                 const SizedBox(width: 6),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
-                                    color: theme.colorScheme.primary.withValues(alpha: 0.15),
+                                    color: theme.colorScheme.primary.withValues(
+                                      alpha: 0.15,
+                                    ),
                                     borderRadius: BorderRadius.circular(4),
                                   ),
                                   child: Text(
@@ -766,7 +777,8 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                                   : 'Redeem available points for discount',
                               style: TextStyle(
                                 fontSize: 11,
-                                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.7),
+                                color: theme.textTheme.bodySmall?.color
+                                    ?.withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -777,30 +789,39 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                           style: TextButton.styleFrom(
                             backgroundColor: _isLoyaltyPointsApplied
                                 ? Colors.red.withValues(alpha: 0.1)
-                                : theme.colorScheme.primary.withValues(alpha: 0.15),
+                                : theme.colorScheme.primary.withValues(
+                                    alpha: 0.15,
+                                  ),
                             foregroundColor: _isLoyaltyPointsApplied
                                 ? Colors.red
                                 : theme.colorScheme.primary,
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
                             minimumSize: Size.zero,
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           onPressed: () {
                             if (_isLoyaltyPointsApplied) {
                               widget.checkoutBloc.add(
-                                const CheckoutDiscountRemoved('loyalty_rewards'),
+                                const CheckoutDiscountRemoved(
+                                  'loyalty_rewards',
+                                ),
                               );
                               setState(() {
                                 _isLoyaltyPointsApplied = false;
                               });
                             } else {
-                              final discountVal = _customerLoyalty!.discountValueInRupees;
+                              final discountVal =
+                                  _customerLoyalty!.discountValueInRupees;
                               if (discountVal > 0) {
                                 widget.checkoutBloc.add(
                                   CheckoutDiscountAdded(
                                     checkout.Discount(
                                       id: 'loyalty_rewards',
-                                      name: 'Loyalty Rewards (${_customerLoyalty!.pointsBalance} pts)',
+                                      name:
+                                          'Loyalty Rewards (${_customerLoyalty!.pointsBalance} pts)',
                                       value: discountVal,
                                       isPercentage: false,
                                       isDefaultAdd: false,
@@ -815,7 +836,10 @@ class _PaymentSheetModalState extends State<PaymentSheetModal> {
                           },
                           child: Text(
                             _isLoyaltyPointsApplied ? 'Remove' : 'Redeem',
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
                           ),
                         ),
                     ],

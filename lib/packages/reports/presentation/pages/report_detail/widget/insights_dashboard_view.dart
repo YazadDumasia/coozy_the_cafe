@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../../domain/entities/demand_insights.dart';
 
 class InsightsDashboardView extends StatelessWidget {
@@ -63,12 +64,12 @@ class InsightsDashboardView extends StatelessWidget {
         title: 'Sales Velocity Trend',
         value:
             '${insights.growthTrendPercentage >= 0 ? '+' : ''}${insights.growthTrendPercentage.toStringAsFixed(1)}%',
-        icon:
-            insights.growthTrendPercentage >= 0
-                ? Icons.trending_up_rounded
-                : Icons.trending_down_rounded,
-        color:
-            insights.growthTrendPercentage >= 0 ? Colors.green : Colors.orange,
+        icon: insights.growthTrendPercentage >= 0
+            ? Icons.trending_up_rounded
+            : Icons.trending_down_rounded,
+        color: insights.growthTrendPercentage >= 0
+            ? Colors.green
+            : Colors.orange,
         subtitle: 'Period-over-period momentum',
       ),
       _KpiMiniCard(
@@ -76,10 +77,9 @@ class InsightsDashboardView extends StatelessWidget {
         value:
             '${insights.depletionForecasts.where((d) => d.isUrgentReorder).length} Items',
         icon: Icons.warning_amber_rounded,
-        color:
-            insights.depletionForecasts.any((d) => d.isUrgentReorder)
-                ? Colors.red
-                : Colors.teal,
+        color: insights.depletionForecasts.any((d) => d.isUrgentReorder)
+            ? Colors.red
+            : Colors.teal,
         subtitle: 'Depleting in ≤ 2.5 days',
       ),
       _KpiMiniCard(
@@ -94,17 +94,16 @@ class InsightsDashboardView extends StatelessWidget {
 
     if (isDesktop) {
       return Row(
-        children:
-            cards
-                .map(
-                  (c) => Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: c,
-                    ),
-                  ),
-                )
-                .toList(),
+        children: cards
+            .map(
+              (c) => Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  child: c,
+                ),
+              ),
+            )
+            .toList(),
       );
     }
 
@@ -132,15 +131,12 @@ class InsightsDashboardView extends StatelessWidget {
 
     // Mobile layout
     return Column(
-      children:
-          cards
-              .map(
-                (c) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: c,
-                ),
-              )
-              .toList(),
+      children: cards
+          .map(
+            (c) =>
+                Padding(padding: const EdgeInsets.only(bottom: 10), child: c),
+          )
+          .toList(),
     );
   }
 
@@ -157,10 +153,9 @@ class InsightsDashboardView extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color:
-              isDark
-                  ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Padding(
@@ -202,59 +197,58 @@ class InsightsDashboardView extends StatelessWidget {
             const SizedBox(height: 24),
             SizedBox(
               height: 260,
-              child:
-                  points.isEmpty
-                      ? const Center(child: Text('No forecast data available'))
-                      : SfCartesianChart(
-                        primaryXAxis: const CategoryAxis(
-                          majorGridLines: MajorGridLines(width: 0),
-                        ),
-                        primaryYAxis: NumericAxis(
-                          numberFormat: null,
-                          axisLine: const AxisLine(width: 0),
-                          majorTickLines: const MajorTickLines(size: 0),
-                          labelFormat: '₹{value}',
-                        ),
-                        tooltipBehavior: TooltipBehavior(enable: true),
-                        series: <CartesianSeries<SalesForecastPoint, String>>[
-                          SplineAreaSeries<SalesForecastPoint, String>(
-                            name: 'Upper Bound',
-                            dataSource: points,
-                            xValueMapper: (f, _) {
-                              final parts = f.dateIso.split('-');
-                              return parts.length >= 3
-                                  ? '${parts[1]}/${parts[2]}'
-                                  : f.dateIso;
-                            },
-                            yValueMapper: (f, _) => f.upperBound,
-                            color: scheme.primary.withValues(alpha: 0.1),
-                            borderColor: Colors.transparent,
-                          ),
-                          SplineSeries<SalesForecastPoint, String>(
-                            name: 'Predicted Sales',
-                            dataSource: points,
-                            xValueMapper: (f, _) {
-                              final parts = f.dateIso.split('-');
-                              return parts.length >= 3
-                                  ? '${parts[1]}/${parts[2]}'
-                                  : f.dateIso;
-                            },
-                            yValueMapper: (f, _) => f.predictedSales,
-                            color: scheme.primary,
-                            width: 3,
-                            markerSettings: const MarkerSettings(
-                              isVisible: true,
-                              height: 6,
-                              width: 6,
-                              shape: DataMarkerType.circle,
-                            ),
-                            dataLabelSettings: const DataLabelSettings(
-                              isVisible: true,
-                              labelAlignment: ChartDataLabelAlignment.top,
-                            ),
-                          ),
-                        ],
+              child: points.isEmpty
+                  ? const Center(child: Text('No forecast data available'))
+                  : SfCartesianChart(
+                      primaryXAxis: const CategoryAxis(
+                        majorGridLines: MajorGridLines(width: 0),
                       ),
+                      primaryYAxis: NumericAxis(
+                        numberFormat: null,
+                        axisLine: const AxisLine(width: 0),
+                        majorTickLines: const MajorTickLines(size: 0),
+                        labelFormat: '₹{value}',
+                      ),
+                      tooltipBehavior: TooltipBehavior(enable: true),
+                      series: <CartesianSeries<SalesForecastPoint, String>>[
+                        SplineAreaSeries<SalesForecastPoint, String>(
+                          name: 'Upper Bound',
+                          dataSource: points,
+                          xValueMapper: (f, _) {
+                            final parts = f.dateIso.split('-');
+                            return parts.length >= 3
+                                ? '${parts[1]}/${parts[2]}'
+                                : f.dateIso;
+                          },
+                          yValueMapper: (f, _) => f.upperBound,
+                          color: scheme.primary.withValues(alpha: 0.1),
+                          borderColor: Colors.transparent,
+                        ),
+                        SplineSeries<SalesForecastPoint, String>(
+                          name: 'Predicted Sales',
+                          dataSource: points,
+                          xValueMapper: (f, _) {
+                            final parts = f.dateIso.split('-');
+                            return parts.length >= 3
+                                ? '${parts[1]}/${parts[2]}'
+                                : f.dateIso;
+                          },
+                          yValueMapper: (f, _) => f.predictedSales,
+                          color: scheme.primary,
+                          width: 3,
+                          markerSettings: const MarkerSettings(
+                            isVisible: true,
+                            height: 6,
+                            width: 6,
+                            shape: DataMarkerType.circle,
+                          ),
+                          dataLabelSettings: const DataLabelSettings(
+                            isVisible: true,
+                            labelAlignment: ChartDataLabelAlignment.top,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
           ],
         ),
@@ -275,10 +269,9 @@ class InsightsDashboardView extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color:
-              isDark
-                  ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Padding(
@@ -336,11 +329,9 @@ class InsightsDashboardView extends StatelessWidget {
                     dataSource: hours,
                     xValueMapper: (h, _) => h.timeLabel,
                     yValueMapper: (h, _) => h.orderCount,
-                    pointColorMapper:
-                        (h, _) =>
-                            h.isPeakHour
-                                ? Colors.orange.shade700
-                                : scheme.primary.withValues(alpha: 0.6),
+                    pointColorMapper: (h, _) => h.isPeakHour
+                        ? Colors.orange.shade700
+                        : scheme.primary.withValues(alpha: 0.6),
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(4),
                     ),
@@ -367,10 +358,9 @@ class InsightsDashboardView extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color:
-              isDark
-                  ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Padding(
@@ -439,10 +429,9 @@ class InsightsDashboardView extends StatelessWidget {
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color:
-                            item.isUrgentReorder
-                                ? Colors.red.withValues(alpha: 0.15)
-                                : Colors.teal.withValues(alpha: 0.15),
+                        color: item.isUrgentReorder
+                            ? Colors.red.withValues(alpha: 0.15)
+                            : Colors.teal.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -450,8 +439,9 @@ class InsightsDashboardView extends StatelessWidget {
                             ? 'Ample Stock'
                             : '${item.estimatedDaysRemaining} Days left',
                         style: TextStyle(
-                          color:
-                              item.isUrgentReorder ? Colors.red : Colors.teal,
+                          color: item.isUrgentReorder
+                              ? Colors.red
+                              : Colors.teal,
                           fontWeight: FontWeight.bold,
                           fontSize: 12,
                         ),
@@ -479,10 +469,9 @@ class InsightsDashboardView extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color:
-              isDark
-                  ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.1)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Padding(
@@ -531,71 +520,70 @@ class InsightsDashboardView extends StatelessWidget {
               Wrap(
                 spacing: 12,
                 runSpacing: 12,
-                children:
-                    items.take(12).map((item) {
-                      Color badgeColor;
-                      String label;
-                      IconData icon;
-                      switch (item.category) {
-                        case MenuEngineeringCategory.star:
-                          badgeColor = Colors.amber.shade700;
-                          label = 'Star';
-                          icon = Icons.star_rounded;
-                        case MenuEngineeringCategory.plowhorse:
-                          badgeColor = Colors.blue.shade700;
-                          label = 'Workhorse';
-                          icon = Icons.flash_on_rounded;
-                        case MenuEngineeringCategory.puzzle:
-                          badgeColor = Colors.purple.shade600;
-                          label = 'Hidden Gem';
-                          icon = Icons.lightbulb_rounded;
-                        case MenuEngineeringCategory.dog:
-                          badgeColor = Colors.grey.shade600;
-                          label = 'Underperformer';
-                          icon = Icons.low_priority_rounded;
-                      }
+                children: items.take(12).map((item) {
+                  Color badgeColor;
+                  String label;
+                  IconData icon;
+                  switch (item.category) {
+                    case MenuEngineeringCategory.star:
+                      badgeColor = Colors.amber.shade700;
+                      label = 'Star';
+                      icon = Icons.star_rounded;
+                    case MenuEngineeringCategory.plowhorse:
+                      badgeColor = Colors.blue.shade700;
+                      label = 'Workhorse';
+                      icon = Icons.flash_on_rounded;
+                    case MenuEngineeringCategory.puzzle:
+                      badgeColor = Colors.purple.shade600;
+                      label = 'Hidden Gem';
+                      icon = Icons.lightbulb_rounded;
+                    case MenuEngineeringCategory.dog:
+                      badgeColor = Colors.grey.shade600;
+                      label = 'Underperformer';
+                      icon = Icons.low_priority_rounded;
+                  }
 
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 10,
-                        ),
-                        decoration: BoxDecoration(
-                          color: badgeColor.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: badgeColor.withValues(alpha: 0.3),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      color: badgeColor.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: badgeColor.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(icon, size: 18, color: badgeColor),
+                        const SizedBox(width: 8),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(icon, size: 18, color: badgeColor),
-                            const SizedBox(width: 8),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  item.name,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                Text(
-                                  '$label • ${item.totalQuantitySold} sold • ${item.marginPercentage}% margin',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: badgeColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              item.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                            Text(
+                              '$label • ${item.totalQuantitySold} sold • ${item.marginPercentage}% margin',
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: badgeColor,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    }).toList(),
+                      ],
+                    ),
+                  );
+                }).toList(),
               ),
           ],
         ),
@@ -629,10 +617,9 @@ class _KpiMiniCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: BorderSide(
-          color:
-              isDark
-                  ? Colors.white.withValues(alpha: 0.08)
-                  : Colors.grey.withValues(alpha: 0.2),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : Colors.grey.withValues(alpha: 0.2),
         ),
       ),
       child: Padding(

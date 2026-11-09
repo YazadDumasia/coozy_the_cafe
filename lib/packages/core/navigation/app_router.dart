@@ -24,6 +24,8 @@ import '../../invoice_management/presentation/navigation/invoice_management_rout
 import '../../expenditure/presentation/navigation/expenditure_routes.dart';
 import '../../reports/presentation/navigation/reports_routes.dart';
 import '../../business_profile/presentation/navigation/business_profile_routes.dart';
+import '../../promotions_engine/presentation/navigation/promotions_engine_routes.dart';
+import '../../inventory_intelligence/presentation/navigation/inventory_intelligence_routes.dart';
 import 'app_routes.dart';
 
 final GlobalKey<NavigatorState> _rootNavigatorKey = shared.navigatorKey;
@@ -84,6 +86,8 @@ class AppRouter {
       ...ExpenditureRoutes.routes,
       ...ReportsRoutes.routes,
       ...BusinessProfileRoutes.routes,
+      ...PromotionsEngineRoutes.routes,
+      ...InventoryIntelligenceRoutes.routes,
     ],
 
     errorBuilder: (context, state) => Scaffold(

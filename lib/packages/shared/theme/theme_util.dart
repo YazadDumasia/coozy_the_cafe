@@ -134,25 +134,13 @@ class AnimateGradientColors {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     if (isDark) {
       return const AnimateGradientColors(
-        primaryColors: <Color>[
-          Color(0xff1c110c),
-          Color(0xff291811),
-        ],
-        secondaryColors: <Color>[
-          Color(0xff24140d),
-          Color(0xff120a06),
-        ],
+        primaryColors: <Color>[Color(0xff1c110c), Color(0xff291811)],
+        secondaryColors: <Color>[Color(0xff24140d), Color(0xff120a06)],
       );
     } else {
       return const AnimateGradientColors(
-        primaryColors: <Color>[
-          Color(0xffffe9e3),
-          Color(0xffffdbcf),
-        ],
-        secondaryColors: <Color>[
-          Color(0xffffd2c2),
-          Color(0xfffae4dd),
-        ],
+        primaryColors: <Color>[Color(0xffffe9e3), Color(0xffffdbcf)],
+        secondaryColors: <Color>[Color(0xffffd2c2), Color(0xfffae4dd)],
       );
     }
   }

@@ -116,6 +116,7 @@ class MenuItemVariationsTable extends BaseTable {
   RealColumn get sellingPrice => real().nullable()();
   IntColumn get stockQuantity => integer().nullable()();
   IntColumn get sortOrderIndex => integer().nullable()();
+  IntColumn get duration => integer().nullable()();
   TextColumn get creationDate => text().nullable()();
   TextColumn get modificationDate => text().nullable()();
 }
@@ -771,12 +772,19 @@ class CustomerLoyaltyTable extends BaseTable {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get hashId =>
       text().unique().clientDefault(() => const Uuid().v8())();
-  IntColumn get customerId =>
-      integer().unique().references(CustomersTable, #id, onDelete: KeyAction.cascade)();
+  IntColumn get customerId => integer().unique().references(
+    CustomersTable,
+    #id,
+    onDelete: KeyAction.cascade,
+  )();
   IntColumn get pointsBalance => integer().withDefault(const Constant(0))();
-  IntColumn get lifetimePointsEarned => integer().withDefault(const Constant(0))();
-  IntColumn get lifetimePointsRedeemed => integer().withDefault(const Constant(0))();
-  TextColumn get tier => text().withDefault(const Constant('Bronze'))(); // Bronze, Silver, Gold, VIP
+  IntColumn get lifetimePointsEarned =>
+      integer().withDefault(const Constant(0))();
+  IntColumn get lifetimePointsRedeemed =>
+      integer().withDefault(const Constant(0))();
+  TextColumn get tier => text().withDefault(
+    const Constant('Bronze'),
+  )(); // Bronze, Silver, Gold, VIP
   RealColumn get totalSpent => real().withDefault(const Constant(0.0))();
   IntColumn get totalVisits => integer().withDefault(const Constant(0))();
   TextColumn get lastVisitDate => text().nullable()();
@@ -798,8 +806,10 @@ class LoyaltyTransactionsTable extends BaseTable {
   IntColumn get customerId =>
       integer().references(CustomersTable, #id, onDelete: KeyAction.cascade)();
   IntColumn get orderId => integer().nullable().references(OrdersTable, #id)();
-  IntColumn get invoiceId => integer().nullable().references(InvoicesTable, #id)();
-  TextColumn get transactionType => text()(); // 'EARNED', 'REDEEMED', 'ADJUSTED'
+  IntColumn get invoiceId =>
+      integer().nullable().references(InvoicesTable, #id)();
+  TextColumn get transactionType =>
+      text()(); // 'EARNED', 'REDEEMED', 'ADJUSTED'
   IntColumn get points => integer()(); // Positive for earned/adjusted, positive amount deducted for redeemed
   RealColumn get billAmount => real().nullable()();
   TextColumn get notes => text().nullable()();
@@ -807,3 +817,93 @@ class LoyaltyTransactionsTable extends BaseTable {
       text().clientDefault(() => DateTime.now().toUtc().toIso8601String())();
 }
 
+@DataClassName('ComboData')
+@TableIndex(name: 'idx_combos_is_active', columns: {#isActive})
+@TableIndex(name: 'idx_combos_sort_order', columns: {#sortOrderIndex})
+class CombosTable extends BaseTable {
+  @override
+  String get tableName => 'combos';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  TextColumn get name => text()();
+  TextColumn get description => text().nullable()();
+  RealColumn get originalPrice => real().withDefault(const Constant(0.0))();
+  RealColumn get sellingPrice => real().withDefault(const Constant(0.0))();
+  IntColumn get duration => integer().nullable()();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get sortOrderIndex => integer().nullable()();
+  TextColumn get creationDate => text().nullable()();
+  TextColumn get modificationDate => text().nullable()();
+}
+
+@DataClassName('ComboItemData')
+@TableIndex(name: 'idx_combo_items_combo_id', columns: {#comboId})
+@TableIndex(name: 'idx_combo_items_menu_item_id', columns: {#menuItemId})
+class ComboItemsTable extends BaseTable {
+  @override
+  String get tableName => 'combo_items';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  IntColumn get comboId =>
+      integer().references(CombosTable, #id, onDelete: KeyAction.cascade)();
+  IntColumn get menuItemId =>
+      integer().references(MenuItemsTable, #id, onDelete: KeyAction.cascade)();
+  IntColumn get variationId => integer().nullable().references(
+    MenuItemVariationsTable,
+    #id,
+    onDelete: KeyAction.setNull,
+  )();
+  IntColumn get quantity => integer().withDefault(const Constant(1))();
+}
+
+@DataClassName('StockThresholdData')
+@TableIndex(name: 'idx_stock_threshold_inventory_id', columns: {#inventoryId})
+class StockThresholdsTable extends BaseTable {
+  @override
+  String get tableName => 'stock_thresholds';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  IntColumn get inventoryId => integer().unique().references(
+    InventoryTable,
+    #id,
+    onDelete: KeyAction.cascade,
+  )();
+  RealColumn get minThreshold => real().withDefault(const Constant(5.0))();
+  RealColumn get reorderQuantity => real().withDefault(const Constant(20.0))();
+  BoolColumn get isAutoReorderEnabled =>
+      boolean().withDefault(const Constant(false))();
+  TextColumn get preferredSupplier => text().nullable()();
+  RealColumn get preferredUnitCost => real().nullable()();
+  TextColumn get createdDate => text().nullable()();
+  TextColumn get modifiedDate => text().nullable()();
+}
+
+@DataClassName('StockAlertData')
+@TableIndex(name: 'idx_stock_alert_inventory_id', columns: {#inventoryId})
+@TableIndex(name: 'idx_stock_alert_status', columns: {#status})
+@TableIndex(name: 'idx_stock_alert_created_date', columns: {#createdDate})
+class StockAlertsTable extends BaseTable {
+  @override
+  String get tableName => 'stock_alerts';
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get hashId =>
+      text().unique().clientDefault(() => const Uuid().v8())();
+  IntColumn get inventoryId =>
+      integer().references(InventoryTable, #id, onDelete: KeyAction.cascade)();
+  TextColumn get inventoryName => text()();
+  RealColumn get currentStock => real()();
+  RealColumn get minThreshold => real()();
+  TextColumn get purchaseUnit => text().nullable()();
+  TextColumn get severity => text().withDefault(
+    const Constant('warning'),
+  )(); // 'warning', 'critical', 'out_of_stock'
+  TextColumn get status => text().withDefault(
+    const Constant('active'),
+  )(); // 'active', 'reordered', 'dismissed'
+  TextColumn get createdDate => text().nullable()();
+  TextColumn get resolvedDate => text().nullable()();
+  TextColumn get remarks => text().nullable()();
+}

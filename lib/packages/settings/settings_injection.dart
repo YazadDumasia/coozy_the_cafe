@@ -29,10 +29,6 @@ void registerSettingsDependencies(GetIt sl) {
     ),
   );
   sl.registerFactory<P2pSyncSettingsCubit>(
-    () => P2pSyncSettingsCubit(
-      syncService: sl<LocalP2pSyncService>(),
-    ),
+    () => P2pSyncSettingsCubit(syncService: sl<LocalP2pSyncService>()),
   );
 }
-
-

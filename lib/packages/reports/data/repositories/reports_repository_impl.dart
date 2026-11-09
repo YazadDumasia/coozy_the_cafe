@@ -155,26 +155,21 @@ class ReportsRepositoryImpl implements ReportsRepository {
     const engine = OfflineForecastingEngine();
 
     // 1. Fetch historical sales & orders for trend forecasting
-    final salesHistory =
-        await localDataSource.getDailySalesHistoryForForecast(
-          startIso: startIso,
-          endIso: endIso,
-        );
+    final salesHistory = await localDataSource.getDailySalesHistoryForForecast(
+      startIso: startIso,
+      endIso: endIso,
+    );
 
     // 2. Fetch hourly orders distribution
-    final hourlyDistribution =
-        await localDataSource.getHourlyOrderDistribution(
-          startIso: startIso,
-          endIso: endIso,
-        );
+    final hourlyDistribution = await localDataSource.getHourlyOrderDistribution(
+      startIso: startIso,
+      endIso: endIso,
+    );
 
     // 3. Fetch current inventory & consumption rates
     final currentInventory = await localDataSource.getInventoryStockReport();
-    final recentConsumption =
-        await localDataSource.getRecentInventoryConsumption(
-          startIso: startIso,
-          endIso: endIso,
-        );
+    final recentConsumption = await localDataSource
+        .getRecentInventoryConsumption(startIso: startIso, endIso: endIso);
 
     // 4. Fetch menu engineering popularity vs margin raw data
     final menuRawData = await localDataSource.getMenuEngineeringRawData(
@@ -191,8 +186,9 @@ class ReportsRepositoryImpl implements ReportsRepository {
     );
     final menuMatrix = engine.computeMenuEngineering(menuRawData);
 
-    final expectedTomorrow =
-        salesForecasts.isNotEmpty ? salesForecasts.first.predictedSales : 0.0;
+    final expectedTomorrow = salesForecasts.isNotEmpty
+        ? salesForecasts.first.predictedSales
+        : 0.0;
 
     double growthTrend = 0.0;
     if (salesHistory.length >= 2) {
@@ -225,4 +221,3 @@ class ReportsRepositoryImpl implements ReportsRepository {
     );
   }
 }
-

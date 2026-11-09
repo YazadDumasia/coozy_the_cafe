@@ -27,14 +27,12 @@ void registerBusinessProfileDependencies(GetIt sl) {
 
   // Use Cases
   sl.registerLazySingleton<GetBusinessProfileUseCase>(
-    () => GetBusinessProfileUseCase(
-      repository: sl<BusinessProfileRepository>(),
-    ),
+    () =>
+        GetBusinessProfileUseCase(repository: sl<BusinessProfileRepository>()),
   );
   sl.registerLazySingleton<SaveBusinessProfileUseCase>(
-    () => SaveBusinessProfileUseCase(
-      repository: sl<BusinessProfileRepository>(),
-    ),
+    () =>
+        SaveBusinessProfileUseCase(repository: sl<BusinessProfileRepository>()),
   );
 
   // Cubit

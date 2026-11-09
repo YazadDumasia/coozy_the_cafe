@@ -1,9 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 
 import '../../domain/entities/invoice_management_entity.dart';
+import '../../domain/services/invoice_pdf_generator.dart';
 import '../../domain/usecases/get_paginated_invoices_usecase.dart';
 import '../../domain/usecases/get_invoice_details_usecase.dart';
 import '../../domain/usecases/get_invoice_details_by_order_id_usecase.dart';
@@ -51,6 +54,53 @@ class InvoiceManagementBloc
     on<LoadInvoiceDetailsByHashIdEvent>(_onLoadInvoiceDetailsByHashId);
     on<UpdateInvoiceEvent>(_onUpdateInvoice);
     on<DeleteInvoiceEvent>(_onDeleteInvoice);
+    on<InvoicePdfPrebuiltCompletedEvent>(_onInvoicePdfPrebuiltCompleted);
+  }
+
+  void _onInvoicePdfPrebuiltCompleted(
+    InvoicePdfPrebuiltCompletedEvent event,
+    Emitter<InvoiceManagementState> emit,
+  ) {
+    final currentState = state;
+    if (currentState is InvoiceManagementLoadedState &&
+        currentState.selectedInvoiceDetails?.invoice.id == event.invoiceId) {
+      emit(
+        currentState.copyWith(
+          prebuiltThermalBytes: event.thermalBytes,
+          prebuiltA4Bytes: event.a4Bytes,
+          isGeneratingPdf: false,
+        ),
+      );
+    }
+  }
+
+  void _triggerBackgroundPdfPrebuild(InvoiceDetailsEntity details) {
+    Future(() async {
+      try {
+        final thermalBytes = await InvoicePdfGenerator.generatePdf(
+          details: details,
+          isA4Format: false,
+          is58mm: false,
+        );
+        final a4Bytes = await InvoicePdfGenerator.generatePdf(
+          details: details,
+          isA4Format: true,
+          is58mm: false,
+        );
+        add(
+          InvoicePdfPrebuiltCompletedEvent(
+            invoiceId: details.invoice.id,
+            thermalBytes: thermalBytes,
+            a4Bytes: a4Bytes,
+          ),
+        );
+      } catch (e) {
+        core.PlatformUtils.debugLog(
+          InvoiceManagementBloc,
+          'Background PDF prebuild in bloc failed: $e',
+        );
+      }
+    });
   }
 
   Future<void> _onLoadInvoices(
@@ -182,12 +232,16 @@ class InvoiceManagementBloc
             errorMessage: failure.message,
           ),
         ),
-        (details) => emit(
-          currentState.copyWith(
-            isLoadingDetails: false,
-            selectedInvoiceDetails: details,
-          ),
-        ),
+        (details) {
+          emit(
+            currentState.copyWith(
+              isLoadingDetails: false,
+              selectedInvoiceDetails: details,
+              isGeneratingPdf: true,
+            ),
+          );
+          _triggerBackgroundPdfPrebuild(details);
+        },
       );
     } else {
       emit(const InvoiceManagementLoadingState());
@@ -198,16 +252,20 @@ class InvoiceManagementBloc
       final result = await getInvoiceDetailsUseCase(event.invoiceId);
       result.fold(
         (failure) => emit(InvoiceManagementErrorState(failure.message)),
-        (details) => emit(
-          InvoiceManagementLoadedState(
-            invoices: const [],
-            totalCount: 0,
-            currentPage: 1,
-            hasReachedMax: true,
-            selectedInvoiceDetails: details,
-            paymentModes: modes,
-          ),
-        ),
+        (details) {
+          emit(
+            InvoiceManagementLoadedState(
+              invoices: const [],
+              totalCount: 0,
+              currentPage: 1,
+              hasReachedMax: true,
+              selectedInvoiceDetails: details,
+              paymentModes: modes,
+              isGeneratingPdf: true,
+            ),
+          );
+          _triggerBackgroundPdfPrebuild(details);
+        },
       );
     }
   }
@@ -227,12 +285,16 @@ class InvoiceManagementBloc
             errorMessage: failure.message,
           ),
         ),
-        (details) => emit(
-          currentState.copyWith(
-            isLoadingDetails: false,
-            selectedInvoiceDetails: details,
-          ),
-        ),
+        (details) {
+          emit(
+            currentState.copyWith(
+              isLoadingDetails: false,
+              selectedInvoiceDetails: details,
+              isGeneratingPdf: true,
+            ),
+          );
+          _triggerBackgroundPdfPrebuild(details);
+        },
       );
     } else {
       emit(const InvoiceManagementLoadingState());
@@ -243,16 +305,20 @@ class InvoiceManagementBloc
       final result = await getInvoiceDetailsByOrderIdUseCase(event.orderId);
       result.fold(
         (failure) => emit(InvoiceManagementErrorState(failure.message)),
-        (details) => emit(
-          InvoiceManagementLoadedState(
-            invoices: const [],
-            totalCount: 0,
-            currentPage: 1,
-            hasReachedMax: true,
-            selectedInvoiceDetails: details,
-            paymentModes: modes,
-          ),
-        ),
+        (details) {
+          emit(
+            InvoiceManagementLoadedState(
+              invoices: const [],
+              totalCount: 0,
+              currentPage: 1,
+              hasReachedMax: true,
+              selectedInvoiceDetails: details,
+              paymentModes: modes,
+              isGeneratingPdf: true,
+            ),
+          );
+          _triggerBackgroundPdfPrebuild(details);
+        },
       );
     }
   }
@@ -274,12 +340,16 @@ class InvoiceManagementBloc
             errorMessage: failure.message,
           ),
         ),
-        (details) => emit(
-          currentState.copyWith(
-            isLoadingDetails: false,
-            selectedInvoiceDetails: details,
-          ),
-        ),
+        (details) {
+          emit(
+            currentState.copyWith(
+              isLoadingDetails: false,
+              selectedInvoiceDetails: details,
+              isGeneratingPdf: true,
+            ),
+          );
+          _triggerBackgroundPdfPrebuild(details);
+        },
       );
     } else {
       emit(const InvoiceManagementLoadingState());
@@ -292,16 +362,20 @@ class InvoiceManagementBloc
       );
       result.fold(
         (failure) => emit(InvoiceManagementErrorState(failure.message)),
-        (details) => emit(
-          InvoiceManagementLoadedState(
-            invoices: const [],
-            totalCount: 0,
-            currentPage: 1,
-            hasReachedMax: true,
-            selectedInvoiceDetails: details,
-            paymentModes: modes,
-          ),
-        ),
+        (details) {
+          emit(
+            InvoiceManagementLoadedState(
+              invoices: const [],
+              totalCount: 0,
+              currentPage: 1,
+              hasReachedMax: true,
+              selectedInvoiceDetails: details,
+              paymentModes: modes,
+              isGeneratingPdf: true,
+            ),
+          );
+          _triggerBackgroundPdfPrebuild(details);
+        },
       );
     }
   }
@@ -321,12 +395,16 @@ class InvoiceManagementBloc
             errorMessage: failure.message,
           ),
         ),
-        (details) => emit(
-          currentState.copyWith(
-            isLoadingDetails: false,
-            selectedInvoiceDetails: details,
-          ),
-        ),
+        (details) {
+          emit(
+            currentState.copyWith(
+              isLoadingDetails: false,
+              selectedInvoiceDetails: details,
+              isGeneratingPdf: true,
+            ),
+          );
+          _triggerBackgroundPdfPrebuild(details);
+        },
       );
     } else {
       emit(const InvoiceManagementLoadingState());
@@ -337,16 +415,20 @@ class InvoiceManagementBloc
       final result = await getInvoiceDetailsByHashIdUseCase(event.hashId);
       result.fold(
         (failure) => emit(InvoiceManagementErrorState(failure.message)),
-        (details) => emit(
-          InvoiceManagementLoadedState(
-            invoices: const [],
-            totalCount: 0,
-            currentPage: 1,
-            hasReachedMax: true,
-            selectedInvoiceDetails: details,
-            paymentModes: modes,
-          ),
-        ),
+        (details) {
+          emit(
+            InvoiceManagementLoadedState(
+              invoices: const [],
+              totalCount: 0,
+              currentPage: 1,
+              hasReachedMax: true,
+              selectedInvoiceDetails: details,
+              paymentModes: modes,
+              isGeneratingPdf: true,
+            ),
+          );
+          _triggerBackgroundPdfPrebuild(details);
+        },
       );
     }
   }

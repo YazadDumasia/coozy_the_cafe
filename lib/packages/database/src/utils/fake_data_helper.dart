@@ -1919,6 +1919,7 @@ class FakeDataHelper {
                 sellingPrice: Value(sell),
                 stockQuantity: const Value(150),
                 sortOrderIndex: const Value(1),
+                duration: Value(item['dur'] as int?),
                 creationDate: Value(startDate.toIso8601String()),
               ),
             );
@@ -1942,6 +1943,9 @@ class FakeDataHelper {
                   sellingPrice: Value((vari['sell'] as num).toDouble()),
                   stockQuantity: const Value(100),
                   sortOrderIndex: Value(v + 1),
+                  duration: Value(
+                    (vari['dur'] as int?) ?? (item['dur'] as int?),
+                  ),
                   creationDate: Value(startDate.toIso8601String()),
                 ),
               );

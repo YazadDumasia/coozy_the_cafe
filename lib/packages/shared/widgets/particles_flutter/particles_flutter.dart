@@ -222,8 +222,7 @@ class _CircularParticleState extends State<CircularParticle>
               if (distance[index] < widget.awayRadius) {
                 setState(() => offsets[index] = awayAnimation[index].value);
               }
-              if (animController.isCompleted &&
-                  index == offsets.length - 1) {
+              if (animController.isCompleted && index == offsets.length - 1) {
                 animController.dispose();
                 if (awayAnimationController == animController) {
                   awayAnimationController = null;

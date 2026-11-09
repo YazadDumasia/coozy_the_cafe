@@ -12,6 +12,7 @@ class MenuItemVariation extends Equatable {
   final double? sellingPrice;
   final int? stockQuantity;
   final int? sortOrderIndex;
+  final int? duration;
   final String? creationDate;
   final String? modificationDate;
 
@@ -27,6 +28,7 @@ class MenuItemVariation extends Equatable {
     this.sellingPrice,
     this.stockQuantity,
     this.sortOrderIndex,
+    this.duration,
     this.creationDate,
     this.modificationDate,
   });
@@ -43,6 +45,7 @@ class MenuItemVariation extends Equatable {
     double? sellingPrice,
     int? stockQuantity,
     int? sortOrderIndex,
+    int? duration,
     String? creationDate,
     String? modificationDate,
   }) {
@@ -58,6 +61,7 @@ class MenuItemVariation extends Equatable {
       sellingPrice: sellingPrice ?? this.sellingPrice,
       stockQuantity: stockQuantity ?? this.stockQuantity,
       sortOrderIndex: sortOrderIndex ?? this.sortOrderIndex,
+      duration: duration ?? this.duration,
       creationDate: creationDate ?? this.creationDate,
       modificationDate: modificationDate ?? this.modificationDate,
     );
@@ -76,6 +80,7 @@ class MenuItemVariation extends Equatable {
     sellingPrice,
     stockQuantity,
     sortOrderIndex,
+    duration,
     creationDate,
     modificationDate,
   ];

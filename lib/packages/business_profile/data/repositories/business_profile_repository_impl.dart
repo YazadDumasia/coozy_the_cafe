@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
+
 import '../../domain/entities/business_profile_entity.dart';
 import '../../domain/repositories/business_profile_repository.dart';
 import '../datasources/business_profile_local_data_source.dart';

@@ -102,10 +102,9 @@ class CustomerListItem extends StatelessWidget {
             }
           },
           itemBuilder: (context) {
-            final isLoyaltyEnabled = shared.LocalManager.instance
-                    .getBoolValue(
-                      key: shared.PreferencesKeys.enableCustomerLoyalty,
-                    );
+            final isLoyaltyEnabled = shared.LocalManager.instance.getBoolValue(
+              key: shared.PreferencesKeys.enableCustomerLoyalty,
+            );
             return [
               if (isLoyaltyEnabled)
                 const PopupMenuItem(

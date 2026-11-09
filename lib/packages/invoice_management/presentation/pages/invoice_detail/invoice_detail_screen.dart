@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:coozy_the_cafe/packages/shared/gen/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +12,7 @@ import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 import '../../bloc/invoice_management_bloc.dart';
 import '../../../domain/entities/invoice_management_entity.dart';
+import '../../../domain/services/invoice_pdf_generator.dart';
 import 'invoice_detail_screen_actions.dart';
 
 class InvoiceDetailScreen extends StatefulWidget {
@@ -37,6 +40,10 @@ class InvoiceDetailScreen extends StatefulWidget {
 
 class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
   bool _hasUpdated = false;
+  Uint8List? _prebuiltThermalBytes;
+  Uint8List? _prebuiltA4Bytes;
+  bool _isPrebuildingPdf = false;
+  int? _prebuiltInvoiceId;
 
   @override
   void initState() {
@@ -63,6 +70,45 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     });
   }
 
+  /// Pre-generates the invoice PDF (thermal and A4) in the background
+  /// immediately after invoice details are loaded by the BLoC.
+  Future<void> _prebuildPdf(InvoiceDetailsEntity details) async {
+    if (_isPrebuildingPdf || _prebuiltInvoiceId == details.invoice.id) return;
+    _isPrebuildingPdf = true;
+
+    try {
+      final thermalBytes = await InvoicePdfGenerator.generatePdf(
+        details: details,
+        isA4Format: false,
+        is58mm: false,
+      );
+      if (mounted) {
+        setState(() {
+          _prebuiltThermalBytes = thermalBytes;
+          _prebuiltInvoiceId = details.invoice.id;
+        });
+      }
+
+      final a4Bytes = await InvoicePdfGenerator.generatePdf(
+        details: details,
+        isA4Format: true,
+        is58mm: false,
+      );
+      if (mounted) {
+        setState(() {
+          _prebuiltA4Bytes = a4Bytes;
+        });
+      }
+    } catch (e) {
+      core.PlatformUtils.debugLog(
+        InvoiceDetailScreen,
+        'Background pre-build PDF failed: $e',
+      );
+    } finally {
+      _isPrebuildingPdf = false;
+    }
+  }
+
   void _handleBackNavigation(BuildContext context) {
     if (widget.fromCheckout) {
       context.go(core.AppRoutePath.homeRoute);
@@ -75,10 +121,17 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     }
   }
 
-  List<Widget> _buildAppBarActions(BuildContext context) {
+  List<Widget> _buildAppBarActions(
+    BuildContext context, {
+    Uint8List? prebuiltThermalBytes,
+    Uint8List? prebuiltA4Bytes,
+  }) {
     final bool isMobile = shared.ResponsiveLayout.isMobile(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    final thermal = prebuiltThermalBytes ?? _prebuiltThermalBytes;
+    final a4 = prebuiltA4Bytes ?? _prebuiltA4Bytes;
 
     if (isMobile) {
       return [
@@ -103,7 +156,11 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
           onSelected: (value) {
             switch (value) {
               case 'preview':
-                InvoiceDetailScreenActions.onPreviewPdf(context);
+                InvoiceDetailScreenActions.onPreviewPdf(
+                  context,
+                  prebuiltThermalBytes: thermal,
+                  prebuiltA4Bytes: a4,
+                );
                 break;
               case 'print':
                 InvoiceDetailScreenActions.onPrint(context);
@@ -235,7 +292,11 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
               track: shared.TrackConstants.invoicePageTrack,
             ) ??
             'Preview PDF',
-        onPressed: () => InvoiceDetailScreenActions.onPreviewPdf(context),
+        onPressed: () => InvoiceDetailScreenActions.onPreviewPdf(
+          context,
+          prebuiltThermalBytes: thermal,
+          prebuiltA4Bytes: a4,
+        ),
       ),
       IconButton(
         icon: const Icon(Icons.share_outlined),
@@ -295,6 +356,14 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
+    final state = context.watch<InvoiceManagementBloc>().state;
+    Uint8List? prebuiltThermal;
+    Uint8List? prebuiltA4;
+    if (state is InvoiceManagementLoadedState) {
+      prebuiltThermal = state.prebuiltThermalBytes;
+      prebuiltA4 = state.prebuiltA4Bytes;
+    }
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) {
@@ -318,9 +387,19 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => _handleBackNavigation(context),
             ),
-            actions: _buildAppBarActions(context),
+            actions: _buildAppBarActions(
+              context,
+              prebuiltThermalBytes: prebuiltThermal,
+              prebuiltA4Bytes: prebuiltA4,
+            ),
           ),
-          body: BlocBuilder<InvoiceManagementBloc, InvoiceManagementState>(
+          body: BlocConsumer<InvoiceManagementBloc, InvoiceManagementState>(
+            listener: (context, state) {
+              if (state is InvoiceManagementLoadedState &&
+                  state.selectedInvoiceDetails != null) {
+                _prebuildPdf(state.selectedInvoiceDetails!);
+              }
+            },
             builder: (context, state) {
               InvoiceDetailsEntity? details;
               if (state is InvoiceManagementLoadedState) {
@@ -333,16 +412,48 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                 return const shared.LoadingPage();
               }
 
-              final inv =
-                  details?.invoice ??
-                  widget.initialInvoice ??
-                  InvoiceEntity(
-                    id: widget.invoiceId,
-                    hashId: 'MD-11788',
-                    netPaymentAmount: 640.0,
-                    paymentMethodName: 'UPI / BHIM',
-                    createdDate: DateTime.now().toIso8601String(),
-                  );
+              if (state is InvoiceManagementLoadingState) {
+                return const shared.LoadingPage();
+              }
+
+              final inv = details?.invoice ?? widget.initialInvoice;
+              if (inv == null) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.receipt_long_outlined,
+                        size: 64,
+                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        context.tr(
+                              shared.LocaleKeys.commonNoDataFoundMsg,
+                              track: shared.TrackConstants.commonTrack,
+                            ) ??
+                            'Invoice details not found',
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      ElevatedButton.icon(
+                        icon: const Icon(Icons.arrow_back),
+                        label: Text(
+                          context.tr(
+                                shared.LocaleKeys.commonBack,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Go Back',
+                        ),
+                        onPressed: () => _handleBackNavigation(context),
+                      ),
+                    ],
+                  ),
+                );
+              }
 
               final items = details?.items ?? [];
 

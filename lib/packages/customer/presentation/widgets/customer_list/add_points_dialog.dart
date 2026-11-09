@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
+
 import '../../../domain/entities/customer_entity.dart';
 import '../../../domain/usecases/customer_usecases.dart';
 
@@ -29,9 +30,7 @@ class AddPointsDialog extends StatefulWidget {
             borderRadius: BorderRadius.circular(20),
           ),
           child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: isDesktop ? 480 : 420,
-            ),
+            constraints: BoxConstraints(maxWidth: isDesktop ? 480 : 420),
             child: SingleChildScrollView(
               child: AddPointsDialog(customer: customer),
             ),

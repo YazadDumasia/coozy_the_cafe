@@ -82,8 +82,10 @@ class CustomerRepositoryImpl implements CustomerRepository {
   Future<CustomerLoyaltyEntity?> getCustomerLoyalty(int customerId) async {
     final map = await _customersDao.getCustomerLoyalty(customerId);
     if (map == null) return null;
-    final rate = shared.LocalManager.instance
-            .getDoubleValue(key: shared.PreferencesKeys.loyaltyPointsExchangeRate) ??
+    final rate =
+        shared.LocalManager.instance.getDoubleValue(
+          key: shared.PreferencesKeys.loyaltyPointsExchangeRate,
+        ) ??
         0.50;
     return CustomerLoyaltyEntity.fromMap(map, exchangeRate: rate);
   }
@@ -97,7 +99,8 @@ class CustomerRepositoryImpl implements CustomerRepository {
     int? invoiceId,
     String? notes,
   }) async {
-    final defaultTier = shared.LocalManager.instance.getLocaleKeys(
+    final defaultTier =
+        shared.LocalManager.instance.getLocaleKeys(
           key: shared.PreferencesKeys.loyaltyDefaultTier,
         ) ??
         'Bronze';
@@ -128,7 +131,9 @@ class CustomerRepositoryImpl implements CustomerRepository {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getLoyaltyTransactions(int customerId) async {
+  Future<List<Map<String, dynamic>>> getLoyaltyTransactions(
+    int customerId,
+  ) async {
     return await _customersDao.getLoyaltyTransactions(customerId);
   }
 

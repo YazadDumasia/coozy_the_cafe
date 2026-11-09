@@ -39,10 +39,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   );
   final ValueNotifier<bool> _enableQrScannerOrderPlacementNotifier =
       ValueNotifier(false);
-  final ValueNotifier<bool> _enableCustomerLoyaltyNotifier =
-      ValueNotifier(false);
-  final ValueNotifier<double> _loyaltyExchangeRateNotifier =
-      ValueNotifier(0.50);
+  final ValueNotifier<bool> _enableCustomerLoyaltyNotifier = ValueNotifier(
+    false,
+  );
+  final ValueNotifier<double> _loyaltyExchangeRateNotifier = ValueNotifier(
+    0.50,
+  );
   late final TextEditingController _loyaltyExchangeRateController;
   late final FocusNode _loyaltyExchangeRateFocusNode;
 
@@ -55,7 +57,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
     'Gold',
     'VIP',
   ]);
-  final ValueNotifier<String> _loyaltyDefaultTierNotifier = ValueNotifier('Bronze');
+  final ValueNotifier<String> _loyaltyDefaultTierNotifier = ValueNotifier(
+    'Bronze',
+  );
   final ValueNotifier<String> _selectedCurrencySymbolNotifier = ValueNotifier(
     '₹',
   );
@@ -140,37 +144,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
     final isEnabled = prefs.getBool(_prefKeyFakeData) ?? false;
     _isFakeDataEnabledNotifier.value = isEnabled;
     _autoPrintKitchenSlipNotifier.value = shared.LocalManager.instance
-        .getBoolValue(
-          key: shared.PreferencesKeys.autoPrintKitchenOrderSlip,
-        );
+        .getBoolValue(key: shared.PreferencesKeys.autoPrintKitchenOrderSlip);
     _autoPrintCustomerReceiptNotifier.value = shared.LocalManager.instance
-        .getBoolValue(
-          key: shared.PreferencesKeys.autoPrintCustomerReceipt,
-        );
+        .getBoolValue(key: shared.PreferencesKeys.autoPrintCustomerReceipt);
     _enableDetailedItemRemarksNotifier.value = shared.LocalManager.instance
-        .getBoolValue(
-          key: shared.PreferencesKeys.enableDetailedItemRemarks,
-        );
+        .getBoolValue(key: shared.PreferencesKeys.enableDetailedItemRemarks);
     _enableQrScannerOrderPlacementNotifier.value = shared.LocalManager.instance
         .getBoolValue(
           key: shared.PreferencesKeys.enableQrScannerOrderPlacement,
         );
     _enableCustomerLoyaltyNotifier.value = shared.LocalManager.instance
-        .getBoolValue(
-          key: shared.PreferencesKeys.enableCustomerLoyalty,
-        );
-    final savedExchangeRate = shared.LocalManager.instance
-            .getDoubleValue(
-              key: shared.PreferencesKeys.loyaltyPointsExchangeRate,
-            ) ??
+        .getBoolValue(key: shared.PreferencesKeys.enableCustomerLoyalty);
+    final savedExchangeRate =
+        shared.LocalManager.instance.getDoubleValue(
+          key: shared.PreferencesKeys.loyaltyPointsExchangeRate,
+        ) ??
         0.50;
     _loyaltyExchangeRateNotifier.value = savedExchangeRate;
-    _loyaltyExchangeRateController.text =
-        savedExchangeRate.toStringAsFixed(2);
+    _loyaltyExchangeRateController.text = savedExchangeRate.toStringAsFixed(2);
 
     final tiersEnabled = shared.LocalManager.instance.getBoolValue(
-          key: shared.PreferencesKeys.enableLoyaltyTiers,
-        );
+      key: shared.PreferencesKeys.enableLoyaltyTiers,
+    );
     _enableLoyaltyTiersNotifier.value = tiersEnabled;
 
     final savedConfigsJson = shared.LocalManager.instance.getLocaleKeys(
@@ -185,13 +180,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
     if (savedTiers != null && savedTiers.isNotEmpty) {
       _loyaltyTiersListNotifier.value = savedTiers;
     } else {
-      _loyaltyTiersListNotifier.value = loadedConfigs.map((e) => e.name).toList();
+      _loyaltyTiersListNotifier.value = loadedConfigs
+          .map((e) => e.name)
+          .toList();
     }
 
     final savedDefaultTier = shared.LocalManager.instance.getLocaleKeys(
       key: shared.PreferencesKeys.loyaltyDefaultTier,
     );
-    _loyaltyDefaultTierNotifier.value = (savedDefaultTier != null && savedDefaultTier.isNotEmpty)
+    _loyaltyDefaultTierNotifier.value =
+        (savedDefaultTier != null && savedDefaultTier.isNotEmpty)
         ? savedDefaultTier
         : (loadedConfigs.firstOrNull?.name ?? 'Bronze');
 
@@ -1129,7 +1127,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     Text(
                                       _tr(
                                         context,
-                                        shared.LocaleKeys.settingsDarkThemeLabel,
+                                        shared
+                                            .LocaleKeys
+                                            .settingsDarkThemeLabel,
                                         'Dark Theme',
                                       ),
                                       style: TextStyle(
@@ -1166,21 +1166,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               Switch.adaptive(
                                 value: isDark,
                                 activeThumbColor: colorScheme.primary,
-                                activeTrackColor: colorScheme.primary.withValues(alpha: 0.38),
-                                thumbIcon: WidgetStateProperty.resolveWith<Icon?>((states) {
-                                  if (states.contains(WidgetState.selected)) {
-                                    return Icon(
-                                      Icons.dark_mode_rounded,
-                                      size: 16,
-                                      color: colorScheme.onPrimary,
-                                    );
-                                  }
-                                  return Icon(
-                                    Icons.light_mode_rounded,
-                                    size: 16,
-                                    color: colorScheme.onSurfaceVariant,
-                                  );
-                                }),
+                                activeTrackColor: colorScheme.primary
+                                    .withValues(alpha: 0.38),
+                                thumbIcon:
+                                    WidgetStateProperty.resolveWith<Icon?>((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.selected,
+                                      )) {
+                                        return Icon(
+                                          Icons.dark_mode_rounded,
+                                          size: 16,
+                                          color: colorScheme.onPrimary,
+                                        );
+                                      }
+                                      return Icon(
+                                        Icons.light_mode_rounded,
+                                        size: 16,
+                                        color: colorScheme.onSurfaceVariant,
+                                      );
+                                    }),
                                 onChanged: (value) {
                                   context.read<shared.ThemeBloc>().add(
                                     shared.ThemeToggleRequested(value),
@@ -1517,30 +1523,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   activeThumbColor: theme.primaryColor,
                                   onChanged: (value) async {
                                     if (value) {
-                                      final config = await LoyaltyTierSetupDialog.show(
-                                        context,
-                                        initialTiersEnabled:
-                                            _enableLoyaltyTiersNotifier.value,
-                                        initialTierConfigs:
-                                            _loyaltyTierConfigsNotifier.value,
-                                        initialDefaultTier:
-                                            _loyaltyDefaultTierNotifier.value,
-                                      );
+                                      final config =
+                                          await LoyaltyTierSetupDialog.show(
+                                            context,
+                                            initialTiersEnabled:
+                                                _enableLoyaltyTiersNotifier
+                                                    .value,
+                                            initialTierConfigs:
+                                                _loyaltyTierConfigsNotifier
+                                                    .value,
+                                            initialDefaultTier:
+                                                _loyaltyDefaultTierNotifier
+                                                    .value,
+                                          );
 
                                       if (config != null) {
                                         final tiersEnabled =
                                             config['tiersEnabled'] as bool? ??
-                                                false;
+                                            false;
                                         final tierConfigs =
                                             (config['tierConfigs'] as List?)
-                                                    ?.cast<LoyaltyTierConfig>() ??
-                                                _loyaltyTierConfigsNotifier.value;
-                                        final tiers = (config['tiers'] as List?)
+                                                ?.cast<LoyaltyTierConfig>() ??
+                                            _loyaltyTierConfigsNotifier.value;
+                                        final tiers =
+                                            (config['tiers'] as List?)
                                                 ?.cast<String>() ??
-                                            tierConfigs.map((e) => e.name).toList();
+                                            tierConfigs
+                                                .map((e) => e.name)
+                                                .toList();
                                         final defaultTier =
                                             config['defaultTier'] as String? ??
-                                                'Bronze';
+                                            'Bronze';
 
                                         _enableLoyaltyTiersNotifier.value =
                                             tiersEnabled;
@@ -1552,30 +1565,35 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
                                         await shared.LocalManager.instance
                                             .setBoolValue(
-                                          key: shared.PreferencesKeys
-                                              .enableLoyaltyTiers,
-                                          value: tiersEnabled,
-                                        );
+                                              key: shared
+                                                  .PreferencesKeys
+                                                  .enableLoyaltyTiers,
+                                              value: tiersEnabled,
+                                            );
                                         await shared.LocalManager.instance
                                             .setStringList(
-                                          key: shared.PreferencesKeys
-                                              .loyaltyTiersList,
-                                          value: tiers,
-                                        );
+                                              key: shared
+                                                  .PreferencesKeys
+                                                  .loyaltyTiersList,
+                                              value: tiers,
+                                            );
                                         await shared.LocalManager.instance
                                             .setLocaleKeys(
-                                          key: shared.PreferencesKeys
-                                              .loyaltyTierThresholds,
-                                          value: LoyaltyTierConfig.encodeList(
-                                            tierConfigs,
-                                          ),
-                                        );
+                                              key: shared
+                                                  .PreferencesKeys
+                                                  .loyaltyTierThresholds,
+                                              value:
+                                                  LoyaltyTierConfig.encodeList(
+                                                    tierConfigs,
+                                                  ),
+                                            );
                                         await shared.LocalManager.instance
                                             .setLocaleKeys(
-                                          key: shared.PreferencesKeys
-                                              .loyaltyDefaultTier,
-                                          value: defaultTier,
-                                        );
+                                              key: shared
+                                                  .PreferencesKeys
+                                                  .loyaltyDefaultTier,
+                                              value: defaultTier,
+                                            );
                                       }
                                     }
 
@@ -1583,10 +1601,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         value;
                                     await shared.LocalManager.instance
                                         .setBoolValue(
-                                      key: shared.PreferencesKeys
-                                          .enableCustomerLoyalty,
-                                      value: value,
-                                    );
+                                          key: shared
+                                              .PreferencesKeys
+                                              .enableCustomerLoyalty,
+                                          value: value,
+                                        );
                                   },
                                 );
                               },
@@ -1596,21 +1615,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         ValueListenableBuilder<bool>(
                           valueListenable: _enableCustomerLoyaltyNotifier,
                           builder: (context, isLoyaltyEnabled, _) {
-                            if (!isLoyaltyEnabled) return const SizedBox.shrink();
+                            if (!isLoyaltyEnabled) {
+                              return const SizedBox.shrink();
+                            }
                             return Column(
                               children: [
                                 const SizedBox(height: 12),
                                 Container(
                                   padding: const EdgeInsets.all(14),
                                   decoration: BoxDecoration(
-                                    color: theme.primaryColor.withValues(alpha: 0.05),
+                                    color: theme.primaryColor.withValues(
+                                      alpha: 0.05,
+                                    ),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: theme.primaryColor.withValues(alpha: 0.15),
+                                      color: theme.primaryColor.withValues(
+                                        alpha: 0.15,
+                                      ),
                                     ),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -1648,7 +1674,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                         ),
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: theme.textTheme.bodySmall?.color
+                                          color: theme
+                                              .textTheme
+                                              .bodySmall
+                                              ?.color
                                               ?.withValues(alpha: 0.7),
                                         ),
                                       ),
@@ -1668,35 +1697,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                       _loyaltyExchangeRateFocusNode,
                                                   keyboardType:
                                                       const TextInputType.numberWithOptions(
-                                                    decimal: true,
-                                                  ),
+                                                        decimal: true,
+                                                      ),
                                                   decoration: InputDecoration(
-                                                    prefixText: '$currencySymbol ',
+                                                    prefixText:
+                                                        '$currencySymbol ',
                                                     isDense: true,
                                                     contentPadding:
                                                         const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 10,
-                                                    ),
+                                                          horizontal: 12,
+                                                          vertical: 10,
+                                                        ),
                                                     border: OutlineInputBorder(
                                                       borderRadius:
-                                                          BorderRadius.circular(8),
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
                                                     ),
                                                   ),
                                                   onChanged: (text) async {
-                                                    final val =
-                                                        double.tryParse(text.trim());
-                                                    if (val != null && val >= 0) {
+                                                    final val = double.tryParse(
+                                                      text.trim(),
+                                                    );
+                                                    if (val != null &&
+                                                        val >= 0) {
                                                       _loyaltyExchangeRateNotifier
-                                                          .value = val;
-                                                      await shared.LocalManager
+                                                              .value =
+                                                          val;
+                                                      await shared
+                                                          .LocalManager
                                                           .instance
                                                           .setDoubleValue(
-                                                        key: shared
-                                                            .PreferencesKeys
-                                                            .loyaltyPointsExchangeRate,
-                                                        value: val,
-                                                      );
+                                                            key: shared
+                                                                .PreferencesKeys
+                                                                .loyaltyPointsExchangeRate,
+                                                            value: val,
+                                                          );
                                                     }
                                                   },
                                                 );
@@ -1709,15 +1745,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                               valueListenable:
                                                   _loyaltyExchangeRateNotifier,
                                               builder: (context, rate, _) {
-                                                return ValueListenableBuilder<String>(
+                                                return ValueListenableBuilder<
+                                                  String
+                                                >(
                                                   valueListenable:
                                                       _selectedCurrencySymbolNotifier,
                                                   builder: (context, symbol, _) {
                                                     return Text(
                                                       '1 pt = $symbol${rate.toStringAsFixed(2)}',
                                                       style: TextStyle(
-                                                        fontWeight: FontWeight.w600,
-                                                        color: theme.primaryColor,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            theme.primaryColor,
                                                         fontSize: 13,
                                                       ),
                                                     );
@@ -1735,14 +1775,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 Container(
                                   padding: const EdgeInsets.all(14),
                                   decoration: BoxDecoration(
-                                    color: theme.primaryColor.withValues(alpha: 0.05),
+                                    color: theme.primaryColor.withValues(
+                                      alpha: 0.05,
+                                    ),
                                     borderRadius: BorderRadius.circular(12),
                                     border: Border.all(
-                                      color: theme.primaryColor.withValues(alpha: 0.15),
+                                      color: theme.primaryColor.withValues(
+                                        alpha: 0.15,
+                                      ),
                                     ),
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
                                         children: [
@@ -1763,71 +1808,107 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                           ),
                                           OutlinedButton.icon(
                                             onPressed: () async {
-                                              final config = await LoyaltyTierSetupDialog.show(
-                                                context,
-                                                initialTiersEnabled:
-                                                    _enableLoyaltyTiersNotifier.value,
-                                                initialTierConfigs:
-                                                    _loyaltyTierConfigsNotifier.value,
-                                                initialDefaultTier:
-                                                    _loyaltyDefaultTierNotifier.value,
-                                              );
+                                              final config =
+                                                  await LoyaltyTierSetupDialog.show(
+                                                    context,
+                                                    initialTiersEnabled:
+                                                        _enableLoyaltyTiersNotifier
+                                                            .value,
+                                                    initialTierConfigs:
+                                                        _loyaltyTierConfigsNotifier
+                                                            .value,
+                                                    initialDefaultTier:
+                                                        _loyaltyDefaultTierNotifier
+                                                            .value,
+                                                  );
                                               if (config != null) {
                                                 final tiersEnabled =
-                                                    config['tiersEnabled'] as bool? ??
-                                                        false;
+                                                    config['tiersEnabled']
+                                                        as bool? ??
+                                                    false;
                                                 final tierConfigs =
-                                                    (config['tierConfigs'] as List?)
-                                                            ?.cast<LoyaltyTierConfig>() ??
-                                                        _loyaltyTierConfigsNotifier.value;
-                                                final tiers = (config['tiers'] as List?)
+                                                    (config['tierConfigs']
+                                                            as List?)
+                                                        ?.cast<
+                                                          LoyaltyTierConfig
+                                                        >() ??
+                                                    _loyaltyTierConfigsNotifier
+                                                        .value;
+                                                final tiers =
+                                                    (config['tiers'] as List?)
                                                         ?.cast<String>() ??
-                                                    tierConfigs.map((e) => e.name).toList();
+                                                    tierConfigs
+                                                        .map((e) => e.name)
+                                                        .toList();
                                                 final defaultTier =
-                                                    config['defaultTier'] as String? ??
-                                                        'Bronze';
+                                                    config['defaultTier']
+                                                        as String? ??
+                                                    'Bronze';
 
-                                                _enableLoyaltyTiersNotifier.value =
+                                                _enableLoyaltyTiersNotifier
+                                                        .value =
                                                     tiersEnabled;
-                                                _loyaltyTierConfigsNotifier.value =
+                                                _loyaltyTierConfigsNotifier
+                                                        .value =
                                                     tierConfigs;
-                                                _loyaltyTiersListNotifier.value =
+                                                _loyaltyTiersListNotifier
+                                                        .value =
                                                     tiers;
-                                                _loyaltyDefaultTierNotifier.value =
+                                                _loyaltyDefaultTierNotifier
+                                                        .value =
                                                     defaultTier;
 
-                                                await shared.LocalManager.instance
+                                                await shared
+                                                    .LocalManager
+                                                    .instance
                                                     .setBoolValue(
-                                                  key: shared.PreferencesKeys
-                                                      .enableLoyaltyTiers,
-                                                  value: tiersEnabled,
-                                                );
-                                                await shared.LocalManager.instance
+                                                      key: shared
+                                                          .PreferencesKeys
+                                                          .enableLoyaltyTiers,
+                                                      value: tiersEnabled,
+                                                    );
+                                                await shared
+                                                    .LocalManager
+                                                    .instance
                                                     .setStringList(
-                                                  key: shared.PreferencesKeys
-                                                      .loyaltyTiersList,
-                                                  value: tiers,
-                                                );
-                                                await shared.LocalManager.instance
+                                                      key: shared
+                                                          .PreferencesKeys
+                                                          .loyaltyTiersList,
+                                                      value: tiers,
+                                                    );
+                                                await shared
+                                                    .LocalManager
+                                                    .instance
                                                     .setLocaleKeys(
-                                                  key: shared.PreferencesKeys
-                                                      .loyaltyTierThresholds,
-                                                  value: LoyaltyTierConfig.encodeList(
-                                                    tierConfigs,
-                                                  ),
-                                                );
-                                                await shared.LocalManager.instance
+                                                      key: shared
+                                                          .PreferencesKeys
+                                                          .loyaltyTierThresholds,
+                                                      value:
+                                                          LoyaltyTierConfig.encodeList(
+                                                            tierConfigs,
+                                                          ),
+                                                    );
+                                                await shared
+                                                    .LocalManager
+                                                    .instance
                                                     .setLocaleKeys(
-                                                  key: shared.PreferencesKeys
-                                                      .loyaltyDefaultTier,
-                                                  value: defaultTier,
-                                                );
+                                                      key: shared
+                                                          .PreferencesKeys
+                                                          .loyaltyDefaultTier,
+                                                      value: defaultTier,
+                                                    );
                                               }
                                             },
-                                            icon: const Icon(Icons.settings, size: 14),
-                                            label: const Text('Configure Tiers'),
+                                            icon: const Icon(
+                                              Icons.settings,
+                                              size: 14,
+                                            ),
+                                            label: const Text(
+                                              'Configure Tiers',
+                                            ),
                                             style: OutlinedButton.styleFrom(
-                                              visualDensity: VisualDensity.compact,
+                                              visualDensity:
+                                                  VisualDensity.compact,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(8),
@@ -1846,23 +1927,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                               'Tiers are disabled. Customers earn & redeem points without status tiers.',
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                color: theme.textTheme.bodySmall?.color
+                                                color: theme
+                                                    .textTheme
+                                                    .bodySmall
+                                                    ?.color
                                                     ?.withValues(alpha: 0.7),
                                               ),
                                             );
                                           }
 
-                                          return ValueListenableBuilder<List<LoyaltyTierConfig>>(
+                                          return ValueListenableBuilder<
+                                            List<LoyaltyTierConfig>
+                                          >(
                                             valueListenable:
                                                 _loyaltyTierConfigsNotifier,
                                             builder: (context, configs, _) {
-                                              return ValueListenableBuilder<String>(
+                                              return ValueListenableBuilder<
+                                                String
+                                              >(
                                                 valueListenable:
                                                     _loyaltyDefaultTierNotifier,
                                                 builder: (context, defaultTier, _) {
                                                   return Column(
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
                                                       Text(
                                                         "Active tiers (${configs.length}): Starting tier is \"$defaultTier\"",
@@ -1873,58 +1962,78 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                                               .bodySmall
                                                               ?.color
                                                               ?.withValues(
-                                                                  alpha: 0.7),
+                                                                alpha: 0.7,
+                                                              ),
                                                         ),
                                                       ),
                                                       const SizedBox(height: 8),
                                                       Wrap(
                                                         spacing: 6,
                                                         runSpacing: 6,
-                                                        children: configs.map((tierConfig) {
+                                                        children: configs.map((
+                                                          tierConfig,
+                                                        ) {
                                                           final isDefault =
-                                                              tierConfig.name.toLowerCase() ==
-                                                                  defaultTier
-                                                                      .toLowerCase();
-                                                          final tierColor = tierConfig.color;
+                                                              tierConfig.name
+                                                                  .toLowerCase() ==
+                                                              defaultTier
+                                                                  .toLowerCase();
+                                                          final tierColor =
+                                                              tierConfig.color;
                                                           return Chip(
                                                             avatar: Container(
                                                               width: 14,
                                                               height: 14,
-                                                              decoration: BoxDecoration(
-                                                                color: tierColor,
-                                                                shape: BoxShape.circle,
-                                                              ),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                    color:
+                                                                        tierColor,
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                  ),
                                                               child: Icon(
                                                                 isDefault
                                                                     ? Icons.star
-                                                                    : Icons.military_tech,
+                                                                    : Icons
+                                                                          .military_tech,
                                                                 size: 10,
-                                                                color: Colors.white,
+                                                                color: Colors
+                                                                    .white,
                                                               ),
                                                             ),
                                                             label: Text(
                                                               isDefault
                                                                   ? "${tierConfig.name} (${tierConfig.minPoints}+ pts) [Default]"
                                                                   : "${tierConfig.name} (${tierConfig.minPoints}+ pts)",
-                                                              style:
-                                                                  TextStyle(
+                                                              style: TextStyle(
                                                                 fontSize: 11,
                                                                 fontWeight:
-                                                                    FontWeight.bold,
+                                                                    FontWeight
+                                                                        .bold,
                                                                 color: isDefault
-                                                                    ? theme.colorScheme.onPrimary
+                                                                    ? theme
+                                                                          .colorScheme
+                                                                          .onPrimary
                                                                     : tierColor,
                                                               ),
                                                             ),
                                                             visualDensity:
-                                                                VisualDensity.compact,
-                                                            backgroundColor: isDefault
-                                                                ? theme.primaryColor
-                                                                : tierColor.withValues(alpha: 0.12),
-                                                            padding: const EdgeInsets.symmetric(
-                                                              horizontal: 6,
-                                                              vertical: 2,
-                                                            ),
+                                                                VisualDensity
+                                                                    .compact,
+                                                            backgroundColor:
+                                                                isDefault
+                                                                ? theme
+                                                                      .primaryColor
+                                                                : tierColor
+                                                                      .withValues(
+                                                                        alpha:
+                                                                            0.12,
+                                                                      ),
+                                                            padding:
+                                                                const EdgeInsets.symmetric(
+                                                                  horizontal: 6,
+                                                                  vertical: 2,
+                                                                ),
                                                           );
                                                         }).toList(),
                                                       ),
@@ -2078,10 +2187,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton.icon(
-                            icon: const Icon(
-                              Icons.share_rounded,
-                              size: 18,
-                            ),
+                            icon: const Icon(Icons.share_rounded, size: 18),
                             label: Text(
                               _tr(
                                 context,
@@ -2090,13 +2196,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                             onPressed: () async {
-                              final saved = await InvoiceShareConfigDialog.show(context);
+                              final saved = await InvoiceShareConfigDialog.show(
+                                context,
+                              );
                               if (saved == true && context.mounted) {
                                 shared.SnackBarUtils.showSuccess(
                                   context,
                                   message: _tr(
                                     context,
-                                    shared.LocaleKeys.settingsInvoiceShareSavedSuccess,
+                                    shared
+                                        .LocaleKeys
+                                        .settingsInvoiceShareSavedSuccess,
                                     'Share message template saved successfully!',
                                   ),
                                 );
@@ -2763,7 +2873,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     leading: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.secondary.withValues(alpha: 0.1),
+                        color: theme.colorScheme.secondary.withValues(
+                          alpha: 0.1,
+                        ),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
@@ -2795,9 +2907,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       size: 16,
                     ),
                     onTap: () {
-                      context.push(
-                        core.AppRoutePath.developerScreenRoute,
-                      );
+                      context.push(core.AppRoutePath.developerScreenRoute);
                     },
                   ),
                 ),
@@ -2811,7 +2921,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     shared.LocaleKeys.settingsDatabaseSection,
                     'Database Management',
                   ),
-                  style: theme.textTheme.titleSmall?.copyWith(
+                  style:
+                      theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: theme.colorScheme.onSurfaceVariant,
                       ) ??

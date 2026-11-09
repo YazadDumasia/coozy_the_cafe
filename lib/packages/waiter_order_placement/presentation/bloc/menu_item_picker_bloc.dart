@@ -25,6 +25,7 @@ class MenuItemPickerBloc
     on<LoadMenuCatalogEvent>(_onLoadMenuCatalog);
     on<SelectCategoryTabEvent>(_onSelectCategoryTab);
     on<AddItemToCartEvent>(_onAddItemToCart);
+    on<AddCustomCartItemEvent>(_onAddCustomCartItem);
     on<RemoveItemFromCartEvent>(_onRemoveItemFromCart);
     on<UpdateCartItemQuantityEvent>(_onUpdateCartItemQuantity);
     on<UpdateCartItemRemarksEvent>(_onUpdateCartItemRemarks);
@@ -132,6 +133,34 @@ class MenuItemPickerBloc
             categoryId: event.categoryId ?? event.item.categoryId,
           ),
         );
+      }
+
+      emit(currentState.copyWith(cartItems: currentCart));
+    }
+  }
+
+  void _onAddCustomCartItem(
+    AddCustomCartItemEvent event,
+    Emitter<MenuItemPickerState> emit,
+  ) {
+    if (state is MenuItemPickerLoadedState) {
+      final currentState = state as MenuItemPickerLoadedState;
+      final currentCart = List<OrderCartItem>.from(currentState.cartItems);
+
+      final existingIndex = currentCart.indexWhere(
+        (ci) =>
+            ci.menuItemId == event.cartItem.menuItemId &&
+            ci.variationId == event.cartItem.variationId &&
+            ci.name == event.cartItem.name,
+      );
+
+      if (existingIndex >= 0) {
+        final existingItem = currentCart[existingIndex];
+        currentCart[existingIndex] = existingItem.copyWith(
+          quantity: existingItem.quantity + event.cartItem.quantity,
+        );
+      } else {
+        currentCart.add(event.cartItem);
       }
 
       emit(currentState.copyWith(cartItems: currentCart));

@@ -88,8 +88,7 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
     super.initState();
     _enableTiersNotifier = ValueNotifier<bool>(widget.initialTiersEnabled);
 
-    final isStandardPrebuilt =
-        _isMatchingPrebuilt(widget.initialTierConfigs);
+    final isStandardPrebuilt = _isMatchingPrebuilt(widget.initialTierConfigs);
     _usePrebuiltNotifier = ValueNotifier<bool>(isStandardPrebuilt);
 
     _tierConfigsNotifier = ValueNotifier<List<LoyaltyTierConfig>>(
@@ -106,8 +105,9 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
     _addTierNameFocusNode = FocusNode();
     _addTierMinPointsController = TextEditingController(text: '0');
     _addTierMinPointsFocusNode = FocusNode();
-    _selectedNewColorNotifier =
-        ValueNotifier<Color>(LoyaltyTierSetupDialog.selectableColors.first);
+    _selectedNewColorNotifier = ValueNotifier<Color>(
+      LoyaltyTierSetupDialog.selectableColors.first,
+    );
   }
 
   bool _isMatchingPrebuilt(List<LoyaltyTierConfig> list) {
@@ -140,10 +140,16 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
     return '#${(color.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
   }
 
-  Future<Color?> _openColorPickerDialog(BuildContext context, Color initialColor) async {
+  Future<Color?> _openColorPickerDialog(
+    BuildContext context,
+    Color initialColor,
+  ) async {
     Color tempColor = initialColor;
     final hexController = TextEditingController(
-      text: (initialColor.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase(),
+      text: (initialColor.toARGB32() & 0xFFFFFF)
+          .toRadixString(16)
+          .padLeft(6, '0')
+          .toUpperCase(),
     );
 
     return showDialog<Color>(
@@ -153,7 +159,9 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
         final scheme = theme.colorScheme;
 
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           title: Row(
             children: [
               Icon(Icons.palette_rounded, color: scheme.primary),
@@ -181,38 +189,43 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                     labelTypes: const <ColorLabelType>[],
                   ),
                   const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Text(
-                      'HEX: #',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: TextField(
-                        controller: hexController,
-                        textCapitalization: TextCapitalization.characters,
-                        decoration: InputDecoration(
-                          hintText: 'RRGGBB',
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  Row(
+                    children: [
+                      Text(
+                        'HEX: #',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
                         ),
-                        onChanged: (hex) {
-                          final parsed = LoyaltyTierConfig.hexToColor(hex);
-                          tempColor = parsed;
-                        },
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: TextField(
+                          controller: hexController,
+                          textCapitalization: TextCapitalization.characters,
+                          decoration: InputDecoration(
+                            hintText: 'RRGGBB',
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onChanged: (hex) {
+                            final parsed = LoyaltyTierConfig.hexToColor(hex);
+                            tempColor = parsed;
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        actions: [
+          actions: [
             TextButton(
               onPressed: () => Navigator.of(dlgCtx).pop(null),
               child: const Text('Cancel'),
@@ -308,7 +321,9 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
         return StatefulBuilder(
           builder: (dCtx, setDState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
               title: Row(
                 children: [
                   Icon(Icons.tune_rounded, color: scheme.primary),
@@ -327,7 +342,9 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                     decoration: InputDecoration(
                       labelText: 'Minimum Points Threshold',
                       hintText: 'e.g. 500',
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                       prefixIcon: const Icon(Icons.star_rounded),
                     ),
                   ),
@@ -339,8 +356,11 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                       Wrap(
                         spacing: 8,
                         runSpacing: 8,
-                        children: LoyaltyTierSetupDialog.selectableColors.map((color) {
-                          final isSelected = selectedColor.toARGB32() == color.toARGB32();
+                        children: LoyaltyTierSetupDialog.selectableColors.map((
+                          color,
+                        ) {
+                          final isSelected =
+                              selectedColor.toARGB32() == color.toARGB32();
                           return InkWell(
                             onTap: () {
                               setDState(() => selectedColor = color);
@@ -353,53 +373,71 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                 color: color,
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: isSelected ? scheme.onSurface : Colors.transparent,
+                                  color: isSelected
+                                      ? scheme.onSurface
+                                      : Colors.transparent,
                                   width: 2.5,
                                 ),
                               ),
                               child: isSelected
-                                  ? const Icon(Icons.check, size: 18, color: Colors.white)
+                                  ? const Icon(
+                                      Icons.check,
+                                      size: 18,
+                                      color: Colors.white,
+                                    )
                                   : null,
                             ),
                           );
                         }).toList(),
                       ),
                       const SizedBox(width: 8),
-                      Builder(builder: (_) {
-                        final isPredefined = LoyaltyTierSetupDialog.selectableColors
-                            .any((c) => c.toARGB32() == selectedColor.toARGB32());
-                        return Tooltip(
-                          message: 'Pick custom color',
-                          child: InkWell(
-                            onTap: () async {
-                              final picked = await _openColorPickerDialog(ctx, selectedColor);
-                              if (picked != null) {
-                                setDState(() => selectedColor = picked);
-                              }
-                            },
-                            borderRadius: BorderRadius.circular(16),
-                            child: Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: !isPredefined ? selectedColor : scheme.surfaceContainerHighest,
-                                shape: BoxShape.circle,
-                                border: Border.all(
+                      Builder(
+                        builder: (_) {
+                          final isPredefined = LoyaltyTierSetupDialog
+                              .selectableColors
+                              .any(
+                                (c) => c.toARGB32() == selectedColor.toARGB32(),
+                              );
+                          return Tooltip(
+                            message: 'Pick custom color',
+                            child: InkWell(
+                              onTap: () async {
+                                final picked = await _openColorPickerDialog(
+                                  ctx,
+                                  selectedColor,
+                                );
+                                if (picked != null) {
+                                  setDState(() => selectedColor = picked);
+                                }
+                              },
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
                                   color: !isPredefined
-                                      ? scheme.onSurface
-                                      : scheme.outline.withValues(alpha: 0.5),
-                                  width: 2.5,
+                                      ? selectedColor
+                                      : scheme.surfaceContainerHighest,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: !isPredefined
+                                        ? scheme.onSurface
+                                        : scheme.outline.withValues(alpha: 0.5),
+                                    width: 2.5,
+                                  ),
+                                ),
+                                child: Icon(
+                                  Icons.colorize_rounded,
+                                  size: 16,
+                                  color: !isPredefined
+                                      ? Colors.white
+                                      : scheme.onSurfaceVariant,
                                 ),
                               ),
-                              child: Icon(
-                                Icons.colorize_rounded,
-                                size: 16,
-                                color: !isPredefined ? Colors.white : scheme.onSurfaceVariant,
-                              ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ],
@@ -411,7 +449,8 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    final pts = int.tryParse(controller.text.trim()) ?? tier.minPoints;
+                    final pts =
+                        int.tryParse(controller.text.trim()) ?? tier.minPoints;
                     Navigator.of(ctx).pop(
                       tier.copyWith(
                         minPoints: pts >= 0 ? pts : 0,
@@ -433,7 +472,9 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
 
     if (updated != null && mounted) {
       final current = List<LoyaltyTierConfig>.from(_tierConfigsNotifier.value);
-      final idx = current.indexWhere((t) => t.name.toLowerCase() == tier.name.toLowerCase());
+      final idx = current.indexWhere(
+        (t) => t.name.toLowerCase() == tier.name.toLowerCase(),
+      );
       if (idx != -1) {
         current[idx] = updated;
         current.sort((a, b) => a.minPoints.compareTo(b.minPoints));
@@ -462,7 +503,11 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                   color: scheme.primary.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(Icons.military_tech_rounded, color: scheme.primary, size: 28),
+                child: Icon(
+                  Icons.military_tech_rounded,
+                  color: scheme.primary,
+                  size: 28,
+                ),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -507,7 +552,9 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                   Container(
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: scheme.surfaceContainerHighest.withValues(alpha: 0.4),
+                      color: scheme.surfaceContainerHighest.withValues(
+                        alpha: 0.4,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
                         color: scheme.outline.withValues(alpha: 0.2),
@@ -561,13 +608,18 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                           child: Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: scheme.surfaceContainerHighest.withValues(alpha: 0.2),
+                              color: scheme.surfaceContainerHighest.withValues(
+                                alpha: 0.2,
+                              ),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
                               children: [
-                                Icon(Icons.info_outline_rounded,
-                                    color: scheme.onSurfaceVariant, size: 20),
+                                Icon(
+                                  Icons.info_outline_rounded,
+                                  color: scheme.onSurfaceVariant,
+                                  size: 20,
+                                ),
                                 const SizedBox(width: 10),
                                 Expanded(
                                   child: Text(
@@ -621,10 +673,13 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                       ),
                                       title: const Text(
                                         'Use Default Prebuilt Tiers',
-                                        style: TextStyle(fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                       subtitle: const Text(
-                                          'Bronze (0 pts), Silver (500 pts), Gold (1000 pts), VIP (2000 pts)'),
+                                        'Bronze (0 pts), Silver (500 pts), Gold (1000 pts), VIP (2000 pts)',
+                                      ),
                                     ),
                                     RadioListTile<bool>(
                                       value: false,
@@ -634,10 +689,13 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                       ),
                                       title: const Text(
                                         'Create Your Own Custom Tiers',
-                                        style: TextStyle(fontWeight: FontWeight.w600),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
                                       subtitle: const Text(
-                                          'Design customized tier names, points threshold, and badge colors'),
+                                        'Design customized tier names, points threshold, and badge colors',
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -658,10 +716,13 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                               return Container(
                                 padding: const EdgeInsets.all(14),
                                 decoration: BoxDecoration(
-                                  color: scheme.surfaceContainerHighest.withValues(alpha: 0.3),
+                                  color: scheme.surfaceContainerHighest
+                                      .withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(12),
                                   border: Border.all(
-                                    color: scheme.outline.withValues(alpha: 0.15),
+                                    color: scheme.outline.withValues(
+                                      alpha: 0.15,
+                                    ),
                                   ),
                                 ),
                                 child: Column(
@@ -669,9 +730,10 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                   children: [
                                     Text(
                                       'Add New Custom Tier',
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                      style: theme.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                     ),
                                     const SizedBox(height: 10),
                                     Row(
@@ -685,34 +747,41 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                               labelText: 'Tier Name',
                                               hintText: 'e.g. Platinum, Club',
                                               isDense: true,
-                                              contentPadding: const EdgeInsets.symmetric(
-                                                horizontal: 12,
-                                                vertical: 10,
-                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 10,
+                                                  ),
                                               border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
                                             ),
-                                            textCapitalization: TextCapitalization.words,
+                                            textCapitalization:
+                                                TextCapitalization.words,
                                           ),
                                         ),
                                         const SizedBox(width: 8),
                                         Expanded(
                                           flex: 2,
                                           child: TextField(
-                                            controller: _addTierMinPointsController,
-                                            focusNode: _addTierMinPointsFocusNode,
+                                            controller:
+                                                _addTierMinPointsController,
+                                            focusNode:
+                                                _addTierMinPointsFocusNode,
                                             keyboardType: TextInputType.number,
                                             decoration: InputDecoration(
                                               labelText: 'Min Points',
                                               hintText: 'e.g. 500',
                                               isDense: true,
-                                              contentPadding: const EdgeInsets.symmetric(
-                                                horizontal: 12,
-                                                vertical: 10,
-                                              ),
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 10,
+                                                  ),
                                               border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
                                             ),
                                           ),
@@ -722,75 +791,122 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                     const SizedBox(height: 10),
                                     Row(
                                       children: [
-                                        Text('Color: ', style: theme.textTheme.bodySmall),
+                                        Text(
+                                          'Color: ',
+                                          style: theme.textTheme.bodySmall,
+                                        ),
                                         const SizedBox(width: 6),
                                         ValueListenableBuilder<Color>(
-                                          valueListenable: _selectedNewColorNotifier,
+                                          valueListenable:
+                                              _selectedNewColorNotifier,
                                           builder: (context, selColor, _) {
-                                            final isPredefined = LoyaltyTierSetupDialog.selectableColors
-                                                .any((c) => c.toARGB32() == selColor.toARGB32());
+                                            final isPredefined =
+                                                LoyaltyTierSetupDialog
+                                                    .selectableColors
+                                                    .any(
+                                                      (c) =>
+                                                          c.toARGB32() ==
+                                                          selColor.toARGB32(),
+                                                    );
                                             return Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Wrap(
                                                   spacing: 6,
-                                                  children: LoyaltyTierSetupDialog.selectableColors.map((color) {
-                                                    final isSelected =
-                                                        selColor.toARGB32() == color.toARGB32();
-                                                    return InkWell(
-                                                      onTap: () {
-                                                        _selectedNewColorNotifier.value = color;
-                                                      },
-                                                      borderRadius: BorderRadius.circular(12),
-                                                      child: Container(
-                                                        width: 24,
-                                                        height: 24,
-                                                        decoration: BoxDecoration(
-                                                          color: color,
-                                                          shape: BoxShape.circle,
-                                                          border: Border.all(
-                                                            color: isSelected
-                                                                ? scheme.onSurface
-                                                                : Colors.transparent,
-                                                            width: 2,
+                                                  children: LoyaltyTierSetupDialog
+                                                      .selectableColors
+                                                      .map((color) {
+                                                        final isSelected =
+                                                            selColor
+                                                                .toARGB32() ==
+                                                            color.toARGB32();
+                                                        return InkWell(
+                                                          onTap: () {
+                                                            _selectedNewColorNotifier
+                                                                    .value =
+                                                                color;
+                                                          },
+                                                          borderRadius:
+                                                              BorderRadius.circular(
+                                                                12,
+                                                              ),
+                                                          child: Container(
+                                                            width: 24,
+                                                            height: 24,
+                                                            decoration: BoxDecoration(
+                                                              color: color,
+                                                              shape: BoxShape
+                                                                  .circle,
+                                                              border: Border.all(
+                                                                color:
+                                                                    isSelected
+                                                                    ? scheme
+                                                                          .onSurface
+                                                                    : Colors
+                                                                          .transparent,
+                                                                width: 2,
+                                                              ),
+                                                            ),
+                                                            child: isSelected
+                                                                ? const Icon(
+                                                                    Icons.check,
+                                                                    size: 14,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  )
+                                                                : null,
                                                           ),
-                                                        ),
-                                                        child: isSelected
-                                                            ? const Icon(Icons.check,
-                                                                size: 14, color: Colors.white)
-                                                            : null,
-                                                      ),
-                                                    );
-                                                  }).toList(),
+                                                        );
+                                                      })
+                                                      .toList(),
                                                 ),
                                                 const SizedBox(width: 6),
                                                 Tooltip(
                                                   message: 'Pick custom color',
                                                   child: InkWell(
                                                     onTap: () async {
-                                                      final picked = await _openColorPickerDialog(context, selColor);
+                                                      final picked =
+                                                          await _openColorPickerDialog(
+                                                            context,
+                                                            selColor,
+                                                          );
                                                       if (picked != null) {
-                                                        _selectedNewColorNotifier.value = picked;
+                                                        _selectedNewColorNotifier
+                                                                .value =
+                                                            picked;
                                                       }
                                                     },
-                                                    borderRadius: BorderRadius.circular(12),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12,
+                                                        ),
                                                     child: Container(
                                                       width: 24,
                                                       height: 24,
                                                       decoration: BoxDecoration(
-                                                        color: !isPredefined ? selColor : scheme.surfaceContainerHighest,
+                                                        color: !isPredefined
+                                                            ? selColor
+                                                            : scheme
+                                                                  .surfaceContainerHighest,
                                                         shape: BoxShape.circle,
                                                         border: Border.all(
                                                           color: !isPredefined
                                                               ? scheme.onSurface
-                                                              : scheme.outline.withValues(alpha: 0.5),
+                                                              : scheme.outline
+                                                                    .withValues(
+                                                                      alpha:
+                                                                          0.5,
+                                                                    ),
                                                           width: 2,
                                                         ),
                                                       ),
                                                       child: Icon(
                                                         Icons.colorize_rounded,
                                                         size: 13,
-                                                        color: !isPredefined ? Colors.white : scheme.onSurfaceVariant,
+                                                        color: !isPredefined
+                                                            ? Colors.white
+                                                            : scheme
+                                                                  .onSurfaceVariant,
                                                       ),
                                                     ),
                                                   ),
@@ -806,9 +922,12 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                           label: const Text('Add Tier'),
                                           style: ElevatedButton.styleFrom(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 14, vertical: 8),
+                                              horizontal: 14,
+                                              vertical: 8,
+                                            ),
                                             shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(8),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
                                           ),
                                         ),
@@ -833,24 +952,32 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                     valueListenable: _usePrebuiltNotifier,
                                     builder: (context, usePrebuilt, _) {
                                       return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Wrap(
                                             spacing: 8,
                                             runSpacing: 8,
                                             children: configs.map((tierConfig) {
-                                              final isDefault = tierConfig.name.toLowerCase() ==
+                                              final isDefault =
+                                                  tierConfig.name
+                                                      .toLowerCase() ==
                                                   defaultTier.toLowerCase();
-                                              final tierColor = tierConfig.color;
+                                              final tierColor =
+                                                  tierConfig.color;
 
                                               return InkWell(
                                                 onTap: () {
-                                                  _defaultTierNotifier.value = tierConfig.name;
+                                                  _defaultTierNotifier.value =
+                                                      tierConfig.name;
                                                 },
                                                 onLongPress: usePrebuilt
                                                     ? null
-                                                    : () => _editTierThreshold(tierConfig),
-                                                borderRadius: BorderRadius.circular(20),
+                                                    : () => _editTierThreshold(
+                                                        tierConfig,
+                                                      ),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
                                                 child: Chip(
                                                   avatar: Container(
                                                     width: 18,
@@ -859,13 +986,17 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                                       color: tierColor,
                                                       shape: BoxShape.circle,
                                                     ),
-                                                    child: const Icon(Icons.stars,
-                                                        size: 12, color: Colors.white),
+                                                    child: const Icon(
+                                                      Icons.stars,
+                                                      size: 12,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                   label: Text(
                                                     '${tierConfig.name} (${tierConfig.minPoints}+ pts)${isDefault ? ' [Default]' : ''}',
                                                     style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
+                                                      fontWeight:
+                                                          FontWeight.bold,
                                                       color: isDefault
                                                           ? scheme.onPrimary
                                                           : tierColor,
@@ -873,13 +1004,20 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                                   ),
                                                   backgroundColor: isDefault
                                                       ? scheme.primary
-                                                      : tierColor.withValues(alpha: 0.12),
+                                                      : tierColor.withValues(
+                                                          alpha: 0.12,
+                                                        ),
                                                   deleteIcon: usePrebuilt
                                                       ? null
-                                                      : const Icon(Icons.close, size: 16),
+                                                      : const Icon(
+                                                          Icons.close,
+                                                          size: 16,
+                                                        ),
                                                   onDeleted: usePrebuilt
                                                       ? null
-                                                      : () => _removeTier(tierConfig.name),
+                                                      : () => _removeTier(
+                                                          tierConfig.name,
+                                                        ),
                                                 ),
                                               );
                                             }).toList(),
@@ -889,7 +1027,8 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                                             usePrebuilt
                                                 ? 'Click any chip to set it as the default starting tier for new customers.'
                                                 : 'Click any chip to mark as Default. Long-press a chip to edit points or color.',
-                                            style: theme.textTheme.bodySmall?.copyWith(fontSize: 11),
+                                            style: theme.textTheme.bodySmall
+                                                ?.copyWith(fontSize: 11),
                                           ),
                                         ],
                                       );
@@ -937,7 +1076,10 @@ class _LoyaltyTierSetupDialogState extends State<LoyaltyTierSetupDialog> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

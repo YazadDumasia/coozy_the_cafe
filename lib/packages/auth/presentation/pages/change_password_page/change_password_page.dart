@@ -95,7 +95,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             },
             builder: (context, state) {
               final gradientColors = shared.AnimateGradientColors.of(context);
-              final particleColors = shared.AnimateGradientColors.getCafeParticlePalette(context);
+              final particleColors =
+                  shared.AnimateGradientColors.getCafeParticlePalette(context);
               final isDark = Theme.of(context).brightness == Brightness.dark;
 
               return shared.AnimateGradient(
@@ -115,8 +116,11 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       numberOfParticles: 90,
                       speedOfParticles: 1.2,
                       maxParticleSize: 7,
-                      particleColor: (isDark ? const Color(0xffffb59c) : const Color(0xff8c5338))
-                          .withValues(alpha: 0.4),
+                      particleColor:
+                          (isDark
+                                  ? const Color(0xffffb59c)
+                                  : const Color(0xff8c5338))
+                              .withValues(alpha: 0.4),
                       isRandSize: true,
                       isRandomColor: true,
                       randColorList: particleColors,

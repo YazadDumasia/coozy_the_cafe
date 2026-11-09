@@ -144,6 +144,23 @@ All package registrations are called inside `lib/injection.dart` during app init
    - Use `flutter_bloc` (`Bloc` or `Cubit`) with `Equatable` for business logic & screen state management.
    - **BLoC & Cubit Structure**: Do NOT import event or state files into BLoC/Cubit. Use `part '<name>_event.dart';` / `part '<name>_state.dart';` in main file, `part of '<name>_bloc.dart';` in event/state files, and `sealed class` instead of `abstract class` for base event/state classes.
    - Use `ValueNotifier` / `ValueListenableBuilder` for transient, lightweight widget UI state.
+   - **BLoC State `copyWith` for Nullable Filters**: When a state field is nullable and `null` represents a valid state (such as `null` meaning "All" / no filter selected), standard `value ?? this.value` prevents clearing the field back to `null`. Always provide an explicit clearing parameter (e.g. `bool clearFilter = false`, or a sentinel wrapper):
+     ```dart
+     MyLoadedState copyWith({
+       List<Item>? items,
+       FilterEnum? filter,
+       bool clearFilter = false,
+       String? searchQuery,
+     }) {
+       return MyLoadedState(
+         items: items ?? this.items,
+         filter: clearFilter ? null : (filter ?? this.filter),
+         searchQuery: searchQuery ?? this.searchQuery,
+       );
+     }
+     ```
+   - **Filter State Type Safety (Use Enums, Not Raw Strings)**: For filtering by category, status, or severity, type state fields as enums directly (e.g. `final AlertSeverity? filterSeverity;`) instead of raw strings. Comparing enums avoids subtle string casing/formatting bugs (`'out_of_stock'` vs `'outOfStock'`).
+   - **Preserve Unchanged Query/Filter Parameters in BLoC/Cubit**: When emitting filtered state in cubits/blocs, do not let one filter reset another. Keep the active `searchQuery` when changing filters (`searchQuery: query ?? current.searchQuery`), and vice-versa.
 2. **Error Handling**:
    - Repository methods return `Future<Either<Failure, T>>` or `Stream<Either<Failure, T>>`.
    - Use pre-defined `Failure` classes in `lib/packages/core/`.

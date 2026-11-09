@@ -43,14 +43,14 @@ class AppRoutePath {
   static const String settingsScreenRoute = '/settings';
   static const String currencyExchangeScreenRoute =
       '/settings/currency-exchange';
-  static const String businessProfileScreenRoute =
-      '/settings/business-profile';
-  static const String developerScreenRoute =
-      '/settings/developer';
+  static const String businessProfileScreenRoute = '/settings/business-profile';
+  static const String developerScreenRoute = '/settings/developer';
   static const String waiterOrderPlacementScreenRoute =
       '/waiter-order-placement';
   static const String kitchenScreenRoute = '/kitchen';
   static const String checkoutScreenRoute = '/checkout';
+  static const String combosScreenRoute = '/combos';
+  static const String stockAlertsScreenRoute = '/inventory-alerts';
 
   // Sub-routes for Table Info (Nested under Home -> Table Info)
   static const String addNewTableInfoScreenRoute = 'table-add';
@@ -275,9 +275,15 @@ class AppRouteName {
   static const String developer = 'developer';
   static const String kitchen = 'kitchen';
   static const String orders = 'orders';
+  static const String combosList = 'combos-list';
+  static const String stockAlerts = 'stock-alerts';
 
   static String getTitleForRouteName(String? name) {
     switch (name) {
+      case stockAlerts:
+        return 'Stock Alerts & Auto-Reorder';
+      case combosList:
+        return 'Combos & Promotions';
       case businessProfile:
         return 'Business Profile';
       case developer:

@@ -254,13 +254,13 @@ class _CashPaymentViewState extends State<CashPaymentView> {
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.zero,
                               hintText: _formatAmount(widget.grandTotal),
-                              hintStyle: theme.textTheme.headlineLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32,
-                                color: theme.colorScheme.onSurface.withValues(
-                                  alpha: 0.35,
-                                ),
-                              ),
+                              hintStyle: theme.textTheme.headlineLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 32,
+                                    color: theme.colorScheme.onSurface
+                                        .withValues(alpha: 0.35),
+                                  ),
                             ),
                           ),
                         ],

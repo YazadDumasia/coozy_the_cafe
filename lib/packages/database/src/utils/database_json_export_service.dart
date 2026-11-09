@@ -41,9 +41,12 @@ class DatabaseJsonExportService {
     final menuItems = await db.select(db.menuItemsTable).get();
     exportData['menu_items'] = menuItems.map((e) => e.toJson()).toList();
 
-    final menuItemVariations = await db.select(db.menuItemVariationsTable).get();
-    exportData['menu_item_variations'] =
-        menuItemVariations.map((e) => e.toJson()).toList();
+    final menuItemVariations = await db
+        .select(db.menuItemVariationsTable)
+        .get();
+    exportData['menu_item_variations'] = menuItemVariations
+        .map((e) => e.toJson())
+        .toList();
 
     onProgress?.call(0.40, 'Exporting Inventory & Purchases...');
     final inventory = await db.select(db.inventoryTable).get();
@@ -52,23 +55,28 @@ class DatabaseJsonExportService {
     final purchases = await db.select(db.purchaseTable).get();
     exportData['purchases'] = purchases.map((e) => e.toJson()).toList();
 
-    final stockAdjustments =
-        await db.select(db.inventoryStockAdjustmentsTable).get();
-    exportData['inventory_stock_adjustments'] =
-        stockAdjustments.map((e) => e.toJson()).toList();
+    final stockAdjustments = await db
+        .select(db.inventoryStockAdjustmentsTable)
+        .get();
+    exportData['inventory_stock_adjustments'] = stockAdjustments
+        .map((e) => e.toJson())
+        .toList();
 
     onProgress?.call(0.55, 'Exporting Customers & Loyalty...');
     final customers = await db.select(db.customersTable).get();
     exportData['customers'] = customers.map((e) => e.toJson()).toList();
 
     final customerLoyalty = await db.select(db.customerLoyaltyTable).get();
-    exportData['customer_loyalty'] =
-        customerLoyalty.map((e) => e.toJson()).toList();
+    exportData['customer_loyalty'] = customerLoyalty
+        .map((e) => e.toJson())
+        .toList();
 
-    final loyaltyTransactions =
-        await db.select(db.loyaltyTransactionsTable).get();
-    exportData['loyalty_transactions'] =
-        loyaltyTransactions.map((e) => e.toJson()).toList();
+    final loyaltyTransactions = await db
+        .select(db.loyaltyTransactionsTable)
+        .get();
+    exportData['loyalty_transactions'] = loyaltyTransactions
+        .map((e) => e.toJson())
+        .toList();
 
     onProgress?.call(0.70, 'Exporting Orders & Invoices...');
     final orders = await db.select(db.ordersTable).get();
@@ -97,14 +105,17 @@ class DatabaseJsonExportService {
     exportData['extra_charges'] = extraCharges.map((e) => e.toJson()).toList();
 
     final paymentMethods = await db.select(db.paymentMethodsTable).get();
-    exportData['payment_methods'] =
-        paymentMethods.map((e) => e.toJson()).toList();
+    exportData['payment_methods'] = paymentMethods
+        .map((e) => e.toJson())
+        .toList();
 
     onProgress?.call(0.92, 'Exporting Expenditures & Staff...');
-    final expenditureCats =
-        await db.select(db.expenditureCategoriesTable).get();
-    exportData['expenditure_categories'] =
-        expenditureCats.map((e) => e.toJson()).toList();
+    final expenditureCats = await db
+        .select(db.expenditureCategoriesTable)
+        .get();
+    exportData['expenditure_categories'] = expenditureCats
+        .map((e) => e.toJson())
+        .toList();
 
     final expenditures = await db.select(db.expendituresTable).get();
     exportData['expenditures'] = expenditures.map((e) => e.toJson()).toList();
@@ -166,7 +177,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.10, 'Importing Table Info...');
         for (final item in (decoded['table_info'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.tableInfoTable).insertOnConflictUpdate(
+            await db
+                .into(db.tableInfoTable)
+                .insertOnConflictUpdate(
                   TableInfoTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -177,8 +190,7 @@ class DatabaseJsonExportService {
                     tableLabel: drift.Value(item['tableLabel'] as String?),
                     tableNo: drift.Value(item['tableNo'] as String?),
                     colorValue: drift.Value(item['colorValue'] as String?),
-                    sortOrderIndex:
-                        drift.Value(item['sortOrderIndex'] as int?),
+                    sortOrderIndex: drift.Value(item['sortOrderIndex'] as int?),
                     nosOfChairs: drift.Value(item['nosOfChairs'] as int?),
                     isActive: drift.Value(item['isActive'] as bool?),
                   ),
@@ -193,7 +205,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.20, 'Importing Categories...');
         for (final item in (decoded['categories'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.categoriesTable).insertOnConflictUpdate(
+            await db
+                .into(db.categoriesTable)
+                .insertOnConflictUpdate(
                   CategoriesTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -216,7 +230,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.25, 'Importing Subcategories...');
         for (final item in (decoded['subcategories'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.subcategoriesTable).insertOnConflictUpdate(
+            await db
+                .into(db.subcategoriesTable)
+                .insertOnConflictUpdate(
                   SubcategoriesTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -241,7 +257,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.35, 'Importing Menu Items...');
         for (final item in (decoded['menu_items'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.menuItemsTable).insertOnConflictUpdate(
+            await db
+                .into(db.menuItemsTable)
+                .insertOnConflictUpdate(
                   MenuItemsTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -250,18 +268,23 @@ class DatabaseJsonExportService {
                         ? drift.Value(item['hashId'] as String)
                         : const drift.Value.absent(),
                     name: drift.Value(item['name'] as String? ?? 'Item'),
-                    description: drift.Value(item['description'] as String? ?? ''),
+                    description: drift.Value(
+                      item['description'] as String? ?? '',
+                    ),
                     foodType: drift.Value(item['foodType'] as String?),
                     creationDate: drift.Value(item['creationDate'] as String?),
-                    modificationDate:
-                        drift.Value(item['modificationDate'] as String?),
+                    modificationDate: drift.Value(
+                      item['modificationDate'] as String?,
+                    ),
                     duration: drift.Value(item['duration'] as int?),
                     categoryId: drift.Value(item['categoryId'] as int?),
                     subcategoryId: drift.Value(item['subcategoryId'] as int?),
-                    isTodayAvailable:
-                        drift.Value(item['isTodayAvailable'] as bool?),
-                    isSimpleVariation:
-                        drift.Value(item['isSimpleVariation'] as bool?),
+                    isTodayAvailable: drift.Value(
+                      item['isTodayAvailable'] as bool?,
+                    ),
+                    isSimpleVariation: drift.Value(
+                      item['isSimpleVariation'] as bool?,
+                    ),
                     costPrice: drift.Value(
                       (item['costPrice'] as num?)?.toDouble(),
                     ),
@@ -273,8 +296,7 @@ class DatabaseJsonExportService {
                     ),
                     quantity: drift.Value(item['quantity'] as String?),
                     purchaseUnit: drift.Value(item['purchaseUnit'] as String?),
-                    sortOrderIndex:
-                        drift.Value(item['sortOrderIndex'] as int?),
+                    sortOrderIndex: drift.Value(item['sortOrderIndex'] as int?),
                   ),
                 );
             totalImported++;
@@ -286,7 +308,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.40, 'Importing Menu Item Variations...');
         for (final item in (decoded['menu_item_variations'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.menuItemVariationsTable).insertOnConflictUpdate(
+            await db
+                .into(db.menuItemVariationsTable)
+                .insertOnConflictUpdate(
                   MenuItemVariationsTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -298,8 +322,9 @@ class DatabaseJsonExportService {
                     menuItemId: drift.Value(item['menuItemId'] as int?),
                     quantity: drift.Value(item['quantity'] as int?),
                     purchaseUnit: drift.Value(item['purchaseUnit'] as String?),
-                    isTodayAvailable:
-                        drift.Value(item['isTodayAvailable'] as bool?),
+                    isTodayAvailable: drift.Value(
+                      item['isTodayAvailable'] as bool?,
+                    ),
                     costPrice: drift.Value(
                       (item['costPrice'] as num?)?.toDouble(),
                     ),
@@ -307,11 +332,11 @@ class DatabaseJsonExportService {
                       (item['sellingPrice'] as num?)?.toDouble(),
                     ),
                     stockQuantity: drift.Value(item['stockQuantity'] as int?),
-                    sortOrderIndex:
-                        drift.Value(item['sortOrderIndex'] as int?),
+                    sortOrderIndex: drift.Value(item['sortOrderIndex'] as int?),
                     creationDate: drift.Value(item['creationDate'] as String?),
-                    modificationDate:
-                        drift.Value(item['modificationDate'] as String?),
+                    modificationDate: drift.Value(
+                      item['modificationDate'] as String?,
+                    ),
                   ),
                 );
             totalImported++;
@@ -324,7 +349,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.50, 'Importing Inventory...');
         for (final item in (decoded['inventory'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.inventoryTable).insertOnConflictUpdate(
+            await db
+                .into(db.inventoryTable)
+                .insertOnConflictUpdate(
                   InventoryTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -333,8 +360,9 @@ class DatabaseJsonExportService {
                         ? drift.Value(item['hashId'] as String)
                         : const drift.Value.absent(),
                     name: drift.Value(item['name'] as String?),
-                    shortDescription:
-                        drift.Value(item['shortDescription'] as String?),
+                    shortDescription: drift.Value(
+                      item['shortDescription'] as String?,
+                    ),
                     purchaseUnit: drift.Value(item['purchaseUnit'] as String?),
                     currentStock: drift.Value(
                       (item['currentStock'] as num?)?.toDouble(),
@@ -354,7 +382,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.60, 'Importing Customers...');
         for (final item in (decoded['customers'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.customersTable).insertOnConflictUpdate(
+            await db
+                .into(db.customersTable)
+                .insertOnConflictUpdate(
                   CustomersTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -378,7 +408,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.70, 'Importing Taxes...');
         for (final item in (decoded['taxes'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.taxesTable).insertOnConflictUpdate(
+            await db
+                .into(db.taxesTable)
+                .insertOnConflictUpdate(
                   TaxesTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -390,8 +422,9 @@ class DatabaseJsonExportService {
                     ratePercent: drift.Value(
                       (item['ratePercent'] as num?)?.toDouble() ?? 0.0,
                     ),
-                    isDefaultAdd:
-                        drift.Value(item['isDefaultAdd'] as bool? ?? false),
+                    isDefaultAdd: drift.Value(
+                      item['isDefaultAdd'] as bool? ?? false,
+                    ),
                   ),
                 );
             totalImported++;
@@ -403,7 +436,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.80, 'Importing Discounts...');
         for (final item in (decoded['discounts'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.discountsTable).insertOnConflictUpdate(
+            await db
+                .into(db.discountsTable)
+                .insertOnConflictUpdate(
                   DiscountsTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)
@@ -415,10 +450,12 @@ class DatabaseJsonExportService {
                     value: drift.Value(
                       (item['value'] as num?)?.toDouble() ?? 0.0,
                     ),
-                    isPercentage:
-                        drift.Value(item['isPercentage'] as bool? ?? false),
-                    isDefaultAdd:
-                        drift.Value(item['isDefaultAdd'] as bool? ?? false),
+                    isPercentage: drift.Value(
+                      item['isPercentage'] as bool? ?? false,
+                    ),
+                    isDefaultAdd: drift.Value(
+                      item['isDefaultAdd'] as bool? ?? false,
+                    ),
                   ),
                 );
             totalImported++;
@@ -431,7 +468,9 @@ class DatabaseJsonExportService {
         onProgress?.call(0.90, 'Importing Payment Modes...');
         for (final item in (decoded['payment_modes'] as List)) {
           if (item is Map<String, dynamic>) {
-            await db.into(db.paymentModesTable).insertOnConflictUpdate(
+            await db
+                .into(db.paymentModesTable)
+                .insertOnConflictUpdate(
                   PaymentModesTableCompanion(
                     id: item['id'] != null
                         ? drift.Value(item['id'] as int)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:coozy_the_cafe/packages/settings/domain/services/local_p2p_sync_service.dart';
+
 import '../../bloc/kitchen_bloc.dart';
 
 /// User action handlers and BLoC event triggers for the Kitchen display screen.

@@ -10,7 +10,7 @@ class P2pSyncSettingsCubit extends Cubit<P2pSyncSettingsState> {
   final LocalP2pSyncService syncService;
 
   P2pSyncSettingsCubit({required this.syncService})
-      : super(const P2pSyncSettingsInitial());
+    : super(const P2pSyncSettingsInitial());
 
   Future<void> loadSettings() async {
     emit(const P2pSyncSettingsLoading());
@@ -36,7 +36,8 @@ class P2pSyncSettingsCubit extends Cubit<P2pSyncSettingsState> {
       emit(const P2pSyncSettingsSaving());
       try {
         await syncService.saveConfig(config);
-        final localIp = await syncService.getLocalIpAddress() ?? current.localIp;
+        final localIp =
+            await syncService.getLocalIpAddress() ?? current.localIp;
         emit(
           P2pSyncSettingsLoaded(
             config: config,

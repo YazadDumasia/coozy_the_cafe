@@ -26,6 +26,8 @@ import 'database_dao/recipes_dao.dart';
 import 'database_dao/reports_dao.dart';
 import 'database_dao/reservations_dao.dart';
 import 'database_dao/user_logins_dao.dart';
+import 'database_dao/combos_dao.dart';
+import 'database_dao/stock_alerts_dao.dart';
 
 import 'package:flutter/foundation.dart';
 
@@ -68,6 +70,10 @@ part 'database.g.dart';
     ExpendituresTable,
     CustomerLoyaltyTable,
     LoyaltyTransactionsTable,
+    CombosTable,
+    ComboItemsTable,
+    StockThresholdsTable,
+    StockAlertsTable,
   ],
   daos: [
     CategoriesDao,
@@ -83,6 +89,8 @@ part 'database.g.dart';
     ReservationsDao,
     UserLoginsDao,
     ExpenditureDao,
+    CombosDao,
+    StockAlertsDao,
   ],
 )
 class CoozyDatabase extends _$CoozyDatabase {

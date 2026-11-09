@@ -540,6 +540,7 @@ abstract class LocaleKeys {
       'menu_item_page_add_edit_menu_item_add';
   static String menuItemPageAddEditMenuItemUpdate =
       'menu_item_page_add_edit_menu_item_update';
+  static String menuItemPageAddVariation = 'menu_item_page_add_variation';
   static String menuItemPageAllCategories = 'menu_item_page_all_categories';
   static String menuItemPageAllSubcategories =
       'menu_item_page_all_subcategories';
@@ -768,6 +769,14 @@ abstract class LocaleKeys {
       'inventory_add_edit_dailog_purchase_unit';
   static String inventoryAddEditDailogPurchaseUnitHint =
       'inventory_add_edit_dailog_purchase_unit_hint';
+  static String inventoryAddEditDailogCustomPurchaseUnit =
+      'inventory_add_edit_dailog_custom_purchase_unit';
+  static String inventoryAddEditDailogCustomPurchaseUnitHint =
+      'inventory_add_edit_dailog_custom_purchase_unit_hint';
+  static String inventoryAddEditDailogCustomPurchaseUnitOption =
+      'inventory_add_edit_dailog_custom_purchase_unit_option';
+  static String inventoryAddEditDailogCustomPurchaseUnitRequired =
+      'inventory_add_edit_dailog_custom_purchase_unit_required';
   static String inventoryAddEditDailogCurrentStock =
       'inventory_add_edit_dailog_current_stock';
   static String inventoryAddEditDailogIsEnabled =
@@ -1160,8 +1169,7 @@ abstract class LocaleKeys {
       'settings_developer_lead_name';
   static const String settingsDeveloperLeadRole =
       'settings_developer_lead_role';
-  static const String settingsDeveloperLeadBio =
-      'settings_developer_lead_bio';
+  static const String settingsDeveloperLeadBio = 'settings_developer_lead_bio';
   static const String settingsDeveloperCommunitySection =
       'settings_developer_community_section';
   static const String settingsDeveloperGithubBtn =

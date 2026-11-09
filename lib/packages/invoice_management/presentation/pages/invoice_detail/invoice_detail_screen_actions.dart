@@ -141,7 +141,9 @@ class InvoiceDetailScreenActions {
       return;
     }
 
-    final summary = await InvoiceShareService.instance.buildShareMessage(invoiceDetails);
+    final summary = await InvoiceShareService.instance.buildShareMessage(
+      invoiceDetails,
+    );
     final receiptNo = invoiceDetails.invoice.hashId.isNotEmpty
         ? invoiceDetails.invoice.hashId
         : 'MD-${invoiceDetails.invoice.id}';
@@ -167,7 +169,9 @@ class InvoiceDetailScreenActions {
       return;
     }
 
-    final summary = await InvoiceShareService.instance.buildShareMessage(invoiceDetails);
+    final summary = await InvoiceShareService.instance.buildShareMessage(
+      invoiceDetails,
+    );
     final phone = invoiceDetails.invoice.phoneNumber?.trim() ?? '';
     final cleanPhone = phone.replaceAll(RegExp(r'[^0-9]'), '');
 
@@ -201,6 +205,8 @@ class InvoiceDetailScreenActions {
   static Future<void> onPreviewPdf(
     BuildContext context, {
     InvoiceDetailsEntity? details,
+    Uint8List? prebuiltThermalBytes,
+    Uint8List? prebuiltA4Bytes,
   }) async {
     final invoiceDetails = _resolveDetails(context, details);
     if (invoiceDetails == null) {
@@ -215,8 +221,11 @@ class InvoiceDetailScreenActions {
       await showDialog(
         context: context,
         barrierDismissible: true,
-        builder: (dialogCtx) =>
-            InvoicePdfPreviewDialog(details: invoiceDetails),
+        builder: (dialogCtx) => InvoicePdfPreviewDialog(
+          details: invoiceDetails,
+          prebuiltThermalBytes: prebuiltThermalBytes,
+          prebuiltA4Bytes: prebuiltA4Bytes,
+        ),
       );
     }
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/inventory/domain/entities/inventory_item.dart';
+import 'package:coozy_the_cafe/packages/inventory/domain/entities/measuring_unit.dart';
 
 import 'add_edit_inventory_screen_actions.dart';
 
@@ -15,11 +16,14 @@ class AddEditInventoryScreen extends StatefulWidget {
 class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
   final _formKey = GlobalKey<FormState>();
 
+  static const String _customUnitOption = 'Custom...';
+
   late String _name;
   late String _shortDescription;
   late String _purchaseUnit;
   late double _currentStock;
   late final ValueNotifier<bool> _isEnabledNotifier;
+  late final ValueNotifier<String?> _selectedUnitNotifier;
 
   // Controllers
   late final TextEditingController _nameController;
@@ -49,6 +53,19 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
       _currentStock = 0.0;
       _isEnabledNotifier = ValueNotifier(true);
     }
+
+    // Determine initial dropdown selection
+    String? initialUnit;
+    if (_purchaseUnit.isNotEmpty) {
+      final unit = MeasuringUnit.fromString(_purchaseUnit);
+      if (unit != null) {
+        initialUnit = unit.name;
+        _purchaseUnit = unit.name;
+      } else {
+        initialUnit = _customUnitOption;
+      }
+    }
+    _selectedUnitNotifier = ValueNotifier<String?>(initialUnit);
 
     // Initialize controllers with existing values
     _nameController = TextEditingController(text: _name);
@@ -82,6 +99,7 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
     _currentStockFocusNode.dispose();
 
     _isEnabledNotifier.dispose();
+    _selectedUnitNotifier.dispose();
     super.dispose();
   }
 
@@ -176,33 +194,134 @@ class _AddEditInventoryScreenState extends State<AddEditInventoryScreen> {
               onSaved: (val) => _shortDescription = val ?? '',
             ).inExpandedRow(),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _purchaseUnitController,
-              focusNode: _purchaseUnitFocusNode,
-              textInputAction: TextInputAction.next,
-              onFieldSubmitted: (_) => _currentStockFocusNode.requestFocus(),
-              decoration: InputDecoration(
-                labelText:
-                    context.tr(
-                      shared.LocaleKeys.inventoryAddEditDailogPurchaseUnit,
-                      track: shared.TrackConstants.inventoryPageTrack,
-                    ) ??
-                    'Purchase Unit',
-                hintText:
-                    context.tr(
-                      shared.LocaleKeys.inventoryAddEditDailogPurchaseUnitHint,
-                      track: shared.TrackConstants.inventoryPageTrack,
-                    ) ??
-                    '(e.g., kg, L, pieces)',
-              ),
-              validator: (val) => val == null || val.isEmpty
-                  ? context.tr(
-                          shared.LocaleKeys.commonRequired,
-                          track: shared.TrackConstants.commonTrack,
-                        ) ??
-                        'Required'
-                  : null,
-              onSaved: (val) => _purchaseUnit = val!,
+            ValueListenableBuilder<String?>(
+              valueListenable: _selectedUnitNotifier,
+              builder: (context, selectedUnit, _) {
+                final List<DropdownMenuItem<String>> dropdownItems =
+                    MeasuringUnit.values.map((unit) {
+                      final localizedLabel =
+                          context.tr(
+                            unit.localeKey,
+                            track: shared.TrackConstants.menuItemPageTrack,
+                          ) ??
+                          unit.name;
+                      return DropdownMenuItem<String>(
+                        value: unit.name,
+                        child: Text(localizedLabel),
+                      );
+                    }).toList();
+
+                dropdownItems.add(
+                  DropdownMenuItem<String>(
+                    value: _customUnitOption,
+                    child: Text(
+                      _customUnitOption,
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                );
+
+                if (selectedUnit != null &&
+                    selectedUnit.isNotEmpty &&
+                    selectedUnit != _customUnitOption &&
+                    !dropdownItems.any((item) => item.value == selectedUnit)) {
+                  dropdownItems.insert(
+                    dropdownItems.length - 1,
+                    DropdownMenuItem<String>(
+                      value: selectedUnit,
+                      child: Text(selectedUnit),
+                    ),
+                  );
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownButtonFormField<String>(
+                      initialValue:
+                          dropdownItems.any((i) => i.value == selectedUnit)
+                          ? selectedUnit
+                          : (selectedUnit == _customUnitOption
+                                ? _customUnitOption
+                                : null),
+                      focusNode: _purchaseUnitFocusNode,
+                      isDense: true,
+                      isExpanded: true,
+                      menuMaxHeight: MediaQuery.of(context).size.height * 0.4,
+                      decoration: InputDecoration(
+                        labelText:
+                            context.tr(
+                              shared
+                                  .LocaleKeys
+                                  .inventoryAddEditDailogPurchaseUnit,
+                              track: shared.TrackConstants.inventoryPageTrack,
+                            ) ??
+                            'Purchase Unit',
+                        hintText:
+                            context.tr(
+                              shared
+                                  .LocaleKeys
+                                  .inventoryAddEditDailogPurchaseUnitHint,
+                              track: shared.TrackConstants.inventoryPageTrack,
+                            ) ??
+                            'Select Purchase Unit (e.g., kg, L, pieces)',
+                      ),
+                      items: dropdownItems,
+                      onChanged: (val) {
+                        _selectedUnitNotifier.value = val;
+                        if (val != null && val != _customUnitOption) {
+                          _purchaseUnitController.text = val;
+                        } else if (val == _customUnitOption) {
+                          _purchaseUnitController.clear();
+                        }
+                      },
+                      validator: (val) {
+                        if (val == null || val.isEmpty) {
+                          return context.tr(
+                                shared.LocaleKeys.commonRequired,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Required';
+                        }
+                        if (val == _customUnitOption &&
+                            _purchaseUnitController.text.trim().isEmpty) {
+                          return context.tr(
+                                shared.LocaleKeys.commonRequired,
+                                track: shared.TrackConstants.commonTrack,
+                              ) ??
+                              'Please enter a custom unit';
+                        }
+                        return null;
+                      },
+                    ),
+                    if (selectedUnit == _customUnitOption) ...[
+                      const SizedBox(height: 12),
+                      TextFormField(
+                        controller: _purchaseUnitController,
+                        textInputAction: TextInputAction.next,
+                        onFieldSubmitted: (_) =>
+                            _currentStockFocusNode.requestFocus(),
+                        decoration: InputDecoration(
+                          labelText: 'Custom Purchase Unit',
+                          hintText: 'Enter unit (e.g. carton, barrel, crate)',
+                          prefixIcon: const Icon(Icons.edit_outlined),
+                        ),
+                        validator: (val) => val == null || val.trim().isEmpty
+                            ? context.tr(
+                                    shared.LocaleKeys.commonRequired,
+                                    track: shared.TrackConstants.commonTrack,
+                                  ) ??
+                                  'Required'
+                            : null,
+                        onSaved: (val) => _purchaseUnit = val?.trim() ?? '',
+                      ),
+                    ],
+                  ],
+                );
+              },
             ).inExpandedRow(),
             const SizedBox(height: 16),
             TextFormField(

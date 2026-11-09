@@ -97,4 +97,3 @@ final class ReportsError extends ReportsState {
   ReportsError(this.message);
   final String message;
 }
-

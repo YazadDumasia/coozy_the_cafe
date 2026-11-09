@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
@@ -10,7 +11,8 @@ class LoyaltyTierConfig extends Equatable {
     this.colorHex = '#CD7F32', // default bronze
   });
 
-  static const String defaultCustomTierColorHex = '#8D6E63'; // Custom tier default warm brown
+  static const String defaultCustomTierColorHex =
+      '#8D6E63'; // Custom tier default warm brown
   static const Color defaultCustomTierColor = Color(0xFF8D6E63);
 
   static const List<Color> selectableColors = [
@@ -32,7 +34,10 @@ class LoyaltyTierConfig extends Equatable {
     return '#${(color.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
   }
 
-  static Color hexToColor(String? colorHex, {Color defaultColor = const Color(0xFFCD7F32)}) {
+  static Color hexToColor(
+    String? colorHex, {
+    Color defaultColor = const Color(0xFFCD7F32),
+  }) {
     if (colorHex == null || colorHex.trim().isEmpty) return defaultColor;
     final hex = colorHex.replaceAll('#', '').trim();
     if (hex.length == 6) {
@@ -48,11 +53,7 @@ class LoyaltyTierConfig extends Equatable {
   Color get color => hexToColor(colorHex);
 
   Map<String, dynamic> toMap() {
-    return {
-      'name': name,
-      'minPoints': minPoints,
-      'colorHex': colorHex,
-    };
+    return {'name': name, 'minPoints': minPoints, 'colorHex': colorHex};
   }
 
   factory LoyaltyTierConfig.fromMap(Map<String, dynamic> map) {
@@ -70,26 +71,10 @@ class LoyaltyTierConfig extends Equatable {
 
   static List<LoyaltyTierConfig> defaultPrebuiltList() {
     return const [
-      LoyaltyTierConfig(
-        name: 'Bronze',
-        minPoints: 0,
-        colorHex: '#CD7F32',
-      ),
-      LoyaltyTierConfig(
-        name: 'Silver',
-        minPoints: 500,
-        colorHex: '#607D8B',
-      ),
-      LoyaltyTierConfig(
-        name: 'Gold',
-        minPoints: 1000,
-        colorHex: '#FFA000',
-      ),
-      LoyaltyTierConfig(
-        name: 'VIP',
-        minPoints: 2000,
-        colorHex: '#9C27B0',
-      ),
+      LoyaltyTierConfig(name: 'Bronze', minPoints: 0, colorHex: '#CD7F32'),
+      LoyaltyTierConfig(name: 'Silver', minPoints: 500, colorHex: '#607D8B'),
+      LoyaltyTierConfig(name: 'Gold', minPoints: 1000, colorHex: '#FFA000'),
+      LoyaltyTierConfig(name: 'VIP', minPoints: 2000, colorHex: '#9C27B0'),
     ];
   }
 
@@ -105,18 +90,16 @@ class LoyaltyTierConfig extends Equatable {
       final decoded = jsonDecode(jsonStr);
       if (decoded is List) {
         return decoded
-            .map((item) => LoyaltyTierConfig.fromMap(item as Map<String, dynamic>))
+            .map(
+              (item) => LoyaltyTierConfig.fromMap(item as Map<String, dynamic>),
+            )
             .toList();
       }
     } catch (_) {}
     return defaultPrebuiltList();
   }
 
-  LoyaltyTierConfig copyWith({
-    String? name,
-    int? minPoints,
-    String? colorHex,
-  }) {
+  LoyaltyTierConfig copyWith({String? name, int? minPoints, String? colorHex}) {
     return LoyaltyTierConfig(
       name: name ?? this.name,
       minPoints: minPoints ?? this.minPoints,

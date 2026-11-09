@@ -40,6 +40,15 @@ class AddItemToCartEvent extends MenuItemPickerEvent {
   List<Object?> get props => [item, variation, subcategoryName, categoryId];
 }
 
+class AddCustomCartItemEvent extends MenuItemPickerEvent {
+  final OrderCartItem cartItem;
+
+  const AddCustomCartItemEvent(this.cartItem);
+
+  @override
+  List<Object?> get props => [cartItem];
+}
+
 class RemoveItemFromCartEvent extends MenuItemPickerEvent {
   final MenuItem item;
   final MenuItemVariation? variation;

@@ -186,7 +186,9 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                                   const SizedBox(height: 16),
                                   Text(
                                     context.tr(
-                                          shared.LocaleKeys.commonNoDataFoundMsg,
+                                          shared
+                                              .LocaleKeys
+                                              .commonNoDataFoundMsg,
                                           track:
                                               shared.TrackConstants.commonTrack,
                                         ) ??
@@ -199,10 +201,9 @@ class _InvoiceListScreenState extends State<InvoiceListScreen> {
                                   Text(
                                     'Try adjusting your date range or filters.',
                                     textAlign: TextAlign.center,
-                                    style: theme.textTheme.bodyMedium
-                                        ?.copyWith(
-                                          color: colorScheme.onSurfaceVariant,
-                                        ),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
                                   ),
                                 ],
                               ),

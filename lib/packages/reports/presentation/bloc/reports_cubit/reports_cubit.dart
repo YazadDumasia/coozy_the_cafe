@@ -234,14 +234,10 @@ class ReportsCubit extends Cubit<ReportsState> {
   Future<void> _loadAiDemandInsights() async {
     emit(ReportsLoading());
     try {
-      final insights = await getAiDemandInsightsUseCase(
-        _startIso(),
-        _endIso(),
-      );
+      final insights = await getAiDemandInsightsUseCase(_startIso(), _endIso());
       emit(ReportsAiInsightsLoaded(insights, _currentPeriodFormat));
     } catch (e) {
       emit(ReportsError(e.toString()));
     }
   }
 }
-

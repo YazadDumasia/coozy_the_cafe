@@ -73,4 +73,3 @@ abstract class ReportsRepository {
     required String endIso,
   });
 }
-

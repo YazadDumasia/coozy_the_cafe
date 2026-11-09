@@ -23,15 +23,36 @@ Coozy the Cafe is a feature-rich cafe management and customer experience app des
 
 ## Highlights
 
-- Beautiful, modern UI for cafe browsing and ordering
-- Robust state management with Flutter BLoC
-- Flexible routing with GoRouter
-- Multi-language support through localization
-- Lottie animations and rich media experiences
-- Local persistence with Drift database
-- Geolocation and map-ready integrations
-- Suitable for both customer-facing and operational workflows
-- **AI-assisted development** via Antigravity IDE with project-specific agent skills & rules
+### 🍽️ Dining, Orders & Kitchen Operations
+- **Waiter Order Placement & POS**: Fast, touch-friendly order-taking workflow with menu searching, category/subcategory filtering, item variations, custom notes, and table binding.
+- **Table Management & Dining Layout**: Real-time table status tracking (available, occupied, reserved), interactive table layout grid, and individual **table QR code generation & scanning**.
+- **Kitchen Display System (KDS)**: Dedicated live kitchen order queue for kitchen staff to track ticket statuses (pending, preparing, ready, completed) in real time.
+- **Table Reservation System**: Complete reservation lifecycle tracking with guest details, party size, date/time slots, and table assignment.
+
+### 💰 Billing, Checkout & Customer Loyalty
+- **Flexible Checkout & Multi-Payment**: Supports cash, card, UPI/digital payments, split bills, and instant receipt generation.
+- **Customer Loyalty Program**: Configurable loyalty tiers (Bronze, Silver, Gold, Platinum), automatic points accrual on orders, and seamless point redemption as bill discounts.
+- **Invoicing & Digital Receipts**: Full invoice history with printable PDF receipts, customizable business headers, tax breakdowns, and on-screen PDF preview.
+- **Promotions & Combos Engine**: Bundle discounts, combo meal deals, and promotional campaign management with customizable validity rules.
+
+### 📦 Inventory, Recipes & Supply Chain
+- **Ingredient & Stock Tracking**: Granular inventory control with units of measurement, cost tracking, and stock usage logging.
+- **Recipe Management**: Link menu items to raw ingredient recipes for automatic inventory depletion upon order fulfillment.
+- **Inventory Intelligence & Auto-Reorder**: Smart stock monitoring with configurable low-stock thresholds, instant alert cards, and automated reorder quantity suggestions.
+- **Supplier Purchases & Expense Tracking**: Supplier log management, incoming purchase receipts, and operational cafe expenditure logging.
+
+### 👥 Staff, Business Profile & Multi-Device Sync
+- **Staff & Shift Management**: Employee directory, attendance logs, leave request tracking, and staff performance reports.
+- **Business Profile Customization**: Dedicated configuration for cafe branding, legal registration/tax IDs, contact information, social links, and base currency.
+- **Local Wi-Fi P2P Multi-Device Sync**: Decentralized peer-to-peer sync between a primary POS Hub and client waitstaff terminals with outbox queue monitoring — works completely offline without cloud lock-in.
+- **Hardware & Thermal Printing**: ESC/POS receipt and KOT printing support via Bluetooth, USB, and network thermal printers, plus barcode generation.
+
+### 📊 Analytics, Reliability & Developer Experience
+- **Interactive Reports & Insights**: Visual sales trends, top-selling items, payment mode distribution, and stock adjustment charts using Syncfusion, with **Excel (XLSX) and PDF export**.
+- **Data Safety & Portability**: Built-in full database JSON export, automatic backup, and database restore utilities powered by Drift ORM & SQLite.
+- **Adaptive UI & Theming**: Dynamic particle animations, soft neumorphic elements, responsive layouts (mobile, tablet, desktop, web/WASM), and dark/light theme switching.
+- **Multi-Language Localization**: Multi-locale support (`assets/locale/` & `LocaleKeys`) with full UI translation.
+- **AI-Assisted Development**: Built-in [Google Antigravity IDE](https://antigravity.google) customizations (`.agents/AGENTS.md` and `SKILL.md`) and MCP integration (`marionette_flutter`) for live UI inspection, hot reloads, and agentic pair programming.
 
 ---
 
@@ -45,22 +66,23 @@ Coming soon.
 
 | Category | Libraries / Tools |
 |---|---|
-| UI Framework | Flutter, Dart |
-| State Management | flutter_bloc, Equatable |
+| UI Framework | Flutter, Dart (WASM & Cross-Platform) |
+| State Management | flutter_bloc, Equatable, ValueNotifier |
 | Navigation | go_router |
-| Database | Drift, SQLite, drift_flutter |
+| Database & ORM | Drift, SQLite, drift_flutter |
 | Dependency Injection | get_it |
 | Functional Error Handling | dartz |
-| Localization | flutter_localization |
+| Localization | flutter_localization, intl |
 | Charts & Sliders | syncfusion_flutter_charts, syncfusion_flutter_sliders |
-| Animations | lottie, animations, animated_text_kit |
-| Imaging & Camera | camera, image_picker, image_cropper, mobile_scanner |
-| PDF & Export | syncfusion_flutter_pdf, syncfusion_flutter_pdfviewer, printing, syncfusion_flutter_xlsio |
-| Notifications | flutter_local_notifications, flutter_timezone |
+| Animations & UI Effects | animations, animated_text_kit, lottie, flutter_floating_particles, flutter_neumorphism_ui |
+| Hardware, Printing & Scanning | printing, esc_pos_utils_plus, print_bluetooth_thermal, flutter_thermal_printer, mobile_scanner, camera |
+| Barcodes & QR | syncfusion_flutter_barcodes, barcode, secure_qr_generator |
+| PDF & Spreadsheet Export | syncfusion_flutter_pdf, syncfusion_flutter_pdfviewer, syncfusion_flutter_xlsio, printing |
+| Notifications & Sync | flutter_local_notifications, flutter_timezone, timezone, local P2P WebSocket & UDP sync |
 | Geolocation | geolocator, geocoding |
-| Networking | http, internet_connection_checker_plus |
-| Security | flutter_secure_storage, encrypt, crypto |
-| AI Dev Tooling | Antigravity IDE, marionette_flutter, marionette_mcp |
+| Networking & Connectivity | http, internet_connection_checker_plus |
+| Security & Storage | flutter_secure_storage, encrypt, crypto, shared_preferences |
+| AI Dev & MCP Tooling | Antigravity IDE, marionette_flutter, marionette_mcp, marionette_logging |
 
 ---
 
@@ -110,7 +132,7 @@ The [`.agents/AGENTS.md`](.agents/AGENTS.md) file defines **strict rules** that 
 
 The [`.agents/skills/coozy-the-cafe/SKILL.md`](.agents/skills/coozy-the-cafe/SKILL.md) gives the AI a rich, structured understanding of the project internals:
 
-- **Full module map** of all 23 feature packages under `lib/packages/`
+- **Full module map** of all 26 feature packages under `lib/packages/`
 - **Feature package scaffold** with exact directory and file naming conventions per layer
 - **Dependency injection patterns** using `get_it` with `register<Feature>Dependencies(sl)`
 - **Drift ORM standards** for table definitions, DAO patterns, and code generation
@@ -201,27 +223,30 @@ lib/
 ├── injection.dart               # Central DI coordinator
 └── packages/
     ├── core/                    # Shared utilities, failure types, DateUtil, DI instance (sl)
-    ├── database/                # Drift ORM tables, DAOs, web sync scripts
+    ├── database/                # Drift ORM tables, DAOs, web sync scripts, backup/restore
     ├── shared/                  # Common UI widgets, design system, themes, AppThemeExtension
-    ├── auth/                    # Authentication
-    ├── checkout/                # Order checkout & billing processing
-    ├── customer/                # Customer management
+    ├── auth/                    # Authentication & login/signup workflows
+    ├── business_profile/        # Cafe branding, contact info, tax & currency profile
+    ├── checkout/                # Order checkout, billing processing & loyalty discounts
+    ├── customer/                # Customer directory, history & loyalty tracking
     ├── expenditure/             # Expense tracking & financial logs
-    ├── home_page/               # Dashboard & home navigation
-    ├── inventory/               # Inventory & stock management
-    ├── invoice_management/      # Invoices & billing receipts
+    ├── home_page/               # Dashboard, quick actions & home navigation
+    ├── inventory/               # Inventory, ingredient tracking & stock units
+    ├── inventory_intelligence/  # Low stock alerts, reorder thresholds & automated suggestions
+    ├── invoice_management/      # Invoices, billing receipts & PDF previews
     ├── kitchen_management/      # Kitchen display system (KDS) & order queue
     ├── menu_category/           # Menu categories
     ├── menu_subcategory/        # Menu subcategories
-    ├── menu_item/               # Menu item catalog
+    ├── menu_item/               # Menu item catalog & variations
     ├── order_management/        # Order lifecycle & history
+    ├── promotions_engine/       # Combo deals, bundle discounts & promotion rules
     ├── purchase/                # Purchase orders & supplier logs
-    ├── recipes/                 # Recipe management
+    ├── recipes/                 # Recipe management & ingredient composition
     ├── reports/                 # Sales trends, analytics & stock adjustment reports
     ├── reservation/             # Table reservation management
-    ├── settings/                # App settings & configurations
+    ├── settings/                # App settings, P2P sync, loyalty configs & thermal printers
     ├── staff_management/        # Staff roles & scheduling
-    ├── table_management/        # Table layout & status tracking
+    ├── table_management/        # Dining table layout, QR generation & status tracking
     └── waiter_order_placement/  # POS / Waiter order-taking flow
 ```
 

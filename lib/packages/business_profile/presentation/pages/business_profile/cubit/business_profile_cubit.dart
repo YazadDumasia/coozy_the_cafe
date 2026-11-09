@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+
 import '../../../../domain/entities/business_profile_entity.dart';
 import '../../../../domain/usecases/get_business_profile_usecase.dart';
 import '../../../../domain/usecases/save_business_profile_usecase.dart';

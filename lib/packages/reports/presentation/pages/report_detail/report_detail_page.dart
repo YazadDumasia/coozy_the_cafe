@@ -1033,9 +1033,7 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
   }
 
   Widget _buildEmptyState() {
-    return ReportEmptyView(
-      onAction: () => _refreshReport(),
-    );
+    return ReportEmptyView(onAction: () => _refreshReport());
   }
 
   Widget _buildChart(
@@ -1110,48 +1108,49 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
             : _buildEmptyState(),
       ReportType.salesDashboard =>
         state is ReportsDashboardLoaded
-            ? (state.dashboard.totalInvoices == 0 && state.dashboard.totalSales == 0)
-                ? _buildEmptyState()
-                : SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
-                    child: DashboardKpiCard(dashboard: state.dashboard),
-                  )
+            ? (state.dashboard.totalInvoices == 0 &&
+                      state.dashboard.totalSales == 0)
+                  ? _buildEmptyState()
+                  : SingleChildScrollView(
+                      padding: const EdgeInsets.all(16),
+                      child: DashboardKpiCard(dashboard: state.dashboard),
+                    )
             : _buildEmptyState(),
       ReportType.inventoryStock =>
         state is ReportsInventoryStockLoaded
             ? (state.entries.isEmpty
-                ? _buildEmptyState()
-                : Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: InventoryStockBarChart(entries: state.entries),
-                  ))
+                  ? _buildEmptyState()
+                  : Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: InventoryStockBarChart(entries: state.entries),
+                    ))
             : _buildEmptyState(),
       ReportType.purchases =>
         state is ReportsPurchasesLoaded
             ? (state.entries.isEmpty
-                ? _buildEmptyState()
-                : Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: PurchaseSummaryBarChart(entries: state.entries),
-                  ))
+                  ? _buildEmptyState()
+                  : Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: PurchaseSummaryBarChart(entries: state.entries),
+                    ))
             : _buildEmptyState(),
       ReportType.expenditure =>
         state is ReportsExpenditureLoaded
             ? (state.entries.isEmpty
-                ? _buildEmptyState()
-                : Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: ExpenditureSummaryPieChart(entries: state.entries),
-                  ))
+                  ? _buildEmptyState()
+                  : Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: ExpenditureSummaryPieChart(entries: state.entries),
+                    ))
             : _buildEmptyState(),
       ReportType.stockAdjustments =>
         state is ReportsStockAdjustmentsLoaded
             ? (state.entries.isEmpty
-                ? _buildEmptyState()
-                : Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: StockAdjustmentsBarChart(entries: state.entries),
-                  ))
+                  ? _buildEmptyState()
+                  : Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: StockAdjustmentsBarChart(entries: state.entries),
+                    ))
             : _buildEmptyState(),
       ReportType.aiDemandInsights =>
         state is ReportsAiInsightsLoaded

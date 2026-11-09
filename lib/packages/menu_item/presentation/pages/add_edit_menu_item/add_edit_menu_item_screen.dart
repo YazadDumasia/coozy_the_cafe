@@ -979,7 +979,7 @@ class _AddEditMenuItemScreenState extends State<AddEditMenuItemScreen> {
                     icon: const Icon(Icons.add, size: 16),
                     label: Text(
                       context.tr(
-                            shared.LocaleKeys.menuItemPageVariations,
+                            shared.LocaleKeys.menuItemPageAddVariation,
                             track: shared.TrackConstants.menuItemPageTrack,
                           ) ??
                           'Add Variation',

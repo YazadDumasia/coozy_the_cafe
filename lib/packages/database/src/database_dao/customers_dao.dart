@@ -256,7 +256,15 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
           points, bill_amount, notes, created_date
         ) VALUES (?, ?, ?, ?, 'EARNED', ?, ?, ?, datetime('now'));
         ''',
-        [hashId, customerId, orderId, invoiceId, points, billAmount, notes ?? 'Order reward'],
+        [
+          hashId,
+          customerId,
+          orderId,
+          invoiceId,
+          points,
+          billAmount,
+          notes ?? 'Order reward',
+        ],
       );
 
       // 2. Update loyalty balance, spend, visits (keep existing tier set by user)
@@ -304,7 +312,14 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
           points, notes, created_date
         ) VALUES (?, ?, ?, ?, 'REDEEMED', ?, ?, datetime('now'));
         ''',
-        [hashId, customerId, orderId, invoiceId, pointsToRedeem, notes ?? 'Points redemption discount'],
+        [
+          hashId,
+          customerId,
+          orderId,
+          invoiceId,
+          pointsToRedeem,
+          notes ?? 'Points redemption discount',
+        ],
       );
 
       // 2. Deduct from balance
@@ -324,7 +339,9 @@ class CustomersDao extends DatabaseAccessor<CoozyDatabase>
   }
 
   /// Get transaction history for customer
-  Future<List<Map<String, dynamic>>> getLoyaltyTransactions(int customerId) async {
+  Future<List<Map<String, dynamic>>> getLoyaltyTransactions(
+    int customerId,
+  ) async {
     final rows = await customSelect(
       '''
       SELECT * FROM loyalty_transactions

@@ -19,20 +19,29 @@ class LocalP2pSyncConfigDialog extends StatefulWidget {
       barrierDismissible: true,
       builder: (dialogContext) {
         return BlocProvider(
-          create: (_) => P2pSyncSettingsCubit(
-            syncService: LocalP2pSyncService.instance,
-          )..loadSettings(),
+          create: (_) =>
+              P2pSyncSettingsCubit(syncService: LocalP2pSyncService.instance)
+                ..loadSettings(),
           child: Dialog(
             insetPadding: EdgeInsets.symmetric(
-              horizontal: shared.ResponsiveLayout.isMobile(dialogContext) ? 12 : 24,
-              vertical: shared.ResponsiveLayout.isMobile(dialogContext) ? 16 : 32,
+              horizontal: shared.ResponsiveLayout.isMobile(dialogContext)
+                  ? 12
+                  : 24,
+              vertical: shared.ResponsiveLayout.isMobile(dialogContext)
+                  ? 16
+                  : 32,
             ),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 maxWidth: isDesktop ? 700 : (isTablet ? 600 : double.infinity),
-                maxHeight: MediaQuery.sizeOf(dialogContext).height *
-                    (shared.ResponsiveLayout.isMobile(dialogContext) ? 0.92 : 0.85),
+                maxHeight:
+                    MediaQuery.sizeOf(dialogContext).height *
+                    (shared.ResponsiveLayout.isMobile(dialogContext)
+                        ? 0.92
+                        : 0.85),
               ),
               child: const LocalP2pSyncConfigDialog(),
             ),
@@ -109,10 +118,7 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
       },
       builder: (context, state) {
         if (state is P2pSyncSettingsLoading) {
-          return const SizedBox(
-            height: 280,
-            child: shared.LoadingPage(),
-          );
+          return const SizedBox(height: 280, child: shared.LoadingPage());
         }
 
         if (state is P2pSyncSettingsError) {
@@ -175,7 +181,13 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // 1. Live Connection Status Card
-                  _buildLiveStatusCard(context, config, localIp, status, clientCount),
+                  _buildLiveStatusCard(
+                    context,
+                    config,
+                    localIp,
+                    status,
+                    clientCount,
+                  ),
                   const SizedBox(height: 16),
 
                   // 2. Enable/Disable Master Switch
@@ -216,7 +228,10 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                       shared.LocaleKeys.settingsLocalP2pSyncRoleSection,
                       'Device Terminal Role',
                     ),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   _buildRoleSelector(context, config),
@@ -238,9 +253,12 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                         'e.g., Main POS Counter, Waiter Tab 1, Kitchen KDS',
                       ),
                       prefixIcon: const Icon(Icons.devices_other_rounded),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                    validator: (v) => v == null || v.trim().isEmpty ? 'Required' : null,
+                    validator: (v) =>
+                        v == null || v.trim().isEmpty ? 'Required' : null,
                   ),
                   const SizedBox(height: 16),
 
@@ -271,7 +289,9 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                         ),
                       ),
                       onPressed: () {
-                        context.read<P2pSyncSettingsCubit>().triggerReconnection();
+                        context
+                            .read<P2pSyncSettingsCubit>()
+                            .triggerReconnection();
                       },
                     ),
                   ),
@@ -295,9 +315,13 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                           final updated = config.copyWith(
                             deviceName: _deviceNameController.text.trim(),
                             hubIpAddress: _hubIpController.text.trim(),
-                            hubPort: int.tryParse(_hubPortController.text.trim()) ?? 8899,
+                            hubPort:
+                                int.tryParse(_hubPortController.text.trim()) ??
+                                8899,
                           );
-                          context.read<P2pSyncSettingsCubit>().saveSettings(updated);
+                          context.read<P2pSyncSettingsCubit>().saveSettings(
+                            updated,
+                          );
                           Navigator.of(context).pop();
                         }
                       },
@@ -333,7 +357,10 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
           shared.LocaleKeys.settingsLocalP2pSyncStatusHosting,
           'POS Hub Active — Hosting ($clientCount clients)',
         );
-        statusTitle = hostingTpl.replaceAll(r'${count}', clientCount.toString());
+        statusTitle = hostingTpl.replaceAll(
+          r'${count}',
+          clientCount.toString(),
+        );
         statusIcon = Icons.cloud_done_rounded;
         break;
       case SyncConnectionStatus.connected:
@@ -420,7 +447,10 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                   localIp.isNotEmpty
                       ? 'Local Wi-Fi IP: $localIp (Port: ${config.hubPort})'
                       : 'Connecting to local Wi-Fi...',
-                  style: TextStyle(fontSize: 12, color: scheme.onSurfaceVariant),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: scheme.onSurfaceVariant,
+                  ),
                 ),
                 ValueListenableBuilder<int>(
                   valueListenable:
@@ -431,8 +461,11 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                       padding: const EdgeInsets.only(top: 4),
                       child: Row(
                         children: [
-                          Icon(Icons.cloud_upload_outlined,
-                              size: 14, color: Colors.orange.shade700),
+                          Icon(
+                            Icons.cloud_upload_outlined,
+                            size: 14,
+                            color: Colors.orange.shade700,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '$pendingCount changes queued offline',
@@ -474,7 +507,9 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
             icon: Icons.hub_rounded,
             isSelected: config.role == DeviceSyncRole.posHub,
             onTap: () {
-              context.read<P2pSyncSettingsCubit>().changeRole(DeviceSyncRole.posHub);
+              context.read<P2pSyncSettingsCubit>().changeRole(
+                DeviceSyncRole.posHub,
+              );
             },
           ),
         ),
@@ -495,7 +530,9 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
             icon: Icons.tablet_mac_rounded,
             isSelected: config.role == DeviceSyncRole.clientTerminal,
             onTap: () {
-              context.read<P2pSyncSettingsCubit>().changeRole(DeviceSyncRole.clientTerminal);
+              context.read<P2pSyncSettingsCubit>().changeRole(
+                DeviceSyncRole.clientTerminal,
+              );
             },
           ),
         ),
@@ -524,23 +561,35 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
             color: isSelected ? scheme.primary : scheme.outlineVariant,
             width: isSelected ? 2 : 1,
           ),
-          color: isSelected ? scheme.primary.withValues(alpha: 0.08) : Colors.transparent,
+          color: isSelected
+              ? scheme.primary.withValues(alpha: 0.08)
+              : Colors.transparent,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(icon, color: isSelected ? scheme.primary : scheme.onSurfaceVariant),
+                Icon(
+                  icon,
+                  color: isSelected ? scheme.primary : scheme.onSurfaceVariant,
+                ),
                 const Spacer(),
                 if (isSelected)
-                  Icon(Icons.check_circle_rounded, color: scheme.primary, size: 20),
+                  Icon(
+                    Icons.check_circle_rounded,
+                    color: scheme.primary,
+                    size: 20,
+                  ),
               ],
             ),
             const SizedBox(height: 8),
             Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 4),
-            Text(desc, style: TextStyle(fontSize: 11, color: scheme.onSurfaceVariant)),
+            Text(
+              desc,
+              style: TextStyle(fontSize: 11, color: scheme.onSurfaceVariant),
+            ),
           ],
         ),
       ),
@@ -578,7 +627,10 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                     shared.LocaleKeys.settingsLocalP2pSyncQrTitle,
                     'Client Pairing QR Code',
                   ),
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
                 ),
               ],
             ),
@@ -700,7 +752,9 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                           'POS Hub IP',
                         ),
                         hintText: '192.168.1.100',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                     ),
                   ),
@@ -717,7 +771,9 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
                           'Port',
                         ),
                         hintText: '8899',
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                       ),
                       keyboardType: TextInputType.number,
                     ),

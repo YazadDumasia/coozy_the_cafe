@@ -586,10 +586,7 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     ''';
     final rows = await customSelect(
       sql,
-      variables: [
-        Variable.withString(startIso),
-        Variable.withString(endIso),
-      ],
+      variables: [Variable.withString(startIso), Variable.withString(endIso)],
     ).get();
     return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
   }
@@ -611,10 +608,7 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     ''';
     final rows = await customSelect(
       sql,
-      variables: [
-        Variable.withString(startIso),
-        Variable.withString(endIso),
-      ],
+      variables: [Variable.withString(startIso), Variable.withString(endIso)],
     ).get();
     return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
   }
@@ -635,10 +629,7 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     ''';
     final rows = await customSelect(
       sql,
-      variables: [
-        Variable.withString(startIso),
-        Variable.withString(endIso),
-      ],
+      variables: [Variable.withString(startIso), Variable.withString(endIso)],
     ).get();
     return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
   }
@@ -666,12 +657,8 @@ class ReportsDao extends DatabaseAccessor<CoozyDatabase>
     ''';
     final rows = await customSelect(
       sql,
-      variables: [
-        Variable.withString(startIso),
-        Variable.withString(endIso),
-      ],
+      variables: [Variable.withString(startIso), Variable.withString(endIso)],
     ).get();
     return rows.map((r) => Map<String, dynamic>.from(r.data)).toList();
   }
 }
-
