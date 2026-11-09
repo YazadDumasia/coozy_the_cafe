@@ -103,6 +103,26 @@ class CoozyDatabase extends _$CoozyDatabase {
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) async {
+      for (final entity in allSchemaEntities) {
+        if (entity is TableInfo) {
+          await m.createTable(entity);
+        } else if (entity is Index) {
+          // Use CREATE INDEX IF NOT EXISTS to prevent duplicates across migrations or re-runs
+          final stmt = entity.createStatementsByDialect[SqlDialect.sqlite] ??
+              entity.createStatementsByDialect.values.first;
+          final safeStmt = stmt.replaceFirst(
+            'CREATE INDEX ',
+            'CREATE INDEX IF NOT EXISTS ',
+          );
+          await customStatement(safeStmt);
+        } else if (entity is Trigger) {
+          await m.createTrigger(entity);
+        } else if (entity is ViewInfo) {
+          await m.createView(entity);
+        }
+      }
+    },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON;');
       await customStatement(

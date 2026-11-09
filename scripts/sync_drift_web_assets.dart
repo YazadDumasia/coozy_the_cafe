@@ -21,8 +21,8 @@ Future<void> main() async {
     r'drift:\n\s+dependency: ".*"\n\s+description:\n\s+name: drift\n\s+sha256: "?.*"?\n\s+url: ".*"\n\s+source: hosted\n\s+version: "(.*)"',
   ).firstMatch(content);
 
-  final sqlite3Version = sqlite3VersionMatch?.group(1) ?? '3.7.1';
-  final driftVersion = driftVersionMatch?.group(1) ?? '2.35.2';
+  final sqlite3Version = sqlite3VersionMatch?.group(1) ?? '3.9.1';
+  final driftVersion = driftVersionMatch?.group(1) ?? '2.35.4';
 
   print('Detected package:sqlite3 version: $sqlite3Version');
   print('Detected package:drift version: $driftVersion');

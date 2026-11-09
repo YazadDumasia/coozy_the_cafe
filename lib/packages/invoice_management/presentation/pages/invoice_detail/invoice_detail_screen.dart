@@ -425,7 +425,9 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                       Icon(
                         Icons.receipt_long_outlined,
                         size: 64,
-                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+                        color: colorScheme.onSurfaceVariant.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                       const SizedBox(height: 16),
                       Text(
