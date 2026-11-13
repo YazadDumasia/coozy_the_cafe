@@ -199,6 +199,8 @@ All package registrations are called inside `lib/injection.dart` during app init
 8. **Theme & Dual-Mode UI Principles (Light & Dark Theme)**:
    - **Pre-Design Consideration**: Before implementing any layout or widget design, evaluate how colors, contrasts, borders, and shadows appear in **both Light Mode and Dark Mode**.
    - **Dynamic Theme References**: Never hardcode static color literals (`Colors.white`, `Colors.black`, `#FFFFFF`). Always reference `Theme.of(context).colorScheme` or `Theme.of(context).textTheme`.
+   - **Typography Tokens & Text Sizing**: Avoid hardcoding fixed font sizes (e.g. `fontSize: 16`, `fontSize: isMobile ? 15 : 17`). Use standard typography tokens from `Theme.of(context).textTheme` (e.g. `titleLarge`, `titleMedium`, `bodyMedium`, `bodySmall`, `labelLarge`, `labelMedium`).
+   - **Title Wrapping & `.inExpandedRow()`**: For title text in lists, cards, and tiles (e.g., dish names, combo titles, receipt headers) that might squeeze on compact screens or wrap into awkward 5–6 vertical lines, wrap the `Text` widget with `.inExpandedRow()` (from `package:coozy_the_cafe/packages/shared/coozy_shared.dart`) and provide `maxLines` with `overflow: TextOverflow.ellipsis`. Badges and auxiliary tags should sit below the title in a responsive `Wrap` rather than competing with the title in the same tight horizontal row.
    - **Modern Color Opacity**: Use Flutter's modern `.withValues(alpha: ...)` API instead of the deprecated `.withOpacity(...)`.
    - **Theme Extensions**: Utilize `AppThemeExtension` via `Theme.of(context).extension<shared.AppThemeExtension>()` for custom radii, elevation, or brand colors.
 9. **Form & Input Controller Lifecycle Management**:

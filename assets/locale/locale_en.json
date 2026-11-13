@@ -1205,6 +1205,7 @@
     "chairs_label": "Chairs",
     "color_indicator_table_hint_text": "Select an unique color",
     "color_indicator_table_label_text": "Color Indicator for Table",
+    "combos_tab_title": "Combos",
     "current_order_tab_title": "Current Order",
     "disable_reorder_icon_table_icon_tooltip_text": "Please switch off reorder list feature",
     "empty_status": "EMPTY",

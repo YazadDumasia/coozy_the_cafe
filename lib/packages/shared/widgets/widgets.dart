@@ -59,6 +59,12 @@ export '../../shared/widgets/hover_scale_widget/hover_scale_widget.dart';
 // pager
 export '../../shared/widgets/pager/pager.dart';
 
+// pdf_preview_scaffold
+export '../../shared/widgets/pdf_preview_scaffold/pdf_preview_scaffold.dart';
+export '../../shared/widgets/pdf_preview_scaffold/pdf_preview_toolbar.dart';
+export '../../shared/widgets/pdf_preview_scaffold/pdf_column_selector.dart';
+export '../../shared/widgets/pdf_preview_scaffold/pdf_viewer_viewport.dart';
+
 // particles_flutter
 export '../../shared/widgets/particles_flutter/component/painter.dart';
 export '../../shared/widgets/particles_flutter/particles_flutter.dart';

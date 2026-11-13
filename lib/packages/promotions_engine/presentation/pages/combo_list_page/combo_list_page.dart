@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
@@ -113,6 +114,7 @@ class _ComboListPageState extends State<ComboListPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDesktop = shared.ResponsiveLayout.isDesktop(context);
+    final isTablet = shared.ResponsiveLayout.isTablet(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -201,19 +203,15 @@ class _ComboListPageState extends State<ComboListPage> {
               Expanded(
                 child: combos.isEmpty
                     ? ComboListEmptyView(onAddNew: () => _openComboDialog())
-                    : isDesktop
-                    ? GridView.builder(
+                    : (isDesktop || isTablet)
+                    ? MasonryGridView.count(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,
                         ),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              childAspectRatio: 2.1,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                            ),
+                        crossAxisCount: isDesktop ? 3 : 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
                         itemCount: combos.length,
                         addAutomaticKeepAlives: false,
                         addRepaintBoundaries: true,
@@ -236,7 +234,12 @@ class _ComboListPageState extends State<ComboListPage> {
                           );
                         },
                       )
-                    : ListView.builder(
+                    : ListView.separated(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        separatorBuilder: (_, _) => const SizedBox(height: 12),
                         itemCount: combos.length,
                         addAutomaticKeepAlives: false,
                         addRepaintBoundaries: true,

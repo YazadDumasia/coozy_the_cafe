@@ -37,51 +37,45 @@ class InvoicePdfPreviewDialog extends StatefulWidget {
 }
 
 class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
-  // Preloaded data for both formats
-  Uint8List? _thermalBytes;
-  String? _thermalFilePath;
+  final ValueNotifier<Uint8List?> _thermalBytesNotifier = ValueNotifier(null);
+  final ValueNotifier<String?> _thermalFilePathNotifier = ValueNotifier(null);
   File? _thermalTempFile;
 
-  Uint8List? _a4Bytes;
-  String? _a4FilePath;
+  final ValueNotifier<Uint8List?> _a4BytesNotifier = ValueNotifier(null);
+  final ValueNotifier<String?> _a4FilePathNotifier = ValueNotifier(null);
   File? _a4TempFile;
 
-  bool _isThermalLoaded = false;
-  bool _isA4Loaded = false;
+  final ValueNotifier<bool> _isThermalLoadedNotifier = ValueNotifier(false);
+  final ValueNotifier<bool> _isA4LoadedNotifier = ValueNotifier(false);
 
-  bool _isDialogTransitionCompleted = false;
-  bool _isLoading = true;
-  String? _errorMessage;
+  final ValueNotifier<bool> _isDialogTransitionCompletedNotifier =
+      ValueNotifier(false);
+  final ValueNotifier<bool> _isLoadingNotifier = ValueNotifier(true);
+  final ValueNotifier<String?> _errorMessageNotifier = ValueNotifier(null);
 
-  // Selected format toggle (Default: Thermal 80mm)
-  InvoicePreviewFormat _selectedFormat = InvoicePreviewFormat.thermal80mm;
-  bool _isPrinting = false;
+  final ValueNotifier<InvoicePreviewFormat> _selectedFormatNotifier =
+      ValueNotifier(InvoicePreviewFormat.thermal80mm);
+  final ValueNotifier<bool> _isPrintingNotifier = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
-    // Wait for the modal dialog entrance transition to complete smoothly
-    // before presenting the heavy SfPdfViewer rendering to prevent the dialog from sticking
-    // in semi-transparent animation phase.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(milliseconds: 250), () {
         if (mounted) {
-          setState(() {
-            _isDialogTransitionCompleted = true;
-          });
+          _isDialogTransitionCompletedNotifier.value = true;
         }
       });
     });
 
-    // If prebuilt bytes are provided from the parent screen, use them immediately
     if (widget.prebuiltThermalBytes != null) {
-      _thermalBytes = widget.prebuiltThermalBytes;
-      _isThermalLoaded = true;
-      _isLoading = false;
+      _thermalBytesNotifier.value = widget.prebuiltThermalBytes;
+      _isThermalLoadedNotifier.value = true;
+      _isLoadingNotifier.value = false;
     }
     if (widget.prebuiltA4Bytes != null) {
-      _a4Bytes = widget.prebuiltA4Bytes;
-      _isA4Loaded = true;
+      _a4BytesNotifier.value = widget.prebuiltA4Bytes;
+      _isA4LoadedNotifier.value = true;
     }
 
     _preloadAllFormats();
@@ -90,14 +84,21 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
   @override
   void dispose() {
     _deleteCachedFiles();
+    _thermalBytesNotifier.dispose();
+    _thermalFilePathNotifier.dispose();
+    _a4BytesNotifier.dispose();
+    _a4FilePathNotifier.dispose();
+    _isThermalLoadedNotifier.dispose();
+    _isA4LoadedNotifier.dispose();
+    _isDialogTransitionCompletedNotifier.dispose();
+    _isLoadingNotifier.dispose();
+    _errorMessageNotifier.dispose();
+    _selectedFormatNotifier.dispose();
+    _isPrintingNotifier.dispose();
     super.dispose();
   }
 
-  /// Preloads both Thermal 80mm and A4 in the background simultaneously
   Future<void> _preloadAllFormats() async {
-    _cleanupOldCachedFiles();
-
-    // 1. Preload Thermal 80mm
     final thermalFuture = () async {
       try {
         if (!kIsWeb && widget.filePath != null && widget.filePath!.isNotEmpty) {
@@ -108,7 +109,6 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
           }
         }
 
-        // If prebuilt thermal bytes were supplied and no file path override exists, use them and write temp file if needed
         final bytes =
             widget.prebuiltThermalBytes ??
             await InvoicePdfGenerator.generatePdf(
@@ -129,13 +129,12 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
       } catch (e) {
         core.PlatformUtils.debugLog(
           InvoicePdfPreviewDialog,
-          'Error preloading thermal PDF: $e',
+          'Error preloading thermal PDF: ',
         );
         rethrow;
       }
     }();
 
-    // 2. Preload A4 in the background
     final a4Future = () async {
       try {
         final bytes =
@@ -158,42 +157,34 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
       } catch (e) {
         core.PlatformUtils.debugLog(
           InvoicePdfPreviewDialog,
-          'Error preloading A4 PDF: $e',
+          'Error preloading A4 PDF: ',
         );
         return null;
       }
     }();
 
-    // Handle thermal completion (primary initial view)
     try {
       final thermalResult = await thermalFuture;
       if (mounted) {
-        setState(() {
-          _thermalBytes = thermalResult.bytes;
-          _thermalFilePath = thermalResult.path;
-          _thermalTempFile = thermalResult.tempFile;
-          _isThermalLoaded = true;
-          _isLoading = false;
-        });
+        _thermalBytesNotifier.value = thermalResult.bytes;
+        _thermalFilePathNotifier.value = thermalResult.path;
+        _thermalTempFile = thermalResult.tempFile;
+        _isThermalLoadedNotifier.value = true;
+        _isLoadingNotifier.value = false;
       }
     } catch (e) {
       if (mounted) {
-        setState(() {
-          _errorMessage = e.toString();
-          _isLoading = false;
-        });
+        _errorMessageNotifier.value = e.toString();
+        _isLoadingNotifier.value = false;
       }
     }
 
-    // Handle A4 completion in background without blocking initial thermal view
     final a4Result = await a4Future;
     if (a4Result != null && mounted) {
-      setState(() {
-        _a4Bytes = a4Result.bytes;
-        _a4FilePath = a4Result.path;
-        _a4TempFile = a4Result.tempFile;
-        _isA4Loaded = true;
-      });
+      _a4BytesNotifier.value = a4Result.bytes;
+      _a4FilePathNotifier.value = a4Result.path;
+      _a4TempFile = a4Result.tempFile;
+      _isA4LoadedNotifier.value = true;
     }
   }
 
@@ -214,18 +205,17 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
   }
 
   void _onFormatChanged(InvoicePreviewFormat format) {
-    if (_selectedFormat == format) return;
-    setState(() {
-      _selectedFormat = format;
-      if (format == InvoicePreviewFormat.a4Invoice && !_isA4Loaded) {
-        _isLoading = true;
-      } else if (format == InvoicePreviewFormat.thermal80mm &&
-          !_isThermalLoaded) {
-        _isLoading = true;
-      } else {
-        _isLoading = false;
-      }
-    });
+    if (_selectedFormatNotifier.value == format) return;
+    _selectedFormatNotifier.value = format;
+    if (format == InvoicePreviewFormat.a4Invoice &&
+        !_isA4LoadedNotifier.value) {
+      _isLoadingNotifier.value = true;
+    } else if (format == InvoicePreviewFormat.thermal80mm &&
+        !_isThermalLoadedNotifier.value) {
+      _isLoadingNotifier.value = true;
+    } else {
+      _isLoadingNotifier.value = false;
+    }
   }
 
   void _deleteCachedFiles() {
@@ -234,70 +224,22 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
     if (_a4TempFile != null) filesToDelete.add(_a4TempFile!);
     _thermalTempFile = null;
     _a4TempFile = null;
-    _thermalFilePath = null;
-    _a4FilePath = null;
 
-    if (filesToDelete.isEmpty) return;
-
-    Future.delayed(const Duration(milliseconds: 300), () async {
-      for (final file in filesToDelete) {
-        for (int attempt = 1; attempt <= 3; attempt++) {
-          try {
-            if (await file.exists()) {
-              await file.delete();
-              core.PlatformUtils.debugLog(
-                InvoicePdfPreviewDialog,
-                'Auto-deleted cached preview PDF: ${file.path}',
-              );
-            }
-            break;
-          } catch (e) {
-            core.PlatformUtils.debugLog(
-              InvoicePdfPreviewDialog,
-              'Attempt $attempt to auto-delete cached preview PDF failed ($e), retrying...',
-            );
-            await Future.delayed(const Duration(milliseconds: 300));
+    if (kIsWeb || filesToDelete.isEmpty) return;
+    Future.microtask(() async {
+      for (final f in filesToDelete) {
+        try {
+          if (await f.exists()) {
+            await f.delete();
           }
-        }
+        } catch (_) {}
       }
     });
   }
 
-  static Future<void> _cleanupOldCachedFiles() async {
-    if (kIsWeb) return;
-    try {
-      final tempDir = await getTemporaryDirectory();
-      final dir = Directory(tempDir.path);
-      if (await dir.exists()) {
-        final entities = dir.listSync();
-        for (final entity in entities) {
-          if (entity is File &&
-              entity.path.contains('cache_preview_invoice_')) {
-            try {
-              await entity.delete();
-            } catch (_) {}
-          }
-        }
-      }
-    } catch (_) {}
-  }
-
-  Future<void> _copySummary() async {
-    final summary = await InvoiceShareService.instance.buildShareMessage(
-      widget.details,
-    );
-    await Clipboard.setData(ClipboardData(text: summary));
-    if (mounted) {
-      shared.SnackBarUtils.showSuccess(
-        context,
-        message: 'Invoice summary copied to clipboard!',
-      );
-    }
-  }
-
   Future<void> _handleThermalPrint() async {
-    if (_isPrinting) return;
-    setState(() => _isPrinting = true);
+    if (_isPrintingNotifier.value) return;
+    _isPrintingNotifier.value = true;
     try {
       final config = await ThermalPrinterService.instance.getPrinterConfig(
         stationKey: shared.PreferencesKeys.customerReceiptPrinterConfig,
@@ -332,28 +274,42 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
             );
             await InvoicePdfGenerator.printPdf(
               details: widget.details,
-              bytes: _thermalBytes,
+              bytes: _thermalBytesNotifier.value,
             );
           }
         }
       } else {
         await InvoicePdfGenerator.printPdf(
           details: widget.details,
-          bytes: _thermalBytes,
+          bytes: _thermalBytesNotifier.value,
         );
       }
     } catch (e) {
       if (mounted) {
         shared.SnackBarUtils.showError(
           context,
-          message: 'Error printing receipt: $e',
+          message: 'Failed to print thermal receipt: $e',
         );
       }
     } finally {
       if (mounted) {
-        setState(() => _isPrinting = false);
+        _isPrintingNotifier.value = false;
       }
     }
+  }
+
+  void _copySummary() {
+    InvoiceShareService.instance.buildShareMessage(widget.details).then((
+      summary,
+    ) {
+      Clipboard.setData(ClipboardData(text: summary));
+      if (mounted) {
+        shared.SnackBarUtils.showSuccess(
+          context,
+          message: 'Invoice summary copied to clipboard',
+        );
+      }
+    });
   }
 
   @override
@@ -362,6 +318,8 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
     final colorScheme = theme.colorScheme;
     final isDark = theme.brightness == Brightness.dark;
     final isMobile = shared.ResponsiveLayout.isMobile(context);
+    final isDesktop = shared.ResponsiveLayout.isDesktop(context);
+    final isTablet = shared.ResponsiveLayout.isTablet(context);
     final size = MediaQuery.of(context).size;
 
     final receiptNo = widget.details.invoice.hashId.isNotEmpty
@@ -374,429 +332,461 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
               ? widget.details.tableName!
               : 'Walk-in');
 
-    final activeBytes = _selectedFormat == InvoicePreviewFormat.thermal80mm
-        ? _thermalBytes
-        : _a4Bytes;
-    final activeFilePath = _selectedFormat == InvoicePreviewFormat.thermal80mm
-        ? _thermalFilePath
-        : _a4FilePath;
-    final isCurrentFormatLoaded =
-        _selectedFormat == InvoicePreviewFormat.thermal80mm
-        ? _isThermalLoaded
-        : _isA4Loaded;
-
-    final hasPdf = activeBytes != null || activeFilePath != null;
-
     return Dialog(
-      insetPadding: isMobile
-          ? const EdgeInsets.symmetric(horizontal: 10, vertical: 16)
-          : EdgeInsets.symmetric(
+      insetPadding: isDesktop
+          ? EdgeInsets.symmetric(
               horizontal: (size.width * 0.12).clamp(16.0, 160.0),
               vertical: (size.height * 0.05).clamp(16.0, 60.0),
-            ),
+            )
+          : isTablet
+          ? const EdgeInsets.symmetric(horizontal: 16, vertical: 16)
+          : EdgeInsets.zero,
       backgroundColor: isDark ? colorScheme.surface : Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(
+          isDesktop ? 20 : (isTablet ? 12 : 0),
+        ),
+      ),
       clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          // ==========================================
-          // TOP HEADER HIGHLIGHT PART
-          // ==========================================
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: isMobile ? 12 : 20,
-              vertical: isMobile ? 10 : 14,
-            ),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.35)
-                  : Colors.white,
-              border: Border(
-                bottom: BorderSide(
-                  color: colorScheme.outlineVariant.withValues(alpha: 0.4),
-                  width: 1,
+      child: SizedBox(
+        width: isDesktop ? null : (isTablet ? size.width * 0.94 : size.width),
+        height: isMobile ? size.height : null,
+        child: Column(
+          children: [
+            // TOP HEADER
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 12 : 20,
+                vertical: isMobile ? 10 : 14,
+              ),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.35,
+                      )
+                    : Colors.white,
+                border: Border(
+                  bottom: BorderSide(
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+                    width: 1,
+                  ),
                 ),
               ),
-            ),
-            child: Row(
-              children: [
-                // 1. Icon badge - Seamlessly adapts to primary/surface theme
-                Container(
-                  width: 44,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(
-                      alpha: isDark ? 0.4 : 0.8,
+              child: Row(
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: isDark ? 0.4 : 0.8,
+                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: colorScheme.primary.withValues(alpha: 0.25),
-                      width: 1.2,
-                    ),
-                  ),
-                  child: Center(
                     child: Icon(
                       Icons.receipt_long_rounded,
-                      color: isDark
-                          ? colorScheme.primary
-                          : colorScheme.onPrimaryContainer,
-                      size: 22,
+                      color: colorScheme.primary,
+                      size: 24,
                     ),
                   ),
-                ),
-                const SizedBox(width: 14),
-
-                // 2. Title & Subtitle (Bill & Invoice Preview | HashId • Customer)
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        context.tr(
-                              shared.LocaleKeys.invoicePreviewBillTitle,
-                              track: shared.TrackConstants.invoicePageTrack,
-                            ) ??
-                            'Bill & Invoice Preview',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: isMobile ? 15 : 17,
-                          letterSpacing: -0.2,
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          context.tr(
+                                shared.LocaleKeys.invoicePreviewBillTitle,
+                                track: shared.TrackConstants.invoicePageTrack,
+                              ) ??
+                              'Bill & Invoice Preview',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '$receiptNo • $customerName',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w500,
-                          fontSize: isMobile ? 11.5 : 13,
+                        const SizedBox(height: 2),
+                        Text(
+                          '$receiptNo • $customerName',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-
-                // 3. Segmented Format Switch: [ Thermal (80mm) | A4 Invoice ]
-                Container(
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? colorScheme.surfaceContainerHighest
-                        : const Color(0xFFF1F3F6),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  padding: const EdgeInsets.all(3.5),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildFormatToggleItem(
-                        context: context,
-                        label:
-                            context.tr(
-                              shared.LocaleKeys.invoicePreviewThermal80mm,
-                              track: shared.TrackConstants.invoicePageTrack,
-                            ) ??
-                            'Thermal (80mm)',
-                        isSelected:
-                            _selectedFormat == InvoicePreviewFormat.thermal80mm,
-                        onTap: () =>
-                            _onFormatChanged(InvoicePreviewFormat.thermal80mm),
-                      ),
-                      _buildFormatToggleItem(
-                        context: context,
-                        label:
-                            context.tr(
-                              shared.LocaleKeys.invoicePreviewA4,
-                              track: shared.TrackConstants.invoicePageTrack,
-                            ) ??
-                            'A4 Invoice',
-                        isSelected:
-                            _selectedFormat == InvoicePreviewFormat.a4Invoice,
-                        onTap: () =>
-                            _onFormatChanged(InvoicePreviewFormat.a4Invoice),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 10),
-
-                // 4. Quick Print Button (Solid pill button with print icon)
-                FilledButton.icon(
-                  onPressed: hasPdf
-                      ? () => InvoicePdfGenerator.printPdf(
-                          details: widget.details,
-                          bytes: activeBytes,
-                        )
-                      : null,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: isDark
-                        ? colorScheme.primaryContainer
-                        : colorScheme.primary,
-                    foregroundColor: isDark
-                        ? colorScheme.onPrimaryContainer
-                        : colorScheme.onPrimary,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: isMobile ? 12 : 16,
-                      vertical: 10,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    visualDensity: VisualDensity.compact,
-                    elevation: 0,
-                  ),
-                  icon: const Icon(Icons.print_rounded, size: 16),
-                  label: Text(
-                    context.tr(
-                          shared.LocaleKeys.invoiceActionPrint,
-                          track: shared.TrackConstants.invoicePageTrack,
-                        ) ??
-                        'Print',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(width: 4),
-
-                // 5. Close icon button (X)
-                IconButton(
-                  icon: const Icon(Icons.close_rounded, size: 20),
-                  splashRadius: 20,
-                  color: colorScheme.onSurfaceVariant,
-                  tooltip: 'Close',
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          ),
-
-          // ==========================================
-          // CENTER PREVIEW CONTAINER
-          // ==========================================
-          Expanded(
-            child: Container(
-              color: isDark
-                  ? colorScheme.surfaceContainerLowest
-                  : const Color(0xFFF3F5F8),
-              child:
-                  (_isLoading ||
-                      !isCurrentFormatLoaded ||
-                      !_isDialogTransitionCompleted)
-                  ? const Center(child: shared.LoadingPage(isEmbedded: true))
-                  : _errorMessage != null
-                  ? Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Column(
+                  // Segmented format toggle (Thermal vs A4)
+                  ValueListenableBuilder<InvoicePreviewFormat>(
+                    valueListenable: _selectedFormatNotifier,
+                    builder: (context, selectedFormat, _) {
+                      return Container(
+                        padding: const EdgeInsets.all(3.5),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? colorScheme.surfaceContainerHighest.withValues(
+                                  alpha: 0.5,
+                                )
+                              : const Color(0xFFF1F3F6),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: colorScheme.outlineVariant.withValues(
+                              alpha: 0.35,
+                            ),
+                          ),
+                        ),
+                        child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(
-                              Icons.error_outline_rounded,
-                              color: Colors.redAccent,
-                              size: 48,
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              context.tr(
-                                    shared.LocaleKeys.invoicePreviewError,
-                                    track:
-                                        shared.TrackConstants.invoicePageTrack,
-                                  ) ??
-                                  'Failed to load invoice preview',
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
+                            _buildFormatToggleItem(
+                              context: context,
+                              label: 'Thermal 80mm',
+                              isSelected:
+                                  selectedFormat ==
+                                  InvoicePreviewFormat.thermal80mm,
+                              onTap: () => _onFormatChanged(
+                                InvoicePreviewFormat.thermal80mm,
                               ),
                             ),
-                            const SizedBox(height: 6),
-                            Text(
-                              _errorMessage!,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: colorScheme.error,
+                            const SizedBox(width: 2),
+                            _buildFormatToggleItem(
+                              context: context,
+                              label: 'A4 Document',
+                              isSelected:
+                                  selectedFormat ==
+                                  InvoicePreviewFormat.a4Invoice,
+                              onTap: () => _onFormatChanged(
+                                InvoicePreviewFormat.a4Invoice,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            FilledButton.tonalIcon(
-                              onPressed: () => _preloadAllFormats(),
-                              icon: const Icon(Icons.refresh_rounded),
-                              label: const Text('Retry'),
                             ),
                           ],
                         ),
+                      );
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  // System Print button
+                  OutlinedButton.icon(
+                    onPressed: () {
+                      final selectedFormat = _selectedFormatNotifier.value;
+                      final activeBytes =
+                          selectedFormat == InvoicePreviewFormat.thermal80mm
+                          ? _thermalBytesNotifier.value
+                          : _a4BytesNotifier.value;
+                      InvoicePdfGenerator.printPdf(
+                        details: widget.details,
+                        bytes: activeBytes,
+                      );
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: colorScheme.primary,
+                      side: BorderSide(
+                        color: colorScheme.primary.withValues(alpha: 0.4),
                       ),
-                    )
-                  : Center(
-                      child: Container(
-                        constraints: BoxConstraints(
-                          maxWidth:
-                              _selectedFormat ==
-                                  InvoicePreviewFormat.thermal80mm
-                              ? 440
-                              : double.infinity,
-                        ),
-                        margin: EdgeInsets.all(isMobile ? 8.0 : 16.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 18,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: activeFilePath != null
-                            ? SfPdfViewer.file(
-                                File(activeFilePath),
-                                canShowScrollHead: false,
-                                canShowScrollStatus: false,
-                              )
-                            : activeBytes != null
-                            ? SfPdfViewer.memory(
-                                activeBytes,
-                                canShowScrollHead: false,
-                                canShowScrollStatus: false,
-                              )
-                            : const SizedBox.shrink(),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 9,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    icon: const Icon(Icons.print_rounded, size: 16),
+                    label: Text(
+                      context.tr(
+                            shared.LocaleKeys.invoiceActionPrint,
+                            track: shared.TrackConstants.invoicePageTrack,
+                          ) ??
+                          'Print',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
+                  ),
+                  const SizedBox(width: 4),
+                  IconButton(
+                    icon: const Icon(Icons.close_rounded, size: 20),
+                    splashRadius: 20,
+                    color: colorScheme.onSurfaceVariant,
+                    tooltip: 'Close',
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
             ),
-          ),
+            // VIEWER BODY
+            Expanded(
+              child: Container(
+                color: isDark
+                    ? colorScheme.surfaceContainerLowest
+                    : const Color(0xFFF7F8FA),
+                width: double.infinity,
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: _isDialogTransitionCompletedNotifier,
+                  builder: (context, isDialogTransitionCompleted, _) {
+                    if (!isDialogTransitionCompleted) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-          // ==========================================
-          // BOTTOM FOOTER HIGHLIGHT PART
-          // ==========================================
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: isMobile ? 12 : 20,
-              vertical: isMobile ? 10 : 12,
-            ),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? colorScheme.surfaceContainerHighest.withValues(alpha: 0.35)
-                  : Colors.white,
-              border: Border(
-                top: BorderSide(
-                  color: colorScheme.outlineVariant.withValues(alpha: 0.4),
-                  width: 1,
+                    return ValueListenableBuilder<bool>(
+                      valueListenable: _isLoadingNotifier,
+                      builder: (context, isLoading, _) {
+                        if (isLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        return ValueListenableBuilder<String?>(
+                          valueListenable: _errorMessageNotifier,
+                          builder: (context, errorMessage, _) {
+                            if (errorMessage != null) {
+                              return Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.error_outline_rounded,
+                                        size: 48,
+                                        color: colorScheme.error,
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        'Failed to load invoice preview',
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        errorMessage,
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                              color: colorScheme.error,
+                                            ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 16),
+                                      FilledButton.tonalIcon(
+                                        onPressed: () => _preloadAllFormats(),
+                                        icon: const Icon(Icons.refresh_rounded),
+                                        label: const Text('Retry'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }
+
+                            return ListenableBuilder(
+                              listenable: Listenable.merge([
+                                _selectedFormatNotifier,
+                                _thermalBytesNotifier,
+                                _thermalFilePathNotifier,
+                                _a4BytesNotifier,
+                                _a4FilePathNotifier,
+                              ]),
+                              builder: (context, _) {
+                                final selectedFormat =
+                                    _selectedFormatNotifier.value;
+                                final activeBytes =
+                                    selectedFormat ==
+                                        InvoicePreviewFormat.thermal80mm
+                                    ? _thermalBytesNotifier.value
+                                    : _a4BytesNotifier.value;
+                                final activeFilePath =
+                                    selectedFormat ==
+                                        InvoicePreviewFormat.thermal80mm
+                                    ? _thermalFilePathNotifier.value
+                                    : _a4FilePathNotifier.value;
+
+                                return Center(
+                                  child: Container(
+                                    constraints: BoxConstraints(
+                                      maxWidth:
+                                          selectedFormat ==
+                                              InvoicePreviewFormat.thermal80mm
+                                          ? 440
+                                          : double.infinity,
+                                    ),
+                                    margin: EdgeInsets.all(
+                                      isMobile ? 8.0 : 16.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(
+                                            alpha: 0.08,
+                                          ),
+                                          blurRadius: 18,
+                                          offset: const Offset(0, 6),
+                                        ),
+                                      ],
+                                    ),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: activeFilePath != null
+                                        ? SfPdfViewer.file(
+                                            File(activeFilePath),
+                                            canShowScrollHead: false,
+                                            canShowScrollStatus: false,
+                                          )
+                                        : activeBytes != null
+                                        ? SfPdfViewer.memory(
+                                            activeBytes,
+                                            canShowScrollHead: false,
+                                            canShowScrollStatus: false,
+                                          )
+                                        : const SizedBox.shrink(),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
             ),
-            child: Row(
-              children: [
-                // 1. Left: Copy Summary Outlined Button
-                OutlinedButton.icon(
-                  onPressed: _copySummary,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: colorScheme.onSurface,
-                    side: BorderSide(
-                      color: colorScheme.outlineVariant.withValues(alpha: 0.8),
-                      width: 1,
-                    ),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: isMobile ? 12 : 16,
-                      vertical: 10,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  icon: const Icon(Icons.share_outlined, size: 16),
-                  label: Text(
-                    context.tr(
-                          shared.LocaleKeys.invoiceCopySummary,
-                          track: shared.TrackConstants.invoicePageTrack,
-                        ) ??
-                        'Copy Summary',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                    ),
+            // BOTTOM FOOTER
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: isMobile ? 12 : 20,
+                vertical: isMobile ? 10 : 12,
+              ),
+              decoration: BoxDecoration(
+                color: isDark
+                    ? colorScheme.surfaceContainerHighest.withValues(
+                        alpha: 0.35,
+                      )
+                    : Colors.white,
+                border: Border(
+                  top: BorderSide(
+                    color: colorScheme.outlineVariant.withValues(alpha: 0.4),
+                    width: 1,
                   ),
                 ),
-
-                const Spacer(),
-
-                // 2. Center/Right: Close text button
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: TextButton.styleFrom(
-                    foregroundColor: colorScheme.onSurfaceVariant,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 10,
+              ),
+              child: Row(
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: _copySummary,
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: colorScheme.onSurface,
+                      side: BorderSide(
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: 0.8,
+                        ),
+                        width: 1,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isMobile ? 12 : 16,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      visualDensity: VisualDensity.compact,
                     ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                    icon: const Icon(Icons.share_outlined, size: 16),
+                    label: Text(
+                      context.tr(
+                            shared.LocaleKeys.invoiceCopySummary,
+                            track: shared.TrackConstants.invoicePageTrack,
+                          ) ??
+                          'Copy Summary',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                    visualDensity: VisualDensity.compact,
                   ),
-                  child: const Text(
-                    'Close',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13.5,
+                  const Spacer(),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: TextButton.styleFrom(
+                      foregroundColor: colorScheme.onSurfaceVariant,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    ),
+                    child: Text(
+                      'Close',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 10),
-
-                // 3. Right: Golden / Amber "Print Thermal Receipt" Pill Button
-                FilledButton.icon(
-                  onPressed: _isPrinting ? null : _handleThermalPrint,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: Theme.of(context)
-                        .colorScheme
-                        .primary
-                        .withValues(alpha: 0.6),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: isMobile ? 14 : 20,
-                      vertical: 11,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    elevation: 0,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  icon: _isPrinting
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation(Colors.white),
+                  const SizedBox(width: 10),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _isPrintingNotifier,
+                    builder: (context, isPrinting, _) {
+                      return FilledButton.icon(
+                        onPressed: isPrinting ? null : _handleThermalPrint,
+                        style: FilledButton.styleFrom(
+                          backgroundColor: Theme.of(context)
+                              .colorScheme
+                              .primary,
+                          foregroundColor: Colors.white,
+                          disabledBackgroundColor: Theme.of(context)
+                              .colorScheme
+                              .primary
+                              .withValues(alpha: 0.6),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isMobile ? 14 : 20,
+                            vertical: 11,
                           ),
-                        )
-                      : const Icon(Icons.print_rounded, size: 17),
-                  label: Text(
-                    context.tr(
-                          shared.LocaleKeys.invoicePrintThermalReceipt,
-                          track: shared.TrackConstants.invoicePageTrack,
-                        ) ??
-                        'Print Thermal Receipt',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13.5,
-                    ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          elevation: 0,
+                          visualDensity: VisualDensity.compact,
+                        ),
+                        icon: isPrinting
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                            : const Icon(Icons.print_rounded, size: 17),
+                        label: Text(
+                          context.tr(
+                                shared.LocaleKeys.invoicePrintThermalReceipt,
+                                track: shared.TrackConstants.invoicePageTrack,
+                              ) ??
+                              'Print Thermal Receipt',
+                          style: theme.textTheme.labelLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -835,8 +825,7 @@ class _InvoicePdfPreviewDialogState extends State<InvoicePdfPreviewDialog> {
           ),
           child: Text(
             label,
-            style: TextStyle(
-              fontSize: 12.5,
+            style: theme.textTheme.labelMedium?.copyWith(
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               color: isSelected
                   ? (isDark

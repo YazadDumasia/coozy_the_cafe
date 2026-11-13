@@ -62,6 +62,7 @@ class FakeDataHelper {
     'categories',
     'subcategories',
     'menu_items',
+    'combos',
     'recipes',
     'inventory',
     'purchases',
@@ -100,6 +101,7 @@ class FakeDataHelper {
           'categories',
           'subcategories',
           'menu_items',
+          'combos',
         ]);
       } else if (k == 'attendance_leaves') {
         stageKeys.addAll(['employees', 'attendance', 'leaves']);
@@ -260,7 +262,20 @@ class FakeDataHelper {
       await Future.delayed(const Duration(milliseconds: 1));
     }
 
-    // 9. Recipes
+    // 9. Combos & Promotions
+    if (stageKeys.contains('combos')) {
+      stepIndex++;
+      onProgress?.call(
+        'combos',
+        'Generating Combos & Promotions...',
+        stepIndex,
+        totalSteps,
+      );
+      totalInserted += await _generateCombos(db, random, token, startDate);
+      await Future.delayed(const Duration(milliseconds: 1));
+    }
+
+    // 10. Recipes
     if (stageKeys.contains('recipes')) {
       stepIndex++;
       onProgress?.call(
@@ -1956,6 +1971,170 @@ class FakeDataHelper {
     return inserted;
   }
 
+  static Future<int> _generateCombos(
+    CoozyDatabase db,
+    Random random,
+    String token,
+    DateTime startDate,
+  ) async {
+    final menuItems = await db.select(db.menuItemsTable).get();
+    if (menuItems.isEmpty) return 0;
+
+    final variations = await db.select(db.menuItemVariationsTable).get();
+
+    // Map itemId to list of variations
+    final variationsByItemId = <int, List<MenuItemVariation>>{};
+    for (final v in variations) {
+      if (v.menuItemId != null) {
+        variationsByItemId.putIfAbsent(v.menuItemId!, () => []).add(v);
+      }
+    }
+
+    MenuItem? findItem(List<String> keywords) {
+      for (final kw in keywords) {
+        final match = menuItems.where(
+          (m) => m.name.toLowerCase().contains(kw.toLowerCase()),
+        );
+        if (match.isNotEmpty) return match.first;
+      }
+      return null;
+    }
+
+    // Curated combo definitions with realistic item bundles and 12-20% discounts
+    final comboDefs = [
+      {
+        'name': 'Breakfast Express Combo',
+        'desc': 'Freshly brewed Hot Coffee paired with a warm crispy Veg Sandwich to kickstart your day.',
+        'items': [
+          ['cappuccino', 'latte', 'coffee', 'espresso'],
+          ['sandwich', 'croissant', 'burger'],
+        ],
+        'discountPct': 0.15, // 15% discount
+        'duration': 15,
+      },
+      {
+        'name': 'Burger & Salted Fries Deal',
+        'desc': 'Our signature Veg Burger bundled with crispy Simply Salted Fries and refreshing beverage.',
+        'items': [
+          ['veg burger', 'burger'],
+          ['salted fries', 'fries'],
+        ],
+        'discountPct': 0.16, // 16% discount
+        'duration': 20,
+      },
+      {
+        'name': 'Pizza & Shake Feast',
+        'desc': 'Freshly baked Margherita Pizza alongside a rich, creamy Chocolate Shake.',
+        'items': [
+          ['pizza'],
+          ['shake', 'frappe'],
+        ],
+        'discountPct': 0.18, // 18% discount
+        'duration': 25,
+      },
+      {
+        'name': 'Cafe Chill Out Bundle',
+        'desc': 'Chilled Cold Coffee served with crispy cheesy Nachos for afternoon snacking.',
+        'items': [
+          ['cold coffee', 'coffee'],
+          ['nachos', 'fries'],
+        ],
+        'discountPct': 0.14, // 14% discount
+        'duration': 15,
+      },
+      {
+        'name': 'Spicy Ramen & Iced Tea Combo',
+        'desc': 'Steaming hot savory Ramen noodles complemented by a chilled refreshing Ice Tea.',
+        'items': [
+          ['ramen', 'maggi', 'noodles'],
+          ['ice tea', 'tea', 'drink'],
+        ],
+        'discountPct': 0.15, // 15% discount
+        'duration': 20,
+      },
+      {
+        'name': 'Paneer Delight Meal',
+        'desc': 'Flavour-packed Tandoori Paneer Sandwich served with spicy Peri-Peri Fries.',
+        'items': [
+          ['tandoori paneer', 'paneer', 'sandwich'],
+          ['peri-peri', 'fries'],
+        ],
+        'discountPct': 0.17, // 17% discount
+        'duration': 20,
+      },
+    ];
+
+    int inserted = 0;
+    int sortIdx = 0;
+
+    for (final def in comboDefs) {
+      final name = def['name'] as String;
+      final desc = def['desc'] as String;
+      final itemSlotKeywords = def['items'] as List<List<String>>;
+      final discountPct = def['discountPct'] as double;
+      final dur = def['duration'] as int;
+      sortIdx++;
+
+      final bundledItems = <({MenuItem item, MenuItemVariation? variation})>[];
+      double origTotal = 0.0;
+
+      for (final kwList in itemSlotKeywords) {
+        final item =
+            findItem(kwList) ?? menuItems[random.nextInt(menuItems.length)];
+        final vars = variationsByItemId[item.id] ?? [];
+        final MenuItemVariation? variation = vars.isNotEmpty
+            ? vars.first
+            : null;
+        final price = variation?.sellingPrice ?? item.sellingPrice ?? 0.0;
+        origTotal += price;
+        bundledItems.add((item: item, variation: variation));
+      }
+
+      if (origTotal <= 0) origTotal = 150.0;
+      origTotal = double.parse(origTotal.toStringAsFixed(2));
+
+      // Calculate selling price with discount strictly between 12% and 20%
+      final effectiveDiscountPct = discountPct.clamp(0.12, 0.20);
+      final rawSelling = origTotal * (1.0 - effectiveDiscountPct);
+      final sellingPrice = double.parse(rawSelling.toStringAsFixed(2));
+
+      final comboId = await db
+          .into(db.combosTable)
+          .insert(
+            CombosTableCompanion.insert(
+              hashId: Value(_seedId(token)),
+              name: name,
+              description: Value(desc),
+              originalPrice: Value(origTotal),
+              sellingPrice: Value(sellingPrice),
+              duration: Value(dur),
+              isActive: const Value(true),
+              sortOrderIndex: Value(sortIdx),
+              creationDate: Value(startDate.toIso8601String()),
+              modificationDate: Value(startDate.toIso8601String()),
+            ),
+          );
+      inserted++;
+
+      for (final bundle in bundledItems) {
+        await db
+            .into(db.comboItemsTable)
+            .insert(
+              ComboItemsTableCompanion.insert(
+                hashId: Value(_seedId(token)),
+                comboId: comboId,
+                menuItemId: bundle.item.id,
+                variationId: Value(bundle.variation?.id),
+                quantity: const Value(1),
+              ),
+            );
+        inserted++;
+      }
+    }
+
+    return inserted;
+  }
+
   static Future<int> _generateRecipes(CoozyDatabase db, Random random) async {
     // Real Coozy The Cafe recipes – no prefix in the name
     final recipes = [
@@ -2908,12 +3087,12 @@ class FakeDataHelper {
 
       subtotal = double.parse(subtotal.toStringAsFixed(2));
 
-      // Realistic promotional discounts on ~20% of orders
+      // Realistic promotional discounts (bounded between 12% - 20%) on ~30% of orders
       double discount = 0.0;
-      if (random.nextDouble() < 0.15) {
-        discount = double.parse((subtotal * 0.10).toStringAsFixed(2));
-      } else if (subtotal >= 300.0 && random.nextDouble() < 0.10) {
-        discount = 50.0;
+      if (random.nextDouble() < 0.30) {
+        // Random discount percentage strictly between 12% and 20%
+        final discountPct = 0.12 + (random.nextDouble() * 0.08);
+        discount = double.parse((subtotal * discountPct).toStringAsFixed(2));
       }
 
       final taxable = double.parse((subtotal - discount).toStringAsFixed(2));
@@ -3109,7 +3288,9 @@ class FakeDataHelper {
               taxPercentage: const Value(5.0),
               discountAmount: Value(discount),
               discountType: Value(
-                discount > 0 ? (discount == 50.0 ? 0 : 1) : 0,
+                discount > 0
+                    ? 1
+                    : 0, // 1 for percentage-based discount, 0 for flat/none
               ),
               totalCost: Value(subtotal),
               taxCost: Value(tax),
@@ -5325,6 +5506,7 @@ class FakeDataHelper {
     'orders',
     'reservations',
     'purchases',
+    'combos',
     'recipes',
     'inventory',
     'menu_items',
@@ -5354,6 +5536,7 @@ class FakeDataHelper {
           'categories',
           'subcategories',
           'menu_items',
+          'combos',
         ]);
       } else if (key == 'attendance_leaves') {
         expandedKeys.addAll(['employees', 'attendance', 'leaves']);
@@ -5427,6 +5610,13 @@ class FakeDataHelper {
         await db.customStatement(
           "DELETE FROM purchase WHERE hash_id LIKE '$tokenPattern';",
         );
+      } else if (key == 'combos') {
+        await db.customStatement(
+          "DELETE FROM combo_items WHERE hash_id LIKE '$tokenPattern' OR combo_id IN (SELECT id FROM combos WHERE hash_id LIKE '$tokenPattern');",
+        );
+        await db.customStatement(
+          "DELETE FROM combos WHERE hash_id LIKE '$tokenPattern';",
+        );
       } else if (key == 'recipes') {
         // Recipes are deleted by matching their names from our seed list
         for (final r in [
@@ -5454,6 +5644,12 @@ class FakeDataHelper {
           "DELETE FROM inventory WHERE hash_id LIKE '$tokenPattern';",
         );
       } else if (key == 'menu_items') {
+        await db.customStatement(
+          "DELETE FROM combo_items WHERE hash_id LIKE '$tokenPattern' OR menu_item_id IN (SELECT id FROM menu_items WHERE hash_id LIKE '$tokenPattern');",
+        );
+        await db.customStatement(
+          "DELETE FROM combos WHERE hash_id LIKE '$tokenPattern';",
+        );
         await db.customStatement(
           "DELETE FROM order_items WHERE menu_item_id IN (SELECT id FROM menu_items WHERE hash_id LIKE '$tokenPattern');",
         );
@@ -5600,6 +5796,9 @@ class FakeDataHelper {
     counts['menu_items'] = await queryCount(
       "SELECT COUNT(*) as c FROM menu_items WHERE hash_id LIKE '$tokenPattern'",
     );
+    counts['combos'] = await queryCount(
+      "SELECT COUNT(*) as c FROM combos WHERE hash_id LIKE '$tokenPattern'",
+    );
     counts['recipes'] = await queryCount(
       "SELECT COUNT(*) as c FROM recipes WHERE recipe_original_name IN (${['Espresso Cappuccino Blend', 'Caramel Biscoff Frappe', 'Tandoori Paneer Pizza', 'Nutella Brownie Shake', 'Spicy Ramen with Cheese', 'Cheese Overload Loaded Fries', 'Dal Makhani', 'Coozy 4 Cheese Grill Sandwich'].map((n) => "'${n.replaceAll("'", "''")}'").join(',')})",
     );
@@ -5624,7 +5823,11 @@ class FakeDataHelper {
 
     // Composite keys for backward compatibility
     counts['tables_menu'] =
-        (counts['menu_items'] ?? 0) + (counts['table_info'] ?? 0);
+        (counts['table_info'] ?? 0) +
+        (counts['categories'] ?? 0) +
+        (counts['subcategories'] ?? 0) +
+        (counts['menu_items'] ?? 0) +
+        (counts['combos'] ?? 0);
     counts['attendance_leaves'] =
         (counts['attendance'] ?? 0) + (counts['leaves'] ?? 0);
     counts['inventory_purchases'] =

@@ -575,6 +575,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
         icon: Icons.restaurant_menu_outlined,
       ),
       _TableSelectionItem(
+        key: 'combos',
+        title: 'Combos & Promotions Table',
+        subtitle: '6 Curated Value & Signature Combos with 12-20% discounts',
+        icon: Icons.local_offer_outlined,
+      ),
+      _TableSelectionItem(
         key: 'recipes',
         title: 'Recipes Table',
         subtitle:
@@ -2154,7 +2160,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.primaryColor,
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 20,
+                              ),
                             ),
                             onPressed: () {
                               ThermalPrinterConfigDialog.show(context);
@@ -3317,6 +3326,156 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 ),
 
+                // Quick Setup Section: Tables, Categories, Subcategories, Menu Items & Combos
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isLoadingNotifier,
+                  builder: (context, isLoading, child) {
+                    final stageKeys = [
+                      'table_info',
+                      'categories',
+                      'subcategories',
+                      'menu_items',
+                      'combos',
+                    ];
+                    return ValueListenableBuilder<Set<String>>(
+                      valueListenable: _completedStageKeysNotifier,
+                      builder: (context, completedStageKeys, child) {
+                        final bool isMenuSetupActive = stageKeys.every(
+                          (k) => completedStageKeys.contains(k),
+                        );
+                        return Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: BorderSide(
+                              color: isMenuSetupActive
+                                  ? Colors.green.shade300
+                                  : theme.colorScheme.primary.withValues(
+                                      alpha: 0.3,
+                                    ),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.primary
+                                            .withValues(alpha: 0.12),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.restaurant_menu_rounded,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 14),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Menu & Tables Setup (Fast Populate)',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color:
+                                                  theme.colorScheme.onSurface,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            'Populates Dining Tables, Menu Categories, Subcategories, 28 Menu Items, and 6 Curated Combos with 12-20% discounts.',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: theme.colorScheme.onSurface
+                                                  .withValues(alpha: 0.7),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Switch.adaptive(
+                                      value: isMenuSetupActive,
+                                      activeThumbColor: Colors.green,
+                                      onChanged: isLoading
+                                          ? null
+                                          : (val) {
+                                              _onToggleDataset(
+                                                stageKeys,
+                                                val,
+                                                datasetName:
+                                                    'Tables, Menu & Combos',
+                                              );
+                                            },
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 6,
+                                  children: [
+                                    _buildFeaturePill(
+                                      context,
+                                      icon: Icons.table_restaurant_outlined,
+                                      label: '12 Dining Tables',
+                                      isActive: completedStageKeys.contains(
+                                        'table_info',
+                                      ),
+                                    ),
+                                    _buildFeaturePill(
+                                      context,
+                                      icon: Icons.category_outlined,
+                                      label: '7 Categories',
+                                      isActive: completedStageKeys.contains(
+                                        'categories',
+                                      ),
+                                    ),
+                                    _buildFeaturePill(
+                                      context,
+                                      icon: Icons.folder_open_outlined,
+                                      label: '21 Subcategories',
+                                      isActive: completedStageKeys.contains(
+                                        'subcategories',
+                                      ),
+                                    ),
+                                    _buildFeaturePill(
+                                      context,
+                                      icon: Icons.fastfood_outlined,
+                                      label: '28 Menu Items',
+                                      isActive: completedStageKeys.contains(
+                                        'menu_items',
+                                      ),
+                                    ),
+                                    _buildFeaturePill(
+                                      context,
+                                      icon: Icons.local_offer_outlined,
+                                      label: '6 Combos (12-20% OFF)',
+                                      isActive: completedStageKeys.contains(
+                                        'combos',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+
+                const SizedBox(height: 16),
+
                 // Included Sample Data Sets Header
                 Text(
                   _tr(
@@ -3392,6 +3551,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   subtitle: '28 Menu Items with Portion Variations & Customer Reviews',
                 ),
                 _buildDataSetTile(
+                  icon: Icons.local_offer_outlined,
+                  stageKeys: ['combos'],
+                  title: 'Combos & Promotions Table',
+                  subtitle: '6 Curated Value & Signature Combos with 12-20% discounts',
+                ),
+                _buildDataSetTile(
                   icon: Icons.menu_book_outlined,
                   stageKeys: ['recipes'],
                   title: 'Recipes Table',
@@ -3458,6 +3623,54 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildFeaturePill(
+    BuildContext context, {
+    required IconData icon,
+    required String label,
+    required bool isActive,
+  }) {
+    final theme = Theme.of(context);
+    final activeBg = Colors.green.withValues(alpha: 0.12);
+    final inactiveBg = theme.colorScheme.onSurface.withValues(alpha: 0.06);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: isActive ? activeBg : inactiveBg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isActive
+              ? Colors.green.shade400
+              : theme.colorScheme.onSurface.withValues(alpha: 0.15),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            isActive ? Icons.check_circle_rounded : icon,
+            size: 14,
+            color: isActive
+                ? Colors.green.shade700
+                : theme.colorScheme.onSurface.withValues(alpha: 0.6),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: isActive ? FontWeight.bold : FontWeight.w500,
+              color: isActive
+                  ? Colors.green.shade800
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.75),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -3722,6 +3935,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         return 'Generates 21 Menu Subcategories linked to categories.';
       case 'menu_items':
         return 'Generates 28 Menu Items with Small/Medium/Large Portion Variations & Customer Reviews.';
+      case 'combos':
+        return 'Generates 6 Curated Value and Signature Combos with bundle items and 12-20% discounts.';
       case 'recipes':
         return 'Generates 8 Gourmet Cafe Recipes with preparation & cooking times, ingredients, and instructions.';
       case 'inventory':

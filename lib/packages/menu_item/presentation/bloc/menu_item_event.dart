@@ -63,3 +63,14 @@ class DeleteMenuItem extends MenuItemEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class MenuItemBarcodePdfPrebuiltCompletedEvent extends MenuItemEvent {
+  final Map<int, Uint8List> prebuiltColumnsPdfBytes;
+
+  const MenuItemBarcodePdfPrebuiltCompletedEvent({
+    required this.prebuiltColumnsPdfBytes,
+  });
+
+  @override
+  List<Object?> get props => [prebuiltColumnsPdfBytes];
+}

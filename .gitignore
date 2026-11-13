@@ -120,3 +120,5 @@ app.*.symbols
 
 # Agents custom skills & rules
 # .agents/
+# Widget Preview related
+.widget_preview/

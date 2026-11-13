@@ -1,8 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
+import 'package:coozy_the_cafe/packages/waiter_order_placement/domain/repositories/waiter_order_placement_repository.dart';
 
 import '../../domain/entities/menu_item.dart';
+import '../../domain/services/menu_item_barcode_pdf_generator.dart';
 import '../../domain/usecases/menu_item_usecases.dart';
 import '../../../shared/l10n/locale_keys.dart';
 
@@ -31,6 +34,78 @@ class MenuItemBloc extends Bloc<MenuItemEvent, MenuItemState> {
     on<AddMenuItem>(_onAddMenuItem);
     on<UpdateMenuItem>(_onUpdateMenuItem);
     on<DeleteMenuItem>(_onDeleteMenuItem);
+    on<MenuItemBarcodePdfPrebuiltCompletedEvent>(
+      _onMenuItemBarcodePdfPrebuiltCompleted,
+    );
+  }
+
+  void _onMenuItemBarcodePdfPrebuiltCompleted(
+    MenuItemBarcodePdfPrebuiltCompletedEvent event,
+    Emitter<MenuItemState> emit,
+  ) {
+    if (state is MenuItemLoaded) {
+      final current = state as MenuItemLoaded;
+      emit(
+        current.copyWith(
+          prebuiltColumnsBarcodePdfBytes: event.prebuiltColumnsPdfBytes,
+          isPrebuildingBarcodePdf: false,
+        ),
+      );
+    }
+  }
+
+  void _triggerBackgroundBarcodePdfPrebuild() {
+    Future(() async {
+      try {
+        final waiterRepo = core.sl<WaiterOrderPlacementRepository>();
+        final catalogRes = await waiterRepo.getActiveMenuCatalog();
+
+        List<MenuItemBarcodeInfo> barcodeItems = [];
+        catalogRes.fold(
+          (_) {},
+          (catalog) => barcodeItems =
+              MenuItemBarcodePdfGenerator.extractBarcodeItems(catalog),
+        );
+
+        if (barcodeItems.isEmpty) return;
+
+        final Map<int, Uint8List> prebuiltCache = {};
+
+        // 1. Prebuild 2 Columns first so default preview is ready
+        final bytes2 = await MenuItemBarcodePdfGenerator.generatePdf(
+          barcodeItems: barcodeItems,
+          columnsCount: 2,
+          title: 'Coozy The Cafe - Menu Item Barcodes',
+        );
+        prebuiltCache[2] = bytes2;
+        add(
+          MenuItemBarcodePdfPrebuiltCompletedEvent(
+            prebuiltColumnsPdfBytes: Map<int, Uint8List>.from(prebuiltCache),
+          ),
+        );
+
+        // 2. Prebuild 3 and 4 Columns in background so column switches are instant
+        final otherColumns = [3, 4];
+        for (final col in otherColumns) {
+          final bytes = await MenuItemBarcodePdfGenerator.generatePdf(
+            barcodeItems: barcodeItems,
+            columnsCount: col,
+            title: 'Coozy The Cafe - Menu Item Barcodes',
+          );
+          prebuiltCache[col] = bytes;
+          add(
+            MenuItemBarcodePdfPrebuiltCompletedEvent(
+              prebuiltColumnsPdfBytes: Map<int, Uint8List>.from(prebuiltCache),
+            ),
+          );
+        }
+      } catch (e) {
+        core.PlatformUtils.debugLog(
+          MenuItemBloc,
+          'Background prebuild Menu Item Barcode PDF failed: $e',
+        );
+      }
+    });
   }
 
   Future<void> _onLoadMenuItems(
@@ -44,7 +119,10 @@ class MenuItemBloc extends Bloc<MenuItemEvent, MenuItemState> {
     emit(MenuItemLoading());
     try {
       final items = await getMenuItemsUseCase();
-      emit(MenuItemLoaded(items: items));
+      emit(MenuItemLoaded(items: items, isPrebuildingBarcodePdf: true));
+      if (items.isNotEmpty) {
+        _triggerBackgroundBarcodePdfPrebuild();
+      }
     } catch (e) {
       emit(MenuItemError(e.toString()));
     }

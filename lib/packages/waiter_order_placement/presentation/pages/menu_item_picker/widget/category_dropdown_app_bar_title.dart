@@ -6,18 +6,39 @@ class CategoryDropdownAppBarTitle extends StatelessWidget {
   final List<Category> categories;
   final int selectedTabIndex;
   final ValueChanged<int> onCategorySelected;
+  final bool hasCombos;
 
   const CategoryDropdownAppBarTitle({
     super.key,
     required this.categories,
     required this.selectedTabIndex,
     required this.onCategorySelected,
+    this.hasCombos = false,
   });
 
   @override
   Widget build(BuildContext context) {
     const double popupMenuOffsetY = 45.0;
     final theme = Theme.of(context);
+
+    final hasRecords = hasCombos || categories.isNotEmpty;
+    if (!hasRecords) {
+      return Text(
+        (context.tr(
+                  shared.LocaleKeys.selectCategoryTitle,
+                  track: shared.TrackConstants.tablePageTrack,
+                ) ??
+                'Select Category')
+            .toUpperCase(),
+        overflow: TextOverflow.ellipsis,
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.bold,
+          letterSpacing: 0.5,
+          color:
+              theme.appBarTheme.foregroundColor ?? theme.colorScheme.onPrimary,
+        ),
+      );
+    }
 
     return PopupMenuButton<int>(
       onSelected: onCategorySelected,
@@ -60,8 +81,45 @@ class CategoryDropdownAppBarTitle extends StatelessWidget {
         );
         menuItems.add(const PopupMenuDivider());
 
+        if (hasCombos) {
+          menuItems.add(
+            PopupMenuItem<int>(
+              value: 1,
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.local_offer_outlined,
+                    size: 18,
+                    color: selectedTabIndex == 1
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.onSurface,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    (context.tr(
+                              shared.LocaleKeys.combosTabTitle,
+                              track: shared.TrackConstants.tablePageTrack,
+                            ) ??
+                            'Combos')
+                        .toUpperCase(),
+                    style: TextStyle(
+                      fontWeight: selectedTabIndex == 1
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                      color: selectedTabIndex == 1
+                          ? theme.colorScheme.primary
+                          : theme.colorScheme.onSurface,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        final categoryOffset = hasCombos ? 2 : 1;
         for (int i = 0; i < categories.length; i++) {
-          final catIndex = i + 1;
+          final catIndex = i + categoryOffset;
           final cat = categories[i];
           menuItems.add(
             PopupMenuItem<int>(

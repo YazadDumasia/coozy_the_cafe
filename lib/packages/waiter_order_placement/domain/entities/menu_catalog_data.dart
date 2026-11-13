@@ -1,4 +1,5 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
+import 'package:coozy_the_cafe/packages/promotions_engine/domain/entities/combo.dart';
 import 'package:equatable/equatable.dart';
 
 class MenuCatalogCategoryData extends Equatable {
@@ -38,11 +39,15 @@ class MenuCatalogCategoryData extends Equatable {
 class MenuCatalogData extends Equatable {
   final List<Category> activeCategories;
   final List<MenuCatalogCategoryData> categoryDataList;
+  final List<Combo> activeCombos;
 
   const MenuCatalogData({
     this.activeCategories = const [],
     this.categoryDataList = const [],
+    this.activeCombos = const [],
   });
+
+  bool get hasCombos => activeCombos.isNotEmpty;
 
   List<Category> getDisplayCategories({bool displayEmptyViewForTab = false}) {
     if (displayEmptyViewForTab) return activeCategories;
@@ -60,5 +65,5 @@ class MenuCatalogData extends Equatable {
   }
 
   @override
-  List<Object?> get props => [activeCategories, categoryDataList];
+  List<Object?> get props => [activeCategories, categoryDataList, activeCombos];
 }

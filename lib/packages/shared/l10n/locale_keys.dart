@@ -367,6 +367,7 @@ abstract class LocaleKeys {
   static String sendOrderBtnText = 'send_order_btn_text';
   static String billNowBtnText = 'bill_now_btn_text';
   static String currentOrderTabTitle = 'current_order_tab_title';
+  static String combosTabTitle = 'combos_tab_title';
   static String reviewOrderBtnText = 'review_order_btn_text';
   static String noItemsAddedToCurrentOrderMsg =
       'no_items_added_to_current_order_msg';

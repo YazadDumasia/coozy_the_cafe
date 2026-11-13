@@ -1,4 +1,5 @@
 import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
+import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 import 'package:coozy_the_cafe/packages/promotions_engine/domain/entities/combo.dart';
 import 'package:coozy_the_cafe/packages/promotions_engine/domain/usecases/combo_usecases.dart';
 import 'package:flutter/material.dart';
@@ -202,7 +203,9 @@ class _ComboPickerModalState extends State<ComboPickerModal> {
                                               ?.copyWith(
                                                 fontWeight: FontWeight.bold,
                                               ),
-                                        ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ).inExpandedRow(),
                                         if (combo.description != null &&
                                             combo.description!.isNotEmpty) ...[
                                           const SizedBox(height: 4),

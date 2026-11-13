@@ -3,8 +3,10 @@ import 'dart:math';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart' as core;
 
 import '../../domain/entities/table_info.dart';
+import '../../domain/services/table_qr_pdf_generator.dart';
 import '../../domain/usecases/add_table_usecase.dart';
 import '../../domain/usecases/delete_table_usecase.dart';
 import '../../domain/usecases/get_tables_usecase.dart';
@@ -47,8 +49,74 @@ class TableCubit extends Cubit<TableState> {
           isReorderAllowed: currentReorderAllowed,
         ),
       );
+
+      // Pre-build PDF cache in background after successful tables load
+      if (tables.isNotEmpty) {
+        prebuildTableQrPdf(tables);
+      }
     } catch (e) {
       emit(TableError(e.toString()));
+    }
+  }
+
+  /// Prebuilds the all-tables QR card PDF bytes in the background for all column layouts (2, 3, and 4 columns)
+  /// and stores them in TableLoaded state.
+  Future<void> prebuildTableQrPdf(List<TableInfo> tables) async {
+    if (tables.isEmpty) return;
+    if (state is TableLoaded) {
+      final currentState = state as TableLoaded;
+      emit(currentState.copyWith(isPrebuildingPdf: true));
+    }
+
+    try {
+      // 1. Build 2 Columns first (default initial view) so it is ready immediately
+      final bytesCol2 = await TableQrPdfGenerator.generatePdf(
+        tables: tables,
+        columnsCount: 2,
+      );
+
+      final Map<int, Uint8List> prebuiltCache = {2: bytesCol2};
+      if (state is TableLoaded) {
+        final currentState = state as TableLoaded;
+        emit(
+          currentState.copyWith(
+            prebuiltColumnsPdfBytes: Map<int, Uint8List>.from(prebuiltCache),
+          ),
+        );
+      }
+
+      // 2. Prebuild 3 and 4 Columns in background so column switches are instant
+      final otherColumns = [3, 4];
+      for (final col in otherColumns) {
+        if (state is! TableLoaded) break;
+        final bytes = await TableQrPdfGenerator.generatePdf(
+          tables: tables,
+          columnsCount: col,
+        );
+        prebuiltCache[col] = bytes;
+        if (state is TableLoaded) {
+          final currentState = state as TableLoaded;
+          emit(
+            currentState.copyWith(
+              prebuiltColumnsPdfBytes: Map<int, Uint8List>.from(prebuiltCache),
+            ),
+          );
+        }
+      }
+
+      if (state is TableLoaded) {
+        final currentState = state as TableLoaded;
+        emit(currentState.copyWith(isPrebuildingPdf: false));
+      }
+    } catch (e) {
+      core.PlatformUtils.debugLog(
+        TableCubit,
+        'Background prebuild Table QR PDF failed: $e',
+      );
+      if (state is TableLoaded) {
+        final currentState = state as TableLoaded;
+        emit(currentState.copyWith(isPrebuildingPdf: false));
+      }
     }
   }
 

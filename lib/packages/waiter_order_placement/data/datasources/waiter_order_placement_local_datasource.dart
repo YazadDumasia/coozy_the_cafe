@@ -1,5 +1,8 @@
+import 'package:coozy_the_cafe/packages/core/coozy_core.dart';
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
 import 'package:coozy_the_cafe/packages/kitchen_management/services/order_print_background_service.dart';
+import 'package:coozy_the_cafe/packages/promotions_engine/domain/usecases/combo_usecases.dart';
+import 'package:coozy_the_cafe/packages/promotions_engine/domain/entities/combo.dart';
 import 'package:coozy_the_cafe/packages/settings/domain/services/local_p2p_sync_service.dart';
 import 'package:drift/drift.dart';
 
@@ -131,9 +134,22 @@ class WaiterOrderPlacementLocalDataSourceImpl
       );
     }
 
+    // 4. Fetch active combos
+    List<Combo> activeCombos = const [];
+    try {
+      if (sl.isRegistered<GetCombosUseCase>()) {
+        final getCombosUseCase = sl<GetCombosUseCase>();
+        final combosResult = await getCombosUseCase(onlyActive: true);
+        activeCombos = combosResult.getOrElse(() => const []);
+      }
+    } catch (_) {
+      activeCombos = const [];
+    }
+
     return MenuCatalogData(
       activeCategories: activeCategories,
       categoryDataList: categoryDataList,
+      activeCombos: activeCombos,
     );
   }
 

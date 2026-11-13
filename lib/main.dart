@@ -244,9 +244,9 @@ class _MyAppState extends State<MyApp> {
                   shared.AppLocalizationsDelegate(
                     shared.LanguageModel.getLanguages(),
                   ),
+                  GlobalCupertinoLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
                 ],
                 supportedLocales: shared.LanguageModel.getLanguages().map((e) {
                   return e.countryCode == null

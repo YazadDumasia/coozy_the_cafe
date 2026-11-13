@@ -48,6 +48,8 @@
 ## 7. Theme & UI Design Principles (Light & Dark Mode)
 - **Dual-Theme Consideration**: Before implementing any UI design or widget, explicitly consider how it renders in **both Light Theme and Dark Theme**.
 - **Use Theme Context**: Avoid hardcoding fixed color values (e.g. `Colors.white`, `Colors.black`, `Colors.grey[200]`). Use theme token properties from `Theme.of(context).colorScheme` or `Theme.of(context).textTheme` so UI components seamlessly adapt to theme changes.
+- **Typography Tokens & Text Sizing**: Avoid hardcoding fixed font sizes (e.g. `fontSize: 16`, `fontSize: isMobile ? 15 : 17`). Use standard typography tokens from `Theme.of(context).textTheme` (`titleLarge`, `titleMedium`, `bodyMedium`, `bodySmall`, `labelLarge`, `labelMedium`).
+- **Title Wrapping & `.inExpandedRow()`**: For title text in lists, cards, and tiles (e.g. dish names, combo titles, order items) that might squeeze on compact screens or wrap into awkward 5–6 vertical lines, wrap the `Text` widget with `.inExpandedRow()` (from `package:coozy_the_cafe/packages/shared/coozy_shared.dart`) with `maxLines` and `overflow: TextOverflow.ellipsis`. Place auxiliary badges (e.g. discount %, prep time) below the title in a responsive `Wrap` rather than squeezing them into the same tight horizontal row.
 - **Modern Color Opacity**: Use Flutter's modern `.withValues(alpha: ...)` API instead of the deprecated `.withOpacity(...)`.
 - **AppThemeExtension**: Leverage `Theme.of(context).extension<shared.AppThemeExtension>()` for custom theme parameters.
 

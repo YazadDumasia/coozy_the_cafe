@@ -17,6 +17,7 @@ import '../../../domain/entities/invoice_management_entity.dart';
 import '../../../domain/services/invoice_pdf_generator.dart';
 import '../../../domain/services/invoice_share_service.dart';
 import '../../widgets/invoice_pdf_preview_dialog/invoice_pdf_preview_dialog.dart';
+import 'invoice_pdf_preview_screen.dart';
 
 class InvoiceDetailScreenActions {
   static void onReturn(BuildContext context, InvoiceDetailsEntity details) {
@@ -218,6 +219,19 @@ class InvoiceDetailScreenActions {
     }
 
     if (context.mounted) {
+      if (!shared.ResponsiveLayout.isDesktop(context)) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => InvoicePdfPreviewScreen(
+              details: invoiceDetails,
+              prebuiltThermalBytes: prebuiltThermalBytes,
+              prebuiltA4Bytes: prebuiltA4Bytes,
+            ),
+          ),
+        );
+        return;
+      }
+
       await showDialog(
         context: context,
         barrierDismissible: true,
@@ -261,8 +275,20 @@ class InvoiceDetailScreenActions {
       }
     }
 
-    // Fallback or Web: display in-app preview dialog using SfPdfViewer
+    // Fallback or Web: display preview using SfPdfViewer
     if (context.mounted) {
+      if (!shared.ResponsiveLayout.isDesktop(context)) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => InvoicePdfPreviewScreen(
+              details: invoiceDetails,
+              filePath: filePath,
+            ),
+          ),
+        );
+        return;
+      }
+
       await showDialog(
         context: context,
         barrierDismissible: true,

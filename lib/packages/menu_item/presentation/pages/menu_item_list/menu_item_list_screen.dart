@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:coozy_the_cafe/packages/menu_item/presentation/bloc/menu_item_bloc.dart';
@@ -9,6 +11,7 @@ import '../../widgets/menu_item_list/menu_item_category_filter_header.dart';
 import '../../widgets/menu_item_list/menu_item_empty_view.dart';
 import 'menu_item_list_screen_actions.dart';
 import '../menu_item_barcode_dialog/menu_item_barcode_dialog.dart';
+import '../menu_item_barcode_dialog/menu_item_barcode_preview_screen.dart';
 import 'widget/menu_item_list_active_filters_row.dart';
 import 'widget/menu_item_list_content_view.dart';
 import 'widget/menu_item_list_filter_bottom_sheet.dart';
@@ -64,13 +67,37 @@ class _MenuItemListScreenState extends State<MenuItemListScreen> {
                 'Menu Items',
           ),
           actions: [
-            IconButton(
-              icon: const Icon(Icons.qr_code_2_rounded),
-              tooltip: 'Print Menu Item Barcodes PDF',
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => const MenuItemBarcodeDialog(),
+            BlocBuilder<MenuItemBloc, MenuItemState>(
+              builder: (context, state) {
+                Uint8List? prebuiltPdf;
+                Map<int, Uint8List>? prebuiltColumnsPdf;
+                if (state is MenuItemLoaded) {
+                  prebuiltPdf = state.prebuiltBarcodePdfBytes;
+                  prebuiltColumnsPdf = state.prebuiltColumnsBarcodePdfBytes;
+                }
+                return IconButton(
+                  icon: const Icon(Icons.qr_code_2_rounded),
+                  tooltip: 'Print Menu Item Barcodes PDF',
+                  onPressed: () {
+                    if (!shared.ResponsiveLayout.isDesktop(context)) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => MenuItemBarcodePreviewScreen(
+                            prebuiltPdfBytes: prebuiltPdf,
+                            prebuiltColumnsPdfBytes: prebuiltColumnsPdf,
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+                    showDialog(
+                      context: context,
+                      builder: (_) => MenuItemBarcodeDialog(
+                        prebuiltPdfBytes: prebuiltPdf,
+                        prebuiltColumnsPdfBytes: prebuiltColumnsPdf,
+                      ),
+                    );
+                  },
                 );
               },
             ),

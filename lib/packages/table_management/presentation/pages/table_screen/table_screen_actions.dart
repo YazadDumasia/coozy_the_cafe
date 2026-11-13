@@ -13,27 +13,68 @@ import 'package:coozy_the_cafe/packages/table_management/presentation/pages/tabl
 
 import 'package:go_router/go_router.dart';
 
+import 'dart:typed_data';
+
 import '../table_qr_dialog/table_qr_dialog.dart';
 
 class TableScreenActions {
   static Future<void> printAllTableQrCards(
     BuildContext context,
-    List<TableInfo> tables,
-  ) async {
+    List<TableInfo> tables, {
+    Uint8List? prebuiltPdfBytes,
+    Map<int, Uint8List>? prebuiltColumnsPdfBytes,
+  }) async {
     if (tables.isEmpty) return;
+
+    if (!shared.ResponsiveLayout.isDesktop(context)) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => TableQrDialog(
+            tables: tables,
+            prebuiltPdfBytes: prebuiltPdfBytes,
+            prebuiltColumnsPdfBytes: prebuiltColumnsPdfBytes,
+          ),
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
-      builder: (_) => TableQrDialog(tables: tables),
+      builder: (_) => TableQrDialog(
+        tables: tables,
+        prebuiltPdfBytes: prebuiltPdfBytes,
+        prebuiltColumnsPdfBytes: prebuiltColumnsPdfBytes,
+      ),
     );
   }
 
   static Future<void> showTableQrDialog(
     BuildContext context,
-    TableInfo table,
-  ) async {
+    TableInfo table, {
+    Uint8List? prebuiltPdfBytes,
+    Map<int, Uint8List>? prebuiltColumnsPdfBytes,
+  }) async {
+    if (!shared.ResponsiveLayout.isDesktop(context)) {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => TableQrDialog(
+            table: table,
+            prebuiltPdfBytes: prebuiltPdfBytes,
+            prebuiltColumnsPdfBytes: prebuiltColumnsPdfBytes,
+          ),
+        ),
+      );
+      return;
+    }
+
     showDialog(
       context: context,
-      builder: (_) => TableQrDialog(table: table),
+      builder: (_) => TableQrDialog(
+        table: table,
+        prebuiltPdfBytes: prebuiltPdfBytes,
+        prebuiltColumnsPdfBytes: prebuiltColumnsPdfBytes,
+      ),
     );
   }
 

@@ -119,6 +119,9 @@ class _TableScreenState extends State<TableScreen>
                         TableScreenActions.printAllTableQrCards(
                           context,
                           state.tables,
+                          prebuiltPdfBytes: state.prebuiltPdfBytes,
+                          prebuiltColumnsPdfBytes:
+                              state.prebuiltColumnsPdfBytes,
                         );
                       },
                       icon: const Icon(Icons.qr_code_rounded),
