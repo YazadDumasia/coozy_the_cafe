@@ -1,32 +1,55 @@
-# Coozy the Cafe
+# Coozy The Cafe ☕
 
-![Flutter](https://img.shields.io/badge/Flutter-3.47.5-02569B?logo=flutter)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-![Demo](https://img.shields.io/badge/Demo-Live-8A2BE2)
-![AI Assisted Development](https://img.shields.io/badge/AI--Assisted-Development-blueviolet?logo=google)
+<p align="center">
+  <img src="assets/images/logo.png" alt="Coozy The Cafe Logo" width="140" onerror="this.style.display='none'"/>
+</p>
 
-A modern Flutter cafe management application built to deliver a smooth experience for customers and staff alike — now with **AI-assisted development** powered by [Google Antigravity](https://antigravity.google).
+<p align="center">
+  <strong>An enterprise-grade, offline-first Cafe Management System & Point of Sale (POS) application built with Flutter, Clean Architecture, and AI-native engineering.</strong>
+</p>
 
-## Live Demo
+<p align="center">
+  <a href="https://flutter.dev"><img src="https://img.shields.io/badge/Flutter-3.47.5-02569B?logo=flutter&style=for-the-badge" alt="Flutter"></a>
+  <a href="https://dart.dev"><img src="https://img.shields.io/badge/Dart-3.13.4-0175C2?logo=dart&style=for-the-badge" alt="Dart"></a>
+  <a href="https://drift.simonbinder.eu/"><img src="https://img.shields.io/badge/Storage-Drift%20%7C%20SQLite%20%7C%20WASM-blue?style=for-the-badge" alt="Drift SQLite"></a>
+  <a href="https://bloclibrary.dev"><img src="https://img.shields.io/badge/State-BLoC%20%26%20Cubit-blueviolet?style=for-the-badge" alt="BLoC"></a>
+  <a href="https://github.com/yazaddumasia/coozy_the_cafe/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License"></a>
+  <a href="https://yazaddumasia.github.io/coozy_the_cafe/"><img src="https://img.shields.io/badge/Demo-Live%20Web-8A2BE2?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo"></a>
+</p>
 
-Explore the app online here:
-
-https://yazaddumasia.github.io/coozy_the_cafe/
+<p align="center">
+  <a href="#live-demo">Live Demo</a> •
+  <a href="#highlights">Highlights</a> •
+  <a href="#modular-package-structure">Modular Architecture</a> •
+  <a href="#enterprise-architecture--technical-standards">Technical Standards</a> •
+  <a href="#ai-assisted-software-engineering">AI-Native Engineering</a> •
+  <a href="#getting-started">Getting Started</a>
+</p>
 
 ---
 
-## Overview
+## 🚀 Overview & Executive Summary
 
-Coozy the Cafe is a feature-rich cafe management and customer experience app designed for browsing menus, placing orders, managing inventory, and supporting staff workflows — all built on a clean, modular Flutter architecture.
+**Coozy The Cafe** is a feature-rich cafe management and customer experience app designed for browsing menus, placing orders, managing inventory, and supporting staff workflows — all built on a clean, modular Flutter architecture. Bridging front-of-house hospitality with back-of-house supply chain logistics, Coozy delivers an end-to-end POS, Kitchen Display System (KDS), inventory ledger, dynamic loyalty rewards program, and peer-to-peer (P2P) offline synchronization.
+
+Engineered with **Strict Modular Clean Architecture**, **Drift (Type-Safe SQLite/WASM)**, and **BLoC State Management**, this codebase serves as a benchmark for enterprise Flutter architecture, zero-cloud-lock-in operations, and modern AI-augmented developer workflows.
 
 ---
 
-## Highlights
+## 🌐 Live Demo
+
+Explore the app online here (compiled to WebAssembly / CanvasKit):
+
+👉 **[Launch Coozy The Cafe Live Web Demo](https://yazaddumasia.github.io/coozy_the_cafe/)**
+
+---
+
+## 🌟 Highlights
 
 ### 🍽️ Dining, Orders & Kitchen Operations
 - **Waiter Order Placement & POS**: Fast, touch-friendly order-taking workflow with menu searching, category/subcategory filtering, item variations, custom notes, and table binding.
 - **Table Management & Dining Layout**: Real-time table status tracking (available, occupied, reserved), interactive table layout grid, and individual **table QR code generation & scanning**.
-- **Kitchen Display System (KDS)**: Dedicated live kitchen order queue for kitchen staff to track ticket statuses (pending, preparing, ready, completed) in real time.
+- **Kitchen Display System (KDS)**: Dedicated live kitchen order queue for kitchen staff to track ticket statuses (*Pending*, *Preparing*, *Ready*, *Completed*) in real time.
 - **Table Reservation System**: Complete reservation lifecycle tracking with guest details, party size, date/time slots, and table assignment.
 
 ### 💰 Billing, Checkout & Customer Loyalty
@@ -56,39 +79,171 @@ Coozy the Cafe is a feature-rich cafe management and customer experience app des
 
 ---
 
-## Screenshots
+## 📸 Screenshots
 
 Coming soon.
 
 ---
 
-## Tech Stack
+## 📦 Modular Package Structure
 
-| Category | Libraries / Tools |
-|---|---|
-| UI Framework | Flutter, Dart (WASM & Cross-Platform) |
-| State Management | flutter_bloc, Equatable, ValueNotifier |
-| Navigation | go_router |
-| Database & ORM | Drift, SQLite, drift_flutter |
-| Dependency Injection | get_it |
-| Functional Error Handling | dartz |
-| Localization | flutter_localization, intl |
-| Charts & Sliders | syncfusion_flutter_charts, syncfusion_flutter_sliders |
-| Animations & UI Effects | animations, animated_text_kit, lottie, flutter_floating_particles, flutter_neumorphism_ui |
-| Hardware, Printing & Scanning | printing, esc_pos_utils_plus, print_bluetooth_thermal, flutter_thermal_printer, mobile_scanner, camera |
-| Barcodes & QR | syncfusion_flutter_barcodes, barcode, secure_qr_generator |
-| PDF & Spreadsheet Export | syncfusion_flutter_pdf, syncfusion_flutter_pdfviewer, syncfusion_flutter_xlsio, printing |
-| Notifications & Sync | flutter_local_notifications, flutter_timezone, timezone, local P2P WebSocket & UDP sync |
-| Geolocation | geolocator, geocoding |
-| Networking & Connectivity | http, internet_connection_checker_plus |
-| Security & Storage | flutter_secure_storage, encrypt, crypto, shared_preferences |
-| AI Dev & MCP Tooling | Antigravity IDE, marionette_flutter, marionette_mcp, marionette_logging |
+The project strictly follows **Modular Clean Architecture**. Every business capability is an isolated package under `lib/packages/`, cleanly separated into infrastructure, operational domains, and platform services:
+
+### 1. Root & Core Foundation
+```
+lib/
+├── main.dart                    # App initialization, routing & theme binding
+├── injection.dart               # Central Service Locator (GetIt) coordinator
+└── packages/
+    ├── core/                    # Shared utilities, failure types, DateUtil, DI (sl)
+    ├── database/                # Drift ORM tables, DAOs, web sync, backup & restore
+    └── shared/                  # Common design tokens, AppThemeExtension, shared widgets
+```
+
+### 2. Complete Inventory of the 26 Feature Packages
+
+```
+lib/packages/
+│
+├── 🍽️ Menu & Dining Operations
+│   ├── waiter_order_placement/  # High-velocity POS & table-side ordering workflow
+│   ├── table_management/        # Dining layout grid, table occupancy & QR generator
+│   ├── kitchen_management/      # Kitchen Display System (KDS) & real-time queue
+│   ├── reservation/             # Reservation lifecycle, party sizing & slots
+│   ├── order_management/        # Order history, status lifecycle & tracking
+│   ├── menu_category/           # Menu category taxonomy & display orders
+│   ├── menu_subcategory/        # Subcategory organization & category relationships
+│   └── menu_item/               # Menu catalog, variants, price tiers & modifiers
+│
+├── 💳 Billing, Invoicing & Loyalty
+│   ├── checkout/                # Split-bill calculation, tips, taxes & payment tenders
+│   ├── invoice_management/      # Fiscal invoice history, PDF preview & receipt printing
+│   ├── customer/                # Customer directory, purchase histories & loyalty tiers
+│   └── promotions_engine/       # Meal combos, bundle deals, coupons & promo rules
+│
+├── 📦 Inventory, Supply Chain & Finance
+│   ├── inventory/               # Ingredient master data, UOM & stock tracking
+│   ├── inventory_intelligence/  # Low stock alerts, min-max thresholds & reorders
+│   ├── recipes/                 # Bill of Materials (BOM) & inventory depletion
+│   ├── purchase/                # Vendor management, purchase orders & receiving logs
+│   └── expenditure/             # Cafe operating expenses & cash outflow logging
+│
+├── 👥 Staff & Cafe Administration
+│   ├── staff_management/        # Staff directory, attendance, leaves & role tracking
+│   ├── business_profile/        # Cafe branding, legal tax IDs, contact & currency
+│   ├── settings/                # App config, P2P hub setup & thermal printer settings
+│   ├── auth/                    # Authentication, login & role permissions
+│   └── home_page/               # Central dashboard, KPI cards & quick actions
+│
+└── 📊 Reporting & Platform Intelligence
+    └── reports/                 # Syncfusion analytics, sales charts, Excel/PDF export
+```
+
+### 3. Anatomical Structure of Each Feature Package
+
+Every single feature inside `lib/packages/<feature_name>/` adheres strictly to this 3-tier boundary:
+
+```
+lib/packages/<feature_name>/
+├── data/
+│   ├── datasources/             # Local Drift DAOs & remote data source implementations
+│   ├── models/                  # Data Transfer Objects (DTOs) with JSON/Drift mapping
+│   └── repositories/            # Concrete implementations of domain repository contracts
+├── domain/
+│   ├── entities/                # Pure Dart business objects (zero UI dependencies)
+│   ├── repositories/            # Abstract repository interface contracts
+│   └── usecases/                # Single-responsibility business use cases
+├── presentation/
+│   ├── bloc/                    # Feature BLoC / Cubits (part files + sealed states)
+│   ├── pages/                   # Isolated screen folders
+│   │   └── <screen_name>/
+│   │       ├── <screen_name>.dart         # Screen UI composition
+│   │       ├── <screen_name>_actions.dart # Screen action handler mixin
+│   │       ├── cubit/                     # Page-specific Cubit (if needed)
+│   │       └── widget/                    # Sub-widgets specific to this screen
+│   ├── widgets/                 # Common widgets shared across this feature
+│   │   └── <widget_name>/
+│   │       ├── <widget_name>.dart
+│   │       └── widget/          # Sub-components of this widget
+│   └── navigation/              # Feature routes and argument schemas
+├── <feature_name>.dart          # Feature barrel file exporting public surfaces
+└── <feature_name>_injection.dart# Dependency injection registration (GetIt)
+```
 
 ---
 
-## AI-Powered Development
+## 🛠️ Enterprise Architecture & Technical Standards
 
-Coozy the Cafe uses **[Google Antigravity IDE](https://antigravity.google)** as its AI coding assistant. The project ships with workspace-level **agent customizations** inside `.agents/` that teach the AI the project's architecture, coding standards, and developer workflows — ensuring every code change adheres to conventions without manual prompting.
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        PRESENTATION LAYER                              │
+│         Flutter Pages  │  BLoC / Cubit (Sealed)  │  ValueNotifier      │
+└───────────────────────────────────▲────────────────────────────────────┘
+                                    │ (Events / States)
+┌───────────────────────────────────┴────────────────────────────────────┐
+│                          DOMAIN LAYER (Pure Dart)                      │
+│        Entities  │  Use Cases (FP Either<Failure, T>)  │  Contracts    │
+└───────────────────────────────────▲────────────────────────────────────┘
+                                    │ (Repository Pattern)
+┌───────────────────────────────────┴────────────────────────────────────┐
+│                           DATA LAYER                                   │
+│    Drift ORM / SQLite  │  Data Sources  │  JSON Mappers  │  P2P Sync   │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Domain Layer Purity**: The `domain/` layer contains **zero Flutter or UI dependencies**. All asynchronous outcomes are typed with `Either<Failure, T>` using functional programming (`dartz`), preventing unhandled runtime exceptions.
+- **State Management (Zero `setState` Rule)**:
+  - Strict reliance on `flutter_bloc` (`Bloc` and `Cubit`) backed by `Equatable`.
+  - Main events and states are defined with Dart 3 `sealed class` for compile-time exhaustive pattern matching.
+  - Sub-events and states are split via `part` / `part of` directives — never imported directly.
+  - BLoC `copyWith` supports explicit clearing flags (`bool clearFilter = false`) for nullable filters.
+  - Lightweight UI state uses `ValueNotifier` / `ValueListenableBuilder`.
+- **Type-Safe Persistence (Drift ORM & SQLite)**:
+  - Fully reactive SQL queries and stream-based DAO subscriptions.
+  - Multi-platform support: native SQLite on Mobile/Desktop, and OPFS / Web Workers on WebAssembly.
+  - Synchronized web database assets via `dart run scripts/sync_drift_web_assets.dart`.
+  - Built-in full database JSON backup, snapshot restore, and integrity checks.
+- **Theme & Design System Tokens**:
+  - Full Light and Dark mode compliance without hardcoded colors.
+  - Powered by Material 3 `Theme.of(context).colorScheme`, `textTheme`, and custom `shared.AppThemeExtension`.
+  - Modern color opacity using `.withValues(alpha: ...)` instead of deprecated methods.
+  - Responsive layouts via `shared.ResponsiveLayout` for Mobile (`< 550px`), Tablet (`550px - 1200px`), and Desktop (`>= 1200px`).
+  - Safe text constraints using `.inExpandedRow()`.
+- **Form & Input Management**:
+  - Independent `TextEditingController` and `FocusNode` per input field with guaranteed disposal in `dispose()`.
+  - Validated via `GlobalKey<FormState>`.
+- **Empty States & Screen Modularization**:
+  - Mandatory dedicated standalone empty view files (`*_empty_view.dart`) in `widget/` folders.
+  - Monolithic screen files are decomposed into clean sub-components (headers, filters, lists, tables).
+
+---
+
+## 🧰 Tech Stack Matrix
+
+| Category | Libraries / Tools |
+|---|---|
+| **UI Framework** | Flutter 3.47.5, Dart 3.x (WASM & Cross-Platform) |
+| **Architecture & DI** | Clean Architecture, `get_it`, `dartz` (Functional Error Handling) |
+| **State Management** | `flutter_bloc`, `equatable`, `ValueNotifier` |
+| **Navigation** | `go_router` (Declarative deep-linking in `coozy_core.dart`) |
+| **Database & ORM** | `drift`, `sqlite3`, `drift_flutter`, SQLite3 WASM / OPFS |
+| **Localization (i18n)** | `flutter_localization`, `intl` (JSON dictionaries in `assets/locale/`) |
+| **Charts & Sliders** | `syncfusion_flutter_charts`, `syncfusion_flutter_sliders` |
+| **Animations & Effects** | `animations`, `animated_text_kit`, `lottie`, `flutter_floating_particles`, `flutter_neumorphism_ui` |
+| **Hardware, Printing & Scanning** | `printing`, `esc_pos_utils_plus`, `print_bluetooth_thermal`, `flutter_thermal_printer`, `mobile_scanner`, `camera` |
+| **Barcodes & QR** | `syncfusion_flutter_barcodes`, `barcode`, `secure_qr_generator` |
+| **PDF & Spreadsheet Export** | `syncfusion_flutter_pdf`, `syncfusion_flutter_pdfviewer`, `syncfusion_flutter_xlsio`, `printing` |
+| **Notifications & Sync** | `flutter_local_notifications`, `flutter_timezone`, `timezone`, Local P2P WebSocket & UDP sync |
+| **Geolocation** | `geolocator`, `geocoding` |
+| **Networking & Connectivity** | `http`, `internet_connection_checker_plus` |
+| **Security & Storage** | `flutter_secure_storage`, `encrypt`, `crypto`, `shared_preferences` |
+| **AI Dev & MCP Tooling** | Google Antigravity IDE, `marionette_flutter`, `marionette_mcp`, `marionette_logging` |
+
+---
+
+## 🤖 AI-Powered Development
+
+Coozy The Cafe uses **[Google Antigravity IDE](https://antigravity.google)** as its AI coding assistant. The project ships with workspace-level **agent customizations** inside `.agents/` that teach the AI the project's architecture, coding standards, and developer workflows — ensuring every code change adheres to conventions without manual prompting.
 
 ### How it Works
 
@@ -108,7 +263,7 @@ The agent automatically discovers and follows these files during every session.
 
 ### Project Rules — `AGENTS.md`
 
-The [`.agents/AGENTS.md`](.agents/AGENTS.md) file defines **strict rules** that the AI must follow across every interaction. They act as a living, enforced style guide at the AI layer:
+The [`.agents/AGENTS.md`](.agents/AGENTS.md) file defines **strict rules** that the AI must follow across every interaction:
 
 | Rule Area | What It Enforces |
 |---|---|
@@ -166,98 +321,92 @@ To update the AI agent's behavior for this project:
 
 ---
 
-## Getting Started
+## ⚡ Getting Started
 
 ### Prerequisites
 
-- Flutter SDK installed and configured
-- Android Studio or VS Code
-- A device/emulator or browser for testing
-- *(Optional)* [Antigravity IDE](https://antigravity.google) for AI-assisted development
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) (`>= 3.24.0` / recommended `3.47.5`)
+- Dart SDK (`>= 3.5.0`)
+- Android Studio, VS Code, or Google Antigravity IDE
+- Google Chrome (for web testing) or Android/iOS Emulator
 
 ### Installation
 
-1. Clone the repository:
-
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/yazaddumasia/coozy_the_cafe.git
    ```
 
-2. Navigate to the project directory:
-
+2. **Navigate to the project directory:**
    ```bash
    cd coozy_the_cafe
    ```
 
-3. Install dependencies:
-
+3. **Install dependencies:**
    ```bash
    flutter pub get
    ```
 
-4. Run code generation (required after first clone or Drift schema changes):
-
+4. **Run code generation (required after clone or Drift schema changes):**
    ```bash
    dart run build_runner build --delete-conflicting-outputs
    ```
 
-5. Run the app:
-
+5. **(Optional for Web) Synchronize Drift Web Worker assets:**
    ```bash
-   flutter run
+   dart run scripts/sync_drift_web_assets.dart
    ```
 
-## Development Environment
+6. **Run the application:**
+   ```bash
+   # Run on connected desktop or mobile device
+   flutter run
 
-- Flutter Version: 3.47.5 (stable channel)
-- Android Studio: Rabbit 1 | 2026.2.1
-- AI Assistant: Google Antigravity IDE
+   # Or run with WebAssembly on Chrome
+   flutter run -d chrome
+   ```
 
-## Project Architecture
+---
 
-The project follows a **Modular Clean Architecture** pattern. Each business domain is a self-contained feature package under `lib/packages/`, with strict `data/`, `domain/`, and `presentation/` layer separation.
+## 🛠️ Development Environment
 
-```
-lib/
-├── main.dart                    # App entry point & theme/router initialization
-├── injection.dart               # Central DI coordinator
-└── packages/
-    ├── core/                    # Shared utilities, failure types, DateUtil, DI instance (sl)
-    ├── database/                # Drift ORM tables, DAOs, web sync scripts, backup/restore
-    ├── shared/                  # Common UI widgets, design system, themes, AppThemeExtension
-    ├── auth/                    # Authentication & login/signup workflows
-    ├── business_profile/        # Cafe branding, contact info, tax & currency profile
-    ├── checkout/                # Order checkout, billing processing & loyalty discounts
-    ├── customer/                # Customer directory, history & loyalty tracking
-    ├── expenditure/             # Expense tracking & financial logs
-    ├── home_page/               # Dashboard, quick actions & home navigation
-    ├── inventory/               # Inventory, ingredient tracking & stock units
-    ├── inventory_intelligence/  # Low stock alerts, reorder thresholds & automated suggestions
-    ├── invoice_management/      # Invoices, billing receipts & PDF previews
-    ├── kitchen_management/      # Kitchen display system (KDS) & order queue
-    ├── menu_category/           # Menu categories
-    ├── menu_subcategory/        # Menu subcategories
-    ├── menu_item/               # Menu item catalog & variations
-    ├── order_management/        # Order lifecycle & history
-    ├── promotions_engine/       # Combo deals, bundle discounts & promotion rules
-    ├── purchase/                # Purchase orders & supplier logs
-    ├── recipes/                 # Recipe management & ingredient composition
-    ├── reports/                 # Sales trends, analytics & stock adjustment reports
-    ├── reservation/             # Table reservation management
-    ├── settings/                # App settings, P2P sync, loyalty configs & thermal printers
-    ├── staff_management/        # Staff roles & scheduling
-    ├── table_management/        # Dining table layout, QR generation & status tracking
-    └── waiter_order_placement/  # POS / Waiter order-taking flow
+- **Flutter Version**: 3.47.5 (stable channel)
+- **Android Studio**: Rabbit 1 | 2026.2.1
+- **AI Assistant**: Google Antigravity IDE
+
+---
+
+## 🧪 Quality Assurance & Verification
+
+To verify static analysis and ensure code formatting matches project standards:
+
+```bash
+# Run static analysis
+dart analyze
+
+# Run unit tests on business logic
+flutter test
 ```
 
-Business logic is structured around state-driven BLoC flows. All dependency registration happens in `lib/injection.dart` via per-feature `register<Feature>Dependencies(sl)` functions.
+---
 
-## Contributing
+## 👥 Contributing
 
 Contributions are welcome. If you would like to improve the project, open a pull request or share feedback.
 
 If you are contributing using Antigravity IDE, the agent automatically follows the project's [`.agents/AGENTS.md`](.agents/AGENTS.md) rules and skill guide — no additional setup needed.
 
-## License
+---
+
+## 👤 Author & Maintainer
+
+**Yazad Dumasia**  
+- **GitHub**: [@yazaddumasia](https://github.com/yazaddumasia)  
+- **Project Repository**: [coozy_the_cafe](https://github.com/yazaddumasia/coozy_the_cafe)  
+- **Live Application**: [yazaddumasia.github.io/coozy_the_cafe](https://yazaddumasia.github.io/coozy_the_cafe/)
+
+---
+
+## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
