@@ -119,7 +119,7 @@ class _ComboListPageState extends State<ComboListPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'Combos & Promotions',
+          'Combos',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [

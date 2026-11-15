@@ -52,8 +52,6 @@ class ComboListCard extends StatelessWidget {
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ).inExpandedRow(),
                       if (discountPct > 0 ||
                           (combo.effectiveDuration != null &&
@@ -104,12 +102,10 @@ class ComboListCard extends StatelessWidget {
                                     const SizedBox(width: 4),
                                     Text(
                                       '${combo.effectiveDuration}m',
-                                      style: theme.textTheme.labelSmall
-                                          ?.copyWith(
-                                            color: colorScheme
-                                                .onSecondaryContainer,
-                                            fontWeight: FontWeight.bold,
-                                          ),
+                                      style: theme.textTheme.labelSmall?.copyWith(
+                                        color: colorScheme.onSecondaryContainer,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -188,12 +184,19 @@ class ComboListCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      Text(fullTitle, style: theme.textTheme.bodySmall),
+                      // Text(fullTitle, style: theme.textTheme.bodySmall),
+                      Flexible(
+                        child: Text(
+                          fullTitle,
+                          style: theme.textTheme.bodySmall,
+                        ),
+                      ),
                     ],
                   ),
                 );
               }).toList(),
             ),
+
             const Divider(height: 24),
             Row(
               children: [
