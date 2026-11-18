@@ -22,11 +22,14 @@ lib/
     ├── database/              # Drift ORM tables, DAOs, helpers, & web sync scripts
     ├── shared/                # Common UI widgets, design system components, shared themes
     ├── auth/                  # Authentication module
+    ├── business_profile/      # Cafe branding, legal tax IDs & currency configuration
     ├── checkout/              # Order checkout & billing processing
+    ├── combo_engine/          # Meal combos, bundle pricing, reorder & item pickers
     ├── customer/              # Customer management module
     ├── expenditure/           # Expense tracking & financial logs
     ├── home_page/             # Dashboard and home navigation
     ├── inventory/             # Inventory and stock management
+    ├── inventory_intelligence/# Low stock alerts, min-max thresholds & reorders
     ├── invoice_management/    # Invoices & billing receipts
     ├── kitchen_management/    # Kitchen display system (KDS) & order queue
     ├── menu_category/         # Menu category features

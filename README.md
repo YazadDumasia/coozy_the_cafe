@@ -47,7 +47,7 @@ Explore the app online here (compiled to WebAssembly / CanvasKit):
 ## 🌟 Highlights
 
 ### 🍽️ Dining, Orders & Kitchen Operations
-- **Waiter Order Placement & POS**: Fast, touch-friendly order-taking workflow with menu searching, category/subcategory filtering, item variations, custom notes, and table binding.
+- **Waiter Order Placement & POS**: Fast, touch-friendly order-taking workflow with menu searching, category/subcategory filtering, combo meal bundle pickers, item variations, custom notes, and table binding.
 - **Table Management & Dining Layout**: Real-time table status tracking (available, occupied, reserved), interactive table layout grid, and individual **table QR code generation & scanning**.
 - **Kitchen Display System (KDS)**: Dedicated live kitchen order queue for kitchen staff to track ticket statuses (*Pending*, *Preparing*, *Ready*, *Completed*) in real time.
 - **Table Reservation System**: Complete reservation lifecycle tracking with guest details, party size, date/time slots, and table assignment.
@@ -56,7 +56,7 @@ Explore the app online here (compiled to WebAssembly / CanvasKit):
 - **Flexible Checkout & Multi-Payment**: Supports cash, card, UPI/digital payments, split bills, and instant receipt generation.
 - **Customer Loyalty Program**: Configurable loyalty tiers (Bronze, Silver, Gold, Platinum), automatic points accrual on orders, and seamless point redemption as bill discounts.
 - **Invoicing & Digital Receipts**: Full invoice history with printable PDF receipts, customizable business headers, tax breakdowns, and on-screen PDF preview.
-- **Promotions & Combos Engine**: Bundle discounts, combo meal deals, and promotional campaign management with customizable validity rules.
+- **Combo & Bundle Deal Engine**: Interactive multi-step combo creator wizard (`combo_form_dialog`), bundle deal pricing rules, drag-and-drop/manual combo reordering (`combo_reorder_page`), and dynamic bundle item picker dialogs integrated into the POS ordering workflow.
 
 ### 📦 Inventory, Recipes & Supply Chain
 - **Ingredient & Stock Tracking**: Granular inventory control with units of measurement, cost tracking, and stock usage logging.
@@ -100,7 +100,7 @@ lib/
     └── shared/                  # Common design tokens, AppThemeExtension, shared widgets
 ```
 
-### 2. Complete Inventory of the 26 Feature Packages
+### 2. Complete Inventory of Feature Packages (23 Feature Modules)
 
 ```
 lib/packages/
@@ -119,7 +119,7 @@ lib/packages/
 │   ├── checkout/                # Split-bill calculation, tips, taxes & payment tenders
 │   ├── invoice_management/      # Fiscal invoice history, PDF preview & receipt printing
 │   ├── customer/                # Customer directory, purchase histories & loyalty tiers
-│   └── promotions_engine/       # Meal combos, bundle deals, coupons & promo rules
+│   └── combo_engine/            # Multi-step combo creator, bundle pricing, reorder & item pickers
 │
 ├── 📦 Inventory, Supply Chain & Finance
 │   ├── inventory/               # Ingredient master data, UOM & stock tracking
@@ -270,15 +270,17 @@ The [`.agents/AGENTS.md`](.agents/AGENTS.md) file defines **strict rules** that 
 | **Modular Clean Architecture** | Features live in `lib/packages/<feature>/` with `data/`, `domain/`, `presentation/` separation |
 | **Domain Purity** | `domain/` must be pure Dart — no Flutter/UI imports; uses `Either<Failure, T>` for error handling |
 | **State Management** | No `setState`. Use `flutter_bloc` (Bloc/Cubit) with Equatable; `ValueNotifier` for lightweight UI state |
-| **BLoC Structure** | `part` files for events/states, `sealed class` for base classes, strict file separation |
+| **BLoC Structure** | `part` files for events/states, `sealed class` for base classes, explicit clearing flags for nullable filters |
 | **Navigation** | All routes via `go_router` defined in `coozy_core.dart` |
-| **Localization** | JSON locale files in `assets/locale/`; keys grouped by feature section, sorted alphabetically |
+| **Localization & i18n** | JSON locale files in `assets/locale/` grouped by section; mandatory proactive UI string localization; `params:` interpolation (never `.replaceAll`) |
 | **Performance** | Paginated Drift queries, lazy list builders, `compute` isolates for heavy operations |
 | **Date & Time** | Always use `DateUtil` from `coozy_core` — never raw `DateTime` formatting |
 | **Shared Screens** | Use `shared.LoadingPage()`, `shared.ErrorPage(...)`, `shared.NoInternetPage(...)` consistently |
 | **Form Management** | Explicit `TextEditingController` + `FocusNode` per field; always disposed in `dispose()` |
-| **Theme** | No hardcoded colors — use `Theme.of(context).colorScheme`, `textTheme`, and `AppThemeExtension` |
-| **Testing** | Unit tests only for business logic — no widget tests; only added when user explicitly confirms |
+| **Theme & Dual-Mode UI** | Dual-theme (Light & Dark) compliance; no hardcoded colors/fonts; modern `.withValues(alpha: ...)`; `.inExpandedRow()` for titles |
+| **Responsive Layout** | `shared.ResponsiveLayout` across Mobile (`<550px`), Tablet (`550-1200px`), and Desktop/Web (`>=1200px`); adaptive dialog sizing |
+| **Empty Views & Modularization** | Mandatory standalone empty views (`*_empty_view.dart`) in `widget/` folders; modular sub-widget breakdown |
+| **Testing** | Unit tests only for business logic — no widget tests; only added after explicit user confirmation |
 | **Code Generation** | Run `dart run build_runner build` after modifying Drift tables or mock annotations |
 
 ---
@@ -287,7 +289,7 @@ The [`.agents/AGENTS.md`](.agents/AGENTS.md) file defines **strict rules** that 
 
 The [`.agents/skills/coozy-the-cafe/SKILL.md`](.agents/skills/coozy-the-cafe/SKILL.md) gives the AI a rich, structured understanding of the project internals:
 
-- **Full module map** of all 26 feature packages under `lib/packages/`
+- **Full module map** of all packages under `lib/packages/` (core foundation + 23 modular feature packages)
 - **Feature package scaffold** with exact directory and file naming conventions per layer
 - **Dependency injection patterns** using `get_it` with `register<Feature>Dependencies(sl)`
 - **Drift ORM standards** for table definitions, DAO patterns, and code generation
