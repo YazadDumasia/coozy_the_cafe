@@ -37,4 +37,5 @@ class TrackConstants {
   static const String forgotPasswordPageTrack = 'forgot_password_page';
   static const String resetPasswordPageTrack = 'reset_password_page';
   static const String changePasswordPageTrack = 'change_password_page';
+  static const String comboPageTrack = 'combo_page';
 }

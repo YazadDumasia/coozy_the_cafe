@@ -23,10 +23,12 @@
 
 ## 4. Localization (i18n)
 - String translations are maintained in JSON files under `assets/locale/` (e.g. `locale_en.json`).
-- Keys inside `locale_en.json` must be grouped into top-level feature section JSON objects (`table_page`, `customer_page`, `reservation_page`, `order_page`, `menu_item_page`, `recipes`, `staff_management_page`, `settings_page`, `login_page`, `resgister_page`, `inventory_page`, `purchase_page`, `common`, `utils`, etc.) and sorted alphabetically within each object.
+- Keys inside `locale_en.json` must be grouped into top-level feature section JSON objects (`table_page`, `customer_page`, `reservation_page`, `order_page`, `menu_item_page`, `combo_page`, `recipes`, `staff_management_page`, `settings_page`, `login_page`, `resgister_page`, `inventory_page`, `purchase_page`, `common`, `utils`, etc.) and sorted alphabetically within each object.
 - Parameter placeholders in translation strings must use `${paramName}` syntax (e.g. `${count}`, `${name}`).
 - Locale state is controlled via `LocaleCubit` in `package:coozy_the_cafe/packages/shared/coozy_shared.dart`.
-- Look up strings using `context.tr(shared.LocaleKeys.<key>, track: shared.TrackConstants.<track>) ?? 'Fallback'`, where `track:` matches the section object in `locale_en.json`.
+- Look up strings using `context.tr(shared.LocaleKeys.<key>, track: shared.TrackConstants.<track>, params: {'paramName': '$val'}) ?? 'Fallback'`, where `track:` matches the section object in `locale_en.json`.
+- **Parameter Interpolation (`params:`)**: `AppLocalizations.translate` automatically executes `.replaceAll('\${$paramKey}', paramValue)` internally. Always pass parameters via `context.tr(..., params: {'key': value})` and NEVER call `.replaceAll(...)` on the returned string.
+- **Mandatory Proactive Localization on Creation & Modification**: Whenever creating or modifying any screen, page, dialog, or UI component, you MUST proactively audit and localize ALL user-facing text fields (labels, hints, validation messages, error texts, SnackBar/toast contents, button texts, empty state titles/subtitles, segmented control values, and counter badges) as part of the initial implementation without waiting for separate user prompts. Declare the corresponding keys in `assets/locale/locale_en.json` (sorted alphabetically), add getters in `lib/packages/shared/l10n/locale_keys.dart`, and verify/register track constants in `lib/packages/shared/l10n/track_constants.dart`. Never leave raw hardcoded display strings in UI code.
 
 ## 5. Performance & Large Dataset Optimization
 - **Database & Query Efficiency**: Design Drift DAOs with proper indexing, pagination (`LIMIT` / `OFFSET`), and targeted stream queries to efficiently handle large datasets.

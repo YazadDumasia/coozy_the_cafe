@@ -1,5 +1,5 @@
 import 'package:coozy_the_cafe/packages/database/coozy_database.dart';
-import 'package:coozy_the_cafe/packages/promotions_engine/domain/entities/combo.dart';
+import 'package:coozy_the_cafe/packages/combo_engine/domain/entities/combo.dart';
 import 'package:equatable/equatable.dart';
 
 class MenuCatalogCategoryData extends Equatable {

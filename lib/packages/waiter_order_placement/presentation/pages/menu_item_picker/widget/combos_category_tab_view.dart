@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:coozy_the_cafe/packages/promotions_engine/domain/entities/combo.dart';
+import 'package:coozy_the_cafe/packages/combo_engine/domain/entities/combo.dart';
 import 'package:coozy_the_cafe/packages/shared/coozy_shared.dart' as shared;
 
 import '../../../../domain/entities/order_cart_item.dart';

@@ -20,8 +20,8 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   cupertino_icons: ^2.0.0
-  material_ui: ^1.11.0
-  cupertino_ui: ^1.1.6
+  material_ui: ^1.11.1
+  cupertino_ui: ^1.1.7
 #  database
 #  Note: After updating drift and sqlite3 versions, sync web assets with:
 #  dart run scripts/sync_drift_web_assets.dart
@@ -118,7 +118,7 @@ dependencies:
   intl: ^0.20.3
   uuid: ^4.5.1
   collection: ^1.19.1
-  fast_immutable_collections: ^12.0.0
+  fast_immutable_collections: ^12.0.1
   reorderable_grid_view: ^2.2.8
   scrollable_positioned_list: ^0.3.8
   #
@@ -136,14 +136,14 @@ dependencies:
   #  store_redirect:
   feedback: ^3.1.0
   #  Range Slider
-  syncfusion_flutter_core: ^35.1.46
-  syncfusion_flutter_sliders: ^35.1.46
-  syncfusion_flutter_charts: ^35.1.46
-  syncfusion_flutter_xlsio: ^35.1.46
-  syncfusion_flutter_pdf: ^35.1.46
-  syncfusion_flutter_pdfviewer: ^35.1.46
+  syncfusion_flutter_core: ^35.2.12
+  syncfusion_flutter_sliders: ^35.2.12
+  syncfusion_flutter_charts: ^35.2.12
+  syncfusion_flutter_xlsio: ^35.2.12
+  syncfusion_flutter_pdf: ^35.2.12
+  syncfusion_flutter_pdfviewer: ^35.2.12
   barcode: ^2.2.9
-  syncfusion_flutter_barcodes: ^35.1.46
+  syncfusion_flutter_barcodes: ^35.2.12
   #Notification
   flutter_local_notifications: ^23.0.2
   flutter_timezone: ^5.1.0
@@ -155,12 +155,15 @@ dependencies:
   world_countries: ^4.6.0
   open_filex: ^5.0.0
   timelines_plus: ^2.0.1
+  easy_stepper: ^1.2.0
   # MCP Support for testing
   marionette_flutter: ^0.7.0
   marionette_mcp: ^0.7.0
   marionette_logging: ^0.7.0
-  file_picker: ^13.3.3
+  #
+  file_picker: ^13.4.0
   desktop_drop: ^0.8.4
+  
 
 
 #dependency_overrides:

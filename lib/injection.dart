@@ -23,7 +23,7 @@ import 'package:coozy_the_cafe/packages/order_management/order_management.dart';
 import 'package:coozy_the_cafe/packages/invoice_management/invoice_management.dart';
 import 'package:coozy_the_cafe/packages/expenditure/expenditure.dart';
 import 'package:coozy_the_cafe/packages/reports/reports.dart';
-import 'package:coozy_the_cafe/packages/promotions_engine/coozy_promotions_engine.dart';
+import 'package:coozy_the_cafe/packages/combo_engine/coozy_combo_engine.dart';
 import 'package:coozy_the_cafe/packages/inventory_intelligence/inventory_intelligence_injection.dart';
 
 Future<void> initDI() async {
@@ -84,8 +84,8 @@ Future<void> initDI() async {
   // Reports Package Dependencies
   registerReportsDependencies(sl);
 
-  // Promotions Engine Package Dependencies
-  registerPromotionsEngineDependencies(sl);
+  // Combo Engine Package Dependencies
+  registerComboEngineDependencies(sl);
 
   // Inventory Intelligence Package Dependencies
   initInventoryIntelligenceDependencies();

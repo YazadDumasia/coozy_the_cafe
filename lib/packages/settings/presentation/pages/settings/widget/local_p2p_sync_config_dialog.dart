@@ -92,8 +92,17 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
     super.dispose();
   }
 
-  String _tr(BuildContext context, String key, String fallback) {
-    return context.tr(key, track: shared.TrackConstants.settingsPageTrack) ??
+  String _tr(
+    BuildContext context,
+    String key,
+    String fallback, {
+    Map<String, String>? params,
+  }) {
+    return context.tr(
+          key,
+          track: shared.TrackConstants.settingsPageTrack,
+          params: params,
+        ) ??
         fallback;
   }
 
@@ -352,14 +361,11 @@ class _LocalP2pSyncConfigDialogState extends State<LocalP2pSyncConfigDialog> {
     switch (status) {
       case SyncConnectionStatus.hosting:
         statusColor = Colors.green;
-        final hostingTpl = _tr(
+        statusTitle = _tr(
           context,
           shared.LocaleKeys.settingsLocalP2pSyncStatusHosting,
           'POS Hub Active — Hosting ($clientCount clients)',
-        );
-        statusTitle = hostingTpl.replaceAll(
-          r'${count}',
-          clientCount.toString(),
+          params: {'count': clientCount.toString()},
         );
         statusIcon = Icons.cloud_done_rounded;
         break;

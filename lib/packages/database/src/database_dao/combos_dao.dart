@@ -238,4 +238,18 @@ class CombosDao extends DatabaseAccessor<CoozyDatabase> with _$CombosDaoMixin {
       );
     }).toList();
   }
+
+  Future<void> updateComboSortOrders(List<ComboData> combos) async {
+    return transaction(() async {
+      for (int i = 0; i < combos.length; i++) {
+        final c = combos[i];
+        await (update(combosTable)..where((t) => t.id.equals(c.id))).write(
+          CombosTableCompanion(
+            sortOrderIndex: Value(i + 1),
+            modificationDate: Value(DateTime.now().toUtc().toIso8601String()),
+          ),
+        );
+      }
+    });
+  }
 }

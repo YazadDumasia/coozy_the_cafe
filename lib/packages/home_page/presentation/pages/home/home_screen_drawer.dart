@@ -184,7 +184,12 @@ class _HomeScreenDrawerState extends State<HomeScreenDrawer> {
                     _buildDrawerItem(
                       context,
                       icon: Icons.fastfood_rounded,
-                      title: 'Combos & Promotions',
+                      title:
+                          context.tr(
+                            shared.LocaleKeys.homeDrawerCombosLabel,
+                            track: shared.TrackConstants.homePageTrack,
+                          ) ??
+                          'Menu Item Combos',
                       isSelected: _isRouteActive(
                         currentLocation,
                         core.AppRoutePath.combosScreenRoute,

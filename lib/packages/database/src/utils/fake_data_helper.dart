@@ -938,15 +938,14 @@ class FakeDataHelper {
 
   // Real Coozy The Cafe menu categories
   static const List<Map<String, Object>> _menuCategories = [
-    {'name': 'Combos & Specials', 'pos': 1},
-    {'name': 'Coffee', 'pos': 2},
-    {'name': 'Tea & Cold Beverages', 'pos': 3},
-    {'name': 'Shakes & Hot Chocolate', 'pos': 4},
-    {'name': 'Burgers & Sandwiches', 'pos': 5},
-    {'name': 'Fries & Sides', 'pos': 6},
-    {'name': 'Pizza & Pasta', 'pos': 7},
-    {'name': 'Noodles & Maggi', 'pos': 8},
-    {'name': 'Rice Bowls & Mains', 'pos': 9},
+    {'name': 'Coffee', 'pos': 1},
+    {'name': 'Tea & Cold Beverages', 'pos': 2},
+    {'name': 'Shakes & Hot Chocolate', 'pos': 3},
+    {'name': 'Burgers & Sandwiches', 'pos': 4},
+    {'name': 'Fries & Sides', 'pos': 5},
+    {'name': 'Pizza & Pasta', 'pos': 6},
+    {'name': 'Noodles & Maggi', 'pos': 7},
+    {'name': 'Rice Bowls & Mains', 'pos': 8},
   ];
 
   static Future<int> _generateCategories(
@@ -974,7 +973,6 @@ class FakeDataHelper {
 
   // Real Coozy subcategories mapped to parent category names
   static const Map<String, List<String>> _subcategoryMap = {
-    'Combos & Specials': ['Value Combos', 'Signature Specials'],
     'Coffee': ['Hot Coffee', 'Cold Coffee & Frappes'],
     'Tea & Cold Beverages': ['Ice Teas', 'Canned & Bottled'],
     'Shakes & Hot Chocolate': ['Shakes', 'Hot Chocolate'],
@@ -1021,97 +1019,6 @@ class FakeDataHelper {
   // Real Coozy The Cafe menu items: {name, catName, subName, foodType, isSimple,
   // sellingPrice, costPrice, variations:[{name, selling, cost}], durationMins}
   static List<Map<String, dynamic>> get _menuItems => [
-    // --- Combos & Specials ---
-    {
-      'cat': 'Combos & Specials',
-      'sub': 'Value Combos',
-      'type': 'Veg',
-      'simple': true,
-      'name': 'Veg Burger + Salted Fries',
-      'sell': 99.0,
-      'cost': 52.0,
-      'dur': 15,
-      'desc': 'Classic veg burger paired with crispy salted fries – our most loved value combo.',
-    },
-    {
-      'cat': 'Combos & Specials',
-      'sub': 'Value Combos',
-      'type': 'Veg',
-      'simple': true,
-      'name': '2 Veg Cheese Burger',
-      'sell': 120.0,
-      'cost': 63.0,
-      'dur': 15,
-      'desc': 'Two cheesy veg burgers – perfect for sharing or a hearty snack.',
-    },
-    {
-      'cat': 'Combos & Specials',
-      'sub': 'Value Combos',
-      'type': 'Veg',
-      'simple': true,
-      'name': 'Any Wrap + Any Burger',
-      'sell': 150.0,
-      'cost': 78.0,
-      'dur': 15,
-      'desc': 'Mix & match your favourite wrap with any burger from our menu.',
-    },
-    {
-      'cat': 'Combos & Specials',
-      'sub': 'Signature Specials',
-      'type': 'Veg',
-      'simple': true,
-      'name': 'Rice Bowl (Dal Makhani + Steam Rice)',
-      'sell': 200.0,
-      'cost': 105.0,
-      'dur': 20,
-      'desc': 'Creamy Dal Makhani served alongside fluffy steamed rice.',
-    },
-    {
-      'cat': 'Combos & Specials',
-      'sub': 'Signature Specials',
-      'type': 'Veg',
-      'simple': true,
-      'name': 'Burnt Garlic Rice + Aloo Tikki Wrap',
-      'sell': 250.0,
-      'cost': 130.0,
-      'dur': 20,
-      'desc':
-          'Aromatic burnt garlic rice bundled with a spiced aloo tikki wrap.',
-    },
-    {
-      'cat': 'Combos & Specials',
-      'sub': 'Signature Specials',
-      'type': 'Veg',
-      'simple': true,
-      'name': 'Margherita Pizza + Strawberry Shake + Tandoori Paneer Wrap',
-      'sell': 250.0,
-      'cost': 130.0,
-      'dur': 25,
-      'desc': 'A crowd-pleasing trio: classic pizza, fruity shake and a grilled paneer wrap.',
-    },
-    {
-      'cat': 'Combos & Specials',
-      'sub': 'Signature Specials',
-      'type': 'Veg',
-      'simple': true,
-      'name': 'Schezwan Fry Rice + Tandoori Paneer Pizza',
-      'sell': 300.0,
-      'cost': 156.0,
-      'dur': 25,
-      'desc': 'Indo-Chinese schezwan rice paired with our signature tandoori paneer pizza.',
-    },
-    {
-      'cat': 'Combos & Specials',
-      'sub': 'Signature Specials',
-      'type': 'Veg',
-      'simple': true,
-      'name': 'Italian Rice + Farmhouse Pizza',
-      'sell': 300.0,
-      'cost': 156.0,
-      'dur': 25,
-      'desc': 'Herb-infused Italian rice served alongside a loaded farmhouse pizza.',
-    },
-
     // --- Coffee ---
     {
       'cat': 'Coffee',
@@ -2003,6 +1910,89 @@ class FakeDataHelper {
     // Curated combo definitions with realistic item bundles and 12-20% discounts
     final comboDefs = [
       {
+        'name': 'Veg Burger + Salted Fries',
+        'desc': 'Classic veg burger paired with crispy salted fries – our most loved value combo.',
+        'items': [
+          ['veg burger', 'burger'],
+          ['salted fries', 'fries'],
+        ],
+        'discountPct': 0.16,
+        'duration': 15,
+      },
+      {
+        'name': '2 Veg Cheese Burger',
+        'desc':
+            'Two cheesy veg burgers – perfect for sharing or a hearty snack.',
+        'items': [
+          ['veg burger', 'burger'],
+          ['chili garlic burger', 'burger'],
+        ],
+        'discountPct': 0.15,
+        'duration': 15,
+      },
+      {
+        'name': 'Any Sandwich + Any Burger Deal',
+        'desc': 'Mix & match your favourite sandwich with any burger from our menu.',
+        'items': [
+          ['sandwich', 'croissant'],
+          ['burger', 'veg burger'],
+        ],
+        'discountPct': 0.16,
+        'duration': 15,
+      },
+      {
+        'name': 'Rice Bowl (Dal Makhani + Steam Rice)',
+        'desc': 'Creamy Dal Makhani served alongside fluffy steamed rice.',
+        'items': [
+          ['dal makhani'],
+          ['steam rice', 'rice'],
+        ],
+        'discountPct': 0.15,
+        'duration': 20,
+      },
+      {
+        'name': 'Burnt Garlic Rice + Fries Delight',
+        'desc':
+            'Aromatic burnt garlic rice bundled with seasoned crispy fries.',
+        'items': [
+          ['burnt garlic rice', 'rice'],
+          ['peri-peri fries', 'fries'],
+        ],
+        'discountPct': 0.17,
+        'duration': 20,
+      },
+      {
+        'name': 'Margherita Pizza + Strawberry Shake Feast',
+        'desc': 'A crowd-pleasing combo: classic margherita pizza paired with sweet shake and savory sandwich.',
+        'items': [
+          ['margherita pizza', 'pizza'],
+          ['shake', 'frappe'],
+          ['sandwich'],
+        ],
+        'discountPct': 0.18,
+        'duration': 25,
+      },
+      {
+        'name': 'Schezwan Fry Rice + Tandoori Paneer Pizza',
+        'desc': 'Indo-Chinese schezwan rice paired with our signature tandoori paneer pizza.',
+        'items': [
+          ['schezwan rice', 'rice'],
+          ['tandoori paneer pizza', 'pizza'],
+        ],
+        'discountPct': 0.18,
+        'duration': 25,
+      },
+      {
+        'name': 'Italian Rice + Farmhouse Pizza',
+        'desc': 'Herb-infused rice served alongside a loaded farmhouse pizza.',
+        'items': [
+          ['rice'],
+          ['farmhouse pizza', 'pizza'],
+        ],
+        'discountPct': 0.18,
+        'duration': 25,
+      },
+      {
         'name': 'Breakfast Express Combo',
         'desc': 'Freshly brewed Hot Coffee paired with a warm crispy Veg Sandwich to kickstart your day.',
         'items': [
@@ -2011,26 +2001,6 @@ class FakeDataHelper {
         ],
         'discountPct': 0.15, // 15% discount
         'duration': 15,
-      },
-      {
-        'name': 'Burger & Salted Fries Deal',
-        'desc': 'Our signature Veg Burger bundled with crispy Simply Salted Fries and refreshing beverage.',
-        'items': [
-          ['veg burger', 'burger'],
-          ['salted fries', 'fries'],
-        ],
-        'discountPct': 0.16, // 16% discount
-        'duration': 20,
-      },
-      {
-        'name': 'Pizza & Shake Feast',
-        'desc': 'Freshly baked Margherita Pizza alongside a rich, creamy Chocolate Shake.',
-        'items': [
-          ['pizza'],
-          ['shake', 'frappe'],
-        ],
-        'discountPct': 0.18, // 18% discount
-        'duration': 25,
       },
       {
         'name': 'Cafe Chill Out Bundle',

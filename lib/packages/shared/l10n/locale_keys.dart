@@ -368,6 +368,167 @@ abstract class LocaleKeys {
   static String billNowBtnText = 'bill_now_btn_text';
   static String currentOrderTabTitle = 'current_order_tab_title';
   static String combosTabTitle = 'combos_tab_title';
+
+  // Combo Form Dialog keys
+  static String comboFormDialogCreateTitle = 'combo_form_dialog_create_title';
+  static String comboFormDialogEditTitle = 'combo_form_dialog_edit_title';
+  static String comboFormDialogNameLabel = 'combo_form_dialog_name_label';
+  static String comboFormDialogNameHint = 'combo_form_dialog_name_hint';
+  static String comboFormDialogNameRequired = 'combo_form_dialog_name_required';
+  static String comboFormDialogNameMinLength =
+      'combo_form_dialog_name_min_length';
+  static String comboFormDialogDescLabel = 'combo_form_dialog_desc_label';
+  static String comboFormDialogDescHint = 'combo_form_dialog_desc_hint';
+  static String comboFormDialogActiveLabel = 'combo_form_dialog_active_label';
+  static String comboFormDialogActiveDesc = 'combo_form_dialog_active_desc';
+  static String comboFormDialogSellingPriceLabel =
+      'combo_form_dialog_selling_price_label';
+  static String comboFormDialogSellingPriceRequired =
+      'combo_form_dialog_selling_price_required';
+  static String comboFormDialogSellingPriceInvalid =
+      'combo_form_dialog_selling_price_invalid';
+  static String comboFormDialogDurationLabel =
+      'combo_form_dialog_duration_label';
+  static String comboFormDialogDurationModeTitle =
+      'combo_form_dialog_duration_mode_title';
+  static String comboFormDialogDurationModeLongest =
+      'combo_form_dialog_duration_mode_longest';
+  static String comboFormDialogDurationModeTotal =
+      'combo_form_dialog_duration_mode_total';
+  static String comboFormDialogRegularItemsTotal =
+      'combo_form_dialog_regular_items_total';
+  static String comboFormDialogCustomerSavings =
+      'combo_form_dialog_customer_savings';
+  static String comboFormDialogDiscountModeAmount =
+      'combo_form_dialog_discount_mode_amount';
+  static String comboFormDialogDiscountModePercentage =
+      'combo_form_dialog_discount_mode_percentage';
+  static String comboFormDialogDiscountPercentLabel =
+      'combo_form_dialog_discount_percent_label';
+  static String comboFormDialogDiscountPercentHint =
+      'combo_form_dialog_discount_percent_hint';
+  static String comboFormDialogDiscountPercentInvalid =
+      'combo_form_dialog_discount_percent_invalid';
+  static String comboFormDialogDiscountPercentRequired =
+      'combo_form_dialog_discount_percent_required';
+  static String comboFormDialogEffectiveSellingPrice =
+      'combo_form_dialog_effective_selling_price';
+  static String comboFormDialogSellingPriceHint =
+      'combo_form_dialog_selling_price_hint';
+  static String comboFormDialogDurationHint = 'combo_form_dialog_duration_hint';
+  static String comboFormDialogDurationSuffix =
+      'combo_form_dialog_duration_suffix';
+  static String comboFormDialogDurationHelperLongest =
+      'combo_form_dialog_duration_helper_longest';
+  static String comboFormDialogDurationHelperTotal =
+      'combo_form_dialog_duration_helper_total';
+  static String comboFormDialogDurationModeLongestShort =
+      'combo_form_dialog_duration_mode_longest_short';
+  static String comboFormDialogDurationModeTotalShort =
+      'combo_form_dialog_duration_mode_total_short';
+  static String comboFormDialogReviewBundledItems =
+      'combo_form_dialog_review_bundled_items';
+  static String comboFormDialogMinItemsRequired =
+      'combo_form_dialog_min_items_required';
+  static String comboFormDialogItemsBadge = 'combo_form_dialog_items_badge';
+  static String comboFormDialogNoItemsEmptyTitle =
+      'combo_form_dialog_no_items_empty_title';
+  static String comboFormDialogNoItemsEmptySubtitle =
+      'combo_form_dialog_no_items_empty_subtitle';
+  static String comboFormDialogSearchMenuHint =
+      'combo_form_dialog_search_menu_hint';
+  static String comboFormDialogSearchMenuEmpty =
+      'combo_form_dialog_search_menu_empty';
+  static String comboFormDialogSearchVariationsAvailable =
+      'combo_form_dialog_search_variations_available';
+  static String comboFormDialogSearchTotalCount =
+      'combo_form_dialog_search_total_count';
+  static String comboFormDialogStepIndicator =
+      'combo_form_dialog_step_indicator';
+  static String comboFormDialogWebBrandTitle =
+      'combo_form_dialog_web_brand_title';
+  static String comboFormDialogWebBrandSubtitle =
+      'combo_form_dialog_web_brand_subtitle';
+  static String comboFormDialogStepBasicInfoTitle =
+      'combo_form_dialog_step_basic_info_title';
+  static String comboFormDialogStepBasicInfoSubtitle =
+      'combo_form_dialog_step_basic_info_subtitle';
+  static String comboFormDialogStepSelectItemsTitle =
+      'combo_form_dialog_step_select_items_title';
+  static String comboFormDialogStepSelectItemsSubtitle =
+      'combo_form_dialog_step_select_items_subtitle';
+  static String comboFormDialogStepPricingReviewTitle =
+      'combo_form_dialog_step_pricing_review_title';
+  static String comboFormDialogStepPricingReviewSubtitle =
+      'combo_form_dialog_step_pricing_review_subtitle';
+  static String comboFormDialogTabletHeader = 'combo_form_dialog_tablet_header';
+  static String comboFormDialogTabletSubtitle =
+      'combo_form_dialog_tablet_subtitle';
+  static String comboFormDialogWebSidebarTitle =
+      'combo_form_dialog_web_sidebar_title';
+  static String comboFormDialogWebSidebarSubtitle =
+      'combo_form_dialog_web_sidebar_subtitle';
+  static String comboFormDialogBackBtn = 'combo_form_dialog_back_btn';
+  static String comboFormDialogNextBtn = 'combo_form_dialog_next_btn';
+  static String comboFormDialogSaveBtn = 'combo_form_dialog_save_btn';
+  static String comboFormDialogSaveComboBtn =
+      'combo_form_dialog_save_combo_btn';
+  static String comboFormDialogSuccessCreatedTitle =
+      'combo_form_dialog_success_created_title';
+  static String comboFormDialogSuccessUpdatedTitle =
+      'combo_form_dialog_success_updated_title';
+  static String comboFormDialogSuccessSubtitle =
+      'combo_form_dialog_success_subtitle';
+  static String comboFormDialogSuccessItemsCount =
+      'combo_form_dialog_success_items_count';
+  static String comboFormDialogSuccessPriceLabel =
+      'combo_form_dialog_success_price_label';
+  static String comboFormDialogSuccessActionDone =
+      'combo_form_dialog_success_action_done';
+  static String comboFormDialogItemsMinValidation =
+      'combo_form_dialog_items_min_validation';
+  static String comboFormDialogItemsRequiredHint =
+      'combo_form_dialog_items_required_hint';
+  static String comboFormDialogItemsSelectedCount =
+      'combo_form_dialog_items_selected_count';
+  static String comboListPageAppbarTitle = 'combo_list_page_appbar_title';
+  static String comboReorderPageAppbarTitle = 'combo_reorder_page_appbar_title';
+  static String comboReorderPageInstructionSubtitle =
+      'combo_reorder_page_instruction_subtitle';
+  static String comboReorderPageTooltipReorderMode =
+      'combo_reorder_page_tooltip_reorder_mode';
+  static String comboReorderPageTooltipDragHandle =
+      'combo_reorder_page_tooltip_drag_handle';
+  static String comboReorderPageEmptyTitle = 'combo_reorder_page_empty_title';
+  static String comboReorderPageEmptySubtitle =
+      'combo_reorder_page_empty_subtitle';
+  static String comboReorderPageSaveSuccess = 'combo_reorder_page_save_success';
+  static String comboListPageBtnNewCombo = 'combo_list_page_btn_new_combo';
+  static String comboListPageDeleteDialogTitle =
+      'combo_list_page_delete_dialog_title';
+  static String comboListPageDeleteDialogMessage =
+      'combo_list_page_delete_dialog_message';
+  static String comboListEmptyViewTitle = 'combo_list_empty_view_title';
+  static String comboListEmptyViewSubtitle = 'combo_list_empty_view_subtitle';
+  static String comboListEmptyViewBtnCreate =
+      'combo_list_empty_view_btn_create';
+  static String comboListCardBadgeOff = 'combo_list_card_badge_off';
+  static String comboListCardBadgeDuration = 'combo_list_card_badge_duration';
+  static String comboListCardSavingsText = 'combo_list_card_savings_text';
+  static String comboListCardTooltipEdit = 'combo_list_card_tooltip_edit';
+  static String comboListCardTooltipDelete = 'combo_list_card_tooltip_delete';
+  static String comboListCardFallbackItemName =
+      'combo_list_card_fallback_item_name';
+  static String comboFormDialogItemUnitPriceEach =
+      'combo_form_dialog_item_unit_price_each';
+  static String comboFormDialogItemDurationMins =
+      'combo_form_dialog_item_duration_mins';
+  static String comboFormDialogVariationPrepDuration =
+      'combo_form_dialog_variation_prep_duration';
+  static String comboFormDialogItemPrepDuration =
+      'combo_form_dialog_item_prep_duration';
+  static String comboFormDialogVariationFallbackName =
+      'combo_form_dialog_variation_fallback_name';
   static String reviewOrderBtnText = 'review_order_btn_text';
   static String noItemsAddedToCurrentOrderMsg =
       'no_items_added_to_current_order_msg';
@@ -896,6 +1057,7 @@ abstract class LocaleKeys {
   static String homePageCoozyTheCafe = 'home_page_coozy_the_cafe';
   static String homeDrawerTableInfoLabel = 'home_drawer_table_info_label';
   static String homeDrawerCategoriesLabel = 'home_drawer_categories_label';
+  static String homeDrawerCombosLabel = 'home_drawer_combos_label';
   static String homeDrawerMenuSubCategoryLabel =
       'home_drawer_menu_sub_category_label';
   static String homeDrawerMenuItemLabel = 'home_drawer_menu_item_label';

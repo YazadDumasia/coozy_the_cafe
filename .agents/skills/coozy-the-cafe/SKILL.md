@@ -171,7 +171,7 @@ All package registrations are called inside `lib/injection.dart` during app init
 
 5. **Localization (i18n)**:
    - Managed via `LocaleCubit` in `package:coozy_the_cafe/packages/shared/coozy_shared.dart`.
-   - Translation strings are stored in `assets/locale/locale_<lang>.json` (e.g., `locale_en.json`). Keys are grouped into top-level feature section JSON objects (`table_page`, `customer_page`, `reservation_page`, `order_page`, `menu_item_page`, `recipes`, `staff_management_page`, `settings_page`, `login_page`, `resgister_page`, `inventory_page`, `purchase_page`, `common`, `utils`, etc.) and sorted alphabetically within each object.
+   - Translation strings are stored in `assets/locale/locale_<lang>.json` (e.g., `locale_en.json`). Keys are grouped into top-level feature section JSON objects (`table_page`, `customer_page`, `reservation_page`, `order_page`, `menu_item_page`, `combo_page`, `recipes`, `staff_management_page`, `settings_page`, `login_page`, `resgister_page`, `inventory_page`, `purchase_page`, `common`, `utils`, etc.) and sorted alphabetically within each object.
    - Parameter placeholders in translation strings must use `${paramName}` syntax (e.g. `${count}`, `${name}`).
    - Use `context.tr(...)` with `shared.LocaleKeys` and matching `shared.TrackConstants`:
      ```dart
@@ -180,6 +180,15 @@ All package registrations are called inside `lib/injection.dart` during app init
        track: shared.TrackConstants.loginPageTrack,
      ) ?? 'Login Via Facebook'
      ```
+   - **Passing Parameters with `params:` (Do NOT use `.replaceAll`)**: `AppLocalizations.translate` automatically executes `.replaceAll('\${$paramKey}', paramValue)` under the hood for all entries in the `params` map. Therefore, ALWAYS pass dynamic parameters via `context.tr(..., params: {'key': value})` and NEVER call `.replaceAll(...)` on the returned string:
+     ```dart
+     context.tr(
+       shared.LocaleKeys.comboFormDialogItemsSelectedCount,
+       track: shared.TrackConstants.comboPageTrack,
+       params: {"count": "$count"},
+     ) ?? '$count items selected in this bundle.'
+     ```
+   - **Mandatory Proactive Localization on Creation & Modification**: Whenever creating or modifying any screen, dialog, form, or UI component, you MUST proactively audit and localize EVERY user-facing string (including labels, hints, validation messages, error texts, SnackBar/toast contents, button texts, empty state titles/subtitles, segmented control values, and counter badges) without needing a separate user prompt. Declare the corresponding keys in `assets/locale/locale_en.json` (sorted alphabetically), add getter definitions in `lib/packages/shared/l10n/locale_keys.dart`, and add/verify track identifiers in `lib/packages/shared/l10n/track_constants.dart`. Never leave raw hardcoded strings in UI widgets.
 6. **Performance & Large Dataset Optimization**:
    - **Pagination & Querying**: Implement pagination (`LIMIT`/`OFFSET`) in Drift DAOs for large tables (menu items, transactions, orders).
    - **Lazy Rendering**: Use `ListView.builder` / `GridView.builder` with `addAutomaticKeepAlives: false` and `addRepaintBoundaries: true` to prevent unnecessary repaints and reduce RAM usage.

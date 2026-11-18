@@ -50,6 +50,7 @@ class AppRoutePath {
   static const String kitchenScreenRoute = '/kitchen';
   static const String checkoutScreenRoute = '/checkout';
   static const String combosScreenRoute = '/combos';
+  static const String combosReorderScreenRoute = '/combos/reorder';
   static const String stockAlertsScreenRoute = '/inventory-alerts';
 
   // Sub-routes for Table Info (Nested under Home -> Table Info)
@@ -202,6 +203,9 @@ class AppRoutePath {
   static const String customerInfoScreenRoute = 'customer-info';
   static const String addOrEditCustomerScreenRoute = 'customer-edit';
   static const String customerPickerPageRoute = 'customer-picker';
+
+  // Sub-routes for Combos
+  static const String combosReorderSubRoute = 'reorder';
 }
 
 class AppRouteName {
@@ -276,6 +280,7 @@ class AppRouteName {
   static const String kitchen = 'kitchen';
   static const String orders = 'orders';
   static const String combosList = 'combos-list';
+  static const String combosReorder = 'combos-reorder';
   static const String stockAlerts = 'stock-alerts';
 
   static String getTitleForRouteName(String? name) {
@@ -283,7 +288,9 @@ class AppRouteName {
       case stockAlerts:
         return 'Stock Alerts & Auto-Reorder';
       case combosList:
-        return 'Combos & Promotions';
+        return 'Menu Item Combos';
+      case combosReorder:
+        return 'Reorder Combos';
       case businessProfile:
         return 'Business Profile';
       case developer:
